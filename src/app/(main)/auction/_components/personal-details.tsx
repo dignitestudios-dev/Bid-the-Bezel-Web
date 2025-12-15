@@ -26,7 +26,9 @@ type Step =
   | "sale-type"
   | "personal-detail"
   | "authenticate"
-| "shipping";
+| "shipping"
+| "payment-done"
+| "watch-listed"
 
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;

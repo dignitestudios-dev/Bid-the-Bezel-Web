@@ -13,7 +13,9 @@ type Step =
   | "sale-type"
   | "personal-detail"
   | "authenticate"
-  | "shipping";
+  | "shipping"
+  | "payment-done"
+| "watch-listed"
 
 const Success = ({
   setCurrentStep,

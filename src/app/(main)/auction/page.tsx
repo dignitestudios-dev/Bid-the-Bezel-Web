@@ -8,6 +8,8 @@ import SaleType from './_components/sale-type';
 import PersonalDetail from './_components/personal-details';
 import Authenticate from './_components/authenticate';
 import ShippingDetail from './_components/shipping-details';
+import PaymentDone from './_components/payment-done';
+import WatchListed from './_components/watch-listed';
 
 
 type Props = {}
@@ -22,7 +24,9 @@ type Step =
   | "sale-type"
   | "personal-detail"
   | "authenticate"
- | "shipping";
+ | "shipping"
+ | "payment-done"
+| "watch-listed"
 const page = (props: Props) => {
       const [currentStep, setCurrentStep] = useState<Step>("purchase-plan");
   return (
@@ -34,6 +38,8 @@ const page = (props: Props) => {
        {currentStep == "personal-detail" && <PersonalDetail setCurrentStep={setCurrentStep}/>}
        {currentStep == "authenticate" && <Authenticate setCurrentStep={setCurrentStep}/>}
        {currentStep == "shipping" && <ShippingDetail setCurrentStep={setCurrentStep}/>}
+       {currentStep == "payment-done" && <PaymentDone setCurrentStep={setCurrentStep}/>}
+       {currentStep == "watch-listed" && <WatchListed/>}
     </div>
   )
 }

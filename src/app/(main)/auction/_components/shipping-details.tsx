@@ -23,7 +23,9 @@ type Step =
   | "sale-type"
   | "personal-detail"
   | "authenticate"
-  | "shipping";
+  | "shipping"
+  | "payment-done"
+| "watch-listed"
 
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
@@ -35,7 +37,7 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
   const [selectedCourier, setSelectedCourier] = useState("");
   const [referenceId, setReferenceId] = useState("");
   const [trackingLink, setTrackingLink] = useState("");
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState< null | Blob>();
 
   const handleFileUpload = (e: any) => {
     const file = e.target.files[0];
@@ -185,9 +187,9 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">
+                        {/* <p className="text-sm font-medium">
                           {uploadedFile?.name}
-                        </p>
+                        </p> */}
                         <p className="text-xs text-gray-500">
                           ({(uploadedFile.size / 1024 / 1024).toFixed(1)}mb)
                         </p>
@@ -278,9 +280,9 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
                 Use a different billing address
               </button>
 
-              <button className="w-full bg-slate-900 text-white rounded-lg py-3 mt-6 font-medium hover:bg-slate-800 transition-colors">
+              <Button onClick={()=>setCurrentStep("payment-done")} className="w-full bg-slate-900 text-white rounded-lg py-3 mt-6 font-medium hover:bg-slate-800 transition-colors">
                 Pay Now
-              </button>
+              </Button>
             </div>
             </div>
           

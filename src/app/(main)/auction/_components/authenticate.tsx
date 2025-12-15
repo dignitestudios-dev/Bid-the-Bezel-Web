@@ -12,7 +12,9 @@ type Step =
   | "sale-type"
   | "personal-detail"
   | "authenticate"
-  | "shipping";
+  | "shipping"
+  | "payment-done"
+| "watch-listed"
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
@@ -50,7 +52,7 @@ const Authenticate = ({ setCurrentStep }: Props) => {
             will be charged to authenticate your watch
           </p>
         </div>
-        <Button className="text-red-600 w-full bg-gray-100" onClick={()=>setCurrentStep("shipping")}>Continue without authenticating</Button>
+        <Button className="text-red-600 w-full bg-gray-100" onClick={()=>setCurrentStep("watch-listed")}>Continue without authenticating</Button>
       </div>
     </div>
   );
