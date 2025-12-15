@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Check, CreditCard, Link2, Upload, X } from "lucide-react";
+import { Check, CreditCard, Link2, Upload, Wallet, X } from "lucide-react";
 import React, { useState } from "react";
 
 type Step =
@@ -25,7 +25,7 @@ type Step =
   | "authenticate"
   | "shipping"
   | "payment-done"
-| "watch-listed"
+  | "watch-listed";
 
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
@@ -33,11 +33,14 @@ type Props = {
 
 const ShippingDetail = ({ setCurrentStep }: Props) => {
   const [steps, setSteps] = useState(1);
-  const [useShippingAddress, setUseShippingAddress] = useState(true);
+  const [billingAddressType, setBillingAddressType] = useState<
+    "same" | "different"
+  >("same");
+
   const [selectedCourier, setSelectedCourier] = useState("");
   const [referenceId, setReferenceId] = useState("");
   const [trackingLink, setTrackingLink] = useState("");
-  const [uploadedFile, setUploadedFile] = useState< null | Blob>();
+  const [uploadedFile, setUploadedFile] = useState<null | Blob>();
 
   const handleFileUpload = (e: any) => {
     const file = e.target.files[0];
@@ -206,10 +209,13 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
               </div>
 
               <div className="flex gap-3">
-                <button className="flex-1 py-3 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+                <Button className="flex-1 py-3 bg-[#F7F7F7] text-primary border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 hover:text-primary transition-colors">
                   Save as draft
-                </button>
-                <Button onClick={()=>setSteps(2)} className="flex-1 py-3 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">
+                </Button>
+                <Button
+                  onClick={() => setSteps(2)}
+                  className="flex-1 py-3 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
+                >
                   Payment
                   <svg
                     className="w-4 h-4"
@@ -230,100 +236,114 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
           </div>
         )}
         {steps == 2 && (
-         <div className="min-h-screen  p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="grid md:grid-cols-2 shadow-sm ">
-          <div className="space-y-6">
-            <div className="rounded-lg p-6  ">
-              <h2 className="text-lg font-semibold mb-4">Payment</h2>
-              
-              <div className="flex items-center gap-3 p-4 border rounded-lg mb-4">
-                <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium">Visa</div>
-                  <div className="text-sm text-gray-500">•••• •••• •••• 5488</div>
-                </div>
-                <div className="w-5 h-5 rounded-full border-2 border-emerald-500 flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
-                </div>
-              </div>
+          <div className="min-h-screen rounded-sm p-4 md:p-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-2 shadow-sm ">
+                <div className="space-y-6">
+                  <div className="rounded-lg p-6  ">
+                    <h2 className="text-lg font-semibold mb-4">Payment</h2>
 
-              <button className="text-emerald-600 text-sm font-medium">
-                + Add other
-              </button>
-  <div className=" ">
-              <h2 className="text-lg font-semibold mb-4">Billing Address</h2>
-              
-              <label className="flex items-center gap-3 cursor-pointer">
-                <div className="relative">
-                  <input
-                    type="radio"
-                    checked={useShippingAddress}
-                    onChange={() => setUseShippingAddress(true)}
-                    className="w-5 h-5 appearance-none border-2 border-gray-300 rounded-full checked:border-emerald-500"
-                  />
-                  {useShippingAddress && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
+                    <div className="flex items-center gap-3  rounded-lg ">
+                      <div className="w-10 h-10  rounded-full flex items-center justify-center">
+                        <Wallet />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">Visa</div>
+                        <div className="text-sm text-gray-500">
+                          •••• •••• •••• 5488
+                        </div>
+                      </div>
+                      <div className="w-5 h-5 rounded-full border-2 border-emerald-500 flex items-center justify-center">
+                        <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
+                      </div>
                     </div>
-                  )}
+                    <button className=" text-sm mb-4 font-medium">
+                      + Add other
+                    </button>
+
+                    <div className=" ">
+                      <h2 className="text-lg font-semibold mb-4">
+                        Billing Address
+                      </h2>
+<div className="flex flex-col gap-4  border rounded-2xl p-4">
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <div className="relative">
+                          <input
+                            type="radio"
+                            name="billingAddress"
+                            checked={billingAddressType === "same"}
+                            onChange={() => setBillingAddressType("same")}
+                            className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                          />
+                        
+                        </div>
+                        <span className="text-sm font-medium">
+                          Same as shipping address
+                        </span>
+                      </label>
+<hr/>
+                      <label className="flex items-center gap-3 cursor-pointer">
+                        <div className="relative">
+                          <input
+                            type="radio"
+                            name="billingAddress"
+                            checked={billingAddressType === "different"}
+                            onChange={() => setBillingAddressType("different")}
+                         className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                          />
+                       
+                        </div>
+                        <span className="text-sm font-medium">
+                          Use a different billing address
+                        </span>
+                      </label>
+</div>
+                      <Button
+                        onClick={() => setCurrentStep("payment-done")}
+                        className="w-full bg-slate-900 text-white rounded-lg py-3 mt-6 font-medium hover:bg-slate-800 transition-colors"
+                      >
+                        Pay Now
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-                <span className="text-sm font-medium">Same as shipping address</span>
-              </label>
 
-              <button 
-                className="text-sm text-gray-600 mt-3 hover:text-gray-900"
-                onClick={() => setUseShippingAddress(false)}
-              >
-                Use a different billing address
-              </button>
+                <div className="bg-[#E3E3E3]">
+                  <div className=" rounded-lg p-6  sticky top-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 bg-[#14A752] text-white text-sm rounded-lg flex items-center justify-center flex-shrink-0">
+                      $200
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Authentication Fee</div>
+                      </div>
+                        <div className="text-2xl font-bold mt-1">$800.00</div>
+                    </div>
 
-              <Button onClick={()=>setCurrentStep("payment-done")} className="w-full bg-slate-900 text-white rounded-lg py-3 mt-6 font-medium hover:bg-slate-800 transition-colors">
-                Pay Now
-              </Button>
+                    <div className="space-y-3 py-4 border-t border-b">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Fees</span>
+                        <span className="font-medium">$800.00</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Other Fees</span>
+                        <span className="font-medium">$0.00</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Shipping</span>
+                        <span className="font-medium">$100.00</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center mt-4 pt-2">
+                      <span className="font-semibold">TOTAL</span>
+                      <span className="text-xl font-bold">USD $3,876.69</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            </div>
-          
           </div>
-
-          <div className="bg-[#E3E3E3]">
-            <div className=" rounded-lg p-6  sticky top-8">
-              <div className="flex items-start gap-3 mb-6">
-                <div className="w-12 h-12 bg-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Check className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold">Authentication Fee</div>
-                  <div className="text-2xl font-bold mt-1">$800.00</div>
-                </div>
-              </div>
-
-              <div className="space-y-3 py-4 border-t border-b">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Fees</span>
-                  <span className="font-medium">$800.00</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Other Fees</span>
-                  <span className="font-medium">$0.00</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium">$100.00</span>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center mt-4 pt-2">
-                <span className="font-semibold">TOTAL</span>
-                <span className="text-xl font-bold">USD $3,876.69</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
         )}
       </div>
     </div>
