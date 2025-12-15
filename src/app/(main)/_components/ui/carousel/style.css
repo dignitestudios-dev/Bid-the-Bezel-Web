@@ -1,0 +1,180 @@
+.embla {
+  margin: auto;
+  --slide-height: 19rem;
+  --slide-spacing: 1rem;
+  --slide-size: 28%;
+  position: relative; /* needed for absolute button positioning */
+}
+
+/* Shady fade effect on carousel edges */
+.embla__viewport {
+  position: relative;
+
+  /* ✅ DEFAULT FADE COLOR (can be overridden per component) */
+  --fade-color: 255, 255, 255;
+}
+
+/* LEFT SHADE */
+.embla__viewport::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(var(--fade-color), 1),
+    rgba(var(--fade-color), 0)
+  );
+}
+
+/* RIGHT SHADE */
+.embla__viewport::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(
+    to left,
+    rgba(var(--fade-color), 1),
+    rgba(var(--fade-color), 0)
+  );
+}
+
+
+
+.embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.embla__slide {
+  transform: translate3d(0, 0, 0);
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+}
+
+.embla__slide__number {
+  box-shadow: inset 0 0 0 0.2rem var(--detail-medium-contrast);
+  border-radius: 1.8rem;
+  font-size: 4rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--slide-height);
+  user-select: none;
+}
+
+.embla__controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-top: 1.8rem;
+}
+
+.embla__buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+}
+
+/* Buttons over the slides */
+.embla__button {
+  -webkit-tap-highlight-color: rgba(var(--text-high-contrast-rgb-value), 0.5);
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: white; /* button background */
+  touch-action: manipulation;
+  display: inline-flex;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #e3e3e3;
+  width: 2.2rem;
+  height: 2.2rem;
+  z-index: 10;
+  border-radius: 50%;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute; /* move over slides */
+  top: 50%;
+  transform: translateY(-50%);
+  transition: background 0.3s;
+}
+
+.embla__button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Position left and right */
+.embla__button--prev {
+  left: 2rem;
+}
+
+.embla__button--next {
+  right: 2rem;
+}
+
+.embla__button__svg {
+  width: 35%;
+  height: 35%;
+}
+
+.embla__selected-snap-display {
+  justify-self: flex-end;
+  align-self: center;
+  color: var(--text-low-contrast);
+  font-weight: 600;
+}
+
+/* RESPONSIVE STYLES */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .embla {
+    --slide-size: 50%;
+    --slide-height: 16rem;
+  }
+  .embla__button {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .embla {
+    --slide-size: 60%;
+    --slide-height: 14rem;
+  }
+  .embla__button {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .embla {
+    --slide-size: 80%;
+    --slide-height: 12rem;
+  }
+  .embla__button {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
