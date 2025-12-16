@@ -15,27 +15,12 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type Step =
-  | "login"
-  | "register"
-  | "otp-register"
-  | "username"
-  | "purchase-plan"
-  | "plan-selected"
-  | "subscription-confirmation"
-  | "sale-type"
-  | "personal-detail"
-  | "authenticate"
-| "shipping"
-| "payment-done"
-| "watch-listed"
 
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
 
-const PersonalDetail = ({ setCurrentStep }: Props) => {
-  const [auctionDays, setAuctionDays] = useState(3);
+const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
   const [steps, setSteps] = useState(1);
 
   return (
@@ -102,24 +87,7 @@ const PersonalDetail = ({ setCurrentStep }: Props) => {
         <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
           <h3 className="font-semibold mb-6">Personal details</h3>
 
-          <div className="mb-6">
-            <p className="text-sm font-medium mb-2">Selection Auction Days</p>
-            <div className="flex gap-3">
-              {[3, 5, 7].map((day) => (
-                <button
-                  key={day}
-                  onClick={() => setAuctionDays(day)}
-                  className={`px-4 py-2 rounded-full border text-sm ${
-                    auctionDays === day
-                      ? "bg-slate-800 text-white"
-                      : "bg-white text-gray-700"
-                  }`}
-                >
-                  {day} Days
-                </button>
-              ))}
-            </div>
-          </div>
+       
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
@@ -173,7 +141,7 @@ const PersonalDetail = ({ setCurrentStep }: Props) => {
           </div>
 
           <div className="mb-4">
-            <label className="text-sm mb-1 block">Starting Price</label>
+            <label className="text-sm mb-1 block">Price</label>
             <Input placeholder="Price here" />
           </div>
 
@@ -265,4 +233,4 @@ const PersonalDetail = ({ setCurrentStep }: Props) => {
   );
 };
 
-export default PersonalDetail;
+export default PersonalDetailFixed;

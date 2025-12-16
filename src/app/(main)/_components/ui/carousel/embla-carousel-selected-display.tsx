@@ -1,48 +1,31 @@
 "use client"
-import React, { useCallback, useEffect, useState } from 'react'
-import { EmblaCarouselType } from 'embla-carousel'
+import React, { useCallback, useEffect, useState } from "react"
+import { EmblaCarouselType } from "embla-carousel"
+import styles from "./style.module.css"
 
-type UseSelectedSnapDisplayType = {
-  selectedSnap: number
-  snapCount: number
-}
+type UseSelectedSnapDisplayType = { selectedSnap: number; snapCount: number }
 
-export const useSelectedSnapDisplay = (
-  emblaApi: EmblaCarouselType | undefined
-): UseSelectedSnapDisplayType => {
+export const useSelectedSnapDisplay = (emblaApi: EmblaCarouselType | undefined): UseSelectedSnapDisplayType => {
   const [selectedSnap, setSelectedSnap] = useState(0)
   const [snapCount, setSnapCount] = useState(0)
 
-  const updateScrollSnapState = useCallback((emblaApi: EmblaCarouselType) => {
-    setSnapCount(emblaApi.scrollSnapList().length)
-    setSelectedSnap(emblaApi.selectedScrollSnap())
+  const updateScrollSnapState = useCallback((api: EmblaCarouselType) => {
+    setSnapCount(api.scrollSnapList().length)
+    setSelectedSnap(api.selectedScrollSnap())
   }, [])
 
   useEffect(() => {
     if (!emblaApi) return
-
     updateScrollSnapState(emblaApi)
-    emblaApi.on('select', updateScrollSnapState)
-    emblaApi.on('reInit', updateScrollSnapState)
+    emblaApi.on("select", updateScrollSnapState)
+    emblaApi.on("reInit", updateScrollSnapState)
   }, [emblaApi, updateScrollSnapState])
 
-  return {
-    selectedSnap,
-    snapCount
-  }
+  return { selectedSnap, snapCount }
 }
 
-type PropType = {
-  selectedSnap: number
-  snapCount: number
-}
+type PropType = { selectedSnap: number; snapCount: number }
 
-export const SelectedSnapDisplay: React.FC<PropType> = (props) => {
-  const { selectedSnap, snapCount } = props
-
-  return (
-    <div className="embla__selected-snap-display">
-      {selectedSnap + 1} / {snapCount}
-    </div>
-  )
+export const SelectedSnapDisplay: React.FC<PropType> = ({ selectedSnap, snapCount }) => {
+  return <div className={styles.embla__selectedSnapDisplay}>{selectedSnap + 1} / {snapCount}</div>
 }

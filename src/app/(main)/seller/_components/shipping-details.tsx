@@ -12,21 +12,6 @@ import { cn } from "@/lib/utils";
 import { Check, CreditCard, Link2, Upload, Wallet, X } from "lucide-react";
 import React, { useState } from "react";
 
-type Step =
-  | "login"
-  | "register"
-  | "otp-register"
-  | "username"
-  | "purchase-plan"
-  | "plan-selected"
-  | "subscription-confirmation"
-  | "sale-type"
-  | "personal-detail"
-  | "authenticate"
-  | "shipping"
-  | "payment-done"
-  | "watch-listed";
-
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
@@ -236,28 +221,47 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
           </div>
         )}
         {steps == 2 && (
-          <div className="min-h-screen rounded-sm p-4 md:p-8">
+          <div className="min-h-screen rounded-sm p-4  md:p-8">
             <div className="max-w-4xl mx-auto">
               <div className="grid md:grid-cols-2 shadow-sm ">
                 <div className="space-y-6">
-                  <div className="rounded-lg p-6  ">
+                  <div className="rounded-lg p-6  md:h-[70vh]">
                     <h2 className="text-lg font-semibold mb-4">Payment</h2>
-
-                    <div className="flex items-center gap-3  rounded-lg ">
-                      <div className="w-10 h-10  rounded-full flex items-center justify-center">
-                        <Wallet />
-                      </div>
+<div className="border rounded-lg">
+                    <label className="flex items-center justify-between p-3  cursor-pointer">
                       <div className="flex-1">
                         <div className="font-medium">Visa</div>
                         <div className="text-sm text-gray-500">
                           •••• •••• •••• 5488
                         </div>
                       </div>
-                      <div className="w-5 h-5 rounded-full border-2 border-emerald-500 flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="visa"
+                        // checked={selectedCard === "visa"}
+                        // onChange={() => setSelectedCard("visa")}
+                        className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                      />
+                    </label>
+                    <label className="flex items-center justify-between p-3  cursor-pointer">
+                      <div className="flex-1">
+                        <div className="font-medium">MasterCard</div>
+                        <div className="text-sm text-gray-500">
+                          •••• •••• •••• 1234
+                        </div>
                       </div>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="mastercard"
+                        // checked={selectedCard === "mastercard"}
+                        // onChange={() => setSelectedCard("mastercard")}
+                        className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                      />
+                    </label>
                     </div>
-                    <button className=" text-sm mb-4 font-medium">
+                    <button className=" text-sm my-4 font-medium">
                       + Add other
                     </button>
 
@@ -265,39 +269,39 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
                       <h2 className="text-lg font-semibold mb-4">
                         Billing Address
                       </h2>
-<div className="flex flex-col gap-4  border rounded-2xl p-4">
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <div className="relative">
-                          <input
-                            type="radio"
-                            name="billingAddress"
-                            checked={billingAddressType === "same"}
-                            onChange={() => setBillingAddressType("same")}
-                            className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
-                          />
-                        
-                        </div>
-                        <span className="text-sm font-medium">
-                          Same as shipping address
-                        </span>
-                      </label>
-<hr/>
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <div className="relative">
-                          <input
-                            type="radio"
-                            name="billingAddress"
-                            checked={billingAddressType === "different"}
-                            onChange={() => setBillingAddressType("different")}
-                         className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
-                          />
-                       
-                        </div>
-                        <span className="text-sm font-medium">
-                          Use a different billing address
-                        </span>
-                      </label>
-</div>
+                      <div className="flex flex-col gap-4  border rounded-2xl p-4">
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <div className="relative">
+                            <input
+                              type="radio"
+                              name="billingAddress"
+                              checked={billingAddressType === "same"}
+                              onChange={() => setBillingAddressType("same")}
+                              className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                            />
+                          </div>
+                          <span className="text-sm font-medium">
+                            Same as shipping address
+                          </span>
+                        </label>
+                        <hr />
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <div className="relative">
+                            <input
+                              type="radio"
+                              name="billingAddress"
+                              checked={billingAddressType === "different"}
+                              onChange={() =>
+                                setBillingAddressType("different")
+                              }
+                              className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                            />
+                          </div>
+                          <span className="text-sm font-medium">
+                            Use a different billing address
+                          </span>
+                        </label>
+                      </div>
                       <Button
                         onClick={() => setCurrentStep("payment-done")}
                         className="w-full bg-slate-900 text-white rounded-lg py-3 mt-6 font-medium hover:bg-slate-800 transition-colors"
@@ -312,12 +316,12 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
                   <div className=" rounded-lg p-6  sticky top-8">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-12 h-12 bg-[#14A752] text-white text-sm rounded-lg flex items-center justify-center flex-shrink-0">
-                      $200
+                        $200
                       </div>
                       <div className="flex-1">
                         <div className="font-semibold">Authentication Fee</div>
                       </div>
-                        <div className="text-2xl font-bold mt-1">$800.00</div>
+                      <div className="text-2xl font-bold mt-1">$800.00</div>
                     </div>
 
                     <div className="space-y-3 py-4 border-t border-b">

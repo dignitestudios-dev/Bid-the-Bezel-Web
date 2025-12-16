@@ -2,20 +2,7 @@
 import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
 
-type Step =
-  | "login"
-  | "register"
-  | "otp-register"
-  | "username"
-  | "purchase-plan"
-  | "plan-selected"
-  | "subscription-confirmation"
-  | "sale-type"
-| "personal-detail"
-  | "authenticate"
-  | "shipping"
-   | "payment-done"
-| "watch-listed"
+
 type Props = {
       setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 }
@@ -27,7 +14,7 @@ const Plans = ({setCurrentStep}: Props) => {
             <p className='text-sm'>Browse our three subscription tiers to find the perfect plan for selling your timepieces.</p>
         </div>
          <div className="space-y-4 px-8 pb-6">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-6 rounded-2xl border border-gray-200 hover:shadow-lg transition">
             <h3 className="text-2xl font-bold">Basic</h3>
             <div className="flex items-center gap-3 mt-4">

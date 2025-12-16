@@ -1,20 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, ShieldX } from "lucide-react";
 import React from "react";
-type Step =
-  | "login"
-  | "register"
-  | "otp-register"
-  | "username"
-  | "purchase-plan"
-  | "plan-selected"
-  | "subscription-confirmation"
-  | "sale-type"
-  | "personal-detail"
-  | "authenticate"
-  | "shipping"
-  | "payment-done"
-| "watch-listed"
+
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };

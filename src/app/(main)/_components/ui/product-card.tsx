@@ -4,9 +4,11 @@ import Badge from "@/components/ui/badge";
 import Image from "next/image";
 import React, { useState } from "react";
 
-type Props = {}
+type Props = {
+  isAuthenticated:boolean
+}
 
-const AuctionCard = (props: Props) => {
+const ProductCard = ({isAuthenticated}: Props) => {
   const [isFav, setIsFav] = useState(false);
 
   return (
@@ -53,10 +55,13 @@ const AuctionCard = (props: Props) => {
       <div className="pt-4">
         <h1 className="flex items-center gap-2">
           2021 Rolex Datejust 41
+          {isAuthenticated && 
+          
           <Badge
             className="bg-linear-to-r from-[#0D1B2A] to-[#415A77]"
             title="Authenticated"
           />
+          }
         </h1>
 
         <div className="flex text-center items-center justify-between py-4">
@@ -84,4 +89,4 @@ const AuctionCard = (props: Props) => {
   );
 };
 
-export default AuctionCard;
+export default ProductCard;

@@ -14,7 +14,7 @@ const Aunctions = () => {
           <h2 className="font-semibold">Latest Auctions</h2>
           <ViewAll href="" />
         </div>
-        <EmblaCarousel FColor="255, 255, 255" slides={SLIDES} options={OPTIONS} />
+        <EmblaCarousel FColor="255, 255, 255" slides={SLIDES} isAuthenticated={true} options={OPTIONS} />
       </div>
     </div>
   );

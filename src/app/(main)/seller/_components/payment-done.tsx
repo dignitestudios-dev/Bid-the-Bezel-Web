@@ -1,21 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ReceiptText } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
-type Step =
-  | "login"
-  | "register"
-  | "otp-register"
-  | "username"
-  | "purchase-plan"
-  | "plan-selected"
-  | "subscription-confirmation"
-  | "sale-type"
-  | "personal-detail"
-  | "authenticate"
-  | "shipping"
-  | "payment-done"
-  | "watch-listed";
+
 type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
@@ -23,7 +11,7 @@ type Props = {
 const PaymentDone = ({ setCurrentStep }: Props) => {
   return (
     <div className="h-screen flex gap-2 text-center flex-col justify-center items-center">
-        <div className="w-[30%] flex flex-col gap-4 items-center justify-center" >
+        <div className="md:w-[30%] flex flex-col gap-4 items-center justify-center" >
       <Image
         src={"/images/auction.png"}
         alt="auction"
@@ -38,7 +26,9 @@ const PaymentDone = ({ setCurrentStep }: Props) => {
         <p className="text-xs">Your new timepiece will arrive to us within 3-5 business days.</p>
       </div>
       <div className="flex items-center gap-2 text-xs" ><ReceiptText size={10} /> Download Reciept</div>
-    <Button className="w-full text-xs ">Your Listing</Button>
+          <Link className="w-full" href={"/fixed-price/1"}>
+          <Button className="w-full text-xs ">Your Listing</Button>
+        </Link>
     </div>
     </div>
   );

@@ -2,7 +2,7 @@ import Badge from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import AuctionCard from "./ui/aunction-card";
+import AuctionCard from "./ui/product-card";
 
 const Hero = () => {
   return (
