@@ -136,6 +136,12 @@
   body {
     @apply bg-background text-foreground;
   }
+  .profile-setting-menu > li {
+    @apply p-3 rounded-xl font-medium w-32 cursor-pointer;
+  }
+  .card {
+    @apply p-6 border shadow-xs border-border rounded-2xl;
+  }
 }
 
 /* Custom Scrollbar */

@@ -12,7 +12,7 @@ const Tabs = ({ filter, setFilter }: Props) => {
       <button
         className={cn(
           "px-4 py-2 rounded-xl cursor-pointer transition-all font-semibold",
-          filter == "all" && "bg-white text-(--primary)"
+          filter == "all" && "bg-white text-primary"
         )}
         onClick={() => setFilter("all")}
       >

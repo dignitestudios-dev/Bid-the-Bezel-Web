@@ -10,6 +10,7 @@ export function FloatingInput({
   label,
   id,
   type = "text",
+  className,
   ...props
 }: FloatingInputProps) {
   return (
@@ -18,7 +19,7 @@ export function FloatingInput({
         id={id}
         type={type}
         placeholder=" "
-        className="peer w-full rounded-xl border-2 border-gray-200 bg-white px-4 pt-6 pb-2 text-[15px] text-black focus:border-gray-700 focus:outline-none transition-all"
+        className={`peer w-full rounded-xl border-2 border-gray-200 bg-white px-4 pt-6 pb-2 text-[15px] text-black focus:border-gray-700 focus:outline-none transition-all ${className}`}
         {...props}
       />
 

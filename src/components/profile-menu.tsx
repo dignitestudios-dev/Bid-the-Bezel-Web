@@ -41,10 +41,12 @@ const ProfileMenu = () => {
             </p>
           </div>
           <div className=" space-y-3">
-            <DropdownMenuItem className="font-semibold">
-              <User />
-              Profile
-            </DropdownMenuItem>
+            <Link href={"/profile"}>
+              <DropdownMenuItem className="font-semibold">
+                <User />
+                Profile
+              </DropdownMenuItem>
+            </Link>
             <Link href={"/favorites"}>
               <DropdownMenuItem className="font-semibold">
                 <Heart /> Favorites
