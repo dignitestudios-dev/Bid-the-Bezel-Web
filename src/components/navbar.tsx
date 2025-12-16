@@ -27,11 +27,11 @@ const Navbar = () => {
             <MessageNotificationMenu />
 
             <ProfileMenu />
-
+<Link href={"/seller"} >
             <Button className="bg-[#415A77] rounded-full flex gap-2 items-center w-[154px] h-[45px] max-w-full">
               <span>Start Selling</span> <ArrowRight size={15} />
             </Button>
-          </div>
+      </Link>    </div>
         ) : (
           <AuthSidebar />
         )}

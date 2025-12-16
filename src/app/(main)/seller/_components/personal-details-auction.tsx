@@ -69,12 +69,12 @@ const PersonalDetailAuction = ({ setCurrentStep }: Props) => {
       </div>
       <div className="flex max-w-4xl mx-auto justify-between gap-2">
         {[1, 2, 3].map((stepNum) => (
-          <div key={stepNum} className="w-full h-1 bg-gray-200 rounded mb-8">
+          <div key={stepNum} className="w-full h-2 bg-gray-200 rounded mb-8">
             <div
               className={cn(
-                "h-1 rounded transition-all duration-500",
+                "h-2 rounded transition-all duration-500",
                 steps === stepNum
-                  ? "bg-slate-800"
+                  ? "bg-[#415A77]"
                   : steps > stepNum
                   ? "bg-green-500"
                   : "bg-gray-200"
@@ -86,7 +86,7 @@ const PersonalDetailAuction = ({ setCurrentStep }: Props) => {
 
       {steps == 1 && (
         <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
-          <h3 className="font-semibold mb-6">Personal details</h3>
+          <h3 className="font-semibold mb-6 text-2xl ">Personal details</h3>
 
           <div className="mb-6">
             <p className="text-sm font-medium mb-2">Selection Auction Days</p>
@@ -144,8 +144,11 @@ const PersonalDetailAuction = ({ setCurrentStep }: Props) => {
       )}
       {steps == 2 && (
         <div className="bg-white border max-w-4xl mx-auto rounded-xl p-8 shadow-sm">
-          <h3 className="font-semibold mb-6">Watch Details</h3>
-
+          <h3 className="font-semibold text-2xl  mb-6">Watch Details</h3>
+<div className="bg-[#F7F7F7] p-3 my-8 space-y-2 rounded-xl border">
+  <h1 className="text-xl font-semibold">Watch Reference ID</h1>
+  <h4 className="text-lg font-semibold">#12345</h4>
+</div>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label className="text-sm mb-1 block">Watch Brand</label>
@@ -201,7 +204,7 @@ const PersonalDetailAuction = ({ setCurrentStep }: Props) => {
       )}
       {steps == 3 && (
        <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
-          <h3 className="font-semibold text-lg mb-6">Bank Details</h3>
+          <h3 className="font-semibold text-2xl  mb-6">Bank Details</h3>
 
           <div className="mb-4">
             <label className="text-sm font-medium mb-2 block">Select Bank</label>

@@ -20,12 +20,12 @@ const Success = ({
           className="mx-auto"
         />
         <div className="">
-          <h1 className="text-2xl font-semibold">Basic Plan</h1>
+          <h1 className="text-3xl font-semibold">Basic Plan</h1>
           <p>Plan Bought Successfully</p>
         </div>
         <Button
           onClick={() => setCurrentStep("sale-type")}
-          className="w-full rounded-full bg-[#0f1b23] text-white py-3"
+          className="w-full  bg-[#0f1b23] text-white "
         >
           Start Selling
         </Button>
