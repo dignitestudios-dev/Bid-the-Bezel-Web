@@ -8,7 +8,7 @@ type Props = {}
 
 const BiddingDetail = (props: Props) => {
   return (
-    <div className='w-[40%] space-y-7'>
+    <div className='lg:w-[40%] space-y-7'>
       <CurrentBid/>
       <TopBids/>
       <AuthStatus/>
