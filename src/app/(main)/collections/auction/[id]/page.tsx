@@ -1,12 +1,14 @@
-import React from 'react'
-import SingleProduct from './_components/single-product'
+import React from "react";
+import SingleProduct from "./_components/single-product";
 
-type Props = {}
+type Props = {};
 
 const page = (props: Props) => {
   return (
-    <div><SingleProduct/></div>
-  )
-}
+    <div>
+      <SingleProduct />
+    </div>
+  );
+};
 
-export default page
+export default page;
