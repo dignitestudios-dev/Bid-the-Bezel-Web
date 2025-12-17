@@ -2,6 +2,7 @@ import React from "react";
 import EmblaCarousel from "./ui/carousel/embla-carousel";
 import { EmblaOptionsType } from "embla-carousel";
 import ViewAll from "./ui/view-all-btn";
+import { auctionWatches } from "@/lib/constants";
 
 const OPTIONS: EmblaOptionsType = { dragFree: true };
 const SLIDE_COUNT = 16;
@@ -14,7 +15,7 @@ const Aunctions = () => {
           <h2 className="font-semibold">Latest Auctions</h2>
           <ViewAll href="" />
         </div>
-        <EmblaCarousel FColor="255, 255, 255" slides={SLIDES} isAuthenticated={true} options={OPTIONS} />
+        <EmblaCarousel FColor="255, 255, 255" slides={auctionWatches} isAuthenticated={true} options={OPTIONS} />
       </div>
     </div>
   );

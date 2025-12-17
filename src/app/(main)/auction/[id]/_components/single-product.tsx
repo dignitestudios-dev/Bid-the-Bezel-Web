@@ -12,12 +12,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import ProductDetail from "./product-detail";
-import ProductPricing from "./product-pricing";
+import BiddingDetail from "./bidding-detail";
+import { displayPrice, getWatchById } from "@/lib/helper";
 
-type Props = {};
+type Props = {
+  id:string
+};
 
-const SingleProduct = (props: Props) => {
+const SingleProduct = ({id}: Props) => {
   const router = useRouter();
+  const watch = getWatchById(id)
+  if(watch?.saleType !== "auction") return null
   return (
     <div className="max-w-screen-2xl mx-auto w-[90%] py-12">
       <Breadcrumb className="mb-5">
@@ -46,9 +51,9 @@ const SingleProduct = (props: Props) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex justify-between gap-4" >
-        <ProductDetail/>
-        <ProductPricing/>
+      <div className="flex lg:flex-row flex-col justify-between gap-4" >
+        <ProductDetail name={watch?.name} price={watch && displayPrice(watch)} />
+        <BiddingDetail watch={ watch!} sellerId={watch?.sellerId}/>
       </div>
     </div>
   );

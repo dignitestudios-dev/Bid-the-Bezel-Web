@@ -16,9 +16,11 @@ import { Clock3, Info } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 
-type Props = {};
+type Props = {
+  bidders: Bidder[]
+};
 
-const CurrentBid = (props: Props) => {
+const CurrentBid = ({bidders}: Props) => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const [subsPopup, setSubsPopup] = useState(false);
   const [cardPopup, setCardPopup] = useState(false);
@@ -33,11 +35,12 @@ const CurrentBid = (props: Props) => {
         <Clock3 color="#14A752" /> 2D 5H 42M{" "}
         <span className="font-medium">left</span>
       </h1>
-      <div className="p-6  border-[#E3E3E3]">
+        <div className="p-6  border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
           <h3 className=" font-semibold">Current Bid</h3>
-          <h1 className="text-2xl font-semibold">$500.00</h1>
+          <h1 className="text-2xl font-semibold">{bidders.length>=1 ?"$500.00" :"$00.00"}</h1>
         </div>
+        {bidders.length >=1 ?
         <div className="flex gap-2 items-start">
           <Image src={"/images/dp.png"} alt="dp" width={60} height={60} />
           <div className="my-2">
@@ -45,7 +48,11 @@ const CurrentBid = (props: Props) => {
             <h5 className="text-xs">Bid 20m ago</h5>
           </div>
         </div>
-      </div>
+        :
+      
+      <div className="p-8 flex items-center justify-center capitalize font-semibold" > <h4>no bid yet</h4></div>}
+      </div> 
+    
 
       {isLoggedIn ? (
         <>

@@ -1,11 +1,11 @@
 import React from 'react'
-import SingleProduct from './_components/single-product'
+import WatchListed from './_components/watch-listed'
 
 type Props = {}
 
 const page = (props: Props) => {
   return (
-    <div><SingleProduct/></div>
+    <div><WatchListed/></div>
   )
 }
 
