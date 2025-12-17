@@ -1,39 +1,32 @@
-import Card from "@/components/icons/Card";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import React from "react";
+import React from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import Card from '@/components/icons/Card';
+type Props = {
+    visaCardPopup:boolean;
+    setVisaCardPopup:React.Dispatch<React.SetStateAction<boolean>>
+    // setCardPopup:React.Dispatch<React.SetStateAction<boolean>>
+}
 
-
-
-const PlanSelected = ({
-  setCurrentStep,
-}: {
-  setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
-}) => {
+const VisaCardPopup = ({visaCardPopup , setVisaCardPopup }: Props) => {
   return (
-    <div className="flex md:flex-row flex-col w-full items-center md:items-start gap-12 space-y-6 py-12 md:h-screen">
-      <div className="md:w-[50%] flex justify-center items-center">
-
-        <div className="p-8 rounded-2xl border w-full h-full shadow-xl">
-          <h3 className="text-2xl font-bold">Basic</h3>
-          <div className="flex items-baseline gap-2 mt-10">
-            <p className="text-4xl font-bold">$99</p>
-            <p className="text-sm text-gray-600">1 watch / per Month</p>
-          </div>
-                <div className="mt-10 space-y-5">
-              <div className="flex items-center gap-2 text-sm text-gray-700">
-                <span className="text-green-600">✓</span>
-                <span>Includes a 3-days free trial</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-700">
-                <span className="text-green-600">✓</span>
-                <span>Can sell 1 watch per month</span>
-              </div>
-            </div>
-        </div>
-      </div>
-
-      <div className="w-full border rounded-xl bg-white p-4 py-12 flex-1">
+     <Dialog open={visaCardPopup} onOpenChange={setVisaCardPopup}>
+      <DialogContent className="md:max-w-2xl  overflow-y-auto">
+        
+        <DialogHeader className="text-center hidden">
+          <DialogTitle className="text-2xl  font-semibold">
+            Buy Subscription
+          </DialogTitle>
+         
+        </DialogHeader>
+ <div className="w-full  rounded-xl bg-white p-4 py-12 flex-1">
         <div className="space-y-4  w-full mx-auto">
           <div className="flex items-center gap-3">
             <div className="h-full">
@@ -88,15 +81,23 @@ const PlanSelected = ({
 
 
           <Button
-            onClick={() => setCurrentStep("subscription-confirmation")}
+            onClick={() => setVisaCardPopup(false)}
             className="w-full  bg-[#0f1b23] text-white "
           >
-            Buy Plan
+            Add Card
           </Button>
         </div>
       </div>
-    </div>
-  );
-};
+        {/* Footer
+        <DialogFooter className="flex justify-end">
+          <Button variant="outline" onClick={() => setCardPopup(false)}>
+            Close
+          </Button>
+        </DialogFooter> */}
 
-export default PlanSelected;
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default VisaCardPopup

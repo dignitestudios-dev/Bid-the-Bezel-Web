@@ -27,7 +27,7 @@ const WatchListed = (props: Props) => {
         <div className="flex items-center gap-2 text-xs">
           <ReceiptText size={10} /> Download Reciept
         </div>
-        <Link className="w-full" href={"/fixed-price/1"}>
+        <Link className="w-full" href={"/seller/fixed-price/1"}>
           <Button className="w-full text-xs ">Your Listing</Button>
         </Link>
       </div>

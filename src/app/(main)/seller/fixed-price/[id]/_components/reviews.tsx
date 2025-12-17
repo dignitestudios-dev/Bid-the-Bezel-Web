@@ -25,9 +25,9 @@ const Reviews = () => {
   return (
     <div className="w-full rounded-xl border">
 
-      <div className="flex justify-between items-center font-semibold gap-2 border-b px-4 rounded-t-xl bg-[#F7F7F7] p-2">
-        <h1 className="text-sm flex gap-2 items-center">
-          <Star size={18} /> Rating & Reviews
+      <div className="flex justify-between items-center font-semibold gap-2 border-b p-4 rounded-t-xl bg-[#F7F7F7] px-5">
+        <h1 className=" flex gap-2 items-center">
+          <Star size={18} /> Reviews
         </h1>
 
         <Dialog open={open} onOpenChange={setOpen}>

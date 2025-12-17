@@ -25,7 +25,7 @@ const bids = [
   { name: "DailyBidder", time: "11:15:45 AM", amount: "$1255.50" },
 ];
 
-function BidsList({ bidsToShow }: { bidsToShow: typeof bids }) {
+function BidsList({ bidsToShow , time }: { bidsToShow: typeof bids , time:boolean }) {
   return (
     <div className="space-y-3">
       {bidsToShow.map((bid, idx) => (
@@ -37,10 +37,13 @@ function BidsList({ bidsToShow }: { bidsToShow: typeof bids }) {
             <div className="w-8 h-8 rounded-full bg-gray-200" />
             <div className="flex items-center gap-1">
               {bid.top && <Crown className="w-4 h-4 text-yellow-500" />}
-              <p className="text-sm font-medium">{bid.name}</p>
+              <p className=" font-medium">{bid.name}</p>
             </div>
           </div>
-          {/* <p className="text-xs text-muted-foreground text-right">{bid.time}</p> */}
+          {time &&  
+          
+          <p className="text-sm  text-right">{bid.time}</p>
+          }
           <p className="text-sm font-semibold text-right">{bid.amount}</p>
         </div>
       ))}
@@ -63,15 +66,15 @@ export default function TopBids() {
 
   return (
     <div className="w-full rounded-xl border border-[#E3E3E3]">
-      <div className="p-4">
+      <div className="p-6">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold">Recent Top Bids</h3>
+            <h3 className="text-lg font-semibold">Recent Top Bids</h3>
             <span className="w-2 h-2 rounded-full bg-green-500" />
           </div>
         </div>
 
-        <BidsList bidsToShow={bids.slice(0, 3)} />
+        <BidsList bidsToShow={bids.slice(0, 3)} time={true}/>
 
         <div className="mt-4 pt-3 border-t">
           <h1 className="text-xl font-semibold mb-3">All Bidders</h1>
@@ -101,7 +104,7 @@ export default function TopBids() {
                 <div className="grid grid-cols-[1fr_auto_auto] font-semibold items-center gap-4">
                   <h1>User</h1> <h2>bids</h2>{" "}
                 </div>
-                <BidsList bidsToShow={currentBids} />
+                <BidsList bidsToShow={currentBids} time={false} />
 
                 {/* Pagination */}
                 <div className="flex justify-center text-sm items-center mt-4 gap-3">

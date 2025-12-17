@@ -10,7 +10,7 @@ const SaleType = ({ setCurrentStep }: Props) => {
   return (
     <div className="md:h-screen flex  justify-center items-center">
       <div>
-        <h1 className="text-xl font-semibold text-center py-8">
+        <h1 className="text-2xl font-semibold text-center py-8">
           Select Sale Type
         </h1>
         <div className="flex md:flex-row flex-col py-4 gap-6">
@@ -18,7 +18,7 @@ const SaleType = ({ setCurrentStep }: Props) => {
             <div className="flex flex-col items-center gap-4 text-white text-center">
               <Clock3 fill="white" stroke="#0D1B2A" size={50} />
               <h1 className="text-lg font-semibold">Auction</h1>
-              <p className="text-sm">
+              <p className="">
                 Fermentum consequat vitae a tellus blandit donec orci nunc. Amet
                 velit sagittis ornare volutpat proin morbi dui. Eget nisl
                 lobortis at.
@@ -31,7 +31,7 @@ const SaleType = ({ setCurrentStep }: Props) => {
             <div className="flex flex-col items-center gap-4 text-white text-center">
               <Banknote fill="white" stroke="#415A77" size={50} />
               <h1 className="text-lg font-semibold">Fixed Price</h1>
-              <p className="text-sm">
+              <p className="">
                 Fermentum consequat vitae a tellus blandit donec orci nunc. Amet
                 velit sagittis ornare volutpat proin morbi dui. Eget nisl
                 lobortis at.

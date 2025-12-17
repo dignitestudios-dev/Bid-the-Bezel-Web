@@ -26,7 +26,7 @@ const PaymentDone = ({ setCurrentStep }: Props) => {
         <p className="text-xs">Your new timepiece will arrive to us within 3-5 business days.</p>
       </div>
       <div className="flex items-center gap-2 text-xs" ><ReceiptText size={10} /> Download Reciept</div>
-          <Link className="w-full" href={"/fixed-price/1"}>
+          <Link className="w-full" href={"/seller/fixed-price/1"}>
           <Button className="w-full text-xs ">Your Listing</Button>
         </Link>
     </div>
