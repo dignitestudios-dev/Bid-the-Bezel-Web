@@ -14,13 +14,13 @@ const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 const ProductDetail = (props: Props) => {
      const [isFav, setIsFav] = useState(false);
   return (
-    <div className='w-[60%] space-y-8'>
+    <div className='lg:w-[60%] space-y-8'>
         <div>
             <div className='flex justify-between'>
-            <h1 className='flex gap-2 text-3xl font-semibold'>Audemars Piguet Royal Oak <Badge title='Authenticated' className='bg-linear-to-r text-background text-center from-[#0D1B2A] to-[#415A77]' /></h1>
+            <h1 className='flex gap-2 items-start text-xl md:text-3xl font-semibold'>Audemars Piguet Royal Oak <Badge title='Authenticated' className='bg-linear-to-r text-background text-center from-[#0D1B2A] to-[#415A77]' /></h1>
              <FavBtn isFav={isFav} setIsFav={setIsFav} />
             </div>
-            <h1 className='text-3xl'>$765.76 <sub className='mb-4 text-xs'>Starting Price</sub></h1>
+            <h1 className='text-xl md:text-3xl'>$765.76 <sub className='mb-4 text-xs'>Starting Price</sub></h1>
         </div>
 
         <div className='my-4'>

@@ -10,7 +10,7 @@ const FavBtn = ({isFav , setIsFav}: Props) => {
      <div className="">
                     <button
                       onClick={() => setIsFav(!isFav)}
-                      className={` w-10 h-10 rounded-lg flex items-center justify-center 
+                      className={`w-6 h-6 md:w-10 md:h-10 rounded-lg flex items-center justify-center 
                       bg-[#F7F7F7] backdrop-blur-md shadow-md transition-all duration-300
                       ${isFav ? "scale-110" : "scale-100"}`}
                     >

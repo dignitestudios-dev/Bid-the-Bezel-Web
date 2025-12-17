@@ -1,5 +1,6 @@
 "use client";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
+import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
 import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import AuthSidebar from "@/components/auth-sidebar";
@@ -18,12 +19,13 @@ import React, { useState } from "react";
 type Props = {};
 
 const CurrentBid = (props: Props) => {
-    const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const [subsPopup, setSubsPopup] = useState(false);
   const [cardPopup, setCardPopup] = useState(false);
   const [cancelBid, setCancelBid] = useState(false);
   const [visaCardPopup, setVisaCardPopup] = useState(false);
-  const [price , setPrice] = useState(0)
+  const [successPopup, setSuccessPopup] = useState(false);
+  const [price, setPrice] = useState(0);
   return (
     <div className="rounded-xl w-full border border-[#E3E3E3]">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b  border-[#E3E3E3]  py-4">
@@ -45,65 +47,110 @@ const CurrentBid = (props: Props) => {
         </div>
       </div>
 
-      {isLoggedIn ? <>
-      
-       <div className="px-6 pt-6 border-t  space-y-4">
-        <h1 className=" font-semibold flex items-center gap-2">
-          Place your bid
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info size={14} color="gray" />
-            </TooltipTrigger>
-            <TooltipContent className="bg-gray-100 w-[200px] text-gray-600">
-              <p>
-                10% of your bidding amount will be holdin escrow. In case of
-                cancelling your bid that amount in non-refundable
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </h1>
-        {cancelBid ? <div>
-
-          <h1 className="text-2xl font-semibold text-center" >Bidding Fees</h1>
-          <p className="text-center mb-4" >10% of your bid amount will be lost. Are you sure you want to cancel?</p>
-          <div className="flex w-full gap-2 justify-center" >
-            <Button onClick={()=>{
-              setCancelBid(false);
-              setPrice(0)
-            }}  className="w-[50%] bg-red-700 py-3 text-white">Cancel Bid</Button>
-            <Button onClick={()=>setCancelBid(false)} className="w-[50%] bg-gray-100 py-3 text-black">Cancel</Button>
-          </div>
-        </div>  :  
+      {isLoggedIn ? (
         <>
-          <div>
-          <div className="text-center">
-            <h1 className="text-2xl font-semibold">${price}.00</h1>
-            <h3 className="text-xs">Your Bid</h3>
+          <div className="px-6 pt-6 border-t  space-y-4">
+            <h1 className=" font-semibold flex items-center gap-2">
+              Place your bid
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info size={14} color="gray" />
+                </TooltipTrigger>
+                <TooltipContent className="bg-gray-100 w-[200px] text-gray-600">
+                  <p>
+                    10% of your bidding amount will be holdin escrow. In case of
+                    cancelling your bid that amount in non-refundable
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </h1>
+            {cancelBid ? (
+              <div>
+                <h1 className="text-2xl font-semibold text-center">
+                  Bidding Fees
+                </h1>
+                <p className="text-center mb-4">
+                  10% of your bid amount will be lost. Are you sure you want to
+                  cancel?
+                </p>
+                <div className="flex w-full gap-2 justify-center">
+                  <Button
+                    onClick={() => {
+                      setCancelBid(false);
+                      setPrice(0);
+                    }}
+                    className="w-[50%] bg-red-700 py-3 text-white"
+                  >
+                    Cancel Bid
+                  </Button>
+                  <Button
+                    onClick={() => setCancelBid(false)}
+                    className="w-[50%] bg-gray-100 py-3 text-black"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <div className="text-center">
+                    <h1 className="text-2xl font-semibold">${price}.00</h1>
+                    <h3 className="text-xs">Your Bid</h3>
+                  </div>
+                </div>
+                {price > 0 && (
+                  <Button
+                    onClick={() => setCancelBid(true)}
+                    className="w-full bg-red-700 py-3 text-white"
+                  >
+                    Cancel Bid
+                  </Button>
+                )}
+                <Button
+                  onClick={() => setPrice(900)}
+                  className="bg-[#415A77] w-full py-3"
+                >
+                  +200
+                </Button>
+              </>
+            )}
           </div>
-        </div>
-        {price> 0 && <Button onClick={()=>setCancelBid(true)} className="w-full bg-red-700 py-3 text-white" >Cancel Bid</Button>}
-        <Button onClick={()=>setPrice(700)} className="bg-[#415A77] w-full py-3">+200</Button>
+          <div className="flex items-center px-6 p-4 gap-2">
+            <Input placeholder="Enter your amount" />
+            <Button
+              onClick={() => setSubsPopup(true)}
+              className="text-sm md:px-20 py-3"
+            >
+              Place Bid
+            </Button>
+          </div>
         </>
-        }
-      
-      </div>
-      <div className="flex items-center px-6 p-4 gap-2">
-        <Input placeholder="Enter your amount" />
-        <Button
-          onClick={() => setSubsPopup(true)}
-          className="text-sm px-20 py-3"
-        >
-          Place Bid
-        </Button>
-      </div></> :
-      <div className="w-full flex py-4 justify-center" >
-      <AuthSidebar/>
-      </div>
-       }
-     
-      <SubscriptionsDialog setCardPopup={setCardPopup} subsPopup={subsPopup} setSubsPopup={setSubsPopup} />
-      <NoCardAdded setCardPopup={setCardPopup} cardPopup={cardPopup} setVisaCardPopup={setVisaCardPopup} />
-      <VisaCardPopup setVisaCardPopup={setVisaCardPopup} visaCardPopup={visaCardPopup} />
+      ) : (
+        <div className="w-full flex py-4 justify-center">
+          <AuthSidebar />
+        </div>
+      )}
+
+      <SubscriptionsDialog
+        setCardPopup={setCardPopup}
+        subsPopup={subsPopup}
+        setSubsPopup={setSubsPopup}
+      />
+      <NoCardAdded
+        setCardPopup={setCardPopup}
+        cardPopup={cardPopup}
+        setVisaCardPopup={setVisaCardPopup}
+      />
+      <VisaCardPopup
+        setVisaCardPopup={setVisaCardPopup}
+        setSuccessPopup={setSuccessPopup}
+        visaCardPopup={visaCardPopup}
+      />
+      <SubscribeSuccessfully
+        setSuccessPopup={setSuccessPopup}
+        successPopup={successPopup}
+      />
     </div>
   );
 };

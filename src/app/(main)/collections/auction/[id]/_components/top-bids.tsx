@@ -34,17 +34,17 @@ function BidsList({ bidsToShow , time }: { bidsToShow: typeof bids , time:boolea
           className="grid grid-cols-[1fr_auto_auto] items-center gap-4"
         >
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gray-200" />
+            <div className="w-5 h-5 md:w-8 md:h-8 rounded-full bg-gray-200" />
             <div className="flex items-center gap-1">
-              {bid.top && <Crown className="w-4 h-4 text-yellow-500" />}
-              <p className=" font-medium">{bid.name}</p>
+              {bid.top && <Crown className="h-3 w-3 md:w-4 md:h-4 text-yellow-500" />}
+              <p className="md:text-base text-sm font-medium">{bid.name}</p>
             </div>
           </div>
           {time &&  
           
-          <p className="text-sm  text-right">{bid.time}</p>
+          <p className="text-xs md:text-sm  text-right">{bid.time}</p>
           }
-          <p className="text-sm font-semibold text-right">{bid.amount}</p>
+          <p className="text-xs md:text-sm font-semibold text-right">{bid.amount}</p>
         </div>
       ))}
     </div>

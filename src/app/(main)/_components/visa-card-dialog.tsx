@@ -12,10 +12,10 @@ import Card from '@/components/icons/Card';
 type Props = {
     visaCardPopup:boolean;
     setVisaCardPopup:React.Dispatch<React.SetStateAction<boolean>>
-    // setCardPopup:React.Dispatch<React.SetStateAction<boolean>>
+    setSuccessPopup:React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const VisaCardPopup = ({visaCardPopup , setVisaCardPopup }: Props) => {
+const VisaCardPopup = ({visaCardPopup , setVisaCardPopup , setSuccessPopup }: Props) => {
   return (
      <Dialog open={visaCardPopup} onOpenChange={setVisaCardPopup}>
       <DialogContent className="md:max-w-2xl  overflow-y-auto">
@@ -81,7 +81,7 @@ const VisaCardPopup = ({visaCardPopup , setVisaCardPopup }: Props) => {
 
 
           <Button
-            onClick={() => setVisaCardPopup(false)}
+            onClick={() => {setVisaCardPopup(false); setSuccessPopup(true)}}
             className="w-full  bg-[#0f1b23] text-white "
           >
             Add Card

@@ -54,7 +54,7 @@ const Questions = (props: Props) => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   return (
     <div className="rounded-xl border border-[#E3E3E3]">
-      <div className="bg-[#F7F7F7] rounded-t-xl font-semibold text-xl flex gap-2 items-center px-6 py-4 border-b">
+      <div className="bg-[#F7F7F7] rounded-t-xl font-semibold text-lg md:text-xl flex gap-2 items-center px-6 py-4 border-b">
         <CircleQuestionMark /> <h1>Questions about the product</h1>
       </div>
       <div className="p-4 ">
