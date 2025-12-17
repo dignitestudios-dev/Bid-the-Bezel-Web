@@ -36,7 +36,7 @@ const FixedPrice = (props: Props) => {
             </svg>
           </Link>
         </div>
-        <EmblaCarousel FColor="16, 31, 47" slides={fixedPriceWatches} isAuthenticated={false} options={OPTIONS} />
+        <EmblaCarousel FColor="16, 31, 47" slides={fixedPriceWatches} options={OPTIONS} />
       </div>
     </div>
     </div>

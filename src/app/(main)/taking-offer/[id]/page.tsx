@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { use } from 'react'
+import SingleProduct from './_components/single-product'
+type Props = {
+  params: Promise<{id:string}>
+}
 
-type Props = {}
-
-const page = (props: Props) => {
+const Page = ({params}: Props) => {
+ const {id} = use(params)
   return (
-    <div>page</div>
+    <div><SingleProduct id={id}/></div>
   )
 }
 
-export default page
+export default Page

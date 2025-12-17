@@ -27,5 +27,5 @@ export const useSelectedSnapDisplay = (emblaApi: EmblaCarouselType | undefined):
 type PropType = { selectedSnap: number; snapCount: number }
 
 export const SelectedSnapDisplay: React.FC<PropType> = ({ selectedSnap, snapCount }) => {
-  return <div className={styles.embla__selectedSnapDisplay}>{selectedSnap + 1} / {snapCount}</div>
+  return <div className={styles.embla__selectedSnapDisplay}></div>
 }

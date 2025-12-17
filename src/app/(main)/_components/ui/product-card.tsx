@@ -18,7 +18,7 @@ const ProductCard = ({ prod }: Props) => {
   if (!prod) return null;
   return (
     <Link href={`/${prod.saleType}/${prod.watchId}`}>
-      <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-200/30 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10">
+      <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-200/10 bg-clip-padding backdrop-filter backdrop-blur- bg-opacity-10">
         <div className="relative">
           <button
             onClick={() => setIsFav(!isFav)}

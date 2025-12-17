@@ -20,14 +20,14 @@ type PropType = {
   slides:  AuctionWatch[] | FixedPriceWatch[] | OfferWatch[]
   options?: EmblaOptionsType;
   FColor?: string;
-  isAuthenticated: boolean;
+  // isAuthenticated: boolean;
 };
 
 const EmblaCarousel: React.FC<PropType> = ({
   slides,
   options,
   FColor,
-  isAuthenticated,
+  // isAuthenticated,
 }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
   const {
@@ -46,9 +46,12 @@ const EmblaCarousel: React.FC<PropType> = ({
         style={{ "--fade-color": FColor } as React.CSSProperties}
       >
         <div className={styles.embla__container}>
-          <div className={cn(styles.embla__slide, "md:block hidden")} />
+          {/* <div className={cn(styles.embla__slide, "md:block w-10! hidden")} /> */}
           {slides.map((w,index) => (
-            <div className={styles.embla__slide} key={index}>
+            <div   className={cn(
+        styles.embla__slide, // set min width for slides
+        index === 0 ? "ml-4 md:ml-40" : "ml-2 md:ml-4" // extra left margin for first slide
+      )} key={index}>
               <ProductCard  prod={w} />
             </div>
           ))}
