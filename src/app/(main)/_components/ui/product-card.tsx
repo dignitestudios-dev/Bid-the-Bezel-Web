@@ -18,12 +18,12 @@ const ProductCard = ({ prod }: Props) => {
   if (!prod) return null;
   return (
     <Link href={`/${prod.saleType}/${prod.watchId}`}>
-      <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-200/10 bg-clip-padding backdrop-filter backdrop-blur- bg-opacity-10">
+      <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-400/10 bg-clip-padding backdrop-filter backdrop-blur- bg-opacity-10 border border-gray-400/30 hover:shadow-lg translate-y-1 transition-all">
         <div className="relative">
           <button
             onClick={() => setIsFav(!isFav)}
             className={`absolute top-3 right-3 z-10 w-10 h-10 rounded-lg flex items-center justify-center 
-          bg-white/30 backdrop-blur-md shadow-md transition-all duration-300
+          bg-gray-300/20 backdrop-blur-md shadow-md transition-all duration-300
           ${isFav ? "scale-110" : "scale-100"}`}
           >
             <svg
@@ -59,7 +59,7 @@ const ProductCard = ({ prod }: Props) => {
             {prod?.isAuthenticated && (
               <Badge
                 className={cn(
-                  "bg-linear-to-r from-[#0D1B2A] text-white py-1 px-4 text-sm to-[#415A77]",
+                  "bg-linear-to-r from-[#0D1B2A] text-white py-1 px-4 text-sm to-[#415A77]"
                 )}
                 title="Authenticated"
               />

@@ -46,9 +46,9 @@ const SingleProduct = (props: Props) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex justify-between gap-4" >
-        <ProductDetail/>
-        <BiddingDetail/>
+      <div className="flex justify-between gap-4">
+        <ProductDetail />
+        <BiddingDetail />
       </div>
     </div>
   );

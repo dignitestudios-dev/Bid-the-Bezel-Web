@@ -8,7 +8,7 @@ type Props = {
 
 const ViewAll = ({ href }: Props) => {
   return (
-    <Link href={href} className="border border-[#E3E3E3] rounded-full px-2 py-1 flex items-center text-sm gap-2">
+    <Link href={href} className="border border-[#E3E3E3] rounded-full px-3 py-2 flex items-center text-sm gap-2">
       View All{" "}
       <svg
         width="16"

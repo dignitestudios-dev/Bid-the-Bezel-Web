@@ -12,8 +12,8 @@ const TakingOffers = () => {
     <div className="max-w-screen-2xl mx-auto py-12">
       <div className="space-y-6">
         <div className="flex justify-between px-12">
-          <h2 className="font-semibold">Taking Offers</h2>
-          <ViewAll href="" />
+          <h2 className="font-bold text-xl">Taking Offers</h2>
+          <ViewAll href="/collections?category=offer" />
         </div>
         <EmblaCarousel slides={offerWatches} options={OPTIONS} />
       </div>

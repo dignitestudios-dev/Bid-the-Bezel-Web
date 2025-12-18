@@ -12,10 +12,14 @@ const Aunctions = () => {
     <div className="max-w-screen-2xl mx-auto ">
       <div className="space-y-6">
         <div className="flex justify-between px-12">
-          <h2 className="font-semibold">Latest Auctions</h2>
-          <ViewAll href="" />
+          <h2 className="font-bold text-xl">Latest Auctions</h2>
+          <ViewAll href="/collections?category=auction" />
         </div>
-        <EmblaCarousel FColor="255, 255, 255" slides={auctionWatches}  options={OPTIONS} />
+        <EmblaCarousel
+          FColor="255, 255, 255"
+          slides={auctionWatches}
+          options={OPTIONS}
+        />
       </div>
     </div>
   );

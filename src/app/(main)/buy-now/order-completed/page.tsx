@@ -1,12 +1,12 @@
 import React from "react";
-import BuyNow from "./_components/buy-now";
+import OrderCompletedBuyer from "./_components/order-completed-buyer";
 
 type Props = {};
 
 const page = (props: Props) => {
   return (
-    <div className="max-w-screen-2xl mx-auto">
-      <BuyNow />
+    <div>
+      <OrderCompletedBuyer />
     </div>
   );
 };

@@ -136,7 +136,7 @@ const Bank = () => {
             <div>
               <Button onClick={handleSave} size={"lg"} className="w-full h-12">
                 Save
-              </Button>{" "}
+              </Button>
             </div>
           </div>
         </div>

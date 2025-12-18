@@ -23,7 +23,7 @@ const ProductDetail = ({name , price}: Props) => {
             <h1 className='flex gap-2 items-start text-xl md:text-3xl font-semibold'>{name}<Badge title='Authenticated' className='bg-linear-to-r text-background text-center from-[#0D1B2A] to-[#415A77]' /></h1>
              <FavBtn isFav={isFav} setIsFav={setIsFav} />
             </div>
-            <h1 className='text-xl md:text-3xl'>${price} <sub className='mb-4 text-xs'>Starting Price</sub></h1>
+            <h1 className='text-xl md:text-3xl'>${price} <span className='text-base'>Starting Price</span></h1>
         </div>
 
         <div className='my-4'>

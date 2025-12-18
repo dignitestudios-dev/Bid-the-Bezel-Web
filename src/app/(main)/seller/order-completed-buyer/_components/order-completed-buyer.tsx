@@ -5,7 +5,7 @@ import React from "react";
 
 type Props = {};
 
-const OrderCompleted = (props: Props) => {
+const OrderCompletedBuyer = (props: Props) => {
   return (
     <div className="flex justify-center min-h-screen items-center">
       <div className="w-[50%] flex flex-col items-center">
@@ -46,12 +46,12 @@ const OrderCompleted = (props: Props) => {
             </div>
           </div>
         </div>
-        <Link href={"/review"} className="w-full max-w-xl my-5">
-          <Button className="w-full">Leave a Review</Button>
+        <Link href={"/"} className="w-full max-w-xl my-5">
+          <Button className="w-full ">Go Home</Button>
         </Link>
       </div>
     </div>
   );
 };
 
-export default OrderCompleted;
+export default OrderCompletedBuyer;

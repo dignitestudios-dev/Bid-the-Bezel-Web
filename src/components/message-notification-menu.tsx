@@ -20,8 +20,10 @@ import Message from "./icons/Message";
 import Bell from "./icons/Bell";
 import Image from "next/image";
 import NotificationItem from "./icons/NotificationItem";
+import { useRouter } from "next/navigation";
 
 const MessageNotificationMenu = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
@@ -33,6 +35,10 @@ const MessageNotificationMenu = () => {
   const [activeTab, setActiveTab] = useState<"messages" | "notifications">(
     "notifications"
   );
+
+  const handleGoToChats = () => {
+    router.push("/chats");
+  };
 
   return (
     <>
@@ -70,6 +76,7 @@ const MessageNotificationMenu = () => {
                   <DropdownMenuItem
                     key={index}
                     className="cursor-pointer flex gap-2 p-2 rounded-lg group hover:bg-primary! transition-all"
+                    onClick={handleGoToChats}
                   >
                     <div className="h-9 w-9 rounded-full relative overflow-hidden">
                       <Image
@@ -100,7 +107,10 @@ const MessageNotificationMenu = () => {
 
                 <div className="mt-2 bg-gray-200 w-full h-px" />
 
-                <DropdownMenuItem className="bg-transparent text-black w-full font-semibold mt-2 py-2 flex justify-center">
+                <DropdownMenuItem
+                  className="bg-transparent text-black w-full font-semibold mt-2 py-2 flex justify-center"
+                  onClick={handleGoToChats}
+                >
                   <p className="text-center">View All</p>
                 </DropdownMenuItem>
               </div>

@@ -17,7 +17,7 @@ import {
 } from "./embla-carousel-selected-display";
 
 type PropType = {
-  slides:  AuctionWatch[] | FixedPriceWatch[] | OfferWatch[]
+  slides: AuctionWatch[] | FixedPriceWatch[] | OfferWatch[];
   options?: EmblaOptionsType;
   FColor?: string;
   // isAuthenticated: boolean;
@@ -47,12 +47,15 @@ const EmblaCarousel: React.FC<PropType> = ({
       >
         <div className={styles.embla__container}>
           {/* <div className={cn(styles.embla__slide, "md:block w-10! hidden")} /> */}
-          {slides.map((w,index) => (
-            <div   className={cn(
-        styles.embla__slide, // set min width for slides
-        index === 0 ? "ml-4 md:ml-40" : "ml-2 md:ml-4" // extra left margin for first slide
-      )} key={index}>
-              <ProductCard  prod={w} />
+          {slides.map((w, index) => (
+            <div
+              className={cn(
+                styles.embla__slide, // set min width for slides
+                index === 0 ? "ml-2 md:ml-4" : "ml-2 md:ml-4" // extra left margin for first slide
+              )}
+              key={index}
+            >
+              <ProductCard prod={w} />
             </div>
           ))}
         </div>

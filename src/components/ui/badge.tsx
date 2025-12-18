@@ -8,7 +8,7 @@ type Props = {
 
 const Badge = ({className , title}: Props) => {
   return (
-    <div className={cn("rounded-full py-1 px-3 text-cetner flex justify-center items-center  text-xs" , className)} >{title}</div>
+    <div className={cn("rounded-full py-2 px-3 text-cetner flex justify-center items-center  text-xs" , className)} >{title}</div>
   )
 }
 

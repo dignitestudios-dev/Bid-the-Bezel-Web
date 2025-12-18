@@ -3,15 +3,15 @@ import React, { Dispatch, SetStateAction } from "react";
 
 type Props = {
   filter: string;
-  setFilter: Dispatch<SetStateAction<"all" | "auction" | "fixed" | "offer">>;
+  setFilter: any;
 };
 
 const Tabs = ({ filter, setFilter }: Props) => {
   return (
-    <div className="bg-[#0D1B2A] rounded-xl w-fit text-sm text-background p-2 text-white">
+    <div className="bg-[#0D1B2A] rounded-lg sm:rounded-xl w-fit text-sm text-background p-1 sm:p-2 text-white">
       <button
         className={cn(
-          "px-4 py-2 rounded-xl cursor-pointer transition-all font-semibold",
+          "px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl cursor-pointer transition-all font-semibold text-xs sm:text-base",
           filter == "all" && "bg-white text-primary"
         )}
         onClick={() => setFilter("all")}
@@ -20,7 +20,7 @@ const Tabs = ({ filter, setFilter }: Props) => {
       </button>
       <button
         className={cn(
-          "px-4 py-2 rounded-xl cursor-pointer transition-all font-semibold",
+          "px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl cursor-pointer transition-all font-semibold text-xs sm:text-base",
           filter == "auction" && "bg-white text-(--primary)"
         )}
         onClick={() => setFilter("auction")}
@@ -29,7 +29,7 @@ const Tabs = ({ filter, setFilter }: Props) => {
       </button>
       <button
         className={cn(
-          "px-4 py-2 rounded-xl cursor-pointer transition-all font-semibold",
+          "px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl cursor-pointer transition-all font-semibold text-xs sm:text-base",
           filter == "fixed" && "bg-white text-(--primary)"
         )}
         onClick={() => setFilter("fixed")}
@@ -38,7 +38,7 @@ const Tabs = ({ filter, setFilter }: Props) => {
       </button>
       <button
         className={cn(
-          "px-4 py-2 rounded-xl cursor-pointer transition-all font-semibold",
+          "px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl cursor-pointer transition-all font-semibold text-xs sm:text-base",
           filter == "offer" && "bg-white text-(--primary)"
         )}
         onClick={() => setFilter("offer")}

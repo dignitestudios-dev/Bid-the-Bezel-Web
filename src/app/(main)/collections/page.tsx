@@ -5,9 +5,9 @@ type Props = {};
 
 const page = (props: Props) => {
   return (
-    <div>
+    <>
       <Collections />
-    </div>
+    </>
   );
 };
 
