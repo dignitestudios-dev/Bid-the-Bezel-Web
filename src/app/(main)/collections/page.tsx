@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Collections from "./_components/collections";
 
 type Props = {};
@@ -6,7 +6,9 @@ type Props = {};
 const page = (props: Props) => {
   return (
     <>
-      <Collections />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Collections />
+      </Suspense>
     </>
   );
 };

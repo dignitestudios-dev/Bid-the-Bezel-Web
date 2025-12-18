@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 
 // Dummy data for illustration purposes
@@ -121,7 +122,14 @@ const MyListings = () => {
             {!isFulfilled && (
               <div className="p-3 grid grid-cols-2 gap-5">
                 <span></span>
-                <Button>Fill Shipping Details</Button>
+                <Button>
+                  <Link
+                    href={"/seller/shipping-details-auth"}
+                    className="w-full"
+                  >
+                    Fill Shipping Details
+                  </Link>
+                </Button>
               </div>
             )}
 
