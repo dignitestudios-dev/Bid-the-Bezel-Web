@@ -2,6 +2,7 @@ import React from "react";
 import EmblaCarousel from "./ui/carousel/embla-carousel";
 import { EmblaOptionsType } from "embla-carousel";
 import ViewAll from "./ui/view-all-btn";
+import { offerWatches } from "@/lib/constants";
 
 const OPTIONS: EmblaOptionsType = { dragFree: true };
 const SLIDE_COUNT = 16;
@@ -14,7 +15,7 @@ const TakingOffers = () => {
           <h2 className="font-semibold">Taking Offers</h2>
           <ViewAll href="" />
         </div>
-        <EmblaCarousel slides={SLIDES} options={OPTIONS} />
+        <EmblaCarousel slides={offerWatches} options={OPTIONS} />
       </div>
     </div>
   );

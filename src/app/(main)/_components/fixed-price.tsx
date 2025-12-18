@@ -3,6 +3,7 @@ import ViewAll from "./ui/view-all-btn";
 import EmblaCarousel from "./ui/carousel/embla-carousel";
 import { EmblaOptionsType } from "embla-carousel";
 import Link from "next/link";
+import { fixedPriceWatches } from "@/lib/constants";
 
 
 type Props = {};
@@ -35,7 +36,7 @@ const FixedPrice = (props: Props) => {
             </svg>
           </Link>
         </div>
-        <EmblaCarousel FColor="16, 31, 47" slides={SLIDES} isAuthenticated={false} options={OPTIONS} />
+        <EmblaCarousel FColor="16, 31, 47" slides={fixedPriceWatches} options={OPTIONS} />
       </div>
     </div>
     </div>

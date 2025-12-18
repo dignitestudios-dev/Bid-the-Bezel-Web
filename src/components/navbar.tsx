@@ -16,6 +16,7 @@ const Navbar = () => {
     <div>
       <div className="flex justify-between w-[90%] py-4 max-w-screen-2xl mx-auto">
         <div className="flex items-center gap-8">
+          
           <Logo />
           <div className="flex gap-6 capitalize  font-semibold text-[#0D1B2A]">
             <Link href={"/collections"}>collection</Link>
@@ -27,7 +28,7 @@ const Navbar = () => {
             <MessageNotificationMenu />
 
             <ProfileMenu />
-<Link href={"/seller"} >
+<Link href={"/seller/plans"} >
             <Button className="bg-[#415A77] rounded-full flex gap-2 items-center w-[154px] h-[45px] max-w-full">
               <span>Start Selling</span> <ArrowRight size={15} />
             </Button>
