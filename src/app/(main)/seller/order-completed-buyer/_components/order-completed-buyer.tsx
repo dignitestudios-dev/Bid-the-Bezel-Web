@@ -18,7 +18,7 @@ const OrderCompletedBuyer = (props: Props) => {
         <div className="py-5 text-center">
           <h1 className="text-3xl font-semibold">Order done</h1>
           <p>
-            Your new timepiece will arrive to buyer within 3-5 business days.
+            Your new timepiece will arrive within 3-5 business days.
           </p>
         </div>
         <div className="rounded-xl p-4 bg-[#F7F7F7] w-full max-w-xl">

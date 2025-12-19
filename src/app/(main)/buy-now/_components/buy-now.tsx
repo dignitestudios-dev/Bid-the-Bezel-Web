@@ -7,36 +7,49 @@ import CardBrands from "@/components/icons/CardBrands";
 import Wallet from "@/components/icons/Wallet";
 import { useRouter } from "next/navigation";
 
-const BuyNow = () => {
+const BuyNow = ({ watch }: { watch: any }) => {
   const router = useRouter();
   const [sameAsShipping, setSameAsShipping] = useState(true);
   const [saveInfo, setSaveInfo] = useState(false);
   const [showAddCard, setShowAddCard] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"saved" | "new">("saved");
+  const [authenticate, setAuthenticate] = useState(false);
+
+  const basePrice = 7765.76;
+  const authFee = 200;
+  const shipping = 120.50;
+  const total = basePrice + (authenticate ? authFee : 0) + shipping;
 
   const handleBuy = () => {
-    router.push("/buy-now/order-completed");
+    router.push("/seller/order-completed-buyer");
   };
+
+  console.log("watch: ", watch);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
       <div className="w-full lg:w-[55%] p-8 lg:p-12 bg-white">
         <div className="max-w-xl mx-auto">
-          <div className="flex justify-between items-center">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex-shrink-0 mt-0.5">
-                <ShieldCheck fill="#14A752" stroke="white" size={50} />
+          {!watch.isAuthenticated && (
+            <div className="flex justify-between items-center">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex-shrink-0 mt-0.5">
+                  <ShieldCheck fill="#14A752" stroke="white" size={50} />
+                </div>
+                <div>
+                  <p className="text-lg font-medium ">
+                    Authenticate this watch
+                  </p>
+                  <p className="text-xs  mt-1">
+                    An additional of $200 will be charged to authenticate this
+                    watch
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-lg font-medium ">Authenticate this watch</p>
-                <p className="text-xs  mt-1">
-                  An additional of $200 will be charged to authenticate this
-                  watch
-                </p>
-              </div>
+              <Switch checked={authenticate} onCheckedChange={setAuthenticate} />
             </div>
-            <Switch />
-          </div>
+          )}
+
           {/* Contact Section */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-3">Contact</h2>
@@ -340,6 +353,12 @@ const BuyNow = () => {
               <span className="text-gray-600">Total Amount</span>
               <span className="font-medium">$7765.76</span>
             </div>
+            {authenticate && (
+              <div className="flex justify-between ">
+                <span className="text-gray-600">Authentication Fee</span>
+                <span className="font-medium">$200</span>
+              </div>
+            )}
             <div className="flex justify-between ">
               <span className="text-gray-600">Shipping</span>
               <span className="font-medium">$120.50</span>
@@ -348,7 +367,7 @@ const BuyNow = () => {
               <span>TOTAL</span>
               <span>
                 {" "}
-                <span className="font-light">USD</span> $7886.08
+                <span className="font-light">USD</span> ${total.toFixed(2)}
               </span>
             </div>
           </div>

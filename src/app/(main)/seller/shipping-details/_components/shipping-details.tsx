@@ -179,7 +179,7 @@ const ShippingDetail = ({ }: Props) => {
                   onClick={() => setSteps(2)}
                   className="flex-1 py-6 bg-slate-900 text-base text-white rounded-lg  font-medium hover:bg-slate-800 w-full  transition-colors flex items-center justify-center gap-2"
                 >
-                  Complete Listing
+                  Complete Order
          
                 </Button>
               </Link></div>

@@ -17,10 +17,10 @@ import Image from "next/image";
 import React, { useState } from "react";
 
 type Props = {
-  bidders: Bidder[]
+  bidders: Bidder[];
 };
 
-const CurrentBid = ({bidders}: Props) => {
+const CurrentBid = ({ bidders }: Props) => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const [subsPopup, setSubsPopup] = useState(false);
   const [cardPopup, setCardPopup] = useState(false);
@@ -28,6 +28,18 @@ const CurrentBid = ({bidders}: Props) => {
   const [visaCardPopup, setVisaCardPopup] = useState(false);
   const [successPopup, setSuccessPopup] = useState(false);
   const [price, setPrice] = useState(0);
+  const [bidPlaced, setBidPlaced] = useState(false);
+
+  const handlePlaceBid = () => {
+    setSuccessPopup(false);
+    setBidPlaced(true);
+  };
+
+  const handleInitializeBidding = () => {
+    if (price === 0) return;
+    setSubsPopup(true);
+  };
+
   return (
     <div className="rounded-xl w-full border border-[#E3E3E3]">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b  border-[#E3E3E3]  py-4">
@@ -35,24 +47,28 @@ const CurrentBid = ({bidders}: Props) => {
         <Clock3 color="#14A752" /> 2D 5H 42M{" "}
         <span className="font-medium">left</span>
       </h1>
-        <div className="p-6  border-[#E3E3E3]">
+      <div className="p-6  border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
           <h3 className=" font-semibold">Current Bid</h3>
-          <h1 className="text-2xl font-semibold">{bidders.length>=1 ?"$500.00" :"$00.00"}</h1>
+          <h1 className="text-2xl font-semibold">
+            {bidders.length >= 1 ? "$500.00" : "$00.00"}
+          </h1>
         </div>
-        {bidders.length >=1 ?
-        <div className="flex gap-2 items-start">
-          <Image src={"/images/dp.png"} alt="dp" width={60} height={60} />
-          <div className="my-2">
-            <h1 className="font-semibold  mb-1">Guessmyusername</h1>
-            <h5 className="text-xs">Bid 20m ago</h5>
+        {bidders.length >= 1 ? (
+          <div className="flex gap-2 items-start">
+            <Image src={"/images/dp.png"} alt="dp" width={60} height={60} />
+            <div className="my-2">
+              <h1 className="font-semibold  mb-1">Guessmyusername</h1>
+              <h5 className="text-xs">Bid 20m ago</h5>
+            </div>
           </div>
-        </div>
-        :
-      
-      <div className="p-8 flex items-center justify-center capitalize font-semibold" > <h4>no bid yet</h4></div>}
-      </div> 
-    
+        ) : (
+          <div className="p-8 flex items-center justify-center capitalize font-semibold">
+            {" "}
+            <h4>no bid yet</h4>
+          </div>
+        )}
+      </div>
 
       {isLoggedIn ? (
         <>
@@ -84,17 +100,21 @@ const CurrentBid = ({bidders}: Props) => {
                   <Button
                     onClick={() => {
                       setCancelBid(false);
+                      setBidPlaced(false);
                       setPrice(0);
                     }}
                     className="w-[50%] bg-red-700 py-3 text-white"
                   >
-                    Cancel Bid
+                    Yes
                   </Button>
                   <Button
-                    onClick={() => setCancelBid(false)}
+                    onClick={() => {
+                      setCancelBid(false);
+                      setBidPlaced(true);
+                    }}
                     className="w-[50%] bg-gray-100 py-3 text-black"
                   >
-                    Cancel
+                    No
                   </Button>
                 </div>
               </div>
@@ -106,28 +126,43 @@ const CurrentBid = ({bidders}: Props) => {
                     <h3 className="text-xs">Your Bid</h3>
                   </div>
                 </div>
-                {price > 0 && (
+                {bidPlaced ? (
                   <Button
-                    onClick={() => setCancelBid(true)}
+                    onClick={() => {
+                      setCancelBid(true);
+                      setBidPlaced(false);
+                    }}
                     className="w-full bg-red-700 py-3 text-white"
                   >
                     Cancel Bid
                   </Button>
+                ) : (
+                  <Button
+                    onClick={() =>
+                      setPrice((prev) => {
+                        if (prev === 0) return 700;
+                        return prev + 200;
+                      })
+                    }
+                    className="bg-[#415A77] w-full py-3"
+                  >
+                    +200
+                  </Button>
                 )}
-                <Button
-                  onClick={() => setPrice(900)}
-                  className="bg-[#415A77] w-full py-3"
-                >
-                  +200
-                </Button>
               </>
             )}
           </div>
           <div className="flex items-center px-6 p-4 gap-2">
-            <Input placeholder="Enter your amount" />
+            <Input
+              placeholder="Enter your amount"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(+e.target.value)}
+            />
             <Button
-              onClick={() => setSubsPopup(true)}
+              onClick={handleInitializeBidding}
               className="text-sm md:px-20 py-3"
+              disabled={price === 0}
             >
               Place Bid
             </Button>
@@ -157,6 +192,7 @@ const CurrentBid = ({bidders}: Props) => {
       <SubscribeSuccessfully
         setSuccessPopup={setSuccessPopup}
         successPopup={successPopup}
+        onClose={handlePlaceBid}
       />
     </div>
   );

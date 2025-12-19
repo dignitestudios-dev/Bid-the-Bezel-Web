@@ -1,14 +1,11 @@
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
-import BuyNow from "./_components/buy-now";
 
-type Props = {};
-
-const page = (props: Props) => {
-  return (
-    <div className="max-w-screen-2xl mx-auto">
-      <BuyNow />
-    </div>
-  );
+const page = () => {
+  const router = useRouter();
+  router.push("/");
+  return <div>page</div>;
 };
 
 export default page;

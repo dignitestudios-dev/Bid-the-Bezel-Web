@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import OrderStatusTrackingDialog from "./OrderStatusTrackingDialog";
+import OrderStatusTrackingDialogNoAuth from "./OrderStatusTrackingDialogNoAuth";
 
 // Dummy data for illustration purposes
 type ListingType = "fixed" | "auction" | "taking-offers";
@@ -14,6 +15,7 @@ type Fav = {
   image: string;
   type: ListingType;
   isReceived: boolean;
+  isAuthenticated: boolean;
 };
 
 const items: Fav[] = [
@@ -24,7 +26,9 @@ const items: Fav[] = [
     price: "$765.76",
     image: "/images/fav.jpg",
     type: "fixed",
+
     isReceived: true,
+    isAuthenticated: true,
   },
   {
     id: "2",
@@ -34,6 +38,7 @@ const items: Fav[] = [
     image: "/images/fav.jpg",
     type: "auction",
     isReceived: false,
+    isAuthenticated: false,
   },
   {
     id: "3",
@@ -43,6 +48,7 @@ const items: Fav[] = [
     image: "/images/fav.jpg",
     type: "auction",
     isReceived: false,
+    isAuthenticated: true,
   },
   {
     id: "4",
@@ -52,6 +58,7 @@ const items: Fav[] = [
     image: "/images/fav.jpg",
     type: "taking-offers",
     isReceived: true,
+    isAuthenticated: false,
   },
   {
     id: "5",
@@ -61,25 +68,34 @@ const items: Fav[] = [
     image: "/images/fav.jpg",
     type: "fixed",
     isReceived: false,
+    isAuthenticated: true,
   },
   {
-    id: "5",
+    id: "6",
     title: "Cartier Santos Large",
     user: "EliteWatches",
     price: "$1,120.00",
     image: "/images/fav.jpg",
     type: "fixed",
     isReceived: false,
+    isAuthenticated: false,
   },
 ];
 
 const MyOrdersItems = () => {
   const [open, setOpen] = useState(false);
+  const [openNoAuth, setOpenNoAuth] = useState(false);
+
   const [selected, setSelected] = useState<Fav | null>(null);
 
   function openDialog(item: Fav) {
     setSelected(item);
     setOpen(true);
+  }
+
+  function openDialogNoAuth(item: Fav) {
+    setSelected(item);
+    setOpenNoAuth(true);
   }
 
   return (
@@ -114,8 +130,15 @@ const MyOrdersItems = () => {
             </div>
 
             <div className="p-3 grid grid-cols-2 gap-5">
-              <Button variant={"outline"}>Track Courier</Button>
-              <Button onClick={() => openDialog(it)}>Track</Button>
+              {/* <Button variant={"outline"}>Track Courier</Button> */}
+              <span></span>
+              <Button
+                onClick={() => {
+                  it.isAuthenticated ? openDialog(it) : openDialogNoAuth(it);
+                }}
+              >
+                Track
+              </Button>
             </div>
 
             <div
@@ -142,6 +165,14 @@ const MyOrdersItems = () => {
         onOpenChange={(v) => {
           if (!v) setSelected(null);
           setOpen(v);
+        }}
+      />
+
+      <OrderStatusTrackingDialogNoAuth
+        open={openNoAuth}
+        onOpenChange={(v) => {
+          if (!v) setSelected(null);
+          setOpenNoAuth(v);
         }}
       />
     </>

@@ -49,11 +49,13 @@ const ProductPricing = (props: Props) => {
           </div>
 
           <div className="flex flex-col gap-2 p-5 w-full">
-            <Button className="py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
-              {" "}
-              <MessageCircleMore size={25} />
-              Chat with Buyer
-            </Button>
+            <Link href={"/chats"} className="w-full">
+              <Button className="py-2 w-full h-12 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
+                {" "}
+                <MessageCircleMore size={25} />
+                Chat with Buyer
+              </Button>
+            </Link>
             <Link href={"/seller/shipping-details"} className="w-full">
               <Button className="text-base w-full">Fill out Shipping</Button>
             </Link>

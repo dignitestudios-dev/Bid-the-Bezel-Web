@@ -53,7 +53,7 @@ const SingleProduct = ({id}: Props) => {
 
       <div className="flex justify-between gap-4" >
         <ProductDetail/>
-        <ProductPricing sellerId={watch?.sellerId} name={watch?.name} price={watch && displayPrice(watch)} />
+        <ProductPricing sellerId={watch?.sellerId} name={watch?.name} price={watch && displayPrice(watch)} watch={watch} />
       </div>
     </div>
   );

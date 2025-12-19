@@ -13,9 +13,9 @@ type Props = {
 };
 
 const CurrentBidSeller = ({ bidders }: Props) => {
-    const [cancelListing , setCancelListing] = useState(false);
-    const [cancelSuccess , setCancelSuccess] = useState(false);
-    const [moveToTakingOffer , setMoveToTakingOffer] = useState(false);
+  const [cancelListing, setCancelListing] = useState(false);
+  const [cancelSuccess, setCancelSuccess] = useState(false);
+  const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
   return (
     <div className=" border  rounded-2xl mt-4">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b  border-[#E3E3E3]  py-4">
@@ -24,8 +24,13 @@ const CurrentBidSeller = ({ bidders }: Props) => {
         <span className="font-medium">left</span>
       </h1>
       <div className="flex justify-between p-5">
-        <h3 className="font-semibold">{bidders.length>=1 ? "Bid Winner" :"Current Bid"}</h3>{" "}
-        <h1 className="text-2xl font-semibold"> {bidders.length>=1 ? "$900.0" :"$00.0"}</h1>{" "}
+        <h3 className="font-semibold">
+          {bidders.length >= 1 ? "Bid Winner" : "Current Bid"}
+        </h3>{" "}
+        <h1 className="text-2xl font-semibold">
+          {" "}
+          {bidders.length >= 1 ? "$900.0" : "$00.0"}
+        </h1>{" "}
       </div>
       {bidders.length >= 1 ? (
         <>
@@ -38,11 +43,13 @@ const CurrentBidSeller = ({ bidders }: Props) => {
           </div>
 
           <div className="flex flex-col gap-2 p-5 w-full">
-            <Button className="py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
-              {" "}
-              <MessageCircleMore size={25} />
-              Chat with Buyer
-            </Button>
+            <Link href={"/chats"} className="w-full">
+              <Button className="w-full h-12 py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
+                {" "}
+                <MessageCircleMore size={25} />
+                Chat with Buyer
+              </Button>
+            </Link>
             <Link href={"/seller/shipping-details"} className="w-full">
               <Button className="text-base w-full">Fill out Shipping</Button>
             </Link>
@@ -54,21 +61,41 @@ const CurrentBidSeller = ({ bidders }: Props) => {
             <h4>no bid yet</h4>
           </div>
           <div className="flex flex-col gap-2 p-5 w-full border-t">
-            <p className="text-sm">Your listing failed to atrract any buyers.</p>
-            <Button onClick={()=>setMoveToTakingOffer(true)} className=" text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
+            <p className="text-sm">
+              Your listing failed to atrract any buyers.
+            </p>
+            <Button
+              onClick={() => setMoveToTakingOffer(true)}
+              className=" text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
+            >
               {" "}
-             <Move/>
-             Move to takings offers section
+              <Move />
+              Move to takings offers section
             </Button>
             {/* <Link href={"/seller/shipping-details"} className="w-full"> */}
-              <Button onClick={()=>setCancelListing(true)} className="text-base bg-red-700 text-white w-full">Cancel Listing</Button>
+            <Button
+              onClick={() => setCancelListing(true)}
+              className="text-base bg-red-700 text-white w-full"
+            >
+              Cancel Listing
+            </Button>
             {/* </Link> */}
           </div>
         </>
       )}
-      <CancelListingDialog cancelListing={cancelListing} setCancelListing={setCancelListing} setCancelSuccess={setCancelSuccess} />
-      <ConfirmCancel cancelSuccess={cancelSuccess} setCancelSuccess={setCancelSuccess} />
-      <MoveToTakingDialog setMoveToTakingOffer={setMoveToTakingOffer} moveToTakingOffer={moveToTakingOffer} />
+      <CancelListingDialog
+        cancelListing={cancelListing}
+        setCancelListing={setCancelListing}
+        setCancelSuccess={setCancelSuccess}
+      />
+      <ConfirmCancel
+        cancelSuccess={cancelSuccess}
+        setCancelSuccess={setCancelSuccess}
+      />
+      <MoveToTakingDialog
+        setMoveToTakingOffer={setMoveToTakingOffer}
+        moveToTakingOffer={moveToTakingOffer}
+      />
     </div>
   );
 };

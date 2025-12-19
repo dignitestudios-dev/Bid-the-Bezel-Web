@@ -1,6 +1,8 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Banknote, Clock3 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {
@@ -8,6 +10,17 @@ type Props = {
 };
 
 const SaleType = ({}: Props) => {
+  const router = useRouter();
+
+  const handleAuction = () => {
+    localStorage.setItem("saleType", "auction");
+    router.push("auction-details");
+  };
+
+  const handleFixedPrice = () => {
+    localStorage.setItem("saleType", "fixed-price");
+    router.push("fixed-price-details");
+  };
   return (
     <div className="md:h-screen flex  justify-center items-center">
       <div>
@@ -25,14 +38,13 @@ const SaleType = ({}: Props) => {
                 lobortis at.
               </p>
             </div>
-<Link href={"auction-details"} className="w-full" >
             <Button
+              onClick={handleAuction}
               // onClick={() => setCurrentStep("personal-detail-auction")}
               className="bg-white w-full text-black"
             >
               Select
             </Button>
-            </Link>
           </div>
           <div className="w-[400px] flex flex-col justify-between items-center p-5 h-[400px] bg-[#415A77] rounded-xl">
             <div className="flex flex-col items-center gap-4 text-white text-center">
@@ -44,13 +56,13 @@ const SaleType = ({}: Props) => {
                 lobortis at.
               </p>
             </div>
-<Link href={"fixed-price-details"} className="w-full" >
             <Button
               // onClick={() => setCurrentStep("personal-detail-fixed")}
+              onClick={handleFixedPrice}
               className="bg-white w-full text-black"
             >
               Select
-            </Button></Link>
+            </Button>
           </div>
         </div>
       </div>

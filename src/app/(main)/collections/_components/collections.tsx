@@ -8,6 +8,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import BrandFilterDialog from "./ui/brand-filter-dialog";
 import PriceFilterDialog from "./ui/price-filter-dialog";
 import AuthFilterDialog from "@/components/auth-filter-dialog";
+import {
+  allWatches,
+  auctionWatches,
+  fixedPriceWatches,
+  offerWatches,
+} from "@/lib/constants";
 
 type WatchCategory = "all" | "auction" | "fixed" | "offer";
 type Props = {};
@@ -34,6 +40,9 @@ const Collections = (props: Props) => {
   const searchParams = useSearchParams();
   const watchCategory = searchParams.get("category") as WatchCategory;
 
+  const [categorizedWatches, setCategorizedWatches] =
+    useState<any[]>(allWatches);
+
   const [filter, setFilter] = useState<WatchCategory>("all");
   const [selectedBrand, setSelectedBrand] = useState<{
     label: string;
@@ -58,6 +67,15 @@ const Collections = (props: Props) => {
       watchCategory &&
       ["all", "auction", "fixed", "offer"].includes(watchCategory)
     ) {
+      watchCategory === "all"
+        ? setCategorizedWatches(allWatches)
+        : watchCategory === "auction"
+        ? setCategorizedWatches(auctionWatches)
+        : watchCategory === "fixed"
+        ? setCategorizedWatches(fixedPriceWatches)
+        : watchCategory === "offer"
+        ? setCategorizedWatches(offerWatches)
+        : setCategorizedWatches(allWatches);
       setFilter(watchCategory);
     }
   }, [watchCategory]);
@@ -82,8 +100,8 @@ const Collections = (props: Props) => {
           />
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((_, idx) => (
-            <CollectionCard key={idx} />
+          {categorizedWatches.map((watch, idx) => (
+            <CollectionCard key={idx} watch={watch} />
           ))}
         </div>
       </div>

@@ -14,7 +14,10 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
-const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange }) => {
+const OrderStatusTrackingDialogNoAuth: React.FC<Props> = ({
+  open,
+  onOpenChange,
+}) => {
   return (
     <Dialog open={open} onOpenChange={(v) => onOpenChange(v)}>
       <DialogContent className="w-[700px] max-w-fit p-5">
@@ -40,14 +43,6 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange }) => {
                     ✓
                   </div>
                 </div>
-
-                <div className="h-9 w-0.5 bg-[#14A752] transform -translate-x-1/2" />
-
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-white border-2 border-[#14A752] flex items-center justify-center text-[#14A752] font-semibold">
-                    ✓
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -61,13 +56,6 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange }) => {
                 <span className="underline cursor-pointer">
                   www.ordertraking.com/BDG-1243
                 </span>
-              </p>
-            </div>
-
-            <div className="mb-6">
-              <h4 className="text-lg font-semibold">Authentication</h4>
-              <p className="text-sm text-muted-foreground">
-                Your Watch will be authenticated by us
               </p>
             </div>
 
@@ -99,4 +87,4 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange }) => {
   );
 };
 
-export default OrderStatusTrackingDialog;
+export default OrderStatusTrackingDialogNoAuth;
