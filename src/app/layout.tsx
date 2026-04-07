@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
+import { queryClient } from "@/lib/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space",
@@ -24,7 +26,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${spaceGrotesk.className} overflow-x-hidden antialiased`}
       >
-        <ReduxProvider>{children}</ReduxProvider>
+        <QueryClientProvider client={queryClient}>
+          <ReduxProvider>{children}</ReduxProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );
