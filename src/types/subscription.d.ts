@@ -1,0 +1,3 @@
+interface SubscriptionResponse {
+    data: string;
+}

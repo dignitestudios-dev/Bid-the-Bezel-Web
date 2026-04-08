@@ -1,11 +1,12 @@
 import React from 'react'
-import Plans from './_components/plans'
+// import Plans from './_components/plans'
+import PlansSubs from './_components/plans'
 
 type Props = {}
 
 const page = (props: Props) => {
   return (
-    <div><Plans/></div>
+    <div><PlansSubs/></div>
   )
 }
 

@@ -127,11 +127,14 @@ export const useLogout = () =>
 //get queries like below
 
 export const useMe = () => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   return useQuery({
     queryKey: ["get-profile"],
     queryFn: async () => {
       const res = await apiClient.get("/users/me");
       return res.data;
+
     },
+    enabled: !!token
   });
 };
