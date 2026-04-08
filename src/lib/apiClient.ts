@@ -1,17 +1,35 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 // Create instance
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
+
+let fpPromise: Promise<string> | null = null;
+
+const getFingerprint = async () => {
+  if (!fpPromise) {
+    fpPromise = FingerprintJS.load()
+      .then((fp) => fp.get())
+      .then((result) => result.visitorId);
+  }
+  return fpPromise;
+};
+
+
+
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  async (config: InternalAxiosRequestConfig) => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem("token");
 
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+      const deviceId = await getFingerprint();
+      config.headers["deviceuniqueid"] = deviceId;
+      config.headers["devicemodel"] = navigator.userAgent;
     }
 
     return config;
@@ -29,7 +47,7 @@ apiClient.interceptors.response.use(
       console.error("Unauthorized - redirect to login");
 
       if (typeof window !== "undefined") {
-        localStorage.removeItem("access_token");
+        localStorage.removeItem("token");
         window.location.href = "/login";
       }
     }

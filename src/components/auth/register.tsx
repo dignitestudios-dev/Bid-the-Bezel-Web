@@ -3,40 +3,91 @@ import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
 import Google from "../icons/Google";
 import Apple from "../icons/Apple";
+import { useLogin } from "@/features/auth/hooks";
+import { LoginPayload, loginSchema } from "@/features/auth/Schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useAppDispatch } from "@/lib/hooks";
+import { login } from "@/lib/slices/authSlice";
 
-type Step =
-  | "login"
-  | "register"
-  | "otp-register"
-  | "username"
-  | "purchase-plan"
-  | "plan-selected"
-  | "subscription-confirmation"
-  | "forgot-password"
-  | "otp"
-  | "reset-password"
-  | "password-changed";
+
 
 const Register = ({
   setCurrentStep,
+  onSuccess,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>>;
+  onSuccess?: () => void;
 }) => {
+  const dispatch = useAppDispatch();
+
+  const { mutate, isPending, } = useLogin();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginPayload>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      method: "email",
+    },
+  });
+
+  const onSubmit = (body: LoginPayload) => {
+    mutate(body, {
+      onSuccess: (data) => {
+        const user = data?.data?.user;
+        if (!user?.isEmailVerified) {
+          setCurrentStep?.("otp-register");
+          return;
+        }
+        if (!user?.isProfileCompleted) {
+          setCurrentStep?.("username");
+          return;
+        }
+        dispatch(login(user))
+        onSuccess?.();
+      },
+
+      onError: (err) => {
+        console.error(err);
+      },
+    });
+  };
+
+
+
   return (
     <div className="w-[340px] max-w-full">
-      <div className="space-y-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <h2 className="text-2xl font-semibold">Lets get your account set up</h2>
 
-        <FloatingInput id="email" label="Email" type="email" />
-        <FloatingInput id="password" label="Password" type="password" />
+        <FloatingInput
+          id="email"
+          label="Email"
+          type="email"
+          {...register("email")}
+          error={errors.email?.message}
+        />
+        <FloatingInput
+          id="password"
+          label="Password"
+          type="password"
+          {...register("password")}
+          error={errors.password?.message}
+        />
 
         <Button
-          onClick={() => setCurrentStep?.("otp-register")}
+          type="submit"
+          disabled={isPending}
           className="w-full rounded-full"
         >
-          Create Account
+          {isPending ? "Creating Account..." : "Create Account"}
         </Button>
-      </div>
+      </form>
 
       <div className="flex items-center gap-3 py-5">
         <div className="w-full h-[1.5px] bg-gray-200" />

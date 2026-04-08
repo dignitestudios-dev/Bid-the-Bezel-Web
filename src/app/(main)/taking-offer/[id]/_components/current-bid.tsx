@@ -203,11 +203,10 @@ const CurrentBid = ({ bidders, watch }: Props) => {
             </Button>
           </div> */}
         </>
-      ) : (
-        <div className="w-full flex py-4 justify-center">
-          <AuthSidebar />
-        </div>
-      )}
+      ) : null}
+      <div className={!isLoggedIn ? "w-full flex py-4 justify-center" : "hidden"}>
+        <AuthSidebar hideTrigger={isLoggedIn} />
+      </div>
 
       <SubscriptionsDialog
         setCardPopup={setCardPopup}

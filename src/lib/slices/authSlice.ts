@@ -1,9 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type User = {
-  id: string;
+  id: string | number;
   name?: string;
   email?: string;
+  userName?: string;
+  profilePicture?: string;
+  isProfileCompleted?: boolean;
+  isEmailVerified?: boolean;
 };
 
 type AuthState = {
@@ -52,6 +56,8 @@ const authSlice = createSlice({
       state.user = null;
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth");
+        localStorage.removeItem("token");
+        localStorage.removeItem("email");
       }
     },
     hydrate(state, action: PayloadAction<AuthState>) {

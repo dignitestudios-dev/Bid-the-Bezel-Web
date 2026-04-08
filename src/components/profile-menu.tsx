@@ -16,8 +16,9 @@ import { useAppDispatch } from "@/lib/hooks";
 import { logout } from "@/lib/slices/authSlice";
 import LogoutDialog from "./auth/LogoutDialog";
 import Link from "next/link";
+import Image from "next/image";
 
-const ProfileMenu = () => {
+const ProfileMenu = ({ profileData }: { profileData: ProfileData }) => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
@@ -33,11 +34,11 @@ const ProfileMenu = () => {
         <DropdownMenuContent className="w-[260px] max-w-full" align="end">
           <div className="w-full flex flex-col items-center space-y-1 my-4">
             <div className="w-16 h-16 bg-[#2881E8] rounded-xl text-white font-semibold flex justify-center items-center">
-              BT
+              {profileData?.data?.userName?.slice(0, 2).toUpperCase()}  
             </div>
-            <p className="font-semibold">Bid the Bezel</p>
+            <p className="font-semibold">{profileData?.data?.userName}</p>
             <p className="text-gray-400 font-light text-sm">
-              bidthebezel@gmail.com
+              {profileData?.data?.email}
             </p>
           </div>
           <div className=" space-y-3">

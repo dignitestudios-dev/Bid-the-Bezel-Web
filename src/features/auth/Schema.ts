@@ -1,0 +1,75 @@
+import { z } from "zod";
+
+export const loginSchema = z.object({
+    email: z
+        .string()
+        .min(1, "Email is required")
+        .email("Invalid email address"),
+
+    password: z
+        .string()
+        .min(6, "Password must be at least 6 characters"),
+    method: z.literal("email"),
+});
+
+export type LoginPayload = z.infer<typeof loginSchema>;
+
+export const otpSchema = z.object({
+    email: z.string().email("Invalid email address"),
+    otp: z.string().length(5, "OTP must be exactly 5 digits"),
+});
+
+export type OtpPayload = z.infer<typeof otpSchema>;
+
+export const resendOtpSchema = z.object({
+    email: z.string().email("Invalid email address"),
+});
+
+export type ResendOtpPayload = z.infer<typeof resendOtpSchema>;
+
+export const completeProfileSchema = z.object({
+    userName: z
+        .string()
+        .min(3, "Username must be at least 3 characters")
+        .max(20, "Username must be at most 20 characters"),
+    profilePicture: z
+        .any()
+        .refine((file) => file instanceof File && file.size > 0, "Profile picture is required"),
+});
+
+export type CompleteProfilePayload = z.infer<typeof completeProfileSchema>;
+
+export const checkUsernameSchema = z.object({
+    userName: z.string().min(3, "Username must be at least 3 characters"),
+});
+
+export type CheckUsernamePayload = z.infer<typeof checkUsernameSchema>;
+
+export const forgotPasswordSchema = z.object({
+    email: z.string().email("Invalid email address"),
+});
+
+export type ForgotPasswordPayload = z.infer<typeof forgotPasswordSchema>;
+
+export const updatePasswordSchema = z
+    .object({
+        password: z.string().min(6, "Password must be at least 6 characters"),
+        confirmPassword: z.string().min(6, "Confirm Password must be at least 6 characters"),
+        resetToken: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords don't match",
+        path: ["confirmPassword"],
+    });
+
+export type updatePasswordPayload = z.infer<typeof updatePasswordSchema>;
+export const updateProfileSchema = z.object({
+    userName: z
+        .string()
+        .min(3, "Username must be at least 3 characters")
+        .max(20, "Username must be at most 20 characters")
+        .optional(),
+    profilePicture: z.any().optional(),
+});
+
+export type UpdateProfilePayload = z.infer<typeof updateProfileSchema>;

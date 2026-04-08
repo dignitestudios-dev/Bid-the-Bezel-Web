@@ -8,6 +8,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumbs";
+import { useMe } from "@/features/auth/hooks";
+import { useAppSelector } from "@/lib/hooks";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,6 +21,9 @@ const ProfileLayout = ({
   children: React.ReactNode;
 }>) => {
   const pathname = usePathname();
+  const user = useAppSelector((state) => state.auth.user);
+
+
 
   const isActive = (href: string) => pathname === href;
 
@@ -48,7 +53,7 @@ const ProfileLayout = ({
       <h1 className="text-2xl font-medium mb-8">My Account</h1>
       <div className="flex items-start gap-5">
         <div className="w-60 max-w-full">
-          <p className="font-medium mb-6">bidthebezel@gmail.com</p>
+          <p className="font-medium mb-6">{user?.email}</p>
           <ul className="mr-2 profile-setting-menu space-y-4">
             <li className={isActive("/profile") ? "bg-[#F7F7F7]" : ""}>
               <Link href={"/profile"}>Profile</Link>

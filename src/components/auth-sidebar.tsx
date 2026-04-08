@@ -23,21 +23,10 @@ import OtpRegister from "./auth/otp-register";
 import PlanSelected from "./auth/plan-selected";
 import SubscriptionConfirmation from "./auth/subscription-confirmation";
 
-type Step =
-  | "login"
-  | "register"
-  | "otp-register"
-  | "username"
-  | "purchase-plan"
-  | "plan-selected"
-  | "subscription-confirmation"
-  | "forgot-password"
-  | "otp"
-  | "reset-password"
-  | "password-changed";
 
-const AuthSidebar = () => {
-  const [currentStep, setCurrentStep] = useState<Step>("login");
+const AuthSidebar = ({ hideTrigger }: { hideTrigger?: boolean }) => {
+  const dispatch = useAppDispatch();
+  const [currentStep, setCurrentStep] = useState<AuthStep>("login");
   const [open, setOpen] = useState(false);
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -52,7 +41,6 @@ const AuthSidebar = () => {
     setCurrentStep("login");
   };
 
-  const dispatch = useAppDispatch();
 
   const handleSkipAndLogin = () => {
     dispatch(login({ id: "skipped_user", name: "Guest" }));
@@ -63,15 +51,16 @@ const AuthSidebar = () => {
   return (
     <>
       <Sheet open={open} onOpenChange={handleOpenChange}>
-        <SheetTrigger asChild>
-          <Button className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
-            <span>Login</span> <ArrowRight size={15} />
-          </Button>
-        </SheetTrigger>
+        {!hideTrigger && (
+          <SheetTrigger asChild>
+            <Button className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
+              <span>Login</span> <ArrowRight size={15} />
+            </Button>
+          </SheetTrigger>
+        )}
         <SheetContent
-          className={`${
-            currentStep === "plan-selected" ? "bg-gray-100" : "bg-white"
-          }  w-[700px]! max-w-[90%] overflow-y-auto`}
+          className={`${currentStep === "plan-selected" ? "bg-gray-100" : "bg-white"
+            }  w-[700px]! max-w-[90%] overflow-y-auto`}
         >
           <SheetHeader>
             <SheetTitle className="text-center text-lg">
@@ -93,11 +82,11 @@ const AuthSidebar = () => {
 
           <div className="flex justify-center mt-8 h-full w-full">
             {currentStep === "login" && (
-              <Login setCurrentStep={setCurrentStep} onSuccess={handleSkipAndLogin} />
+              <Login setCurrentStep={setCurrentStep} onSuccess={handleClose} />
             )}
 
             {currentStep === "register" && (
-              <Register setCurrentStep={setCurrentStep} />
+              <Register setCurrentStep={setCurrentStep} onSuccess={handleClose} />
             )}
 
             {currentStep === "otp-register" && (

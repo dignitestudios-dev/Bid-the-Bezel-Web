@@ -32,7 +32,7 @@ export function useApiMutation<TData = unknown, TVariables = unknown>({
     TVariables
 > {
     const queryClient = useQueryClient();
-
+// console.log(invalidateKeys, "iperr ==========>")
     return useMutation<TData, AxiosError, TVariables>({
         mutationFn: async (variables) => {
             const url =
@@ -52,6 +52,7 @@ export function useApiMutation<TData = unknown, TVariables = unknown>({
             return response.data;
         },
         onSuccess: (data, variables, onMutateResult, context) => {
+            console.log(data,invalidateKeys,variables,"============>")
             invalidateKeys.forEach((key) => {
                 queryClient.invalidateQueries({ queryKey: [key] });
             });
