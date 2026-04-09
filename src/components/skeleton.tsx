@@ -31,7 +31,8 @@ export const PlanSkeleton = () => {
     return (
 
         <div className="flex flex-col h-80 gap-4 p-6 rounded-xl shadow-md border border-gray-300 animate-pulse">
-            {/* Title */}   <div className="h-6 w-32 bg-gray-300 rounded"></div>
+            {/* Title */}   
+            <div className="h-6 w-32 bg-gray-300 rounded"></div>
 
             {/* Price */}
             <div className="flex gap-2 items-end">

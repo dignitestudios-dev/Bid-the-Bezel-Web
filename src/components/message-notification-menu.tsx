@@ -55,6 +55,7 @@ const MessageNotificationMenu = () => {
           <div className="grid grid-cols-2 gap-4 font-medium border-b">
             {tabs.map((tab) => (
               <div
+                key={tab.label}
                 className={`py-2 flex gap-1 items-center border-b-2 transition-all ${
                   activeTab === tab.label
                     ? "border-gray-900 text-black"

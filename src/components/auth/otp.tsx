@@ -165,7 +165,7 @@ const Otp = ({
         </Button>
 
         <p className="mt-4 text-sm text-gray-600">
-          Didn't get code?{" "}
+          Didn&apos;t get code?{" "}
           <button
             onClick={handleResend}
             disabled={isResending || timer > 0}
