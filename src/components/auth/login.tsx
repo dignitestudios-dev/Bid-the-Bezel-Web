@@ -3,6 +3,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { showError, showSuccess } from "@/lib/toast";
 import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
 import { useLogin } from "@/features/auth/hooks";
@@ -35,7 +36,6 @@ const Login = ({
       method: "email",
     },
   });
-  console.log(xyz)
 
   const onSubmit = (body: LoginPayload) => {
     mutate(body, {
@@ -50,11 +50,13 @@ const Login = ({
           return;
         }
         dispatch(login(user))
+        showSuccess("Logged in successfully");
         onSuccess?.();
       },
 
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };

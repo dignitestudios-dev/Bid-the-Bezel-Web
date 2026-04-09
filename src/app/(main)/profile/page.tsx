@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@/hooks/api/useDebounce";
 import { useQueryClient } from "@tanstack/react-query";
 import { ProfileSkeleton } from "@/components/skeleton";
+import { showError, showSuccess } from "@/lib/toast";
 
 const Profile = () => {
   const [preview, setPreview] = useState<string | null>(null);
@@ -105,6 +106,10 @@ const Profile = () => {
     updateProfile(payload, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["get-profile"] });
+        showSuccess("Profile updated successfully!");
+      },
+      onError: (err: any) => {
+        showError(err);
       },
     });
   };
@@ -226,10 +231,15 @@ const Profile = () => {
         <p className="mb-3 text-lg font-medium">Subscription Status</p>
 
         <p>
-          <span className="font-bold text-xl">Basic Package</span>{" "}
-          <span className="font-light">
-            (3 days of trial left - 1 Watch Left)
-          </span>
+          {userData?.data?.subscriptions?.map((item: any, index: number) => (
+            <>
+              <span className="font-bold text-xl capitalize">{item?.plan?.name}</span>{" "}
+              < span className="font-light" >
+                (3 days of trial left <span className="text-muted-foreground ">|</span> {item?.planType === "buyer" ? "Unlimited Purchases " : item?.isUnlimitedQuota ? "Unlimited Watches " : item?.sellQuota + " Watches Left"}
+                )
+              </span></>
+
+          ))}
         </p>
 
         <hr className="my-6 border-border" />
@@ -302,7 +312,7 @@ const Profile = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </div >
   );
 };
 

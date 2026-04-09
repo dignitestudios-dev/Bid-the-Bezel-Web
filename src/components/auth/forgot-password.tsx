@@ -2,6 +2,7 @@ import React from "react";
 import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
 import { useForgotPassword } from "@/features/auth/hooks";
+import { showError, showSuccess } from "@/lib/toast";
 import { useAppDispatch } from "@/lib/hooks";
 import { ForgotPasswordPayload, forgotPasswordSchema } from "@/features/auth/Schema";
 import { useForm } from "react-hook-form";
@@ -44,10 +45,12 @@ const ForgotPassword = ({
     mutate(body, {
       onSuccess: () => {
         localStorage.setItem('email', body.email)
+        showSuccess("OTP sent to your email!");
         setCurrentStep?.('otp')
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };

@@ -12,10 +12,10 @@ const Plans = (props: Props) => {
   const { mutate: buySubscription, isPending } = useBuySubscription()
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
-  const handleBuy = (priceId: string) => {
-    setLoadingPriceId(priceId);
+  const handleBuy = (planId: string) => {
+    setLoadingPriceId(planId);
     buySubscription(
-      { priceId },
+      { planId, url: window.location.href },
       {
         onSettled: () => setLoadingPriceId(null),
       }
@@ -63,11 +63,11 @@ const Plans = (props: Props) => {
                 </div>
 
                 <button
-                  disabled={loadingPriceId === subs?.priceId}
-                  onClick={() => handleBuy(subs?.priceId)}
+                  disabled={loadingPriceId === subs?._id}
+                  onClick={() => handleBuy(subs?._id)}
                   className="w-full text-center cursor-pointer rounded-full py-5 bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loadingPriceId === subs?.priceId ? (
+                  {loadingPriceId === subs?._id ? (
                     <Loader2 className="animate-spin mx-auto" />
                   ) : (
                     "Select Plan"

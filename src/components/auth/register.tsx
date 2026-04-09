@@ -7,6 +7,7 @@ import { useLogin } from "@/features/auth/hooks";
 import { LoginPayload, loginSchema } from "@/features/auth/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { showError, showSuccess } from "@/lib/toast";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/slices/authSlice";
 
@@ -40,6 +41,7 @@ const Register = ({
     mutate(body, {
       onSuccess: (data) => {
         const user = data?.data?.user;
+        showSuccess("Account created successfully!");
         if (!user?.isEmailVerified) {
           setCurrentStep?.("otp-register");
           return;
@@ -52,8 +54,9 @@ const Register = ({
         onSuccess?.();
       },
 
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };

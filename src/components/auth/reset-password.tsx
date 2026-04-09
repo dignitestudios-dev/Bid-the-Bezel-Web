@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
 import { useUpdatePassword } from "@/features/auth/hooks";
+import { showError, showSuccess } from "@/lib/toast";
 import { useForm } from "react-hook-form";
 import { updatePasswordPayload, updatePasswordSchema } from "@/features/auth/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,9 +39,13 @@ const ResetPassword = ({
     const { password, resetToken } = body;
     mutate({ password, resetToken } as any, {
       onSuccess: () => {
+        showSuccess("Password reset successfully!");
         setCurrentStep?.("password-changed");
         localStorage.removeItem('token')
         localStorage.removeItem('email')
+      },
+      onError: (err: any) => {
+        showError(err);
       },
     });
   }

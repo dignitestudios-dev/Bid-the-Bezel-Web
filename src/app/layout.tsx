@@ -4,6 +4,7 @@ import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
 import { queryClient } from "@/lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space",
@@ -27,6 +28,16 @@ export default function RootLayout({
         className={`${spaceGrotesk.className} overflow-x-hidden antialiased`}
       >
         <QueryClientProvider client={queryClient}>
+          <Toaster
+            position="bottom-left"
+            toastOptions={{
+              style: {
+                background: "#0d1b2a",
+                color: "#ffffff",
+                border: "none",
+              },
+            }}
+          />
           <ReduxProvider>{children}</ReduxProvider>
         </QueryClientProvider>
       </body>

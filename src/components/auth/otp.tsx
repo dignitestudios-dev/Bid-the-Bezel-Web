@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { OtpPayload, otpSchema } from "@/features/auth/Schema";
+import { showError, showSuccess } from "@/lib/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForgotOtpVerify, useForgotPassword, useOtpVerify, useResendOtp } from "@/features/auth/hooks";
 
@@ -106,11 +107,13 @@ const Otp = ({
       onSuccess: (response) => {
         if (response?.data?.token) {
           localStorage.setItem("token", response?.data?.token);
+          showSuccess("OTP verified successfully!");
           setCurrentStep?.("reset-password");
         }
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };
@@ -122,7 +125,11 @@ const Otp = ({
         {
           onSuccess: () => {
             setTimer(120);
+            showSuccess("OTP resent successfully!");
           },
+          onError: (err: any) => {
+            showError(err);
+          }
         }
       );
     }

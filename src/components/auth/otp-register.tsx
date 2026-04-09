@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { useOtpVerify, useResendOtp } from "@/features/auth/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OtpPayload, otpSchema } from "@/features/auth/Schema";
+import { showError, showSuccess } from "@/lib/toast";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
@@ -96,11 +97,13 @@ const OtpRegister = ({
       onSuccess: (response) => {
         if (response.data?.user) {
           localStorage.setItem("token", response?.data?.token);
+          showSuccess("Email verified successfully!");
           setCurrentStep?.("username");
         }
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };
@@ -112,7 +115,11 @@ const OtpRegister = ({
         {
           onSuccess: () => {
             setTimer(120);
+            showSuccess("OTP sent successfully!");
           },
+          onError: (err: any) => {
+            showError(err);
+          }
         }
       );
     }

@@ -45,7 +45,7 @@ const AuthSidebar = ({ hideTrigger }: { hideTrigger?: boolean }) => {
   const handleSkipAndLogin = () => {
     // dispatch(login({ id: "skipped_user", name: "Guest" }));
     setOpen(false);
-    // setCurrentStep("login");
+    setCurrentStep("login");
   };
 
   return (

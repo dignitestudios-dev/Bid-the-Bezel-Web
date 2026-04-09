@@ -4,11 +4,13 @@ import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { completeProfileSchema, CompleteProfilePayload } from "@/features/auth/Schema";
+import { showError, showSuccess } from "@/lib/toast";
 import { useCompleteProfile, useCheckUsername } from "@/features/auth/hooks";
 import { Camera, Loader2 } from "lucide-react";
 import { useDebounce } from "@/hooks/api/useDebounce";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/slices/authSlice";
+import Image from "next/image";
 
 type AuthStep =
   | "login"
@@ -81,11 +83,14 @@ const Username = ({
   const onSubmit = (body: CompleteProfilePayload) => {
     mutate(body, {
       onSuccess: (data) => {
-        dispatch(login(data?.data?.user));
+
+        showSuccess("Profile updated successfully!");
         setCurrentStep?.("purchase-plan");
+        dispatch(login(data?.data?.user));
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.error("Profile completion failed:", err);
+        showError(err);
       },
     });
   };
@@ -114,7 +119,7 @@ const Username = ({
             className="group relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-gray-400 transition-all overflow-hidden"
           >
             {preview ? (
-              <img src={preview} alt="Avatar Preview" className="w-full h-full object-cover" />
+              <Image src={preview} alt="Avatar Preview" fill className="w-full h-full object-cover" />
             ) : (
               <div className="text-gray-400 group-hover:text-gray-500 flex flex-col items-center">
                 <Camera size={24} />

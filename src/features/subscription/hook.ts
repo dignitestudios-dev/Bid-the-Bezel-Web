@@ -1,6 +1,7 @@
 "use client";
 import { useApiMutation } from "@/hooks/api/useApiMutation";
 import { apiClient } from "@/lib/apiClient";
+import { showError, showSuccess } from "@/lib/toast";
 import { useQuery } from "@tanstack/react-query";
 
 export const useSubscription = () => {
@@ -15,7 +16,7 @@ export const useSubscription = () => {
 
 
 export const useBuySubscription = () =>
-    useApiMutation<SubscriptionResponse, { priceId: string }>({
+    useApiMutation<SubscriptionResponse, { planId: string, url: string }>({
         endpoint: "/billing/subscription-purchase",
         method: "POST",
         invalidateKeys: ["subscription-purchase"],
@@ -24,5 +25,23 @@ export const useBuySubscription = () =>
                 window.location.href = data?.data;
 
             },
+            onError: (err) => {
+                showError(err)
+            },
+        },
+    });
+
+export const useCancelSubscription = () =>
+    useApiMutation<CancelSubscriptionResponse, { planId: string }>({
+        endpoint: "/billing/subscription-cancel",
+        method: "POST",
+        invalidateKeys: ["get-profile", "subscription-plans"],
+        mutationOptions: {
+            onSuccess: (data) => {
+                showSuccess(data?.data?.message)
+
+            },
+
+
         },
     });
