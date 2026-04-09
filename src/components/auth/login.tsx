@@ -35,7 +35,7 @@ const Login = ({
       method: "email",
     },
   });
-  const a =   5
+  console.log(xyz)
 
   const onSubmit = (body: LoginPayload) => {
     mutate(body, {
