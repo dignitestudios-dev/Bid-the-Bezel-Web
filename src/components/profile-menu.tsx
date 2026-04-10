@@ -21,7 +21,7 @@ const ProfileMenu = ({ profileData }: { profileData: ProfileData }) => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
-console.log(profileData,"profileData")
+
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>

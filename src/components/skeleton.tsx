@@ -31,7 +31,7 @@ export const PlanSkeleton = () => {
     return (
 
         <div className="flex flex-col h-80 gap-4 p-6 rounded-xl shadow-md border border-gray-300 animate-pulse">
-            {/* Title */}   
+            {/* Title */}
             <div className="h-6 w-32 bg-gray-300 rounded"></div>
 
             {/* Price */}
@@ -48,6 +48,101 @@ export const PlanSkeleton = () => {
                 <div className="h-4 w-full bg-gray-300 rounded"></div>
                 <div className="h-4 w-5/6 bg-gray-300 rounded"></div>
                 <div className="h-4 w-4/6 bg-gray-300 rounded"></div>
+            </div>
+        </div>
+    );
+};
+
+export const CardSkeleton = () => {
+    return (
+        <div className="rounded-lg border bg-white p-5 shadow-sm animate-pulse">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+                <div className="h-5 w-24 bg-gray-200 rounded"></div>
+                <div className="h-10 w-24 bg-gray-200 rounded-md"></div>
+            </div>
+
+            {/* Card Info */}
+            <div className="flex items-center justify-between py-2 border-b mb-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-40 bg-gray-200 rounded"></div>
+                </div>
+            </div>
+
+            {/* Invoices Title */}
+            <div className="h-4 w-24 bg-gray-200 rounded mb-3"></div>
+
+            {/* Table Rows */}
+            <div className="space-y-3">
+                {[1, 2].map((_, i) => (
+                    <div key={i} className="flex justify-between items-center">
+                        <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                        <div className="h-8 w-16 bg-gray-200 rounded"></div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+export const ChangeSubscriptionSkeleton = () => {
+    return (
+        <div className="animate-pulse">
+            {/* Header */}
+            <div className="flex items-center justify-between px-10 py-5 border-b">
+                <div className="h-6 w-48 bg-gray-200 rounded"></div>
+                <div className="w-5 h-5 bg-gray-200 rounded"></div>
+            </div>
+
+            {/* Body */}
+            <div className="flex flex-col gap-4 px-10 py-4">
+
+                {/* Current Plan */}
+                <div className="flex items-center justify-between bg-gray-100 p-4 rounded-lg">
+                    <div className="space-y-2">
+                        <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                    </div>
+
+                    <div className="h-5 w-16 bg-gray-200 rounded"></div>
+
+                    <div className="h-8 w-36 bg-gray-200 rounded-full"></div>
+                </div>
+
+                {/* Plans Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                    {[1, 2, 3, 4].map((_, i) => (
+                        <div key={i} className="p-6 rounded-2xl border">
+
+                            {/* Title */}
+                            <div className="h-6 w-24 bg-gray-200 rounded mb-4"></div>
+
+                            {/* Price */}
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="h-8 w-16 bg-gray-200 rounded"></div>
+                                <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                            </div>
+
+                            {/* Button */}
+                            <div className="h-10 w-full bg-gray-200 rounded-full mb-4"></div>
+
+                            {/* Features */}
+                            <div className="space-y-2">
+                                {[1, 2, 3].map((_, j) => (
+                                    <div key={j} className="h-4 w-full bg-gray-200 rounded"></div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-3 px-10 py-4 border-t">
+                <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
+                <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
             </div>
         </div>
     );

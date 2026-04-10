@@ -19,10 +19,10 @@ const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.Se
   const dispatch = useAppDispatch();
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const { mutate, isPending: isSubmitting } = useCompleteProfile();
-  const { mutateAsync: checkUsername, isPending: isChecking , data} = useCheckUsername();
-  
+  const { mutateAsync: checkUsername, isPending: isChecking, data } = useCheckUsername();
+
   // Local state for UI feedback
   // const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 
@@ -83,7 +83,7 @@ const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.Se
         <span>Step</span>
         <span>2/3</span>
       </div>
-      
+
       <div className="flex gap-2 mb-8">
         <div className="flex-1 h-1 bg-green-500 rounded-full" />
         <div className="flex-1 h-1 bg-yellow-400 rounded-full" />
@@ -105,7 +105,7 @@ const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.Se
             className="group relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden"
           >
             {preview ? (
-              <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+              <Image src={preview} fill alt="Preview" className="w-full h-full object-cover" />
             ) : (
               <div className="text-gray-400 flex flex-col items-center">
                 <Camera size={24} />
@@ -124,7 +124,7 @@ const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.Se
             label="Username"
             {...register("userName", {
               onChange: (e) => {
-            
+
                 debouncedCheck(e.target.value);
               }
             })}
