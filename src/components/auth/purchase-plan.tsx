@@ -25,7 +25,7 @@ const PurchasePlan = ({
   onSkip?: () => void;
 }) => {
   const { data, isLoading } = useSubscription()
-  const { mutate: buySubscription, isPending } = useBuySubscription()
+  const { mutate: buySubscription } = useBuySubscription()
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
   const handleBuy = (planId: string) => {

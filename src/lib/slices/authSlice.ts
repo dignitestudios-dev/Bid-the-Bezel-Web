@@ -8,6 +8,7 @@ type User = {
   profilePicture?: string;
   isProfileCompleted?: boolean;
   isEmailVerified?: boolean;
+  isSubscribed?: boolean;
 };
 
 type AuthState = {

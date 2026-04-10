@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAppDispatch } from "@/lib/hooks";
-import { logout } from "@/lib/slices/authSlice";
+import { login, logout } from "@/lib/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useCheckUsername, useMe, useUpdateProfile } from "@/features/auth/hooks";
 import { Camera, Loader2 } from "lucide-react";
@@ -25,20 +25,22 @@ import { ProfileSkeleton } from "@/components/skeleton";
 import { showError, showSuccess } from "@/lib/toast";
 
 const Profile = () => {
+  const dispatch = useAppDispatch();
   const [preview, setPreview] = useState<string | null>(null);
-  // const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
   const [understand, setUnderstand] = useState(false);
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const { data: userData, isLoading } = useMe();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
-  const { mutate: checkUsername, isPending: isChecking , data } = useCheckUsername();
+  const { mutate: checkUsername, isPending: isChecking, data } = useCheckUsername();
   const queryClient = useQueryClient();
+
+
+
 
   const {
     register,
@@ -187,7 +189,7 @@ const Profile = () => {
                         <Loader2 className="w-3 h-3 animate-spin" />
                         <span>Checking...</span>
                       </div>
-                    ) :!data?.data.exists ? (
+                    ) : !data?.data.exists ? (
                       <div className="flex items-center gap-2 text-sm text-green-600">
                         <span className="rounded-full bg-green-50 p-1 text-[10px]">
                           ✓

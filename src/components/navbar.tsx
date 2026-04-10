@@ -8,14 +8,9 @@ import { ArrowRight } from "lucide-react";
 import ProfileMenu from "./profile-menu";
 import MessageNotificationMenu from "./message-notification-menu";
 import CategoriesMenu from "./CategoriesMenu";
-import { useMe } from "@/features/auth/hooks";
 
 const Navbar = () => {
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
-
-  const { data: userData ,isLoading} = useMe();
-
-
+  const user = useAppSelector((state) => state.auth);
 
   return (
     <div>
@@ -29,10 +24,10 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {isLoggedIn && (
+          {user.isLoggedIn && (
             <>
               <MessageNotificationMenu />
-              <ProfileMenu profileData={userData} />
+              <ProfileMenu profileData={user?.user} />
               <Link href={"/seller/plans"}>
                 <Button className="bg-[#415A77] rounded-full flex gap-2 items-center w-[154px] h-[45px] max-w-full">
                   <span>Start Selling</span> <ArrowRight size={15} />
@@ -40,7 +35,7 @@ const Navbar = () => {
               </Link>{" "}
             </>
           )}
-          <AuthSidebar hideTrigger={isLoggedIn} />
+          <AuthSidebar hideTrigger={user.isLoggedIn} />
         </div>
       </div>
       <div className="bg-(--primary) text-white text-center py-3">

@@ -26,7 +26,7 @@ export function ChangeSubscriptionModal({
     loading: boolean,
     onCancelSubscription: (id: string) => void
 }) {
-    const { mutate: buySubscription, isPending } = useBuySubscription()
+    const { mutate: buySubscription } = useBuySubscription()
     const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
     const handleBuy = (planId: string) => {

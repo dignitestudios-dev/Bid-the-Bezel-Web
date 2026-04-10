@@ -1,19 +1,26 @@
-"use client"
-import Plans from '@/app/(main)/_components/plans'
+"use client";
 
+import Plans from "@/app/(main)/_components/plans";
+import { useAppSelector } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
 
+const PlansSubs = () => {
+  const router = useRouter();
 
+  const isSubscribed = useAppSelector(
+    (state) => state.auth.user?.isSubscribed
+  );
 
-type Props = {
-  // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;\
-}
-const PlansSubs = ({ }: Props) => {
+  if (isSubscribed) {
+    router.push("/seller/sale-type");
+  } else {
+    return (
+      <div>
 
-  return (
-    <div>
-      <Plans />
-    </div>
-  )
-}
+        <Plans />
+      </div>
+    );
+  }
+};
 
-export default PlansSubs
+export default PlansSubs;

@@ -4,6 +4,7 @@ import { useApiMutation } from "@/hooks/api/useApiMutation";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { CheckUsernamePayload, CompleteProfilePayload, ForgotPasswordPayload, LoginPayload, OtpPayload, ResendOtpPayload, updatePasswordPayload, UpdateProfilePayload } from "./Schema";
+import { login } from "@/lib/slices/authSlice";
 
 
 // post | put | patch | delete

@@ -19,7 +19,7 @@ export const useBuySubscription = () =>
     useApiMutation<SubscriptionResponse, { planId: string, url: string }>({
         endpoint: "/billing/subscription-purchase",
         method: "POST",
-        invalidateKeys: ["subscription-purchase"],
+        invalidateKeys: ["subscription-purchase", 'get-profile'],
         mutationOptions: {
             onSuccess: (data) => {
                 window.location.href = data?.data;

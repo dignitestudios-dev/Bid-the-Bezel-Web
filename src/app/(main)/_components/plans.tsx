@@ -1,15 +1,21 @@
 "use client"
 import { PlanSkeleton } from "@/components/skeleton";
+import { useMe } from "@/features/auth/hooks";
 import { useBuySubscription, useSubscription } from "@/features/subscription/hook";
+import { useAppDispatch } from "@/lib/hooks";
+import { login } from "@/lib/slices/authSlice";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
 import React, { useState } from "react";
 
 type Props = {};
 
 const Plans = (props: Props) => {
+  const dispatch = useAppDispatch()
   const { data, isLoading } = useSubscription()
-  const { mutate: buySubscription, isPending } = useBuySubscription()
+  const { mutate: buySubscription } = useBuySubscription()
+  const { refetch, data: userData } = useMe()
+  dispatch(login(userData?.data))
+
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
   const handleBuy = (planId: string) => {
@@ -17,6 +23,9 @@ const Plans = (props: Props) => {
     buySubscription(
       { planId, url: window.location.href },
       {
+        onSuccess: () => {
+          refetch()
+        },
         onSettled: () => setLoadingPriceId(null),
       }
     );
