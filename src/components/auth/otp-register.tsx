@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { OtpPayload, otpSchema } from "@/features/auth/Schema";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setToken } from "@/lib/cookies";
 
 const OtpRegister = ({
   setCurrentStep,
@@ -92,10 +93,11 @@ const OtpRegister = ({
   };
 
   const onSubmit = (data: OtpPayload) => {
+    console.log(data)
     mutate(data, {
       onSuccess: (response) => {
         if (response.data?.user) {
-          localStorage.setItem("token", response?.data?.token);
+          setToken(response?.data?.token);
           setCurrentStep?.("username");
         }
       },
@@ -146,7 +148,7 @@ const OtpRegister = ({
 
       <Button
         type="submit"
-        disabled={isPending}
+        disabled={false}
         onClick={handleSubmit(onSubmit)}
         className="mt-8 w-full rounded-full"
       >

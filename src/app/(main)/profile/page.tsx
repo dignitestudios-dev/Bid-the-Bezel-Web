@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { useCheckUsername, useMe, useUpdateProfile } from "@/features/auth/hooks";
 import { Camera, Loader2 } from "lucide-react";
 import { UpdateProfilePayload, updateProfileSchema } from "@/features/auth/Schema";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@/hooks/api/useDebounce";
 import { useQueryClient } from "@tanstack/react-query";
@@ -32,18 +32,19 @@ const Profile = () => {
   const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
   const [understand, setUnderstand] = useState(false);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const router = useRouter();
-  const { data: userData, isLoading } = useMe();
+  const { data: userData, isLoading} = useMe();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: checkUsername, isPending: isChecking , data } = useCheckUsername();
-  const queryClient = useQueryClient();
+console.log(userData)
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    control,
     reset,
     formState: { errors },
   } = useForm<UpdateProfilePayload>({
@@ -54,7 +55,10 @@ const Profile = () => {
     },
   });
 
-  const userName = watch("userName");
+  const userName = useWatch({
+  control,
+  name: "userName",
+});
   const debouncedUsername = useDebounce(userName || "", 500);
 
   useEffect(() => {
@@ -100,13 +104,13 @@ const Profile = () => {
 
     updateProfile(payload, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["get-profile"] });
+        // queryClient.invalidateQueries({ queryKey: ["get-profile"] });
       },
     });
   };
 
   const handleDeleteAccount = () => {
-    dispatch(logout());
+    // dispatch(logout());
     router.push("/");
   };
 

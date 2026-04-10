@@ -3,10 +3,22 @@
 import { useApiMutation } from "@/hooks/api/useApiMutation";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
-import { CheckUsernamePayload, CompleteProfilePayload, ForgotPasswordPayload, LoginPayload, OtpPayload, ResendOtpPayload, updatePasswordPayload, UpdateProfilePayload } from "./Schema";
+import {
+  CheckUsernamePayload,
+  CompleteProfilePayload,
+  ForgotPasswordPayload,
+  LoginPayload,
+  OtpPayload,
+  ResendOtpPayload,
+  updatePasswordPayload,
+  UpdateProfilePayload,
+} from "./Schema";
 
+import { setToken, removeToken, getToken } from "@/lib/cookies";
 
-// post | put | patch | delete
+/* =========================
+   AUTH: LOGIN
+========================= */
 export const useLogin = () =>
   useApiMutation<AuthResponse, LoginPayload>({
     endpoint: "/auth",
@@ -14,75 +26,81 @@ export const useLogin = () =>
     invalidateKeys: ["get-profile"],
     mutationOptions: {
       onSuccess: (data) => {
-        localStorage.setItem("email", data?.data?.user?.email);
-        localStorage.setItem("token", data?.data?.token);
+        const token = data?.data?.token;
+        if (token) {
+          setToken(token);
+        }
+        localStorage.setItem("email", data.data.user.email);
       },
     },
   });
 
-
+/* =========================
+   OTP VERIFY
+========================= */
 export const useOtpVerify = () =>
   useApiMutation<AuthResponse, OtpPayload>({
     endpoint: "/auth/verify-email",
     method: "POST",
-    mutationOptions: {
-      onSuccess: (data) => {
-        // Succes
-      },
-    },
   });
 
+/* =========================
+   FORGOT OTP VERIFY
+========================= */
 export const useForgotOtpVerify = () =>
   useApiMutation<AuthResponse, OtpPayload>({
     endpoint: "/auth/verify-otp",
     method: "POST",
-    mutationOptions: {
-      onSuccess: (data) => {
-        // Succes
-      },
-    },
   });
 
+/* =========================
+   FORGOT PASSWORD
+========================= */
 export const useForgotPassword = () =>
   useApiMutation<void, ForgotPasswordPayload>({
     endpoint: "/auth/forgot",
     method: "POST",
-    mutationOptions: {
-      onSuccess: (data) => {
-        // Succes
-      },
-    },
   });
+
+/* =========================
+   UPDATE PASSWORD
+========================= */
 export const useUpdatePassword = () =>
   useApiMutation<void, updatePasswordPayload>({
     endpoint: "/auth/update-password",
     method: "POST",
-    mutationOptions: {
-      onSuccess: (data) => {
-
-      },
-    },
   });
 
+/* =========================
+   RESEND OTP
+========================= */
 export const useResendOtp = () =>
   useApiMutation<AuthResponse, ResendOtpPayload>({
     endpoint: "/auth/email-verification-otp",
     method: "POST",
     mutationOptions: {
       onSuccess: (data) => {
-        if (data.data?.token) {
-          localStorage.setItem("token", data.data.token);
+        const token = data?.data?.token;
+
+        if (token) {
+          setToken(token);
         }
       },
     },
   });
 
+/* =========================
+   CHECK USERNAME
+========================= */
 export const useCheckUsername = () =>
   useApiMutation<CheckUsernameResponse, CheckUsernamePayload>({
     endpoint: "/users/check-username",
     method: "POST",
   });
 
+/* =========================
+   COMPLETE PROFILE
+========================= */
 export const useCompleteProfile = () =>
   useApiMutation<AuthResponse, CompleteProfilePayload>({
     endpoint: "/users/complete-profile",
@@ -91,50 +109,53 @@ export const useCompleteProfile = () =>
     invalidateKeys: ["get-profile"],
     mutationOptions: {
       onSuccess: (data) => {
-        if (data.data?.token) {
-          localStorage.setItem("token", data.data.token);
+        const token = data?.data?.token;
+
+        if (token) {
+          setToken(token);
         }
       },
     },
   });
 
+/* =========================
+   UPDATE PROFILE
+========================= */
 export const useUpdateProfile = () =>
   useApiMutation<AuthResponse, UpdateProfilePayload>({
     endpoint: "/users",
     method: "PATCH",
     isMultiPart: true,
     invalidateKeys: ["get-profile"],
-    mutationOptions: {
-      onSuccess: (data) => {
-        // Success
-      },
-    },
   });
 
+/* =========================
+   LOGOUT
+========================= */
 export const useLogout = () =>
   useApiMutation<void, void>({
     endpoint: "/auth/logout",
     method: "POST",
     mutationOptions: {
       onSuccess: () => {
-        localStorage.removeItem("token");
+        removeToken();
         // window.location.href = "/login";
       },
-
     },
   });
 
-//get queries like below
-
+/* =========================
+   GET PROFILE (ME)
+========================= */
 export const useMe = () => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? getToken() : null;
+
   return useQuery({
-    queryKey: ["get-profile"],
+    queryKey: ["get-profile", token],  // Include token in queryKey
     queryFn: async () => {
       const res = await apiClient.get("/users/me");
       return res.data;
-
     },
-    enabled: !!token
+    enabled: !!token,
   });
 };

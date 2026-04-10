@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { removeToken } from "../cookies";
 
 type User = {
   id: string | number;
@@ -57,6 +58,7 @@ const authSlice = createSlice({
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth");
         localStorage.removeItem("token");
+        removeToken()
         localStorage.removeItem("email");
       }
     },
