@@ -45,11 +45,8 @@ const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.Se
     if (value.length < 3) {
       return;
     }
-
     try {
-      const response = await checkUsername({ userName: value });
-      // exists: true means taken, exists: false means available
-      // setIsAvailable(!response.data.exists);
+       await checkUsername({ userName: value });
     } catch (err) {
       console.error("Error checking username:", err);
     }
