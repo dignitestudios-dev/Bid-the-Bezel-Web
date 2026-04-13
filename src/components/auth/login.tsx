@@ -12,7 +12,8 @@ import Google from "../icons/Google";
 import Apple from "../icons/Apple";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/slices/authSlice";
-
+import { signInWithGoogle } from "@/lib/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Login = ({
   setCurrentStep,
@@ -22,8 +23,6 @@ const Login = ({
   onSuccess?: () => void;
 }) => {
   const { mutate, isPending } = useLogin();
-  const dispatch = useAppDispatch();
-
   const {
     register,
     handleSubmit,
@@ -49,7 +48,8 @@ const Login = ({
           setCurrentStep?.("username");
           return;
         }
-        dispatch(login(user))
+        // dispatch(login(user));
+        window.location.reload();
         showSuccess("Logged in successfully");
         onSuccess?.();
       },
@@ -61,6 +61,47 @@ const Login = ({
     });
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const { token } = await signInWithGoogle();
+
+      mutate(
+        {
+          method: "google",
+          idToken: token,
+          
+        } as any,
+        {
+          onSuccess: (data) => {
+            const user = data?.data?.user;
+
+            if (!user?.isEmailVerified) {
+              setCurrentStep?.("otp-register");
+              return;
+            }
+
+            if (!user?.isProfileCompleted) {
+              setCurrentStep?.("username");
+              return;
+            }
+
+            // dispatch(login(user));
+                    window.location.reload();
+            showSuccess("Logged in successfully");
+            onSuccess?.();
+          },
+
+          onError: (err: any) => {
+            console.error(err);
+            showError(err);
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Google login error:", error);
+      showError("Google login failed");
+    }
+  };
 
   return (
     <div className="w-[340px] max-w-full">
@@ -96,7 +137,7 @@ const Login = ({
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full rounded-full"
+          className="w-full rounded-full hover:bg-[#0b1d2a]"
         >
           {isPending ? "Logging in..." : "Log In"}
         </Button>
@@ -108,13 +149,13 @@ const Login = ({
         <div className="w-full h-[1.5px] bg-gray-200" />
       </div>
 
-      <div className="space-y-3">
-        <Button className="bg-[#F7F7F7] hover:bg-[#f3f3f3] rounded-full w-full text-black">
+      <div   className="space-y-3">
+        <Button disabled={isPending} onClick={handleGoogleLogin} className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black">
           <Google />
           Continue with Google
         </Button>
 
-        <Button className="bg-[#F7F7F7] hover:bg-[#f3f3f3] rounded-full w-full text-black">
+        <Button disabled={isPending} className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black">
           <Apple />
           Continue with Apple
         </Button>

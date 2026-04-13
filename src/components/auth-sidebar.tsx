@@ -24,7 +24,7 @@ import PlanSelected from "./auth/plan-selected";
 import SubscriptionConfirmation from "./auth/subscription-confirmation";
 
 
-const AuthSidebar = ({ hideTrigger }: { hideTrigger?: boolean }) => {
+const AuthSidebar = ({ hideTrigger , loader }: { hideTrigger?: boolean , loader?: boolean }) => {
   const dispatch = useAppDispatch();
   const [currentStep, setCurrentStep] = useState<AuthStep>("login");
   const [open, setOpen] = useState(false);
@@ -50,9 +50,9 @@ const AuthSidebar = ({ hideTrigger }: { hideTrigger?: boolean }) => {
 
   return (
     <>
-      <Sheet open={open} onOpenChange={handleOpenChange}>
+      <Sheet open={open}  onOpenChange={handleOpenChange}>
         {!hideTrigger && (
-          <SheetTrigger asChild>
+          <SheetTrigger disabled={loader} asChild>
             <Button className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
               <span>Login</span> <ArrowRight size={15} />
             </Button>

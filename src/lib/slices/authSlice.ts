@@ -59,9 +59,10 @@ const authSlice = createSlice({
       state.user = null;
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth");
-        localStorage.removeItem("token");
         removeToken()
+
         localStorage.removeItem("email");
+        window.location.reload()
       }
     },
     hydrate(state, action: PayloadAction<AuthState>) {
