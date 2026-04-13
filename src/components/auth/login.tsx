@@ -49,7 +49,7 @@ const Login = ({
           return;
         }
         // dispatch(login(user));
-        window.location.reload();
+        // window.location.reload();
         showSuccess("Logged in successfully");
         onSuccess?.();
       },
@@ -86,7 +86,7 @@ const Login = ({
             }
 
             // dispatch(login(user));
-                    window.location.reload();
+                    // window.location.reload();
             showSuccess("Logged in successfully");
             onSuccess?.();
           },

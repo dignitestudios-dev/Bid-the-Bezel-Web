@@ -68,6 +68,7 @@ export const useForgotPassword = () =>
 export const useUpdatePassword = () =>
   useApiMutation<void, updatePasswordPayload>({
     endpoint: "/auth/update-password",
+    invalidateKeys: ["get-profile"],
     method: "POST",
   });
 
@@ -156,6 +157,6 @@ export const useMe = () => {
       const res = await apiClient.get("/users/me");
       return res.data;
     },
-    enabled: !!token,
+    // enabled: !!token,
   });
 };
