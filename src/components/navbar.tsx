@@ -8,9 +8,10 @@ import { ArrowRight } from "lucide-react";
 import ProfileMenu from "./profile-menu";
 import MessageNotificationMenu from "./message-notification-menu";
 import CategoriesMenu from "./CategoriesMenu";
+import { useMe } from "@/features/auth/hooks";
 
 const Navbar = () => {
-  const user = useAppSelector((state) => state.auth);
+  const { data: user  , isLoading} = useMe();
 
   return (
     <div>
@@ -24,7 +25,7 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {user.isLoggedIn && (
+          {!isLoading && user && (
             <>
               <MessageNotificationMenu />
               <ProfileMenu profileData={user?.user} />
@@ -35,7 +36,8 @@ const Navbar = () => {
               </Link>{" "}
             </>
           )}
-          <AuthSidebar hideTrigger={user.isLoggedIn} />
+          {!isLoading && !user && <AuthSidebar hideTrigger={!!user} loader={isLoading} /> }
+          
         </div>
       </div>
       <div className="bg-(--primary) text-white text-center py-3">
