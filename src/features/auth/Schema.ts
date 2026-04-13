@@ -63,6 +63,7 @@ export const updatePasswordSchema = z
     });
 
 export type updatePasswordPayload = z.infer<typeof updatePasswordSchema>;
+
 export const updateProfileSchema = z.object({
     userName: z
         .string()
@@ -70,6 +71,20 @@ export const updateProfileSchema = z.object({
         .max(20, "Username must be at most 20 characters")
         .optional(),
     profilePicture: z.any().optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
 });
 
 export type UpdateProfilePayload = z.infer<typeof updateProfileSchema>;
+
+
+export const personalDetailSchema = z.object({
+    firstName: z.string().min(2, "First name is required"),
+    lastName: z.string().min(2, "Last name is required"),
+    email: z.string().email("Invalid email"),
+    phone: z.string().min(8, "Phone number is required"),
+});
+
+export type PersonalDetailPayload = z.infer<typeof personalDetailSchema>;

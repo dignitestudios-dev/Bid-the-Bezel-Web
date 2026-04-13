@@ -10,6 +10,7 @@ type User = {
   isProfileCompleted?: boolean;
   isEmailVerified?: boolean;
   isSubscribed?: boolean;
+  stripeAccountStatus?: string
 };
 
 type AuthState = {

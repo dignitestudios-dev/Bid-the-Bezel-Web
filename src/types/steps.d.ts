@@ -10,6 +10,8 @@ type Step =
   | "personal-detail-auction"
   | "personal-detail-fixed"
   | "authenticate"
- | "shipping"
- | "payment-done"
-| "watch-listed"
+  | "shipping"
+  | "payment-done"
+  | "watch-listed"
+
+type StepType = "personal-detail" | "watch-detail" | "bank-detail";

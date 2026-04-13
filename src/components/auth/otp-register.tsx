@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { OtpPayload, otpSchema } from "@/features/auth/Schema";
 import { showError, showSuccess } from "@/lib/toast";
 import { useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setToken } from "@/lib/cookies";
 
 const OtpRegister = ({

@@ -1,23 +1,35 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useAppSelector } from "@/lib/hooks";
 import { Banknote, Clock3 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import ConnectBankModal from "./ConnectBankModal";
 
 type Props = {
   // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
 
-const SaleType = ({}: Props) => {
+const SaleType = ({ }: Props) => {
   const router = useRouter();
+  const [modalOpen, setModalOen] = useState(false)
+  const userBankAccount = useAppSelector((state) => state.auth.user?.stripeAccountStatus)
 
   const handleAuction = () => {
+    if (userBankAccount === "pending" || userBankAccount === "rejected" || userBankAccount === "review") {
+      setModalOen(true)
+      return
+    }
     localStorage.setItem("saleType", "auction");
     router.push("auction-details");
   };
 
   const handleFixedPrice = () => {
+    if (userBankAccount === "pending" || userBankAccount === "rejected" || userBankAccount === "review") {
+      setModalOen(true)
+      return
+    }
     localStorage.setItem("saleType", "fixed-price");
     router.push("fixed-price-details");
   };
@@ -66,6 +78,7 @@ const SaleType = ({}: Props) => {
           </div>
         </div>
       </div>
+      <ConnectBankModal open={modalOpen} setOpen={setModalOen} userBankAccount={userBankAccount} />
     </div>
   );
 };

@@ -1,38 +1,42 @@
- type SaleType = "auction" | "fixed-price" | "taking-offer";
+type SaleType = "auction" | "fixed-price" | "taking-offer";
 
- interface Bidder {
+interface Bidder {
   userId: string;
   bidAmount: number;
 }
 
- interface Offer {
+interface Offer {
   userId: string;
   offerAmount: number;
 }
 
- interface BaseWatch {
+interface BaseWatch {
   watchId: string;
   name: string;
   image: string;
   sellerId: string;
   saleType: SaleType;
-isAuthenticated?: boolean;
+  isAuthenticated?: boolean;
 }
 
- interface AuctionWatch extends BaseWatch {
+interface AuctionWatch extends BaseWatch {
   saleType: "auction";
   basePrice: number;
   bidders: Bidder[];
 }
 
- interface FixedPriceWatch extends BaseWatch {
+interface FixedPriceWatch extends BaseWatch {
   saleType: "fixed-price";
   price: number;
 }
 
- interface OfferWatch extends BaseWatch {
+interface OfferWatch extends BaseWatch {
   saleType: "taking-offer";
   expectedPrice: number;
   offers: Offer[];
 }
 
+export interface ProducResponse<T = unknown> {
+  data: T;
+  message: string;
+}

@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useAppSelector } from "@/lib/hooks";
 import { ReceiptText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,9 +11,11 @@ type Props = {};
 
 const WatchListed = (props: Props) => {
   const router = useRouter();
+  const watchDetail = useAppSelector(state => state.addProduct.watchDetails)
+  console.log(watchDetail)
   const handleViewListing = () => {
     const saleType = localStorage.getItem("saleType");
-    console.log("saleType: ", saleType);
+
     saleType === "auction"
       ? router.push("/auction/auc-004")
       : router.push("/fixed-price/fix-001");
@@ -28,14 +31,14 @@ const WatchListed = (props: Props) => {
         />
         <div className="border flex justify-between items-center py-1 px-2 rounded-xl w-full">
           <h1 className=" font-semibold">Watch Reference ID</h1>{" "}
-          <h3 className="text-xs">#76622</h3>
+          <h3 className="text-xs">{watchDetail?.referenceId}</h3>
         </div>
         <div>
           <h1 className="text-2xl font-semibold">Your watch is Listed</h1>
           <p className="text-xs">Your watch auction is live.</p>
         </div>
         <div className="flex items-center gap-2 text-xs">
-          <ReceiptText size={10} /> Download Reciept
+          {/* <ReceiptText size={10} /> Download Reciept */}
         </div>
 
         <Button onClick={handleViewListing} className="w-full text-xs ">

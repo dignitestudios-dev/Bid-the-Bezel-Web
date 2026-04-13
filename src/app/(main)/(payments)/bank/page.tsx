@@ -71,7 +71,6 @@ const BankForm = () => {
       });
 
       if (result.error) {
-        console.log("Stripe Error Full:", result.error);
         showError(result.error.message);
         return;
       }
