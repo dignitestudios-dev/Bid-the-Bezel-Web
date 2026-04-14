@@ -9,6 +9,8 @@ import ProfileMenu from "./profile-menu";
 import MessageNotificationMenu from "./message-notification-menu";
 import CategoriesMenu from "./CategoriesMenu";
 import { useMe } from "@/features/auth/hooks";
+import { PlanSkeleton } from "./skeleton";
+import { Skeleton } from "./ui/skeleton";
 
 const Navbar = () => {
   const { data: user  , isLoading} = useMe();
@@ -35,7 +37,8 @@ const Navbar = () => {
               </Link>{" "}
             </>
           )}
-          {!isLoading && !user && <AuthSidebar hideTrigger={!!user} loader={isLoading} /> }
+          {!isLoading ? <AuthSidebar hideTrigger={!!user} loader={isLoading} /> :
+          <Skeleton className="h-12 bg-gray-200 w-24 rounded-full "/> }
           
         </div>
       </div>
