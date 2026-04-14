@@ -28,7 +28,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 //protected steps which require user to complete the previous steps before closing the sidebar
-  const PROTECTED_STEPS: AuthStep[] = ["otp-register", "username", "purchase-plan", "plan-selected", "subscription-confirmation"];
+const PROTECTED_STEPS: AuthStep[] = ["otp-register", "username", "purchase-plan", "subscription-confirmation"];
 const AuthSidebar = ({
   hideTrigger,
   loader,
@@ -41,20 +41,20 @@ const AuthSidebar = ({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentStep = searchParams.get("step") as AuthStep | null;
+  const currentStep = searchParams.get("authstep") as AuthStep | null;
   const open = !!currentStep;
 
   const isProtectedStep = !!currentStep && PROTECTED_STEPS.includes(currentStep);
 
   const setStep = (step: AuthStep) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("step", step);
+    params.set("authstep", step);
     router.replace(`?${params.toString()}`);
   };
 
   const clearStep = () => {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("step");
+    params.delete("authstep");
     router.replace(`?${params.toString()}`);
   };
 
@@ -160,7 +160,7 @@ const AuthSidebar = ({
     <Sheet open={open} onOpenChange={handleOpenChange}>
       {!hideTrigger && (
         <SheetTrigger disabled={loader} asChild>
-          <Button onClick={()=>router.push("?step=login")} className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
+          <Button onClick={() => router.push("?authstep=login")} className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
             <span>Login</span> <ArrowRight size={15} />
           </Button>
         </SheetTrigger>
@@ -168,11 +168,10 @@ const AuthSidebar = ({
 
       <SheetContent
         onInteractOutside={(e) => { if (isProtectedStep) e.preventDefault(); }}
-        className={`${
-          currentStep === "plan-selected"
-            ? "bg-gray-100"
-            : "bg-white"
-        } w-[700px]! max-w-[90%] overflow-y-auto`}
+        className={`${currentStep === "plan-selected"
+          ? "bg-gray-100"
+          : "bg-white"
+          } w-[700px]! max-w-[90%] overflow-y-auto`}
       >
         <SheetHeader>
           <SheetTitle className="text-center text-lg">

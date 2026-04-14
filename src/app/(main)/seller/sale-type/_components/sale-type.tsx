@@ -15,9 +15,9 @@ const SaleType = ({ }: Props) => {
   const router = useRouter();
   const [modalOpen, setModalOen] = useState(false)
   const userBankAccount = useAppSelector((state) => state.auth.user?.stripeAccountStatus)
-
+  console.log(userBankAccount, "userBankAccount")
   const handleAuction = () => {
-    if (userBankAccount === "pending" || userBankAccount === "rejected" || userBankAccount === "review") {
+    if (userBankAccount === "not-provided" || userBankAccount === "pending" || userBankAccount === "rejected" || userBankAccount === "review") {
       setModalOen(true)
       return
     }
@@ -26,7 +26,7 @@ const SaleType = ({ }: Props) => {
   };
 
   const handleFixedPrice = () => {
-    if (userBankAccount === "pending" || userBankAccount === "rejected" || userBankAccount === "review") {
+    if (userBankAccount === "not-provided" || userBankAccount === "pending" || userBankAccount === "rejected" || userBankAccount === "review") {
       setModalOen(true)
       return
     }

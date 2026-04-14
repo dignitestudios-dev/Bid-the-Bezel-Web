@@ -18,7 +18,7 @@ const WatchListed = (props: Props) => {
 
     saleType === "auction"
       ? router.push("/auction/auc-004")
-      : router.push("/fixed-price/fix-001");
+      : router.push(`/fixed-price/${watchDetail?._id}`);
   };
   return (
     <div className="h-screen flex gap-2 text-center flex-col justify-center items-center">
