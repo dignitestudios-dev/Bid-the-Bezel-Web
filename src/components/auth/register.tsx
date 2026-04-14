@@ -20,8 +20,6 @@ const Register = ({
   setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
-  // const dispatch = useAppDispatch();
-// const queryClient = useQueryClient();
   const { mutate, isPending, } = useLogin();
 
   const {

@@ -21,7 +21,6 @@ const Login = ({
   onSuccess: () => void;
 }) => {
   const { mutate, isPending } = useLogin();
-  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -47,10 +46,8 @@ const Login = ({
           setStep?.("username");
           return;
         }
-        // setStep?.("");
         onSuccess();
         showSuccess("Logged in successfully");
-        queryClient.invalidateQueries({ queryKey: ['get-profile'] });
       },
 
       onError: (err: any) => {
@@ -85,7 +82,6 @@ const Login = ({
             }
 
             showSuccess("Logged in successfully");
-            queryClient.invalidateQueries({ queryKey: ['get-profile'] });
             onSuccess();
           },
 
