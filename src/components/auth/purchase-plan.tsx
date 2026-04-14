@@ -18,10 +18,10 @@ type Step =
   | "password-changed";
 
 const PurchasePlan = ({
-  setCurrentStep,
+  setStep,
   onSkip,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
   onSkip?: () => void;
 }) => {
   const { data, isLoading } = useSubscription()

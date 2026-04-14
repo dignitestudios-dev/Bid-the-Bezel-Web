@@ -16,13 +16,14 @@ import { signInWithGoogle } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Login = ({
-  setCurrentStep,
+    setStep,
   onSuccess,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>>;
+   setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
   const { mutate, isPending } = useLogin();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -41,15 +42,14 @@ const Login = ({
       onSuccess: (data) => {
         const user = data?.data?.user;
         if (!user?.isEmailVerified) {
-          setCurrentStep?.("otp-register");
+          setStep?.("otp-register");
           return;
         }
         if (!user?.isProfileCompleted) {
-          setCurrentStep?.("username");
+          setStep?.("username");
           return;
         }
-        // dispatch(login(user));
-        // window.location.reload();
+        queryClient.invalidateQueries({ queryKey: ['get-profile'] });
         showSuccess("Logged in successfully");
         onSuccess?.();
       },
@@ -76,12 +76,12 @@ const Login = ({
             const user = data?.data?.user;
 
             if (!user?.isEmailVerified) {
-              setCurrentStep?.("otp-register");
+              setStep?.("otp-register");
               return;
             }
 
             if (!user?.isProfileCompleted) {
-              setCurrentStep?.("username");
+              setStep?.("username");
               return;
             }
 
@@ -127,7 +127,7 @@ const Login = ({
         <div className="w-full flex justify-end">
           <button
             type="button"
-            onClick={() => setCurrentStep?.("forgot-password")}
+            onClick={() => setStep?.("forgot-password")}
             className="text-sm font-medium cursor-pointer"
           >
             Forgot your password?
@@ -163,7 +163,7 @@ const Login = ({
         <p className="text-center mt-5">
           First time here?{" "}
           <button
-            onClick={() => setCurrentStep?.("register")}
+            onClick={() => setStep?.("register")}
             className="font-semibold cursor-pointer"
           >
             Create an account

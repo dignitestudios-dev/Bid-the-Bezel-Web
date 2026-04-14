@@ -14,14 +14,14 @@ import { login } from "@/lib/slices/authSlice";
 
 
 const Register = ({
-  setCurrentStep,
+  setStep,
   onSuccess,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>>;
+  setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
-  const dispatch = useAppDispatch();
-
+  // const dispatch = useAppDispatch();
+// const queryClient = useQueryClient();
   const { mutate, isPending, } = useLogin();
 
   const {
@@ -41,16 +41,17 @@ const Register = ({
     mutate(body, {
       onSuccess: (data) => {
         const user = data?.data?.user;
+        console.log(user , "---------------> user")
         showSuccess("Account created successfully!");
         if (!user?.isEmailVerified) {
-          setCurrentStep?.("otp-register");
+          setStep?.("otp-register");
           return;
         }
         if (!user?.isProfileCompleted) {
-          setCurrentStep?.("username");
+          setStep?.("username");
           return;
         }
-        dispatch(login(user))
+        // dispatch(login(user))
         onSuccess?.();
       },
 
@@ -112,7 +113,7 @@ const Register = ({
         <p className="text-center mt-5">
           Already have an account?{" "}
           <button
-            onClick={() => setCurrentStep?.("login")}
+            onClick={() => setStep?.("login")}
             className="font-semibold cursor-pointer"
           >
             Log In

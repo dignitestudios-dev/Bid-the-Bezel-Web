@@ -12,7 +12,6 @@ import { useMe } from "@/features/auth/hooks";
 
 const Navbar = () => {
   const { data: user  , isLoading} = useMe();
-console.log(user)
   return (
     <div>
       <div className="flex justify-between w-[90%] py-4 max-w-screen-2xl mx-auto">

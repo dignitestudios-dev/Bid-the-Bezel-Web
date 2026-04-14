@@ -16,14 +16,14 @@ type Step =
   | "password-changed";
 
 const SubscriptionConfirmation = ({
-  setCurrentStep,
+  setStep,
   onClose,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
   onClose?: () => void;
 }) => {
   const handleGoHome = () => {
-    setCurrentStep?.("login");
+    setStep?.("login");
     onClose?.();
   };
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { useApiMutation } from "@/hooks/api/useApiMutation";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
@@ -23,7 +21,7 @@ export const useLogin = () =>
   useApiMutation<AuthResponse, LoginPayload>({
     endpoint: "/auth",
     method: "POST",
-    invalidateKeys: ["get-profile"],
+    // invalidateKeys: ["get-profile"],
     mutationOptions: {
       onSuccess: (data) => {
         const token = data?.data?.token;
@@ -107,7 +105,7 @@ export const useCompleteProfile = () =>
     endpoint: "/users/complete-profile",
     method: "POST",
     isMultiPart: true,
-    invalidateKeys: ["get-profile"],
+    // invalidateKeys: ["get-profile"],
     mutationOptions: {
       onSuccess: (data) => {
         const token = data?.data?.token;
@@ -149,14 +147,17 @@ export const useLogout = () =>
    GET PROFILE (ME)
 ========================= */
 export const useMe = () => {
-  const token = typeof window !== "undefined" ? getToken() : null;
-
   return useQuery({
-    queryKey: ["get-profile", token],  // Include token in queryKey
+    queryKey: ["get-profile"],  
     queryFn: async () => {
       const res = await apiClient.get("/users/me");
       return res.data;
     },
-    // enabled: !!token,
+    enabled: true,
+    staleTime:Infinity, 
+    gcTime:Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
   });
 };
