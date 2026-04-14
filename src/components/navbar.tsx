@@ -37,8 +37,8 @@ const Navbar = () => {
               </Link>{" "}
             </>
           )}
-          {!isLoading ? <AuthSidebar hideTrigger={!!user} loader={isLoading} /> :
-          <Skeleton className="h-12 bg-gray-200 w-24 rounded-full "/> }
+          {isLoading && <Skeleton className="h-12 bg-gray-200 w-24 rounded-full" />}
+          <AuthSidebar hideTrigger={!!user || isLoading} loader={isLoading} />
           
         </div>
       </div>

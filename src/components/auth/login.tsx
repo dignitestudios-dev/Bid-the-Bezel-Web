@@ -10,8 +10,6 @@ import { useLogin } from "@/features/auth/hooks";
 import { LoginPayload, loginSchema } from "@/features/auth/Schema";
 import Google from "../icons/Google";
 import Apple from "../icons/Apple";
-import { useAppDispatch } from "@/lib/hooks";
-import { login } from "@/lib/slices/authSlice";
 import { signInWithGoogle } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -20,7 +18,7 @@ const Login = ({
   onSuccess,
 }: {
    setStep?: (step: AuthStep) => void;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }) => {
   const { mutate, isPending } = useLogin();
   const queryClient = useQueryClient();
@@ -49,9 +47,10 @@ const Login = ({
           setStep?.("username");
           return;
         }
-        queryClient.invalidateQueries({ queryKey: ['get-profile'] });
+        // setStep?.("");
+        onSuccess();
         showSuccess("Logged in successfully");
-        onSuccess?.();
+        queryClient.invalidateQueries({ queryKey: ['get-profile'] });
       },
 
       onError: (err: any) => {
@@ -85,10 +84,9 @@ const Login = ({
               return;
             }
 
-            // dispatch(login(user));
-                    // window.location.reload();
             showSuccess("Logged in successfully");
-            onSuccess?.();
+            queryClient.invalidateQueries({ queryKey: ['get-profile'] });
+            onSuccess();
           },
 
           onError: (err: any) => {

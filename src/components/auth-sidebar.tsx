@@ -127,12 +127,7 @@ const AuthSidebar = ({
         return <PasswordChanged setStep={setStep} />;
 
       default:
-        return (
-          <Login
-            setStep={setStep}
-            onSuccess={handleClose}
-          />
-        );
+        return null
     }
   };
 
