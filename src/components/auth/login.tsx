@@ -69,7 +69,7 @@ const Login = ({
         {
           method: "google",
           idToken: token,
-          
+
         } as any,
         {
           onSuccess: (data) => {
@@ -86,7 +86,7 @@ const Login = ({
             }
 
             // dispatch(login(user));
-                    window.location.reload();
+            window.location.reload();
             showSuccess("Logged in successfully");
             onSuccess?.();
           },
@@ -149,7 +149,7 @@ const Login = ({
         <div className="w-full h-[1.5px] bg-gray-200" />
       </div>
 
-      <div   className="space-y-3">
+      <div className="space-y-3">
         <Button disabled={isPending} onClick={handleGoogleLogin} className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black">
           <Google />
           Continue with Google

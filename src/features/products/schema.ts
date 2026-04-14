@@ -22,3 +22,23 @@ export const watchDetailSchema = z.object({
 });
 
 export type WatchDetailPayload = z.infer<typeof watchDetailSchema>;
+
+
+
+export const shippingSchema = z.object({
+    courier: z.string().min(1, "Courier is required"),
+    referenceId: z.string().min(1, "Reference ID is required"),
+    trackingLink: z
+        .string()
+        .url("Enter a valid URL")
+        .refine((val) => val.trim() !== "", "Tracking link is required"),
+
+    file: z
+        .any()
+        .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
+            message: "File must be less than 5MB",
+        })
+        .optional(),
+});
+
+export type ShippingPayload = z.infer<typeof shippingSchema>;
