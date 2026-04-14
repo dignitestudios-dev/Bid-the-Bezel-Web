@@ -28,7 +28,7 @@ const Navbar = () => {
           {!isLoading && user && (
             <>
               <MessageNotificationMenu />
-              <ProfileMenu profileData={user?.user} />
+              <ProfileMenu profileData={user?.data} />
               <Link href={"/seller/plans"}>
                 <Button className="bg-[#415A77] rounded-full flex gap-2 items-center w-[154px] h-[45px] max-w-full">
                   <span>Start Selling</span> <ArrowRight size={15} />

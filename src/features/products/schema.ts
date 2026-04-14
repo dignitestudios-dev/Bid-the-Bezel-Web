@@ -3,6 +3,7 @@ import { z } from "zod";
 export const watchDetailSchema = z.object({
     watchBrand: z.string().min(2, "Watch brand is required"),
     modelReference: z.string().min(2, "Model reference is required"),
+    referenceId: z.string().optional(),
     price: z
         .string()
         .min(1, "Price is required")
@@ -27,18 +28,12 @@ export type WatchDetailPayload = z.infer<typeof watchDetailSchema>;
 
 export const shippingSchema = z.object({
     courier: z.string().min(1, "Courier is required"),
-    referenceId: z.string().min(1, "Reference ID is required"),
+    trackingNumber: z.string().min(1, "Reference ID is required"),
     trackingLink: z
         .string()
         .url("Enter a valid URL")
         .refine((val) => val.trim() !== "", "Tracking link is required"),
-
-    file: z
-        .any()
-        .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
-            message: "File must be less than 5MB",
-        })
-        .optional(),
+    images: z.any().optional(),
 });
 
 export type ShippingPayload = z.infer<typeof shippingSchema>;

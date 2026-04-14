@@ -16,10 +16,11 @@ import ProductPricing from "./product-pricing";
 import { displayPrice, getWatchById } from "@/lib/helper";
 
 type Props = {
-  id:string
+  id: string
+  productData: any
 };
 
-const SingleProduct = ({id}: Props) => {
+const SingleProduct = ({ id, productData }: Props) => {
   const router = useRouter();
   const watch = getWatchById(id);
 
@@ -52,7 +53,7 @@ const SingleProduct = ({id}: Props) => {
       </Breadcrumb>
 
       <div className="flex justify-between gap-4" >
-        <ProductDetail/>
+        <ProductDetail productData={productData} />
         <ProductPricing sellerId={watch?.sellerId} name={watch?.name} price={watch && displayPrice(watch)} watch={watch} />
       </div>
     </div>

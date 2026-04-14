@@ -12,7 +12,7 @@ type Props = {};
 const WatchListed = (props: Props) => {
   const router = useRouter();
   const watchDetail = useAppSelector(state => state.addProduct.watchDetails)
-  console.log(watchDetail)
+
   const handleViewListing = () => {
     const saleType = localStorage.getItem("saleType");
 

@@ -2,10 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-    reactStrictMode: true,
+  reactStrictMode: true,
   images: {
-    domains: ['picsum.photos' , "images.unsplash.com"],
-  },
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "**",
+
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  }
 };
 
 export default nextConfig;

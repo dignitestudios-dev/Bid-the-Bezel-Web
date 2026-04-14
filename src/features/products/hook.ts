@@ -1,6 +1,8 @@
 import { useApiMutation } from "@/hooks/api/useApiMutation";
 import { WatchDetailPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
+import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[id]/_components/shipping-form";
+
 
 export const useAddProduct = () =>
     useApiMutation<any, WatchDetailPayload>({
@@ -13,7 +15,7 @@ export const useAddProduct = () =>
             formData.append("model", data.modelReference);
             formData.append("price", String(data.price));
             formData.append("description", data.contents);
-            formData.append("referenceId", 'PD-12345');
+            formData.append("referenceId", String(data.referenceId));
             formData.append("type", 'fixed_price');
             formData.append("status", 'draft');
 
@@ -40,6 +42,44 @@ export const useAddProduct = () =>
 export const useUnAuthenticate = () =>
     useApiMutation<any, { id: string }>({
         endpoint: ({ id }) => `/products/${id}/unauthenticate/seller`,
+        method: "POST",
+        invalidateKeys: ["get-profile", "get-cards"],
+        mutationOptions: {
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
+
+export const useAuthenticate = () =>
+    useApiMutation<any, AuthenticatePayload>({
+        endpoint: ({ id }) => `/products/${id}/authenticate/seller`,
+        method: "POST",
+        isMultiPart: true,
+        invalidateKeys: ["get-profile", "get-cards"],
+        toBody: (variables) => {
+            const formData = new FormData();
+            formData.append("courier", variables.courier);
+            formData.append("trackingNumber", variables.trackingNumber);
+            formData.append("trackingLink", variables.trackingLink);
+            formData.append("isDraft", String(Boolean(variables.isDraft)));
+            const filesArray = Array.from(variables.images || []);
+            filesArray.forEach((file: any) => {
+                formData.append("images", file);
+            });
+
+            return formData;
+        },
+        mutationOptions: {
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
+
+export const useAuthenticatePayment = () =>
+    useApiMutation<any, { id: string }>({
+        endpoint: ({ id }) => `/products/${id}/authenticate/seller/payment`,
         method: "POST",
         invalidateKeys: ["get-profile", "get-cards"],
         mutationOptions: {

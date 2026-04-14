@@ -29,6 +29,7 @@ export const useLogin = () =>
         const token = data?.data?.token;
         if (token) {
           setToken(token);
+
         }
         localStorage.setItem("email", data.data.user.email);
       },
@@ -156,6 +157,6 @@ export const useMe = () => {
       const res = await apiClient.get("/users/me");
       return res.data;
     },
-    enabled: !!token,
+    // enabled: !!token,
   });
 };

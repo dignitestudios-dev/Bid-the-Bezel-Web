@@ -11,9 +11,11 @@ import { useUpdateProfile } from "@/features/auth/hooks";
 type Props = {
     onNext: () => void;
     userData: any;
+    setPersonalEditMode: any;
+    personalEditMode: any
 };
 
-const PersonalDetailForm = ({ onNext, userData }: Props) => {
+const PersonalDetailForm = ({ onNext, userData, personalEditMode, setPersonalEditMode }: Props) => {
     const { mutate, isPending } = useUpdateProfile()
     const {
         register,
@@ -28,7 +30,13 @@ const PersonalDetailForm = ({ onNext, userData }: Props) => {
             phone: userData?.phone || "",
         },
     });
-
+    const handleButtonClick = () => {
+        if (personalEditMode) {
+            handleSubmit(onSubmit)();
+        } else {
+            onNext();
+        }
+    };
     const onSubmit = (data: PersonalDetailPayload) => {
         mutate(data, {
             onSuccess: () => {
@@ -39,7 +47,16 @@ const PersonalDetailForm = ({ onNext, userData }: Props) => {
 
     return (
         <div className="bg-white border max-w-4xl mx-auto rounded-xl p-8 shadow-sm">
-            <h3 className="font-semibold mb-6 text-2xl">Personal details</h3>
+            <div className="flex items-center justify-between">
+
+                <h3 className="font-semibold mb-6 text-2xl">Personal details</h3>
+                <Button
+                    variant="outline"
+                    onClick={() => setPersonalEditMode(!personalEditMode)}
+                >
+                    {personalEditMode ? "Cancel" : "Edit"}
+                </Button>
+            </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -48,6 +65,7 @@ const PersonalDetailForm = ({ onNext, userData }: Props) => {
                             id="firstName"
                             label="First Name"
                             {...register("firstName")}
+                            disabled={!personalEditMode}
                             error={errors.firstName?.message}
                         />
 
@@ -58,6 +76,7 @@ const PersonalDetailForm = ({ onNext, userData }: Props) => {
                             id="LastName"
                             label="Last Name"
                             {...register("lastName")}
+                            disabled={!personalEditMode}
                             error={errors.lastName?.message}
                         />
 
@@ -85,6 +104,7 @@ const PersonalDetailForm = ({ onNext, userData }: Props) => {
                             id="phoneNumber"
                             label="Phone Number"
                             {...register("phone")}
+                            disabled={!personalEditMode}
                             maxLength={10}
                             error={errors.phone?.message}
                         />
@@ -93,8 +113,9 @@ const PersonalDetailForm = ({ onNext, userData }: Props) => {
                 </div>
 
                 <Button
-                    type="submit"
+                    type="button"
                     className="w-full"
+                    onClick={handleButtonClick}
                     disabled={isPending}
                 >
                     {isPending ? "Saving..." : "Next"}

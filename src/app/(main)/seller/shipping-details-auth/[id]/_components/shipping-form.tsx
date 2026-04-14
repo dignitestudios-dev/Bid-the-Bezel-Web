@@ -1,11 +1,28 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { useAuthenticate } from "@/features/products/hook";
 import { ShippingPayload, shippingSchema } from "@/features/products/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link2, Upload, X } from "lucide-react"
-import { useState } from "react"
+import { Link2, Upload, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-const ShippingForm = () => {
+
+type ShippingFormProps = {
+    setStep: (step: StepTypeAuthenticate) => void;
+    defaultValues: ShippingPayload;
+    setShippingData: React.Dispatch<React.SetStateAction<ShippingPayload>>;
+    id: any;
+};
+export type AuthenticatePayload = ShippingPayload & {
+    id: string;
+    isDraft: boolean;
+};
+
+const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingFormProps) => {
+    const [actionType, setActionType] = useState<"draft" | "submit" | null>(null);
+    const router = useRouter()
+    const { mutateAsync: authenticate, isPending } = useAuthenticate();
     const {
         register,
         handleSubmit,
@@ -14,33 +31,56 @@ const ShippingForm = () => {
         formState: { errors },
     } = useForm<ShippingPayload>({
         resolver: zodResolver(shippingSchema),
-        defaultValues: {
-            courier: "",
-            referenceId: "",
-            trackingLink: "",
-            file: undefined,
-        },
+        defaultValues,
     });
 
+    const fileList = watch("images");
+    const files = Array.from(fileList || []);
+    const onSubmit = (data: ShippingPayload) => {
+        setActionType("submit");
 
-    const [selectedCourier, setSelectedCourier] = useState("");
-    const [referenceId, setReferenceId] = useState("");
-    const [trackingLink, setTrackingLink] = useState("");
-    const [uploadedFile, setUploadedFile] = useState<null | Blob>();
+        authenticate({
+            id,
+            ...data,
+            isDraft: false,
+        }, {
+            onSuccess: () => {
+                setShippingData(data);
+                setStep("payment");
+            },
+            onSettled: () => setActionType(null)
 
-    const handleFileUpload = (e: any) => {
-        const file = e.target.files[0];
-        if (file && file.size <= 5 * 1024 * 1024) {
-            setUploadedFile(file);
-        }
+        });
+
     };
 
+    const handleDraft = () => {
+        setActionType("draft");
+
+        handleSubmit(async (data) => {
+            setShippingData(data);
+
+            authenticate(
+                {
+                    id,
+                    ...data,
+                    isDraft: true,
+                },
+                {
+                    onSuccess: () => {
+                        router.push("/profile/my-orders");
+                    },
+                    onSettled: () => {
+                        setActionType(null);
+                    },
+                }
+            );
+        })();
+    };
     const removeFile = () => {
-        setUploadedFile(null);
+        setValue("images", undefined);
     };
-    const onSubmit = () => {
 
-    }
     return (
         <div className=" p-4 flex items-center justify-center">
             <div className="bg-white max-w-4xl w-full rounded-lg shadow-sm p-6">
@@ -101,13 +141,13 @@ const ShippingForm = () => {
                         <input
                             type="text"
                             id="referenceId"
-                            {...register("referenceId")}
+                            {...register("trackingNumber")}
                             placeholder="ID here"
                             className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                        {errors.referenceId?.message && (
+                        {errors.trackingNumber?.message && (
                             <p className="text-red-500 pt-2 text-[12px]">
-                                {errors.referenceId.message}
+                                {errors.trackingNumber.message}
                             </p>
                         )}
                     </div>
@@ -143,7 +183,9 @@ const ShippingForm = () => {
                             <input
                                 type="file"
                                 id="file"
-                                {...register("file")}
+                                accept=".jpg,.jpeg,.png"
+                                {...register("images")}
+                                multiple
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             />
                             <Upload className="w-5 h-5 mx-auto mb-2 text-gray-400" />
@@ -156,44 +198,67 @@ const ShippingForm = () => {
                             </p>
                         </div>
 
-                        {uploadedFile && (
-                            <div className="mt-3 flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
-                                        <img
-                                            src={URL.createObjectURL(uploadedFile)}
-                                            alt="preview"
-                                            className="w-full h-full object-cover rounded"
-                                        />
+                        {errors.images?.message && (
+                            <p className="text-red-500 pt-2 text-[12px]">
+                                {errors.images.message as string}
+                            </p>
+                        )}
+
+                        {files.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                                {files.map((file: any, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-gray-200 rounded overflow-hidden">
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    alt="preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+
+                                            <p className="text-xs text-gray-500">
+                                                {(file.size / 1024 / 1024).toFixed(1)}mb
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newFiles = [...files];
+                                                newFiles.splice(index, 1);
+                                                setValue("images", newFiles);
+                                            }}
+                                            className="w-6 h-6 bg-red-500 text-white rounded flex items-center justify-center hover:bg-red-600"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
                                     </div>
-                                    <div>
-                                        {/* <p className="text-sm font-medium">
-                          {uploadedFile?.name}
-                        </p> */}
-                                        <p className="text-xs text-gray-500">
-                                            ({(uploadedFile.size / 1024 / 1024).toFixed(1)}mb)
-                                        </p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={removeFile}
-                                    className="w-6 h-6 bg-red-500 text-white rounded flex items-center justify-center hover:bg-red-600"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                                ))}
                             </div>
                         )}
                     </div>
 
                     <div className="flex gap-3">
-                        <Button type="submit" className="flex-1 py-3 bg-[#F7F7F7] text-primary border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 hover:text-primary transition-colors">
-                            Save as draft
+                        <Button
+                            type="button"
+                            disabled={isPending && actionType === "draft"}
+
+                            onClick={handleDraft}
+                            className="flex-1 py-3 bg-[#F7F7F7] text-primary border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 hover:text-primary transition-colors"
+                        >
+                            {isPending && actionType === "draft" ? "Saving..." : "Save as draft"}
                         </Button>
                         <Button
-                            // onClick={() => setSteps(2)}
+                            type="submit"
+                            disabled={isPending && actionType === "submit"}
                             className="flex-1 py-3 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2"
                         >
-                            Payment
+                            {isPending && actionType === "submit" ? "Submitting..." : "Payment"}
+
                             <svg
                                 className="w-4 h-4"
                                 fill="none"
@@ -212,6 +277,7 @@ const ShippingForm = () => {
                 </form>
             </div>
         </div>
-    )
-}
-export default ShippingForm
+    );
+};
+
+export default ShippingForm;

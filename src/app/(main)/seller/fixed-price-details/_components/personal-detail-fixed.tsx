@@ -36,6 +36,7 @@ const PersonalDetailFixed = ({ }: Props) => {
   const router = useRouter()
 
   const [bankEditModa, setBankEditMode] = useState(false)
+  const [personalEditMode, setPersonalEditMode] = useState(false)
   const searchParams = useSearchParams();
   const { data: userData } = useMe()
   const { data: cardData } = useGetCard()
@@ -136,7 +137,7 @@ const PersonalDetailFixed = ({ }: Props) => {
 
       {
         step == "personal-detail" && (
-          <PersonalDetailForm userData={userData?.data} onNext={nextStep} />
+          <PersonalDetailForm personalEditMode={personalEditMode} setPersonalEditMode={setPersonalEditMode} userData={userData?.data} onNext={nextStep} />
         )
       }
       {

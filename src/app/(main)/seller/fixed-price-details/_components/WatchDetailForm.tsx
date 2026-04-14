@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setWatchDetails, setWatchId } from "@/lib/slices/addproductSlice";
 import { useAddProduct } from "@/features/products/hook";
 import { generateReferenceId } from "@/lib/helper";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
     onNext: () => void;
@@ -17,6 +18,7 @@ type Props = {
 const WatchDetailForm = ({ onNext }: Props) => {
     const dispatch = useAppDispatch();
     const referenceId = generateReferenceId()
+    const queryClient = useQueryClient()
     const existingWatchDetails = useAppSelector((state) => state.addProduct.watchDetails);
 
     const { mutate, isPending } = useAddProduct()
@@ -29,9 +31,10 @@ const WatchDetailForm = ({ onNext }: Props) => {
         formState: { errors },
     } = useForm<WatchDetailPayload>({
         resolver: zodResolver(watchDetailSchema),
-        defaultValues: existingWatchDetails || {
+        defaultValues: {
             watchBrand: "",
             modelReference: "",
+            referenceId: referenceId,
             price: "",
             contents: "",
             photos: [],
@@ -54,10 +57,11 @@ const WatchDetailForm = ({ onNext }: Props) => {
     const onSubmit = (data: WatchDetailPayload) => {
         mutate(data, {
             onSuccess: (response) => {
-                if (response?.data?._id) {
-                    dispatch(setWatchDetails(response.data));
-                    dispatch(setWatchId(response.data._id));
+                if (response?.data) {
+                    dispatch(setWatchDetails(response?.data));
+                    dispatch(setWatchId(response?.data?._id));
                     onNext();
+                    queryClient.invalidateQueries({ queryKey: ["get-my-listing"] });
                 }
             },
         });

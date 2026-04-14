@@ -85,7 +85,7 @@ const ProductPricing = ({ sellerId, name, price, watch }: Props) => {
         </div>
       )}
 
-      {watch.isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
+      {watch?.isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
       <Reviews />
     </div>
   );

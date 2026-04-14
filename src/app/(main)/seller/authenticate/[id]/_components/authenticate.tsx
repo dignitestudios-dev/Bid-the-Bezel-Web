@@ -40,9 +40,11 @@ const Authenticate = ({ id }: Props) => {
             will be charged to authenticate your watch
           </p>
         </div>
-        <Link className="w-full" href={"shipping-details-auth"}>
-          <Button className="w-full" >Authenticate Now</Button>
-        </Link></div>
+        {/* <Link className="w-full" href={"shipping-details-auth"}> */}
+        <Button onClick={() => { router.push(`/seller/shipping-details-auth/${id}`) }}
+          className="w-full" >Authenticate Now</Button>
+        {/* </Link> */}
+      </div>
       <div className="w-[400px] h-[400px] p-5 rounded-xl bg-white shadow-lg flex flex-col justify-between items-center">
         <div className="flex flex-col items-center gap-4">
           <ShieldX

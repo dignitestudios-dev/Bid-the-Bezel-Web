@@ -15,3 +15,4 @@ type Step =
   | "watch-listed"
 
 type StepType = "personal-detail" | "watch-detail" | "bank-detail";
+type StepTypeAuthenticate = "shipping-detail" | "payment";

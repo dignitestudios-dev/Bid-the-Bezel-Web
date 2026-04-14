@@ -18,7 +18,7 @@ type Props = {
 
 const ShippingDetail = ({ setCurrentStep }: Props) => {
   const [steps, setSteps] = useState(1);
-  const [billingAddressType, setBillingAddressType] = useState<
+  const [yg6r4e2, setyg6r4e2] = useState<
     "same" | "different"
   >("same");
 
@@ -275,8 +275,8 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
                             <input
                               type="radio"
                               name="billingAddress"
-                              checked={billingAddressType === "same"}
-                              onChange={() => setBillingAddressType("same")}
+                              checked={yg6r4e2 === "same"}
+                              onChange={() => setyg6r4e2("same")}
                               className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
                             />
                           </div>
@@ -290,9 +290,9 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
                             <input
                               type="radio"
                               name="billingAddress"
-                              checked={billingAddressType === "different"}
+                              checked={yg6r4e2 === "different"}
                               onChange={() =>
-                                setBillingAddressType("different")
+                                setyg6r4e2("different")
                               }
                               className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
                             />

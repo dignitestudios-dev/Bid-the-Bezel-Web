@@ -22,10 +22,12 @@ import Register from "./auth/register";
 import OtpRegister from "./auth/otp-register";
 import PlanSelected from "./auth/plan-selected";
 import SubscriptionConfirmation from "./auth/subscription-confirmation";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const AuthSidebar = ({ hideTrigger , loader }: { hideTrigger?: boolean , loader?: boolean }) => {
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState<AuthStep>("login");
   const [open, setOpen] = useState(false);
 
@@ -45,6 +47,7 @@ const AuthSidebar = ({ hideTrigger , loader }: { hideTrigger?: boolean , loader?
   const handleSkipAndLogin = () => {
     // dispatch(login({ id: "skipped_user", name: "Guest" }));
     setOpen(false);
+    queryClient.invalidateQueries({ queryKey: ["get-profile"] });
     setCurrentStep("login");
   };
 

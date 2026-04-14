@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { useGetMyListing } from "@/features/listing/hook";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 // Dummy data for illustration purposes
@@ -72,41 +74,45 @@ const items: Fav[] = [
     isReceived: false,
   },
 ];
-const MyListings = () => {
-  const [isFulfilled, setIsFulfilled] = useState<boolean>(true);
+
+const MyListings = ({ productData, isFulfilled, setIsFulfilled, selectedTab }: { productData: any, isFulfilled: boolean, setIsFulfilled: (value: boolean) => void, selectedTab: string }) => {
+  const router = useRouter()
+
   return (
     <div>
-      <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">
-        <Button
-          className={`font-semibold w-[130px] max-w-full ${
-            !isFulfilled
+      {selectedTab === "draft" && (
+        <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">
+
+          <Button
+            className={`font-semibold w-[130px] max-w-full ${!isFulfilled
               ? "bg-white text-primary"
               : "bg-transparent text-primary"
-          }`}
-          onClick={() => setIsFulfilled(false)}
-        >
-          Unfulfilled
-        </Button>
-        <Button
-          className={`font-semibold w-[130px] max-w-full ${
-            isFulfilled
+              }`}
+            onClick={() => setIsFulfilled(false)}
+          >
+            Unfulfilled
+          </Button>
+          <Button
+            className={`font-semibold w-[130px] max-w-full ${isFulfilled
               ? "bg-white text-primary"
               : "bg-transparent text-primary"
-          }`}
-          onClick={() => setIsFulfilled(true)}
-        >
-          Fulfilled
-        </Button>
-      </div>
+              }`}
+            onClick={() => setIsFulfilled(true)}
+          >
+            Fulfilled
+          </Button>
+        </div>
+
+      )}
 
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
-        {items.map((it, index) => (
+        {productData?.map((product: any, index: number) => (
           <div className="card p-0 relative overflow-hidden">
-            <div key={index} className="p-3 w-full flex items-start gap-3">
+            <div onClick={() => router.push(`/fixed-price/${product?._id}`)} key={index} className="p-3 w-full flex items-start gap-3">
               <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
                 <Image
-                  src={it.image}
-                  alt={it.title}
+                  src={product?.image}
+                  alt={product?.title}
                   width={96}
                   height={96}
                   className="object-cover w-full h-full"
@@ -114,8 +120,8 @@ const MyListings = () => {
               </div>
 
               <div className="flex-1">
-                <p className="text-lg font-semibold text-end">{it.price}</p>
-                <p className="text-lg font-medium">{it.title}</p>
+                <p className="text-lg font-semibold text-end">{product?.price}</p>
+                <p className="text-lg font-medium">{product?.brandName}</p>
               </div>
             </div>
 
@@ -131,19 +137,18 @@ const MyListings = () => {
             )}
 
             <div
-              className={`p-3 text-white font-medium text-center  ${
-                it.type === "auction"
-                  ? "bg-[#415A77]"
-                  : it.type === "fixed"
+              className={`p-3 text-white font-medium text-center  ${product.type === "auction"
+                ? "bg-[#415A77]"
+                : product.type === "fixed_price"
                   ? "bg-[#778DA9]"
                   : "bg-[#D9B918]"
-              }`}
+                }`}
             >
-              {it.type === "auction"
+              {product.type === "auction"
                 ? "Auction"
-                : it.type === "fixed"
-                ? "Fixed"
-                : "Taking Offers"}
+                : product.type === "fixed_price"
+                  ? "Fixed Price"
+                  : "Taking Offers"}
             </div>
           </div>
         ))}

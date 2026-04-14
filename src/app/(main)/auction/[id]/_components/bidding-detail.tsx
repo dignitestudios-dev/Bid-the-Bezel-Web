@@ -17,7 +17,6 @@ type Props = {
 
 const BiddingDetail = ({ sellerId, watch }: Props) => {
   const user = useAppSelector((state) => state.auth.user);
-
   return (
     <div className="lg:w-[40%] space-y-7">
       {user?.id == sellerId ? (

@@ -69,7 +69,7 @@ const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.Se
 
         showSuccess("Profile updated successfully!");
         setCurrentStep?.("purchase-plan");
-        dispatch(login(data?.data?.user));
+        // dispatch(login(data?.data?.user));
       },
     });
   };
