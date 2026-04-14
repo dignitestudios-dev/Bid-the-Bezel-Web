@@ -21,9 +21,9 @@ type Step =
   | "password-changed";
 
 const ResetPassword = ({
-  setCurrentStep,
+  setStep,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
 }) => {
   const { mutate, isPending } = useUpdatePassword();
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<updatePasswordPayload>({
@@ -40,7 +40,7 @@ const ResetPassword = ({
     mutate({ password, resetToken } as any, {
       onSuccess: () => {
         showSuccess("Password reset successfully!");
-        setCurrentStep?.("password-changed");
+        setStep?.("password-changed");
         localStorage.removeItem('token')
         localStorage.removeItem('email')
       },

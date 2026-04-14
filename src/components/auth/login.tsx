@@ -10,19 +10,18 @@ import { useLogin } from "@/features/auth/hooks";
 import { LoginPayload, loginSchema } from "@/features/auth/Schema";
 import Google from "../icons/Google";
 import Apple from "../icons/Apple";
-import { useAppDispatch } from "@/lib/hooks";
-import { login } from "@/lib/slices/authSlice";
 import { signInWithGoogle } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Login = ({
-  setCurrentStep,
+    setStep,
   onSuccess,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>>;
-  onSuccess?: () => void;
+   setStep?: (step: AuthStep) => void;
+  onSuccess: () => void;
 }) => {
   const { mutate, isPending } = useLogin();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
@@ -41,17 +40,17 @@ const Login = ({
       onSuccess: (data) => {
         const user = data?.data?.user;
         if (!user?.isEmailVerified) {
-          setCurrentStep?.("otp-register");
+          setStep?.("otp-register");
           return;
         }
         if (!user?.isProfileCompleted) {
-          setCurrentStep?.("username");
+          setStep?.("username");
           return;
         }
-        // dispatch(login(user));
-        // window.location.reload();
+        // setStep?.("");
+        onSuccess();
         showSuccess("Logged in successfully");
-        onSuccess?.();
+        queryClient.invalidateQueries({ queryKey: ['get-profile'] });
       },
 
       onError: (err: any) => {
@@ -76,19 +75,18 @@ const Login = ({
             const user = data?.data?.user;
 
             if (!user?.isEmailVerified) {
-              setCurrentStep?.("otp-register");
+              setStep?.("otp-register");
               return;
             }
 
             if (!user?.isProfileCompleted) {
-              setCurrentStep?.("username");
+              setStep?.("username");
               return;
             }
 
-            // dispatch(login(user));
-            // window.location.reload();
             showSuccess("Logged in successfully");
-            onSuccess?.();
+            queryClient.invalidateQueries({ queryKey: ['get-profile'] });
+            onSuccess();
           },
 
           onError: (err: any) => {
@@ -127,7 +125,7 @@ const Login = ({
         <div className="w-full flex justify-end">
           <button
             type="button"
-            onClick={() => setCurrentStep?.("forgot-password")}
+            onClick={() => setStep?.("forgot-password")}
             className="text-sm font-medium cursor-pointer"
           >
             Forgot your password?
@@ -163,7 +161,7 @@ const Login = ({
         <p className="text-center mt-5">
           First time here?{" "}
           <button
-            onClick={() => setCurrentStep?.("register")}
+            onClick={() => setStep?.("register")}
             className="font-semibold cursor-pointer"
           >
             Create an account

@@ -20,15 +20,19 @@ type Step =
   | "password-changed";
 
 const Otp = ({
-  setCurrentStep,
+  setStep,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
 }) => {
   const { mutate, isPending } = useForgotOtpVerify();
   const { mutate: resendOtp, isPending: isResending } = useForgotPassword();
   const [otp, setOtp] = useState<string[]>(["", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const email = localStorage.getItem('email')
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    setEmail(localStorage.getItem('email'));
+  }, []);
   const [timer, setTimer] = useState(0);
 
 
@@ -108,7 +112,7 @@ const Otp = ({
         if (response?.data?.token) {
           localStorage.setItem("token", response?.data?.token);
           showSuccess("OTP verified successfully!");
-          setCurrentStep?.("reset-password");
+          setStep?.("reset-password");
         }
       },
       onError: (err: any) => {

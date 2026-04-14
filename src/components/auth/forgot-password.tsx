@@ -22,9 +22,9 @@ type Step =
   | "password-changed";
 
 const ForgotPassword = ({
-  setCurrentStep,
+  setStep,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
 }) => {
   const { mutate, isPending } = useForgotPassword();
 
@@ -46,7 +46,7 @@ const ForgotPassword = ({
       onSuccess: () => {
         localStorage.setItem('email', body.email)
         showSuccess("OTP sent to your email!");
-        setCurrentStep?.('otp')
+        setStep?.('otp')
       },
       onError: (err: any) => {
         console.error(err);
@@ -76,7 +76,7 @@ const ForgotPassword = ({
         <p className="text-center mt-4">
           Remember your password?{" "}
           <button
-            onClick={() => setCurrentStep?.("login")}
+            onClick={() => setStep?.("login")}
             className="font-semibold cursor-pointer"
           >
             Back to login

@@ -1,12 +1,12 @@
-  "use client"
-  import { apiClient } from "@/lib/apiClient";
-  import {
-    useMutation,
-    UseMutationOptions,
-    UseMutationResult,
-    useQueryClient,
-  } from "@tanstack/react-query";
-  import { AxiosError } from "axios";
+
+import { apiClient } from "@/lib/apiClient";
+import {
+  useMutation,
+  UseMutationOptions,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
   type HttpMethod = "POST" | "PUT" | "PATCH" | "DELETE";
 

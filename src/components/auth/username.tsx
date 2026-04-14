@@ -1,30 +1,24 @@
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDebouncedCallback } from "use-debounce"; // The library hook
+import { useDebouncedCallback } from "use-debounce";
 import { Camera, Loader2 } from "lucide-react";
 
 import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
 import { completeProfileSchema, CompleteProfilePayload } from "@/features/auth/Schema";
-import { showError, showSuccess } from "@/lib/toast";
+import { showSuccess } from "@/lib/toast";
 import { useCompleteProfile, useCheckUsername } from "@/features/auth/hooks";
-import { useAppDispatch } from "@/lib/hooks";
-import { login } from "@/lib/slices/authSlice";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 
 type AuthStep = "login" | "register" | "otp-register" | "username" | "purchase-plan" | "plan-selected" | "subscription-confirmation" | "forgot-password" | "otp" | "reset-password" | "password-changed";
 
-const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>> }) => {
-  const dispatch = useAppDispatch();
+const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const { mutate, isPending: isSubmitting } = useCompleteProfile();
   const { mutateAsync: checkUsername, isPending: isChecking, data } = useCheckUsername();
-
-  // Local state for UI feedback
-  // const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 
   const {
     register,
@@ -63,13 +57,10 @@ const Username = ({ setCurrentStep }: { setCurrentStep?: React.Dispatch<React.Se
   };
 
   const onSubmit = (body: CompleteProfilePayload) => {
-    // if (isAvailable === false) return;
     mutate(body, {
-      onSuccess: (data) => {
-
+      onSuccess: () => {
         showSuccess("Profile updated successfully!");
-        setCurrentStep?.("purchase-plan");
-        // dispatch(login(data?.data?.user));
+        setStep?.("purchase-plan");
       },
     });
   };

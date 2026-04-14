@@ -8,17 +8,21 @@ import { useForm } from "react-hook-form";
 import { setToken } from "@/lib/cookies";
 
 const OtpRegister = ({
-  setCurrentStep,
+  setStep,
   onSuccess,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>>;
+ setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
   const { mutate, isPending } = useOtpVerify();
   const { mutate: resendOtp, isPending: isResending } = useResendOtp();
   const [otp, setOtp] = useState<string[]>(["", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const email = localStorage.getItem('email')
+  const [email, setEmail] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    setEmail(localStorage.getItem('email'));
+  }, []);
   const [timer, setTimer] = useState(120);
 
 
@@ -98,7 +102,7 @@ const OtpRegister = ({
       onSuccess: (response) => {
         if (response.data?.user) {
           setToken(response?.data?.token);
-          setCurrentStep?.("username");
+          setStep?.("username");
         }
       },
       onError: (err: any) => {
