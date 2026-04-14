@@ -21,7 +21,7 @@ export const useLogin = () =>
   useApiMutation<AuthResponse, LoginPayload>({
     endpoint: "/auth",
     method: "POST",
-    // invalidateKeys: ["get-profile"],
+    invalidateKeys: ["get-profile"],
     mutationOptions: {
       onSuccess: (data) => {
         const token = data?.data?.token;
@@ -105,7 +105,7 @@ export const useCompleteProfile = () =>
     endpoint: "/users/complete-profile",
     method: "POST",
     isMultiPart: true,
-    // invalidateKeys: ["get-profile"],
+    invalidateKeys: ["get-profile"],
     mutationOptions: {
       onSuccess: (data) => {
         const token = data?.data?.token;

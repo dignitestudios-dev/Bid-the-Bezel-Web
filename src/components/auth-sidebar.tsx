@@ -67,7 +67,6 @@ const AuthSidebar = ({
   const handleClose = () => clearStep();
 
   const handleSkipAndLogin = () => {
-    queryClient.invalidateQueries({ queryKey: ["get-profile"] });
     clearStep();
   };
 

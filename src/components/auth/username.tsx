@@ -10,7 +10,6 @@ import { completeProfileSchema, CompleteProfilePayload } from "@/features/auth/S
 import { showSuccess } from "@/lib/toast";
 import { useCompleteProfile, useCheckUsername } from "@/features/auth/hooks";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
 
 type AuthStep = "login" | "register" | "otp-register" | "username" | "purchase-plan" | "plan-selected" | "subscription-confirmation" | "forgot-password" | "otp" | "reset-password" | "password-changed";
 
