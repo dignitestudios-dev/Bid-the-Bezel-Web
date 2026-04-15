@@ -5,11 +5,22 @@ import { EmblaOptionsType } from "embla-carousel";
 import Link from "next/link";
 import { fixedPriceWatches } from "@/lib/constants";
 
-type Props = {};
+type Props = {
+  fixedPrice: any[]
+};
 const OPTIONS: EmblaOptionsType = { dragFree: true };
 const SLIDE_COUNT = 16;
 const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
-const FixedPrice = (props: Props) => {
+const FixedPrice = ({ fixedPrice }: Props) => {
+  
+  const mappedData = fixedPrice?.map((item: any) => ({
+  watchId: item._id,
+  name: `${item.brandName} `,
+  image: item.images?.[0]?.location || "https://picsum.photos/400",
+  price: item.price,
+  saleType: item.type === "fixed_price" ? "fixed-price" : item.type,
+  isAuthenticated: item.authentication?.status === "approved", // adjust if needed
+}));
   return (
     <div className=" bg-[#101f2f]">
       <div className="max-w-screen-2xl text-white py-12 mx-auto bg-[url('/images/fixed-bg.png')]">
@@ -37,7 +48,7 @@ const FixedPrice = (props: Props) => {
           </div>
           <EmblaCarousel
             FColor="16, 31, 47"
-            slides={fixedPriceWatches}
+            slides={mappedData}
             options={OPTIONS}
           />
         </div>

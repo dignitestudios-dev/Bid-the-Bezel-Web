@@ -1,15 +1,14 @@
 "use client";
 
 import Plans from "@/app/(main)/_components/plans";
-import { useAppSelector } from "@/lib/hooks";
+import { useMe } from "@/features/auth/hooks";
 import { useRouter } from "next/navigation";
 
 const PlansSubs = () => {
   const router = useRouter();
+  const { data } = useMe()
 
-  const isSubscribed = useAppSelector(
-    (state) => state.auth.user?.isSubscribed
-  );
+  const isSubscribed = data?.data?.isSellerPlanPurchased;
 
   if (isSubscribed) {
     router.push("/seller/sale-type");

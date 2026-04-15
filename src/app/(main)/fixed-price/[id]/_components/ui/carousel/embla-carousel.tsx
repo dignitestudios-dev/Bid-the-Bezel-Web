@@ -49,23 +49,22 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
   if (!slides.length) return null;
 
   return (
-    <div className="embla">
+    <div className="embla overflow-hidden">
       {/* MAIN */}
-      <div className="embla__viewport" ref={emblaMainRef}>
-        <div className="embla__container">
+
+      <div className="embla__viewport overflow-hidden" ref={emblaMainRef}>
+        <div className="embla__container flex">
           {slides?.map((item, index) => (
-            <div className="embla__slide" key={index}>
+            <div className="embla__slide flex-[0_0_100%]" key={index}>
               <div className="relative w-full h-[500px]">
                 <Image
                   src={item?.location}
-                  alt={`slide`}
+                  alt="slide"
                   fill
                   className="object-cover rounded-lg"
                   sizes="100vw"
                   unoptimized
                 />
-                {/* <img src={item?.location} alt="" /> */}
-
               </div>
             </div>
           ))}
@@ -73,17 +72,25 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
       </div>
 
       {/* THUMBS */}
-      <div className="embla-thumbs">
-        <div className="embla-thumbs__viewport" ref={emblaThumbsRef}>
-          <div className="embla-thumbs__container">
+      <div className="embla-thumbs mt-4">
+        <div
+          className="embla-thumbs__viewport overflow-hidden"
+          ref={emblaThumbsRef}
+        >
+          <div className="embla-thumbs__container flex gap-3">
             {slides.map((item, index) => (
-              <Thumb
+              <div
                 key={index}
-                index={index}
-                selected={index === selectedIndex}
-                src={item?.location}
-                onClick={() => scrollTo(index)}
-              />
+                className={`flex-[0_0_auto] ${index === selectedIndex ? "opacity-100" : "opacity-50"
+                  }`}
+              >
+                <Thumb
+                  index={index}
+                  selected={index === selectedIndex}
+                  src={item?.location}
+                  onClick={() => scrollTo(index)}
+                />
+              </div>
             ))}
           </div>
         </div>

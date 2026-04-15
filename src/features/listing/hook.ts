@@ -22,3 +22,27 @@ export const useGetMyListingDetail = (id: string) => {
         },
     });
 };
+
+
+export const useGetListing = (type?: string) => {
+    return useQuery({
+        queryKey: ["get-listing", type],
+        queryFn: async () => {
+            const res = await apiClient.get(`/products`, {
+                params: { type }
+            });
+            return res.data;
+        },
+    });
+};
+
+
+export const useGetAllListing = () => {
+    return useQuery({
+        queryKey: ["get-home-listing"],
+        queryFn: async () => {
+            const res = await apiClient.get(`/products/homepage`);
+            return res.data;
+        },
+    });
+};

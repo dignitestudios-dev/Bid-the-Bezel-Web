@@ -33,7 +33,7 @@ const Otp = ({
   useEffect(() => {
     setEmail(localStorage.getItem('email'));
   }, []);
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(120);
 
 
   useEffect(() => {

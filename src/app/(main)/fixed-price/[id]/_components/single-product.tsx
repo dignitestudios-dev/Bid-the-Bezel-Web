@@ -10,10 +10,9 @@ import {
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
 import ProductDetail from "./product-detail";
 import ProductPricing from "./product-pricing";
-import { displayPrice, getWatchById } from "@/lib/helper";
+import { useEffect } from "react";
 
 type Props = {
   id: string
@@ -22,7 +21,7 @@ type Props = {
 
 const SingleProduct = ({ id, productData }: Props) => {
   const router = useRouter();
-  const watch = getWatchById(id);
+
 
   return (
     <div className="max-w-screen-2xl mx-auto w-[90%] py-12">
@@ -54,7 +53,7 @@ const SingleProduct = ({ id, productData }: Props) => {
 
       <div className="flex justify-between gap-4" >
         <ProductDetail productData={productData} />
-        <ProductPricing sellerId={watch?.sellerId} name={watch?.name} price={watch && displayPrice(watch)} watch={watch} />
+        <ProductPricing price={productData?.price} watch={productData} />
       </div>
     </div>
   );

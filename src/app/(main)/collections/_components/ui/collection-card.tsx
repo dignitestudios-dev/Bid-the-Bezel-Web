@@ -4,12 +4,16 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 type Props = any;
-
+const typeRouteMap: Record<string, string> = {
+  fixed_price: "fixed-price",
+  auction: "auction",
+  taking_offer: "taking-offer",
+};
 const CollectionCard = (props: Props) => {
   const [isFav, setIsFav] = useState(false);
   const watch = props.watch;
   return (
-    <Link href={`/${watch.saleType}/${watch.watchId}`}>
+    <Link href={`/${typeRouteMap[watch.type]}/${watch?._id}`}>
       <div className="bg-[#F7F7F7]  border border-gray-200 rounded-xl p-4 w-full h-[400xp]">
         <div className="relative w-full">
           {watch.isAuthenticated && (
@@ -24,10 +28,11 @@ const CollectionCard = (props: Props) => {
             </div>
           )}
           <Image
-            src={watch.image || "/images/watch.png"}
+            src={watch.images[0]?.location || "/images/watch.png"}
             alt="img"
             className="bg-contain w-full rounded-xl"
             width={500}
+            unoptimized
             height={500}
           />
         </div>
@@ -36,10 +41,11 @@ const CollectionCard = (props: Props) => {
           <div className="flex justify-between gap-4">
             <div>
               <h2 className="text-sm">
-                {watch.saleType === "fixed-price" ? "Price" : "Starting Price"}
+                {watch?.type === "fixed_price" ? "Price" : "Starting Price"}
               </h2>{" "}
               <h1 className="font-semibold text-lg">
-                ${watch.basePrice || watch.price || watch.expectedPrice}
+                {/* ${watch.basePrice || watch.price || watch.expectedPrice} */}
+                ${watch?.price}
               </h1>
             </div>
             {watch.saleType === "auction" && (
@@ -66,9 +72,8 @@ const CollectionCard = (props: Props) => {
                   viewBox="0 0 24 24"
                   stroke="red"
                   strokeWidth={1}
-                  className={`w-7 h-7 transition-all duration-300 ${
-                    isFav ? "animate-ping-once" : ""
-                  }`}
+                  className={`w-7 h-7 transition-all duration-300 ${isFav ? "animate-ping-once" : ""
+                    }`}
                 >
                   <path
                     strokeLinecap="round"

@@ -164,3 +164,42 @@ export const ListingSkeleton = () => {
         </div>
     );
 };
+
+export const ProductDetailSkeleton = () => {
+    return (
+        <div className="max-w-screen-2xl mx-auto w-[90%] py-12 animate-pulse">
+
+            {/* Breadcrumb Skeleton */}
+            <div className="h-5 w-40 bg-gray-200 rounded mb-6"></div>
+
+            <div className="flex gap-6">
+
+                {/* Left: Image Skeleton */}
+                <div className="w-1/2 space-y-4">
+                    <div className="h-[400px] bg-gray-200 rounded-xl"></div>
+                    <div className="flex gap-2">
+                        <div className="h-20 w-20 bg-gray-200 rounded"></div>
+                        <div className="h-20 w-20 bg-gray-200 rounded"></div>
+                        <div className="h-20 w-20 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+
+                {/* Right: Details Skeleton */}
+                <div className="w-1/2 space-y-4">
+                    <div className="h-6 w-3/4 bg-gray-200 rounded"></div>
+                    <div className="h-6 w-1/2 bg-gray-200 rounded"></div>
+                    <div className="h-10 w-1/3 bg-gray-200 rounded"></div>
+
+                    <div className="space-y-2">
+                        <div className="h-4 w-full bg-gray-200 rounded"></div>
+                        <div className="h-4 w-5/6 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-4/6 bg-gray-200 rounded"></div>
+                    </div>
+
+                    <div className="h-12 w-full bg-gray-200 rounded mt-6"></div>
+                </div>
+
+            </div>
+        </div>
+    )
+}

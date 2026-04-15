@@ -8,6 +8,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ShippingPayload } from "@/features/products/schema";
 import { useParams } from "next/navigation";
 import PaymentDetail from "./payment-detal";
+import { useUnAuthenticate } from "@/features/products/hook";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
@@ -15,9 +17,24 @@ type Props = {
 
 const ShippingDetailAuth = ({ }: Props) => {
   const { id } = useParams()
+  const queryClient = useQueryClient()
   const searchParams = useSearchParams();
   const router = useRouter();
   const step = (searchParams.get("step") as StepTypeAuthenticate) || "shipping-detail";
+
+  const { mutate: unAuthenticate, isPending: unAuthenticatePending } = useUnAuthenticate()
+
+  const handleUnAuthenticate = () => {
+    unAuthenticate(
+      { id: id as string },
+      {
+        onSuccess: (response) => {
+          queryClient.setQueryData(["shipping-result"], response);
+          router.push("/seller/watch-listed");
+        },
+      }
+    );
+  };
 
   const [shippingData, setShippingData] = useState<ShippingPayload>({
     courier: "",
@@ -62,7 +79,19 @@ const ShippingDetailAuth = ({ }: Props) => {
 
   return (
     <div className="py-24">
-      <div>
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-end mb-4">
+          <Button
+            disabled={unAuthenticatePending}
+            onClick={handleUnAuthenticate}
+            className="text-red-600 bg-gray-100 "
+          >
+            {unAuthenticatePending
+              ? "Processing..."
+              : "Continue without authenticating"}
+          </Button>
+        </div>
+
         <div className="mb-6 max-w-4xl mx-auto flex justify-between items-center">
           <h2 className="font-semibold">
             {steps == 1 && "Shipping details"}

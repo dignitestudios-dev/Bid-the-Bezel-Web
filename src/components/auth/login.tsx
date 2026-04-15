@@ -14,12 +14,13 @@ import { signInWithGoogle } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Login = ({
-    setStep,
+  setStep,
   onSuccess,
 }: {
-   setStep?: (step: AuthStep) => void;
+  setStep?: (step: AuthStep) => void;
   onSuccess: () => void;
 }) => {
+  const queryClient = useQueryClient()
   const { mutate, isPending } = useLogin();
   const {
     register,
@@ -48,6 +49,7 @@ const Login = ({
         }
         onSuccess();
         showSuccess("Logged in successfully");
+        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] })
       },
 
       onError: (err: any) => {
@@ -83,6 +85,7 @@ const Login = ({
 
             showSuccess("Logged in successfully");
             onSuccess();
+            queryClient.invalidateQueries({ queryKey: ["get-home-listing"] })
           },
 
           onError: (err: any) => {

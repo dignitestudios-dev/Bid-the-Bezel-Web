@@ -25,7 +25,7 @@ const ProductDetail = ({ productData }: Props) => {
         )}
       </div>
       <div>
-        <h1 className='font-semibold'>Contents</h1>
+        <h1 className='font-semibold break-all'>Contents</h1>
         {productData?.description}
       </div>
       <Questions />

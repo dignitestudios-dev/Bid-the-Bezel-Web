@@ -1,24 +1,21 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from "@/lib/hooks";
-import { ReceiptText } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
 
-type Props = {};
 
-const WatchListed = (props: Props) => {
+const WatchListed = () => {
   const router = useRouter();
-  const watchDetail = useAppSelector(state => state.addProduct.watchDetails)
+  const queryClient = useQueryClient()
+  const data = queryClient.getQueryData<{ data: { _id: string; referenceId: string } }>(["shipping-result"]);
 
   const handleViewListing = () => {
     const saleType = localStorage.getItem("saleType");
-
+    queryClient.invalidateQueries({ queryKey: ["get-listing-detail"] })
     saleType === "auction"
       ? router.push("/auction/auc-004")
-      : router.push(`/fixed-price/${watchDetail?._id}`);
+      : router.push(`/fixed-price/${data?.data?._id}`);
   };
   return (
     <div className="h-screen flex gap-2 text-center flex-col justify-center items-center">
@@ -31,7 +28,7 @@ const WatchListed = (props: Props) => {
         />
         <div className="border flex justify-between items-center py-1 px-2 rounded-xl w-full">
           <h1 className=" font-semibold">Watch Reference ID</h1>{" "}
-          <h3 className="text-xs">{watchDetail?.referenceId}</h3>
+          <h3 className="text-xs">{data?.data?.referenceId}</h3>
         </div>
         <div>
           <h1 className="text-2xl font-semibold">Your watch is Listed</h1>

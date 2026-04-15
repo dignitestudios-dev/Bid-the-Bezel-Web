@@ -10,11 +10,13 @@ import { completeProfileSchema, CompleteProfilePayload } from "@/features/auth/S
 import { showSuccess } from "@/lib/toast";
 import { useCompleteProfile, useCheckUsername } from "@/features/auth/hooks";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 
 type AuthStep = "login" | "register" | "otp-register" | "username" | "purchase-plan" | "plan-selected" | "subscription-confirmation" | "forgot-password" | "otp" | "reset-password" | "password-changed";
 
 const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
   const [preview, setPreview] = useState<string | null>(null);
+  const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutate, isPending: isSubmitting } = useCompleteProfile();
   const { mutateAsync: checkUsername, isPending: isChecking, data } = useCheckUsername();
@@ -39,7 +41,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
       return;
     }
     try {
-       await checkUsername({ userName: value });
+      await checkUsername({ userName: value });
     } catch (err) {
       console.error("Error checking username:", err);
     }
@@ -60,6 +62,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
       onSuccess: () => {
         showSuccess("Profile updated successfully!");
         setStep?.("purchase-plan");
+        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] })
       },
     });
   };

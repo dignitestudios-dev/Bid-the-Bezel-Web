@@ -14,6 +14,8 @@ import {
   fixedPriceWatches,
   offerWatches,
 } from "@/lib/constants";
+import { useGetListing } from "@/features/listing/hook";
+import { ListingSkeleton } from "@/components/skeleton";
 
 type WatchCategory = "all" | "auction" | "fixed" | "offer";
 type Props = {};
@@ -70,15 +72,25 @@ const Collections = (props: Props) => {
       watchCategory === "all"
         ? setCategorizedWatches(allWatches)
         : watchCategory === "auction"
-        ? setCategorizedWatches(auctionWatches)
-        : watchCategory === "fixed"
-        ? setCategorizedWatches(fixedPriceWatches)
-        : watchCategory === "offer"
-        ? setCategorizedWatches(offerWatches)
-        : setCategorizedWatches(allWatches);
+          ? setCategorizedWatches(auctionWatches)
+          : watchCategory === "fixed"
+            ? setCategorizedWatches(fixedPriceWatches)
+            : watchCategory === "offer"
+              ? setCategorizedWatches(offerWatches)
+              : setCategorizedWatches(allWatches);
       setFilter(watchCategory);
     }
   }, [watchCategory]);
+
+  const categoryToApiType: Record<WatchCategory, string | undefined> = {
+    all: undefined,
+    auction: "auction",
+    fixed: "fixed_price",
+    offer: "taking_offers",
+  };
+  const apiType = categoryToApiType[watchCategory || "all"];
+
+  const { data: ProductData, isLoading } = useGetListing(apiType)
 
   return (
     <div className="max-w-screen-2xl mx-auto py-16 w-[90%]">
@@ -100,9 +112,18 @@ const Collections = (props: Props) => {
           />
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {categorizedWatches.map((watch, idx) => (
-            <CollectionCard key={idx} watch={watch} />
-          ))}
+          {isLoading ? (
+            <div>
+              <ListingSkeleton />
+            </div>
+          )
+            : ProductData?.data?.length === 0 ? (
+              <div className="col-span-full flex items-center justify-center text-center py-10">
+                No Product Found
+              </div>
+            ) : ProductData?.data?.map((watch: any, idx: number) => (
+              <CollectionCard key={idx} watch={watch} />
+            ))}
         </div>
       </div>
     </div>

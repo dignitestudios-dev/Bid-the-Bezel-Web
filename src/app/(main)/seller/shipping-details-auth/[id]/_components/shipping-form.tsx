@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { useAuthenticate } from "@/features/products/hook";
+import { useGetMyListingDetail } from "@/features/listing/hook";
+import { useAuthenticate, useUnAuthenticate } from "@/features/products/hook";
 import { ShippingPayload, shippingSchema } from "@/features/products/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link2, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 
@@ -21,6 +23,9 @@ export type AuthenticatePayload = ShippingPayload & {
 
 const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingFormProps) => {
     const [actionType, setActionType] = useState<"draft" | "submit" | null>(null);
+    const queryClient = useQueryClient()
+
+    const { data, isLoading } = useGetMyListingDetail(id)
     const router = useRouter()
     const { mutateAsync: authenticate, isPending } = useAuthenticate();
     const {
@@ -34,8 +39,20 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
         defaultValues,
     });
 
+    useEffect(() => {
+        if (data?.data?.shipments?.length > 0) {
+            const shipment = data.data.shipments[0];
+
+            setValue("courier", shipment.courier || "");
+            setValue("trackingNumber", shipment.trackingNumber || "");
+            setValue("trackingLink", shipment.trackingLink || "");
+        }
+    }, [data, setValue]);
+
     const fileList = watch("images");
     const files = Array.from(fileList || []);
+
+
     const onSubmit = (data: ShippingPayload) => {
         setActionType("submit");
 
@@ -44,9 +61,11 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
             ...data,
             isDraft: false,
         }, {
-            onSuccess: () => {
+            onSuccess: (response) => {
                 setShippingData(data);
                 setStep("payment");
+                queryClient.setQueryData(["shipping-result"], response);
+                queryClient.invalidateQueries({ queryKey: ["get-listing-detail", id] });
             },
             onSettled: () => setActionType(null)
 
@@ -69,6 +88,7 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
                 {
                     onSuccess: () => {
                         router.push("/profile/my-orders");
+                        queryClient.invalidateQueries({ queryKey: ["get-listing-detail", id] });
                     },
                     onSettled: () => {
                         setActionType(null);
@@ -83,8 +103,15 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
 
     return (
         <div className=" p-4 flex items-center justify-center">
+            
             <div className="bg-white max-w-4xl w-full rounded-lg shadow-sm p-6">
                 {/* Our Info Section */}
+                <div className="flex justify-end">
+                    <div>
+
+                    </div>
+                  
+                </div>
                 <div className="bg-gray-50 rounded-lg p-4 mb-6">
                     <h3 className="text-sm font-semibold mb-3">Our Info</h3>
                     <div className="grid grid-cols-2 gap-4">
