@@ -58,22 +58,23 @@ const Questions = (props: Props) => {
         <CircleQuestionMark /> <h1>Questions about the product</h1>
       </div>
       <div className="p-4 ">
-        {isLoggedIn ?    <div className="bg-[#F7F7F7] p-2 rounded-lg  flex h-20 flex-col items-end"> 
-          <Input placeholder="Ask your question" className="border-none shadow-none focus:shadow-none focus:border-none focus:outline-none" />
-          <SendHorizontal size={50} className="bg-black h-8 p-1 rounded-sm text-white " />
-           </div> :    <span className="">
-          <Link className="font-semibold" href={"/login"}>
-            Login
-          </Link>{" "}
-          or{" "}
-          <Link className="font-semibold" href={"/sign-up"}>
-            Register
-          </Link>{" "}
-          to ask questions
-        </span> }
-     
+        {isLoggedIn ?
+          <div className="bg-[#F7F7F7] p-2 rounded-lg  flex h-20 flex-col items-end">
+            <Input placeholder="Ask your question" className="border-none shadow-none focus:shadow-none focus:border-none focus:outline-none" />
+            <SendHorizontal size={50} className="bg-black h-8 p-1 rounded-sm text-white " />
+          </div> : <span className="">
+            <Link className="font-semibold" href={"/login"}>
+              Login
+            </Link>{" "}
+            or{" "}
+            <Link className="font-semibold" href={"/sign-up"}>
+              Register
+            </Link>{" "}
+            to ask questions
+          </span>}
+
         <div className="h-[400px] overflow-auto">
-          {watchFAQs.map((q, idx) => (
+          {watchFAQs?.map((q, idx) => (
             <div key={idx} className="border-b border-[#E3E3E3] pb-4">
               <div className="flex items-start gap-4  py-4">
                 <svg

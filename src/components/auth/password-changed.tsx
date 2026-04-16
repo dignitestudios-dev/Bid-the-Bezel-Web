@@ -15,9 +15,9 @@ type Step =
   | "password-changed";
 
 const PasswordChanged = ({
-  setCurrentStep,
+  setStep,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
 }) => {
   return (
     <div className="flex justify-center items-center min-h-screen w-full py-12">
@@ -29,7 +29,7 @@ const PasswordChanged = ({
 
         <div className="mt-8">
           <Button
-            onClick={() => setCurrentStep?.("login")}
+            onClick={() => setStep?.("login")}
             className="w-full rounded-full"
           >
             Back to Login

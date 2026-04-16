@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { getToken, removeToken } from "./cookies";
 
 // Create instance
 export const apiClient = axios.create({
@@ -22,7 +23,7 @@ const getFingerprint = async () => {
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
+     const token = getToken();
 
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -47,8 +48,8 @@ apiClient.interceptors.response.use(
       console.error("Unauthorized - redirect to login");
 
       if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
+        removeToken();
+        // window.location.href = "/login";
       }
     }
 

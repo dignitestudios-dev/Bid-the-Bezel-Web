@@ -8,6 +8,7 @@ import { useAppSelector } from "@/lib/hooks";
 import CurrentBidSeller from "./current-bid-seller";
 import UnAuthStatus from "./unauth-status";
 
+
 type Props = {
   sellerId?: string;
   name?: string;
@@ -17,7 +18,6 @@ type Props = {
 
 const BiddingDetail = ({ sellerId, watch }: Props) => {
   const user = useAppSelector((state) => state.auth.user);
-
   return (
     <div className="lg:w-[40%] space-y-7">
       {user?.id == sellerId ? (

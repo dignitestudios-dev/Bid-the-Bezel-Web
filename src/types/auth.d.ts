@@ -31,8 +31,11 @@ interface AuthResponse {
       id: number;
       name: string;
       email: string;
+      userName?: string;
+      profilePicture?: { location: string };
       isProfileCompleted: boolean;
       isEmailVerified: boolean;
+      isSubscribed?: boolean;
     };
   };
 }
@@ -53,5 +56,7 @@ interface ProfileData {
     profilePicture?: { location: string };
     isProfileCompleted?: boolean;
     isEmailVerified?: boolean;
+    isSubscribed?: boolean;
+
   };
 }

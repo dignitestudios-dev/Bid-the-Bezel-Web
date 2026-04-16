@@ -16,6 +16,7 @@ import {
   SelectedSnapDisplay,
 } from "./embla-carousel-selected-display";
 
+
 type PropType = {
   slides: AuctionWatch[] | FixedPriceWatch[] | OfferWatch[];
   options?: EmblaOptionsType;
@@ -47,7 +48,11 @@ const EmblaCarousel: React.FC<PropType> = ({
       >
         <div className={styles.embla__container}>
           {/* <div className={cn(styles.embla__slide, "md:block w-10! hidden")} /> */}
-          {slides.map((w, index) => (
+          {slides?.length === 0 ? (
+            <div className="w-full flex justify-center items-center py-20">
+              <p className="text-center text-gray-400">No Fixed Price Product Found</p>
+            </div>
+          ) : slides?.map((w, index) => (
             <div
               className={cn(
                 styles.embla__slide, // set min width for slides

@@ -7,14 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-type Props = {
-  // isAuthenticated: boolean;
-  prod: AuctionWatch | FixedPriceWatch | OfferWatch;
-};
 
-const ProductCard = ({ prod }: Props) => {
+
+const ProductCard = ({ prod }: any) => {
   const [isFav, setIsFav] = useState(false);
-
+console.log(prod?.saleType)
   if (!prod) return null;
   return (
     <Link href={`/${prod.saleType}/${prod.watchId}`}>
@@ -32,9 +29,8 @@ const ProductCard = ({ prod }: Props) => {
               viewBox="0 0 24 24"
               stroke="white"
               strokeWidth={1}
-              className={`w-7 h-7 transition-all duration-300 ${
-                isFav ? "animate-ping-once" : ""
-              }`}
+              className={`w-7 h-7 transition-all duration-300 ${isFav ? "animate-ping-once" : ""
+                }`}
             >
               <path
                 strokeLinecap="round"
@@ -49,6 +45,7 @@ const ProductCard = ({ prod }: Props) => {
               alt="card"
               fill
               className="object-cover"
+              unoptimized
             />
           </div>
         </div>
@@ -72,19 +69,24 @@ const ProductCard = ({ prod }: Props) => {
               <h1 className="font-semibold">${displayPrice(prod)}</h1>
             </div>
 
-            <div className="h-10 w-px bg-white/50" />
+            {prod?.saleType !== "fixed-price" && (
 
-            <div className="w-1/3">
-              <h2 className="font-thin">Current Bid</h2>
-              <h1 className="font-semibold">$200</h1>
-            </div>
+              <>
+                <div className="h-10 w-px bg-white/50" />
 
-            <div className="h-10 w-px bg-white/50" />
+                <div className="w-1/3">
+                  <h2 className="font-thin">Current Bid</h2>
+                  <h1 className="font-semibold">$200</h1>
+                </div>
 
-            <div className="w-1/3">
-              <h2 className="font-thin">Ends In</h2>
-              <h1 className="font-semibold">$8700</h1>
-            </div>
+                <div className="h-10 w-px bg-white/50" />
+
+                <div className="w-1/3">
+                  <h2 className="font-thin">Ends In</h2>
+                  <h1 className="font-semibold">$8700</h1>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

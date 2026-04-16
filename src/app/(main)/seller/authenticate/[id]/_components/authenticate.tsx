@@ -1,13 +1,29 @@
 import { Button } from "@/components/ui/button";
+import { useUnAuthenticate } from "@/features/products/hook";
 import { ShieldCheck, ShieldX } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {
-  // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
+  id: string;
 };
 
-const Authenticate = ({  }: Props) => {
+const Authenticate = ({ id }: Props) => {
+  const { mutate, isPending } = useUnAuthenticate()
+  const router = useRouter()
+
+  const handleSubmit = () => {
+    mutate(
+      { id },
+      {
+        onSuccess: () => {
+          router.push(`/seller/watch-listed?id=${id}`);
+        },
+      }
+    );
+  };
+
   return (
     <div className="h-screen flex md:flex-row flex-col gap-4 justify-center items-center">
       <div className="w-[400px] h-[400px] p-5 rounded-xl bg-white shadow-lg flex flex-col justify-between items-center">
@@ -24,9 +40,11 @@ const Authenticate = ({  }: Props) => {
             will be charged to authenticate your watch
           </p>
         </div>
-        <Link className="w-full"  href={"shipping-details-auth"}>
-        <Button className="w-full" >Authenticate Now</Button>
-      </Link></div>
+        {/* <Link className="w-full" href={"shipping-details-auth"}> */}
+        <Button onClick={() => { router.push(`/seller/shipping-details-auth/${id}`) }}
+          className="w-full" >Authenticate Now</Button>
+        {/* </Link> */}
+      </div>
       <div className="w-[400px] h-[400px] p-5 rounded-xl bg-white shadow-lg flex flex-col justify-between items-center">
         <div className="flex flex-col items-center gap-4">
           <ShieldX
@@ -40,9 +58,16 @@ const Authenticate = ({  }: Props) => {
             Without authentication, your watch won't have our verified badge, and buyers may not trust your listing.
           </p>
         </div>
-        <Link className="w-full"  href={"watch-listed"}>
-        <Button className="text-red-600 w-full bg-gray-100">Continue without authenticating</Button>
-      </Link></div>
+        {/* <Link className="w-full" href={"watch-listed"}> */}
+        <Button
+          disabled={isPending}
+          onClick={handleSubmit}
+          className="text-red-600 w-full bg-gray-100"
+        >
+          {isPending ? "Processing..." : "Continue without authenticating"}
+        </Button>
+        {/* </Link> */}
+      </div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { removeToken } from "../cookies";
 
 type User = {
   id: string | number;
@@ -8,6 +9,8 @@ type User = {
   profilePicture?: string;
   isProfileCompleted?: boolean;
   isEmailVerified?: boolean;
+  isSubscribed?: boolean;
+  stripeAccountStatus?: string
 };
 
 type AuthState = {
@@ -56,8 +59,10 @@ const authSlice = createSlice({
       state.user = null;
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth");
-        localStorage.removeItem("token");
+        removeToken()
+
         localStorage.removeItem("email");
+        window.location.reload()
       }
     },
     hydrate(state, action: PayloadAction<AuthState>) {

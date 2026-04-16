@@ -7,20 +7,19 @@ import { useLogin } from "@/features/auth/hooks";
 import { LoginPayload, loginSchema } from "@/features/auth/Schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { showError, showSuccess } from "@/lib/toast";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/slices/authSlice";
 
 
 
 const Register = ({
-  setCurrentStep,
+  setStep,
   onSuccess,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>>;
+  setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
-  const dispatch = useAppDispatch();
-
   const { mutate, isPending, } = useLogin();
 
   const {
@@ -40,20 +39,23 @@ const Register = ({
     mutate(body, {
       onSuccess: (data) => {
         const user = data?.data?.user;
+        console.log(user , "---------------> user")
+        showSuccess("Account created successfully!");
         if (!user?.isEmailVerified) {
-          setCurrentStep?.("otp-register");
+          setStep?.("otp-register");
           return;
         }
         if (!user?.isProfileCompleted) {
-          setCurrentStep?.("username");
+          setStep?.("username");
           return;
         }
-        dispatch(login(user))
+        // dispatch(login(user))
         onSuccess?.();
       },
 
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };
@@ -109,7 +111,7 @@ const Register = ({
         <p className="text-center mt-5">
           Already have an account?{" "}
           <button
-            onClick={() => setCurrentStep?.("login")}
+            onClick={() => setStep?.("login")}
             className="font-semibold cursor-pointer"
           >
             Log In

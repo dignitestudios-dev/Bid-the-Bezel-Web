@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { useAppDispatch } from "@/lib/hooks";
-import { login } from "@/lib/slices/authSlice";
+
+import React from "react";
 import { ArrowRight } from "lucide-react";
 import {
   Sheet,
@@ -10,128 +9,181 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/auth-sidebar-sheet";
+
 import Login from "./auth/login";
-import { Button } from "./ui/button";
+import Register from "./auth/register";
 import Username from "./auth/username";
 import PurchasePlan from "./auth/purchase-plan";
 import ForgotPassword from "./auth/forgot-password";
 import Otp from "./auth/otp";
 import ResetPassword from "./auth/reset-password";
 import PasswordChanged from "./auth/password-changed";
-import Register from "./auth/register";
 import OtpRegister from "./auth/otp-register";
 import PlanSelected from "./auth/plan-selected";
 import SubscriptionConfirmation from "./auth/subscription-confirmation";
 
+import { Button } from "./ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 
-const AuthSidebar = ({ hideTrigger }: { hideTrigger?: boolean }) => {
-  const dispatch = useAppDispatch();
-  const [currentStep, setCurrentStep] = useState<AuthStep>("login");
-  const [open, setOpen] = useState(false);
+import { useRouter, useSearchParams } from "next/navigation";
+
+//protected steps which require user to complete the previous steps before closing the sidebar
+const PROTECTED_STEPS: AuthStep[] = ["otp-register", "username", "purchase-plan", "subscription-confirmation"];
+const AuthSidebar = ({
+  hideTrigger,
+  loader,
+}: {
+  hideTrigger?: boolean;
+  loader?: boolean;
+}) => {
+  const queryClient = useQueryClient();
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const currentStep = searchParams.get("authstep") as AuthStep | null;
+  const open = !!currentStep;
+
+  const isProtectedStep = !!currentStep && PROTECTED_STEPS.includes(currentStep);
+
+  const setStep = (step: AuthStep) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("authstep", step);
+    router.replace(`?${params.toString()}`);
+  };
+
+  const clearStep = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("authstep");
+    router.replace(`?${params.toString()}`);
+  };
 
   const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen);
-    if (!isOpen) {
-      setCurrentStep("login");
+    if (!isOpen && !isProtectedStep) {
+      clearStep();
     }
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setCurrentStep("login");
-  };
-
+  const handleClose = () => clearStep();
 
   const handleSkipAndLogin = () => {
-    // dispatch(login({ id: "skipped_user", name: "Guest" }));
-    setOpen(false);
-    // setCurrentStep("login");
+    clearStep();
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case "login":
+        return (
+          <Login
+            setStep={setStep}
+            onSuccess={handleClose}
+          />
+        );
+
+      case "register":
+        return (
+          <Register
+            setStep={setStep}
+            onSuccess={handleClose}
+          />
+        );
+
+      case "otp-register":
+        return <OtpRegister setStep={setStep} />;
+
+      case "username":
+        return <Username setStep={setStep} />;
+
+      case "purchase-plan":
+        return (
+          <PurchasePlan
+            setStep={setStep}
+            onSkip={handleSkipAndLogin}
+          />
+        );
+
+      case "plan-selected":
+        return <PlanSelected setStep={setStep} />;
+
+      case "subscription-confirmation":
+        return (
+          <SubscriptionConfirmation
+            setStep={setStep}
+            onClose={handleSkipAndLogin}
+          />
+        );
+
+      case "forgot-password":
+        return <ForgotPassword setStep={setStep} />;
+
+      case "otp":
+        return <Otp setStep={setStep} />;
+
+      case "reset-password":
+        return <ResetPassword setStep={setStep} />;
+
+      case "password-changed":
+        return <PasswordChanged setStep={setStep} />;
+
+      default:
+        return null
+    }
+  };
+
+  const getTitle = () => {
+    switch (currentStep) {
+      case "login":
+        return "Login";
+      case "register":
+        return "Create an account";
+      case "otp-register":
+        return "Verify your email";
+      case "username":
+        return "Enter Unique Username";
+      case "purchase-plan":
+        return "Choose a Plan";
+      case "plan-selected":
+        return "Plan Selected";
+      case "subscription-confirmation":
+        return "Subscribed to Basic Plan";
+      case "forgot-password":
+      case "otp":
+      case "reset-password":
+      case "password-changed":
+        return "Forgot password";
+      default:
+        return "Login";
+    }
   };
 
   return (
-    <>
-      <Sheet open={open} onOpenChange={handleOpenChange}>
-        {!hideTrigger && (
-          <SheetTrigger asChild>
-            <Button className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
-              <span>Login</span> <ArrowRight size={15} />
-            </Button>
-          </SheetTrigger>
-        )}
-        <SheetContent
-          className={`${currentStep === "plan-selected" ? "bg-gray-100" : "bg-white"
-            }  w-[700px]! max-w-[90%] overflow-y-auto`}
-        >
-          <SheetHeader>
-            <SheetTitle className="text-center text-lg">
-              {currentStep === "login" && "Login"}
-              {currentStep === "register" && "Create an account"}
-              {currentStep === "otp-register" && "Verify your email"}
-              {currentStep === "username" && "Enter Unique Username"}
-              {currentStep === "purchase-plan" && "Choose a Plan"}
-              {currentStep === "plan-selected" && "Plan Selected"}
-              {currentStep === "subscription-confirmation" &&
-                "Subscribed to Basic Plan"}
-              {(currentStep === "forgot-password" ||
-                currentStep === "otp" ||
-                currentStep === "reset-password" ||
-                currentStep === "password-changed") &&
-                "Forgot password"}
-            </SheetTitle>
-          </SheetHeader>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      {!hideTrigger && (
+        <SheetTrigger disabled={loader} asChild>
+          <Button onClick={() => router.push("?authstep=login")} className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
+            <span>Login</span> <ArrowRight size={15} />
+          </Button>
+        </SheetTrigger>
+      )}
 
-          <div className="flex justify-center mt-8 h-full w-full">
-            {currentStep === "login" && (
-              <Login setCurrentStep={setCurrentStep} onSuccess={handleClose} />
-            )}
+      <SheetContent
+        onInteractOutside={(e) => { if (isProtectedStep) e.preventDefault(); }}
+        className={`${currentStep === "plan-selected"
+          ? "bg-gray-100"
+          : "bg-white"
+          } w-[700px]! max-w-[90%] overflow-y-auto`}
+      >
+        <SheetHeader>
+          <SheetTitle className="text-center text-lg">
+            {getTitle()}
+          </SheetTitle>
+        </SheetHeader>
 
-            {currentStep === "register" && (
-              <Register setCurrentStep={setCurrentStep} onSuccess={handleClose} />
-            )}
-
-            {currentStep === "otp-register" && (
-              <OtpRegister setCurrentStep={setCurrentStep} />
-            )}
-
-            {currentStep === "username" && (
-              <Username setCurrentStep={setCurrentStep} />
-            )}
-
-            {currentStep === "purchase-plan" && (
-              <PurchasePlan
-                setCurrentStep={setCurrentStep}
-                onSkip={handleSkipAndLogin}
-              />
-            )}
-
-            {currentStep === "plan-selected" && (
-              <PlanSelected setCurrentStep={setCurrentStep} />
-            )}
-
-            {currentStep === "subscription-confirmation" && (
-              <SubscriptionConfirmation
-                setCurrentStep={setCurrentStep}
-                onClose={handleSkipAndLogin}
-              />
-            )}
-
-            {currentStep === "forgot-password" && (
-              <ForgotPassword setCurrentStep={setCurrentStep} />
-            )}
-
-            {currentStep === "otp" && <Otp setCurrentStep={setCurrentStep} />}
-
-            {currentStep === "reset-password" && (
-              <ResetPassword setCurrentStep={setCurrentStep} />
-            )}
-
-            {currentStep === "password-changed" && (
-              <PasswordChanged setCurrentStep={setCurrentStep} />
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
-    </>
+        <div className="flex justify-center mt-8 h-full w-full">
+          {renderStep()}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

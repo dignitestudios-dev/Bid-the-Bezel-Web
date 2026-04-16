@@ -2,6 +2,7 @@ import React from "react";
 import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
 import { useForgotPassword } from "@/features/auth/hooks";
+import { showError, showSuccess } from "@/lib/toast";
 import { useAppDispatch } from "@/lib/hooks";
 import { ForgotPasswordPayload, forgotPasswordSchema } from "@/features/auth/Schema";
 import { useForm } from "react-hook-form";
@@ -21,9 +22,9 @@ type Step =
   | "password-changed";
 
 const ForgotPassword = ({
-  setCurrentStep,
+  setStep,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
 }) => {
   const { mutate, isPending } = useForgotPassword();
 
@@ -44,10 +45,12 @@ const ForgotPassword = ({
     mutate(body, {
       onSuccess: () => {
         localStorage.setItem('email', body.email)
-        setCurrentStep?.('otp')
+        showSuccess("OTP sent to your email!");
+        setStep?.('otp')
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };
@@ -73,7 +76,7 @@ const ForgotPassword = ({
         <p className="text-center mt-4">
           Remember your password?{" "}
           <button
-            onClick={() => setCurrentStep?.("login")}
+            onClick={() => setStep?.("login")}
             className="font-semibold cursor-pointer"
           >
             Back to login

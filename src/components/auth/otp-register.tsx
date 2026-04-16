@@ -3,21 +3,26 @@ import { Button } from "../ui/button";
 import { useOtpVerify, useResendOtp } from "@/features/auth/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OtpPayload, otpSchema } from "@/features/auth/Schema";
+import { showError, showSuccess } from "@/lib/toast";
 import { useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setToken } from "@/lib/cookies";
 
 const OtpRegister = ({
-  setCurrentStep,
+  setStep,
   onSuccess,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<AuthStep>>;
+ setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
   const { mutate, isPending } = useOtpVerify();
   const { mutate: resendOtp, isPending: isResending } = useResendOtp();
   const [otp, setOtp] = useState<string[]>(["", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const email = localStorage.getItem('email')
+  const [email, setEmail] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    setEmail(localStorage.getItem('email'));
+  }, []);
   const [timer, setTimer] = useState(120);
 
 
@@ -92,15 +97,17 @@ const OtpRegister = ({
   };
 
   const onSubmit = (data: OtpPayload) => {
+    console.log(data)
     mutate(data, {
       onSuccess: (response) => {
         if (response.data?.user) {
-          localStorage.setItem("token", response?.data?.token);
-          setCurrentStep?.("username");
+          setToken(response?.data?.token);
+          setStep?.("username");
         }
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };
@@ -112,7 +119,11 @@ const OtpRegister = ({
         {
           onSuccess: () => {
             setTimer(120);
+            showSuccess("OTP sent successfully!");
           },
+          onError: (err: any) => {
+            showError(err);
+          }
         }
       );
     }
@@ -146,7 +157,7 @@ const OtpRegister = ({
 
       <Button
         type="submit"
-        disabled={isPending}
+        disabled={false}
         onClick={handleSubmit(onSubmit)}
         className="mt-8 w-full rounded-full"
       >

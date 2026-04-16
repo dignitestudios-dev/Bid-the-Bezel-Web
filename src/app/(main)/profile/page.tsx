@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAppDispatch } from "@/lib/hooks";
-import { logout } from "@/lib/slices/authSlice";
+import { login, logout } from "@/lib/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useCheckUsername, useMe, useUpdateProfile } from "@/features/auth/hooks";
 import { Camera, Loader2 } from "lucide-react";
@@ -22,22 +22,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@/hooks/api/useDebounce";
 import { useQueryClient } from "@tanstack/react-query";
 import { ProfileSkeleton } from "@/components/skeleton";
+import { showError, showSuccess } from "@/lib/toast";
 
 const Profile = () => {
+  const dispatch = useAppDispatch();
   const [preview, setPreview] = useState<string | null>(null);
-  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
   const [understand, setUnderstand] = useState(false);
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const { data: userData, isLoading } = useMe();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
-  const { mutate: checkUsername, isPending: isChecking } = useCheckUsername();
+  const { mutate: checkUsername, isPending: isChecking, data } = useCheckUsername();
   const queryClient = useQueryClient();
+
+
+
 
   const {
     register,
@@ -68,16 +71,12 @@ const Profile = () => {
 
   useEffect(() => {
     if (!debouncedUsername || debouncedUsername.length < 3 || debouncedUsername === userData?.data?.userName) {
-      setIsAvailable(null);
+      // setIsAvailable(null);
       return;
     }
 
     checkUsername(
       { userName: debouncedUsername },
-      {
-        onSuccess: (data) => setIsAvailable(!data.data.exists),
-        onError: () => setIsAvailable(false),
-      }
     );
   }, [debouncedUsername, userData?.data?.userName, checkUsername]);
 
@@ -105,6 +104,10 @@ const Profile = () => {
     updateProfile(payload, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["get-profile"] });
+        showSuccess("Profile updated successfully!");
+      },
+      onError: (err: any) => {
+        showError(err);
       },
     });
   };
@@ -186,14 +189,14 @@ const Profile = () => {
                         <Loader2 className="w-3 h-3 animate-spin" />
                         <span>Checking...</span>
                       </div>
-                    ) : isAvailable === true ? (
+                    ) : !data?.data.exists ? (
                       <div className="flex items-center gap-2 text-sm text-green-600">
                         <span className="rounded-full bg-green-50 p-1 text-[10px]">
                           ✓
                         </span>
                         <span>Username is available</span>
                       </div>
-                    ) : isAvailable === false ? (
+                    ) : data?.data.exists ? (
                       <div className="flex items-center gap-2 text-sm text-red-600">
                         <span className="rounded-full bg-red-50 p-1 text-[10px]">
                           ✕
@@ -226,10 +229,15 @@ const Profile = () => {
         <p className="mb-3 text-lg font-medium">Subscription Status</p>
 
         <p>
-          <span className="font-bold text-xl">Basic Package</span>{" "}
-          <span className="font-light">
-            (3 days of trial left - 1 Watch Left)
-          </span>
+          {userData?.data?.subscriptions?.map((item: any, index: number) => (
+            <>
+              <span className="font-bold text-xl capitalize">{item?.plan?.name}</span>{" "}
+              < span className="font-light" >
+                (3 days of trial left <span className="text-muted-foreground ">|</span> {item?.planType === "buyer" ? "Unlimited Purchases " : item?.isUnlimitedQuota ? "Unlimited Watches " : item?.sellQuota + " Watches Left"}
+                )
+              </span></>
+
+          ))}
         </p>
 
         <hr className="my-6 border-border" />
@@ -302,7 +310,7 @@ const Profile = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </div >
   );
 };
 

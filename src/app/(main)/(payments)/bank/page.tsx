@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -22,14 +22,74 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, useStripe, useElements } from "@stripe/react-stripe-js";
+import { showError, showSuccess } from "@/lib/toast";
+import { useUpdateBankAccount } from "@/features/billing/hook";
 
-const Bank = () => {
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+if (!stripeKey) {
+  throw new Error("Missing Stripe key");
+}
+
+const stripePromise = loadStripe(stripeKey);
+
+const BankForm = () => {
   const router = useRouter();
+  const stripe = useStripe();
+  const elements = useElements();
+  const [name, setName] = useState("");
+  const [branchCode, setBranchCode] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { mutate, isPending } = useUpdateBankAccount()
 
-  function handleSave() {
-    // static — redirect to payments page
-    router.push("/profile/payments");
-  }
+  const handleSave = async () => {
+    if (!stripe) return;
+
+    if (!name || !branchCode || !accountNumber) {
+      showError("Please fill in all bank details");
+      return;
+    }
+
+    if (branchCode.trim().length !== 9) {
+      showError("Routing number must have exactly 9 digits");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await stripe.createToken("bank_account", {
+        country: "US",
+        currency: "usd",
+        routing_number: branchCode,
+        account_number: accountNumber,
+        account_holder_name: name,
+        account_holder_type: "individual",
+      });
+
+      if (result.error) {
+        showError(result.error.message);
+        return;
+      }
+
+      if (result?.token) {
+        mutate({ token: result?.token?.id }, {
+          onSuccess: () => {
+            router.push("/profile/payments")
+          }
+        })
+      }
+
+    } catch (err: any) {
+      console.error(err);
+      showError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="h-screen p-10">
@@ -73,9 +133,9 @@ const Bank = () => {
           <div className="rounded-lg border bg-white p-8 shadow-sm">
             <h2 className="text-2xl font-semibold mb-6">Bank Details</h2>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="block font-medium mb-2">Select Bank</label>
-              <Select>
+              <Select value={bank} onValueChange={setBank}>
                 <SelectTrigger className="w-full h-12!">
                   <SelectValue placeholder="--- Select a Bank ---" />
                 </SelectTrigger>
@@ -89,7 +149,7 @@ const Bank = () => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
 
             <div className="rounded-lg my-4 space-y-4">
               <div>
@@ -99,6 +159,8 @@ const Bank = () => {
                 <div className="">
                   <input
                     placeholder="Bid the bezel"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className="w-full border border-gray-200 rounded-md px-4 py-3 bg-white outline-none "
                   />
                 </div>
@@ -106,9 +168,11 @@ const Bank = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-medium mb-2">Branch Code</label>
+                  <label className="block font-medium mb-2">Routing Number</label>
                   <input
-                    placeholder="0215"
+                    placeholder="110000000"
+                    value={branchCode}
+                    onChange={(e) => setBranchCode(e.target.value)}
                     className="w-full border border-gray-200 rounded-md px-4 py-3 bg-white outline-none "
                   />
                 </div>
@@ -119,6 +183,8 @@ const Bank = () => {
                   </label>
                   <input
                     placeholder="121154125412"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
                     className="w-full border border-gray-200 rounded-md px-4 py-3 bg-white outline-none "
                   />
                 </div>
@@ -134,8 +200,13 @@ const Bank = () => {
             </p>
 
             <div>
-              <Button onClick={handleSave} size={"lg"} className="w-full h-12">
-                Save
+              <Button
+                onClick={handleSave}
+                disabled={!stripe || loading}
+                size={"lg"}
+                className="w-full h-12 flex items-center justify-center gap-2"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
               </Button>
             </div>
           </div>
@@ -145,4 +216,12 @@ const Bank = () => {
   );
 };
 
-export default Bank;
+const BankPage = () => {
+  return (
+    <Elements stripe={stripePromise}>
+      <BankForm />
+    </Elements>
+  );
+};
+
+export default BankPage;

@@ -60,10 +60,10 @@ const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
 
       <div className="mb-6 max-w-4xl mx-auto flex justify-between items-center">
         <h2 className="font-semibold">
-            {steps == 1 && "Personal details"}
-            {steps == 2 && "Watch details"}
-            {steps == 3 && "Bank details"}
-            </h2>
+          {steps == 1 && "Personal details"}
+          {steps == 2 && "Watch details"}
+          {steps == 3 && "Bank details"}
+        </h2>
         <span className="text-sm text-gray-500">Step {steps}/3</span>
       </div>
       <div className="flex max-w-4xl mx-auto justify-between gap-2">
@@ -75,8 +75,8 @@ const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
                 steps === stepNum
                   ? "bg-[#415A77]"
                   : steps > stepNum
-                  ? "bg-green-500"
-                  : "bg-gray-200"
+                    ? "bg-green-500"
+                    : "bg-gray-200"
               )}
             />
           </div>
@@ -87,7 +87,7 @@ const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
         <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
           <h3 className="font-semibold mb-6 text-2xl ">Personal details</h3>
 
-       
+
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
@@ -127,10 +127,10 @@ const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
       {steps == 2 && (
         <div className="bg-white border max-w-4xl mx-auto rounded-xl p-8 shadow-sm">
           <h3 className="font-semibold mb-6 text-2xl ">Watch Details</h3>
-<div className="bg-[#F7F7F7] p-3 my-8 space-y-2 rounded-xl border">
-  <h1 className="text-xl font-semibold">Watch Reference ID</h1>
-  <h4 className="text-lg font-semibold">#12345</h4>
-</div>
+          <div className="bg-[#F7F7F7] p-3 my-8 space-y-2 rounded-xl border">
+            <h1 className="text-xl font-semibold">Watch Reference ID</h1>
+            <h4 className="text-lg font-semibold">#12345</h4>
+          </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label className="text-sm mb-1 block">Watch Brand</label>
@@ -185,7 +185,7 @@ const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
         </div>
       )}
       {steps == 3 && (
-       <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
+        <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
           <h3 className="font-semibold text-2xl  mb-6">Bank Details</h3>
 
           <div className="mb-4">

@@ -1,22 +1,33 @@
 "use client"
 import { PlanSkeleton } from "@/components/skeleton";
+import { useMe } from "@/features/auth/hooks";
 import { useBuySubscription, useSubscription } from "@/features/subscription/hook";
+import { useAppDispatch } from "@/lib/hooks";
+import { login } from "@/lib/slices/authSlice";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
 import React, { useState } from "react";
 
 type Props = {};
 
 const Plans = (props: Props) => {
+  const dispatch = useAppDispatch()
   const { data, isLoading } = useSubscription()
-  const { mutate: buySubscription, isPending } = useBuySubscription()
+  const { mutate: buySubscription } = useBuySubscription()
+  const { refetch, data: userData } = useMe()
+
+  dispatch(login(userData?.data))
+
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
-  const handleBuy = (priceId: string) => {
-    setLoadingPriceId(priceId);
+  const handleBuy = (planId: string) => {
+    setLoadingPriceId(planId);
+    const cleanUrl = `${window.location.origin}/seller/sale-type?plan=success`;
     buySubscription(
-      { priceId },
+      { planId, url: cleanUrl },
       {
+        onSuccess: () => {
+          refetch()
+        },
         onSettled: () => setLoadingPriceId(null),
       }
     );
@@ -63,11 +74,11 @@ const Plans = (props: Props) => {
                 </div>
 
                 <button
-                  disabled={loadingPriceId === subs?.priceId}
-                  onClick={() => handleBuy(subs?.priceId)}
+                  disabled={loadingPriceId === subs?._id}
+                  onClick={() => handleBuy(subs?._id)}
                   className="w-full text-center cursor-pointer rounded-full py-5 bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loadingPriceId === subs?.priceId ? (
+                  {loadingPriceId === subs?._id ? (
                     <Loader2 className="animate-spin mx-auto" />
                   ) : (
                     "Select Plan"
