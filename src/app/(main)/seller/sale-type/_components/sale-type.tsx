@@ -5,7 +5,7 @@ import { Banknote, Clock3 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import ConnectBankModal from "./ConnectBankModal";
+import ConnectBankModal from "./connect-bank-modal";
 
 type Props = {
   // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;

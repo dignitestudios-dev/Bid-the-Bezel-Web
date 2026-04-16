@@ -11,9 +11,19 @@ import CategoriesMenu from "./CategoriesMenu";
 import { useMe } from "@/features/auth/hooks";
 import { PlanSkeleton } from "./skeleton";
 import { Skeleton } from "./ui/skeleton";
+import PlanSuccessDialog from "./ui/plan-success-dialog";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Navbar = () => {
-  const { data: user  , isLoading} = useMe();
+  const { data: user, isLoading } = useMe();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const isPlanSuccess = searchParams.get("plan") === "success";
+  const handleClose = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("plan");
+    router.replace(url.pathname + url.search, { scroll: false });
+  };
   return (
     <div>
       <div className="flex justify-between w-[90%] py-4 max-w-screen-2xl mx-auto">
@@ -37,9 +47,10 @@ const Navbar = () => {
               </Link>{" "}
             </>
           )}
-          {isLoading && <Skeleton className="h-12 bg-gray-200 w-24 rounded-full" />}
+          {isLoading && (
+            <Skeleton className="h-12 bg-gray-200 w-24 rounded-full" />
+          )}
           <AuthSidebar hideTrigger={!!user || isLoading} loader={isLoading} />
-          
         </div>
       </div>
       <div className="bg-(--primary) text-white text-center py-3">
@@ -48,6 +59,7 @@ const Navbar = () => {
           failures resulting from use.
         </div>
       </div>
+      <PlanSuccessDialog open={isPlanSuccess} onOpenChange={handleClose} />
     </div>
   );
 };

@@ -56,7 +56,7 @@ const PaymentDetail = () => {
 
                         }
                     } else {
-                        router.push("/seller/watch-listed");
+                        router.push(`/seller/watch-listed?id=${id}`);
                     }
                 },
             }

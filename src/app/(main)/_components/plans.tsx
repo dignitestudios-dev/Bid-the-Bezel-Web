@@ -21,8 +21,9 @@ const Plans = (props: Props) => {
 
   const handleBuy = (planId: string) => {
     setLoadingPriceId(planId);
+    const cleanUrl = `${window.location.origin}/seller/sale-type?plan=success`;
     buySubscription(
-      { planId, url: window.location.href },
+      { planId, url: cleanUrl },
       {
         onSuccess: () => {
           refetch()

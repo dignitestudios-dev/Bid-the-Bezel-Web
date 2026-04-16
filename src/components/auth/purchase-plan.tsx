@@ -30,8 +30,10 @@ const PurchasePlan = ({
 
   const handleBuy = (planId: string) => {
     setLoadingPriceId(planId);
+
+    const cleanUrl = `${window.location.origin}${window.location.pathname}?plan=success`;
     buySubscription(
-      { planId, url: window.location.href },
+      { planId, url: cleanUrl },
       {
         onSettled: () => setLoadingPriceId(null),
       }

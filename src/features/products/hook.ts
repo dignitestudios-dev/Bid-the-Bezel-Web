@@ -26,7 +26,7 @@ export const useAddProduct = () =>
             });
             return formData;
         },
-        invalidateKeys: ["get-profile"],
+        invalidateKeys: ["get-profile", "get-my-listing"],
         mutationOptions: {
             onSuccess: (data) => {
                 showSuccess(data?.message)
@@ -43,7 +43,18 @@ export const useUnAuthenticate = () =>
     useApiMutation<any, { id: string }>({
         endpoint: ({ id }) => `/products/${id}/unauthenticate/seller`,
         method: "POST",
-        invalidateKeys: ["get-profile", "get-cards"],
+        invalidateKeys: ["get-profile", "get-cards", "shipping-result", "get-my-listing"],
+        mutationOptions: {
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
+export const deleteProduct = () =>
+    useApiMutation<any, { id: string }>({
+        endpoint: ({ id }) => `/products/${id}`,
+        method: "DELETE",
+        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing"],
         mutationOptions: {
             onError: (err) => {
                 showError(err);

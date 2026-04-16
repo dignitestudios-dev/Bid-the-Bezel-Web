@@ -18,7 +18,7 @@ const Authenticate = ({ id }: Props) => {
       { id },
       {
         onSuccess: () => {
-          router.push("/seller/watch-listed");
+          router.push(`/seller/watch-listed?id=${id}`);
         },
       }
     );

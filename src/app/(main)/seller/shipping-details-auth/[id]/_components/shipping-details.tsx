@@ -12,7 +12,6 @@ import { useUnAuthenticate } from "@/features/products/hook";
 import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
-  // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
 
 const ShippingDetailAuth = ({ }: Props) => {
@@ -29,8 +28,8 @@ const ShippingDetailAuth = ({ }: Props) => {
       { id: id as string },
       {
         onSuccess: (response) => {
-          queryClient.setQueryData(["shipping-result"], response);
-          router.push("/seller/watch-listed");
+          // queryClient.setQueryData(["shipping-result"], response);
+          router.push(`/seller/watch-listed?id=${id}`);
         },
       }
     );

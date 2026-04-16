@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { useGetMyListing } from "@/features/listing/hook";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetMyActiveListing, useGetMyListing } from "@/features/listing/hook";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,44 +21,21 @@ type Fav = {
 };
 
 
-const MyListings = ({ productData, isFulfilled, setIsFulfilled, selectedTab }: { productData: any, isFulfilled: boolean, setIsFulfilled: (value: boolean) => void, selectedTab: string }) => {
+const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfilled: boolean, setIsFulfilled: (value: boolean) => void, selectedTab: string }) => {
   const router = useRouter()
   const queryClient = useQueryClient()
-
+  const { data, isLoading } = useGetMyActiveListing();
   return (
     <div>
-      {selectedTab === "draft" && (
-        <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">
-
-          <Button
-            className={`font-semibold w-[130px] max-w-full ${!isFulfilled
-              ? "bg-white text-primary"
-              : "bg-transparent text-primary"
-              }`}
-            onClick={() => setIsFulfilled(false)}
-          >
-            Unfulfilled
-          </Button>
-          <Button
-            className={`font-semibold w-[130px] max-w-full ${isFulfilled
-              ? "bg-white text-primary"
-              : "bg-transparent text-primary"
-              }`}
-            onClick={() => setIsFulfilled(true)}
-          >
-            Fulfilled
-          </Button>
-        </div>
-
-      )}
 
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
-        {productData?.length === 0 ? (
+        {isLoading && <Skeleton className="w-full h-24" />}
+        {data?.data?.length === 0 ? (
           <div className="col-span-2 flex items-center justify-center text-center">
             No Product Found
           </div>
 
-        ) : productData?.map((product: any, index: number) => (
+        ) : data?.data?.map((product: any, index: number) => (
           <div className="card p-0 relative overflow-hidden">
             <div onClick={() => {
               queryClient.invalidateQueries({ queryKey: ["get-listing-detail"] })
@@ -113,4 +91,4 @@ const MyListings = ({ productData, isFulfilled, setIsFulfilled, selectedTab }: {
   );
 };
 
-export default MyListings;
+export default MyActiveListing;

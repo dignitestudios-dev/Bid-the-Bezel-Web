@@ -1,21 +1,29 @@
 "use client";
 
 import Plans from "@/app/(main)/_components/plans";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useMe } from "@/features/auth/hooks";
 import { useRouter } from "next/navigation";
 
 const PlansSubs = () => {
   const router = useRouter();
-  const { data } = useMe()
+  const { data, isLoading } = useMe();
 
   const isSubscribed = data?.data?.isSellerPlanPurchased;
 
-  if (isSubscribed) {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Skeleton className="h-12 bg-gray-200 w-24 rounded-full" />
+      </div>
+    );
+  }
+
+  if (isSubscribed && !isLoading) {
     router.push("/seller/sale-type");
   } else {
     return (
       <div>
-
         <Plans />
       </div>
     );

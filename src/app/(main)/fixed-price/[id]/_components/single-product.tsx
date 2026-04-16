@@ -15,13 +15,15 @@ import ProductPricing from "./product-pricing";
 import { useEffect } from "react";
 
 type Props = {
-  id: string
-  productData: any
+  id: string;
+  productData: any;
 };
 
 const SingleProduct = ({ id, productData }: Props) => {
   const router = useRouter();
-
+  // if (productData.isDraftPageShown) {
+  //   router.replace(`/seller/shipping-details-auth/${id}`);
+  // }
 
   return (
     <div className="max-w-screen-2xl mx-auto w-[90%] py-12">
@@ -51,7 +53,7 @@ const SingleProduct = ({ id, productData }: Props) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex justify-between gap-4" >
+      <div className="flex justify-between gap-4">
         <ProductDetail productData={productData} />
         <ProductPricing price={productData?.price} watch={productData} />
       </div>

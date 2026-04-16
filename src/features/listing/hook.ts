@@ -1,12 +1,23 @@
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetMyListing = (status?: string) => {
+export const useGetMyListing = (status: string) => {
     return useQuery({
         queryKey: ["get-my-listing", status],
         queryFn: async () => {
             const res = await apiClient.get("/products/seller/list", {
                 params: { status },
+            });
+            return res.data;
+        },
+    });
+};
+export const useGetMyActiveListing = () => {
+    return useQuery({
+        queryKey: ["get-my-active-listing"],
+        queryFn: async () => {
+            const res = await apiClient.get("/products/seller/list", {
+                params: { status: "active" },
             });
             return res.data;
         },

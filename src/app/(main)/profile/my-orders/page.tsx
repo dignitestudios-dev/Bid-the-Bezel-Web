@@ -2,13 +2,15 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState } from "react";
-import MyListings from "../_components/MyListings";
+import MyListings from "../_components/my-active-listing";
 import MyOrdersItems from "../_components/MyOrdersItems";
 import { useGetMyListing } from "@/features/listing/hook";
 import { ListingSkeleton } from "@/components/skeleton";
+import MyActiveListing from "../_components/my-active-listing";
+import MyDraftListing from "../_components/my-draft-listing";
 
 const MyOrders = () => {
-  const [selectedTab, setSelectedTab] = useState<"orders" | "listings" | "draft">(
+  const [selectedTab, setSelectedTab] = useState<"orders" | "listings" | "draft" | "rejected">(
     "orders"
   );
   const [isFulfilled, setIsFulfilled] = useState(true);
@@ -20,7 +22,7 @@ const MyOrders = () => {
         ? "pending"
         : "draft";
 
-  const { data, isLoading } = useGetMyListing(status);
+
 
 
 
@@ -54,16 +56,15 @@ const MyOrders = () => {
       </div>
 
       <div className="w-full pt-6">
-        {selectedTab === "orders" ? (
-          <MyOrdersItems />
-        ) : selectedTab === "listings" || selectedTab === "draft" ? (
-          isLoading ? (
-            <ListingSkeleton />
-          ) : (
-
-            <MyListings selectedTab={selectedTab} productData={data?.data} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
-          )
-        ) : null}
+        {selectedTab === "draft" && (
+          <MyDraftListing selectedTab={selectedTab} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
+        )}
+        {selectedTab === "listings" && (
+          <MyActiveListing selectedTab={selectedTab} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
+        )}
+        {selectedTab === "orders" && (
+          <MyOrdersItems  />
+        )}
       </div>
     </div>
   );
