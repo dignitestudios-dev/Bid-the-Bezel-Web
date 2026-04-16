@@ -16,6 +16,7 @@ import {
   SelectedSnapDisplay,
 } from "./embla-carousel-selected-display";
 
+
 type PropType = {
   slides: AuctionWatch[] | FixedPriceWatch[] | OfferWatch[];
   options?: EmblaOptionsType;

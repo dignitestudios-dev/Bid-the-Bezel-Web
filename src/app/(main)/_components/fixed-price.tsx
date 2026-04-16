@@ -19,7 +19,7 @@ const FixedPrice = ({ fixedPrice }: Props) => {
   image: item.images?.[0]?.location || "https://picsum.photos/400",
   price: item.price,
   saleType: item.type === "fixed_price" ? "fixed-price" : item.type,
-  isAuthenticated: item.authentication?.status === "approved", // adjust if needed
+  isAuthenticated: item.authentication?.status === "approved", 
 }));
   return (
     <div className=" bg-[#101f2f]">
@@ -48,6 +48,7 @@ const FixedPrice = ({ fixedPrice }: Props) => {
           </div>
           <EmblaCarousel
             FColor="16, 31, 47"
+            // @ts-ignore
             slides={mappedData}
             options={OPTIONS}
           />

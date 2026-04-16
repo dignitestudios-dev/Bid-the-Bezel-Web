@@ -10,33 +10,29 @@ interface Offer {
   offerAmount: number;
 }
 
-interface BaseWatch {
-  watchId: string;
-  name: string;
-  image: string;
-  sellerId: string;
-  saleType: SaleType;
-  isAuthenticated?: boolean;
-}
+interface BaseWatch { watchId: any; name: string; image: any; price: any; saleType: any; isAuthenticated: boolean; }
 
 interface AuctionWatch extends BaseWatch {
   saleType: "auction";
   basePrice: number;
   bidders: Bidder[];
+  sellerId: string;
 }
 
 interface FixedPriceWatch extends BaseWatch {
   saleType: "fixed-price";
   price: number;
+  sellerId: string;
 }
 
 interface OfferWatch extends BaseWatch {
   saleType: "taking-offer";
   expectedPrice: number;
   offers: Offer[];
+  sellerId: string;
 }
 
-export interface ProducResponse<T = unknown> {
+interface ProducResponse<T = unknown> {
   data: T;
   message: string;
 }

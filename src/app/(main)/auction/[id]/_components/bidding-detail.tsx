@@ -8,6 +8,7 @@ import { useAppSelector } from "@/lib/hooks";
 import CurrentBidSeller from "./current-bid-seller";
 import UnAuthStatus from "./unauth-status";
 
+
 type Props = {
   sellerId?: string;
   name?: string;

@@ -22,38 +22,39 @@ const PlanSuccessDialog = ({
 }: PlanSuccessDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="rounded-2xl">
-        <div className="flex flex-col items-center text-center py-4">
-          {/* Icon */}
-          <div className="mb-4">
-            <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8 text-green-600" />
+      <AlertDialogContent className="rounded-2xl max-w-[400px] backdrop-blur-sm bg-white/95">
+        <div className="flex flex-col items-center text-center py-6">
+          {/* Icon with Animation */}
+          <div className="mb-6">
+            <div className="w-20 h-20 bg-[#415A77]/10 rounded-full flex items-center justify-center animate-in zoom-in duration-500">
+              <div className="w-16 h-16 bg-[#415A77] rounded-full flex items-center justify-center animate-ping-once">
+                <CheckCircle2 className="w-8 h-8 text-white" />
+              </div>
             </div>
           </div>
 
-          {/* Header */}
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-center text-xl font-semibold">
+            <AlertDialogTitle className="text-center text-2xl font-bold text-[#0D1B2A]">
               Payment Successful
             </AlertDialogTitle>
 
-            <AlertDialogDescription className="text-center text-sm text-gray-500 mt-2">
-              Your subscription has been activated successfully.
+            <AlertDialogDescription className="text-center text-base text-gray-600 mt-2 px-4">
+              Your subscription has been activated. You can now start listing your watches and managing your bids.
             </AlertDialogDescription>
           </AlertDialogHeader>
         </div>
 
-        {/* Single Action Button */}
-        <div className="w-full">
+        <div className="w-full pt-2">
           <AlertDialogAction
-            className="w-full bg-[#25313F] hover:bg-[#25313F]/90 text-white rounded-xl"
+            className="w-full bg-[#0D1B2A] hover:bg-[#1B263B] text-white py-6 rounded-xl text-lg font-semibold transition-all duration-200 active:scale-[0.98]"
             onClick={() => onOpenChange?.(false)}
           >
-            Continue
+            Continue to Dashboard
           </AlertDialogAction>
         </div>
       </AlertDialogContent>
     </AlertDialog>
+
   );
 };
 

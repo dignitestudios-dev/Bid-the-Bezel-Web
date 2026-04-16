@@ -16,7 +16,8 @@ import { useAppSelector } from "@/lib/hooks";
 import { Clock3, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+
 
 type Props = {
   bidders: Offer[];
@@ -204,9 +205,14 @@ const CurrentBid = ({ bidders, watch }: Props) => {
           </div> */}
         </>
       ) : null}
-      <div className={!isLoggedIn ? "w-full flex py-4 justify-center" : "hidden"}>
-        <AuthSidebar hideTrigger={isLoggedIn} />
+      <div
+        className={!isLoggedIn ? "w-full flex py-4 justify-center" : "hidden"}
+      >
+        <Suspense fallback={null}>
+          <AuthSidebar hideTrigger={isLoggedIn} />
+        </Suspense>
       </div>
+
 
       <SubscriptionsDialog
         setCardPopup={setCardPopup}

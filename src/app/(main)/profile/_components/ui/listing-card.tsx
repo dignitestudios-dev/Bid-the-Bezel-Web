@@ -78,40 +78,35 @@ const ListingCard = ({
       )}
 
       {!isDraftShown && status === "draft" && (
-        <div className="p-3 grid grid-cols-2 gap-5">
-          <span></span>
+        <div className="p-4 border-t border-dashed">
           <Button
+            className="w-full"
             onClick={() => router.push(`/seller/shipping-details-auth/${id}`)}
           >
-            {/* <Link href={`/buyer/shipping-details/${product?._id}`} className="w-full"> */}
             Fill Shipping Details
-            {/* </Link> */}
           </Button>
         </div>
       )}
+
       {status === "rejected" && (
-        <div className="flex">
-          <div className="p-3 w-full gap-5">
-            <span></span>
-            <Button
-              onClick={() => setDeleteDialog(true)}
-              className="border bg-white hover:bg-red-600 hover:text-white border-gray-200 text-red-600"
-            >
-              {/* <Link href={`/buyer/shipping-details/${product?._id}`} className="w-full"> */}
-              Delete Product
-              {/* </Link> */}
-            </Button>
-          </div>
-          <div className="p-3 w-full gap-5">
-            <span></span>
-            <Button onClick={() => setUnAuthenticateDialog(true)}>
-              {/* <Link href={`/buyer/shipping-details/${product?._id}`} className="w-full"> */}
-              Continue Without Authentication
-              {/* </Link> */}
-            </Button>
-          </div>
+        <div className="p-4 border-t border-dashed bg-red-50/50 flex flex-col sm:flex-row gap-3">
+          <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => setDeleteDialog(true)}
+          >
+            Delete Product
+          </Button>
+          <Button
+            variant="outline"
+            className="flex-1 text-xs sm:text-sm px-2"
+            onClick={() => setUnAuthenticateDialog(true)}
+          >
+            Continue Without Authentication
+          </Button>
         </div>
       )}
+
 
       <div
         className={`p-3 text-white font-medium text-center  ${
