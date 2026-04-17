@@ -20,7 +20,7 @@ const Login = ({
   setStep?: (step: AuthStep) => void;
   onSuccess: () => void;
 }) => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useLogin();
   const {
     register,
@@ -49,7 +49,7 @@ const Login = ({
         }
         onSuccess();
         showSuccess("Logged in successfully");
-        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] })
+        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
       },
 
       onError: (err: any) => {
@@ -67,7 +67,6 @@ const Login = ({
         {
           method: "google",
           idToken: token,
-
         } as any,
         {
           onSuccess: (data) => {
@@ -85,7 +84,7 @@ const Login = ({
 
             showSuccess("Logged in successfully");
             onSuccess();
-            queryClient.invalidateQueries({ queryKey: ["get-home-listing"] })
+            queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
           },
 
           onError: (err: any) => {
@@ -147,12 +146,19 @@ const Login = ({
       </div>
 
       <div className="space-y-3">
-        <Button disabled={isPending} onClick={handleGoogleLogin} className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black">
+        <Button
+          disabled={isPending}
+          onClick={handleGoogleLogin}
+          className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black"
+        >
           <Google />
           Continue with Google
         </Button>
 
-        <Button disabled={isPending} className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black">
+        <Button
+          disabled={isPending}
+          className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black"
+        >
           <Apple />
           Continue with Apple
         </Button>

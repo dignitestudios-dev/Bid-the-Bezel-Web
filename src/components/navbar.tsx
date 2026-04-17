@@ -13,6 +13,7 @@ import { PlanSkeleton } from "./skeleton";
 import { Skeleton } from "./ui/skeleton";
 import PlanSuccessDialog from "./ui/plan-success-dialog";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRequireProfileCompletion } from "@/hooks/api/use-require-profile-completion";
 
 const Navbar = () => {
   const { data: user, isLoading } = useMe();
@@ -24,6 +25,7 @@ const Navbar = () => {
     url.searchParams.delete("plan");
     router.replace(url.pathname + url.search, { scroll: false });
   };
+  useRequireProfileCompletion(user, isLoading);
   return (
     <div>
       <div className="flex justify-between w-[90%] py-4 max-w-screen-2xl mx-auto">
@@ -40,11 +42,15 @@ const Navbar = () => {
             <>
               <MessageNotificationMenu />
               <ProfileMenu profileData={user?.data} />
-              <Link href={"/seller/plans"}>
-                <Button className="bg-[#415A77] rounded-full flex gap-2 items-center w-[154px] h-[45px] max-w-full">
-                  <span>Start Selling</span> <ArrowRight size={15} />
-                </Button>
-              </Link>{" "}
+              {/* <Link href={"/seller/plans"}> */}
+              <Button
+                disabled={!user?.data?.isProfileCompleted}
+                onClick={() => router.push("/seller/plans")}
+                className="bg-[#415A77] rounded-full flex gap-2 items-center w-[154px] h-[45px] max-w-full"
+              >
+                <span>Start Selling</span> <ArrowRight size={15} />
+              </Button>
+              {/* </Link>{" "} */}
             </>
           )}
           {isLoading && (

@@ -3,12 +3,17 @@ import { z } from "zod";
 export const loginSchema = z.object({
     email: z
         .string()
-        .min(1, "Email is required")
+        .min(1, "Email is required").max(255, "Email must be at most 255 characters")
         .email("Invalid email address"),
 
     password: z
         .string()
-        .min(6, "Password must be at least 6 characters"),
+        .min(6, "Password must be at least 6 characters")
+        .max(12, "Password must be at most 12 characters")
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+            "Password must include uppercase, lowercase, number, and special character"
+        ),
     method: z.literal("email"),
 });
 
@@ -16,7 +21,7 @@ export type LoginPayload = z.infer<typeof loginSchema>;
 
 export const otpSchema = z.object({
     email: z.string().email("Invalid email address"),
-    otp: z.string().length(5, "OTP must be exactly 5 digits"),
+    otp: z.string().length(5, "OTP is required"),
 });
 
 export type OtpPayload = z.infer<typeof otpSchema>;

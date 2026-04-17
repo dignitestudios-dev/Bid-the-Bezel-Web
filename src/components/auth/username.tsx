@@ -112,6 +112,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
           <FloatingInput
             id="username"
             label="Username"
+            disabled={isChecking || isSubmitting}
             {...register("userName", {
               onChange: (e) => {
 

@@ -10,8 +10,7 @@ import { useForm } from "react-hook-form";
 import { showError, showSuccess } from "@/lib/toast";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/slices/authSlice";
-
-
+import { signInWithGoogle } from "@/lib/auth";
 
 const Register = ({
   setStep,
@@ -20,7 +19,7 @@ const Register = ({
   setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
-  const { mutate, isPending, } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const {
     register,
@@ -39,7 +38,7 @@ const Register = ({
     mutate(body, {
       onSuccess: (data) => {
         const user = data?.data?.user;
-        console.log(user , "---------------> user")
+        console.log(user, "---------------> user");
         showSuccess("Account created successfully!");
         if (!user?.isEmailVerified) {
           setStep?.("otp-register");
@@ -60,7 +59,45 @@ const Register = ({
     });
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const { token } = await signInWithGoogle();
 
+      mutate(
+        {
+          method: "google",
+          idToken: token,
+        } as any,
+        {
+          onSuccess: (data) => {
+            const user = data?.data?.user;
+
+            if (!user?.isEmailVerified) {
+              setStep?.("otp-register");
+              return;
+            }
+
+            if (!user?.isProfileCompleted) {
+              setStep?.("username");
+              return;
+            }
+
+            showSuccess("Logged in successfully");
+            onSuccess?.();
+            // queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
+          },
+
+          onError: (err: any) => {
+            console.error(err);
+            showError(err);
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Google login error:", error);
+      showError("Google login failed");
+    }
+  };
 
   return (
     <div className="w-[340px] max-w-full">
@@ -98,31 +135,31 @@ const Register = ({
       </div>
 
       <div className="space-y-3">
-        <Button className="bg-[#F7F7F7] hover:bg-[#f3f3f3] rounded-full w-full text-black">
+        <Button
+          disabled={isPending}
+          onClick={handleGoogleLogin}
+          className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black"
+        >
           <Google />
           Continue with Google
         </Button>
 
-        <Button className="bg-[#F7F7F7] hover:bg-[#f3f3f3] rounded-full w-full text-black">
+        <Button
+          disabled={isPending}
+          className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black"
+        >
           <Apple />
           Continue with Apple
         </Button>
 
         <p className="text-center mt-5">
-          Already have an account?{" "}
+          First time here?{" "}
           <button
-            onClick={() => setStep?.("login")}
+            onClick={() => setStep?.("register")}
             className="font-semibold cursor-pointer"
           >
-            Log In
+            Create an account
           </button>
-        </p>
-
-        <p className="font-medium text-center text-sm mt-5">
-          By creating an account using email, Google or Apple, I agree to the{" "}
-          <button className="underline font-normal cursor-pointer">Terms & Conditions</button> and
-          acknnowledge the{" "}
-          <button className="underline font-normal cursor-pointer">Privacy Policy</button>
         </p>
       </div>
     </div>

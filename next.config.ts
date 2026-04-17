@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "bit-the-bezel-bucket.s3.us-east-2.amazonaws.com",
+      },
     ],
   }
 };

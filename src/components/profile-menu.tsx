@@ -16,11 +16,27 @@ import { useAppDispatch } from "@/lib/hooks";
 import { logout } from "@/lib/slices/authSlice";
 import LogoutDialog from "./auth/LogoutDialog";
 import Link from "next/link";
+import { useLogout } from "@/features/auth/hooks";
+import Image from "next/image";
 
-const ProfileMenu = ({ profileData }: { profileData: any }) => {
+const ProfileMenu = ({
+  profileData,
+}: {
+  profileData: {
+    id: number;
+    name: string;
+    email: string;
+    userName?: string;
+    profilePicture?: { location: string };
+    isProfileCompleted: boolean;
+    isEmailVerified: boolean;
+    isSubscribed?: boolean;
+  };
+}) => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const { mutate: logout } = useLogout();
 
   return (
     <>
@@ -32,9 +48,13 @@ const ProfileMenu = ({ profileData }: { profileData: any }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[260px] max-w-full" align="end">
           <div className="w-full flex flex-col items-center space-y-1 my-4">
-            <div className="w-16 h-16 bg-[#2881E8] rounded-xl text-white font-semibold flex justify-center items-center">
-              {profileData?.userName?.slice(0, 2).toUpperCase()}
-            </div>
+            <Image
+              src={profileData?.profilePicture?.location || ""}
+              alt="profile"
+              width={56}
+              height={56}
+              className="rounded-full"
+            />
             <p className="font-semibold">{profileData?.userName}</p>
             <p className="text-gray-400 font-light text-sm">
               {profileData?.email}
@@ -69,7 +89,7 @@ const ProfileMenu = ({ profileData }: { profileData: any }) => {
       <LogoutDialog
         open={logoutOpen}
         onOpenChange={setLogoutOpen}
-        onConfirm={() => dispatch(logout())}
+        onConfirm={() => logout()}
       />
     </>
   );

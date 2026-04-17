@@ -36,8 +36,7 @@ const LogoutDialog = ({ open, onOpenChange, onConfirm }: LogoutDialogProps) => {
           <AlertDialogHeader>
             <AlertDialogTitle className="text-center">Log Out</AlertDialogTitle>
             <AlertDialogDescription className="text-center">
-              Volutpat pretium blandit amet ac tempor nulla hendrerit ultricies.
-              Aenean in quis faucibus purus at.
+              Are you sure you want to log out?
             </AlertDialogDescription>
           </AlertDialogHeader>
         </div>
