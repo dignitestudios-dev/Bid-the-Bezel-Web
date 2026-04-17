@@ -14,8 +14,7 @@ const CollectionCard = (props: Props) => {
   const watch = props.watch;
   return (
     <Link href={`/${typeRouteMap[watch.type]}/${watch?._id}`}>
-      <div className="bg-[#F7F7F7]  border border-gray-200 rounded-xl p-4 w-full h-[400xp]">
-        <div className="relative w-full">
+<div className="flex flex-col h-full bg-[#F7F7F7] border border-gray-200 rounded-xl p-4">        <div className="relative w-full">
           {watch.isAuthenticated && (
             <div className="rounded-full absolute top-2 left-2 text-white bg-black/40 px-3 py-1 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10">
               Authenticated

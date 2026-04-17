@@ -157,6 +157,7 @@ const CurrentBid = ({ bidders }: Props) => {
             <Input
               placeholder="Enter your amount"
               type="number"
+              min={0}
               value={price}
               onChange={(e) => setPrice(+e.target.value)}
             />

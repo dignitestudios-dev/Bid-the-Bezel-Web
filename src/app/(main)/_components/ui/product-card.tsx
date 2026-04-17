@@ -11,11 +11,11 @@ import React, { useState } from "react";
 
 const ProductCard = ({ prod }: any) => {
   const [isFav, setIsFav] = useState(false);
-console.log(prod?.saleType)
+
   if (!prod) return null;
   return (
     <Link href={`/${prod.saleType}/${prod.watchId}`}>
-      <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-400/10 bg-clip-padding backdrop-filter backdrop-blur- bg-opacity-10 border border-gray-400/30 hover:shadow-lg translate-y-1 transition-all">
+      <div className="flex flex-col h-full text-xs md:text-base p-4 rounded-xl bg-gray-400/10 backdrop-blur border border-gray-400/30 hover:shadow-lg transition-all">
         <div className="relative">
           <button
             onClick={() => setIsFav(!isFav)}
@@ -83,7 +83,7 @@ console.log(prod?.saleType)
 
                 <div className="w-1/3">
                   <h2 className="font-thin">Ends In</h2>
-                  <h1 className="font-semibold">$8700</h1>
+                  <h1 className="font-semibold">2D 5H 42M</h1>
                 </div>
               </>
             )}

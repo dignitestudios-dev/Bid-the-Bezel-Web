@@ -61,13 +61,13 @@ const Questions = (props: Props) => {
         {isLoggedIn ?
           <div className="bg-[#F7F7F7] p-2 rounded-lg  flex h-20 flex-col items-end">
             <Input placeholder="Ask your question" className="border-none shadow-none focus:shadow-none focus:border-none focus:outline-none" />
-            <SendHorizontal size={50} className="bg-black h-8 p-1 rounded-sm text-white " />
+            <SendHorizontal size={50} className="bg-black mt-2 h-8 p-1 rounded-sm text-white " />
           </div> : <span className="">
-            <Link className="font-semibold" href={"/login"}>
+            <Link className="font-semibold" href={"?authstep=login"}>
               Login
             </Link>{" "}
             or{" "}
-            <Link className="font-semibold" href={"/sign-up"}>
+            <Link className="font-semibold" href={"?authstep=login"}>
               Register
             </Link>{" "}
             to ask questions

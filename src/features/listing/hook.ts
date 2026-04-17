@@ -35,12 +35,27 @@ export const useGetMyListingDetail = (id: string) => {
 };
 
 
-export const useGetListing = (type?: string) => {
+export const useGetListing = (
+    type?: string,
+    authentication?: string,
+    priceStartAt?: number,
+    priceEndAt?: number) => {
     return useQuery({
-        queryKey: ["get-listing", type],
+        queryKey: ["get-listing", type, authentication, priceStartAt, priceEndAt],
+
+
         queryFn: async () => {
+            const params: any = {};
+            if (type) params.type = type;
+            if (authentication) {
+                params.isAuth = authentication;
+            }
+            if (priceStartAt !== undefined) params.priceStartAt = priceStartAt;
+            if (priceEndAt !== undefined) params.priceEndAt = priceEndAt;
+
+
             const res = await apiClient.get(`/products`, {
-                params: { type }
+                params
             });
             return res.data;
         },

@@ -39,31 +39,28 @@ const MyDraftListing = ({
     <div>
       <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">
         <Button
-          className={`font-semibold w-[130px] max-w-full ${
-            status === "draft"
-              ? "bg-white text-primary"
-              : "bg-transparent text-primary"
-          }`}
+          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "draft"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-gray-500"
+            }`}
           onClick={() => setStatus("draft")}
         >
           Unfulfilled
         </Button>
         <Button
-          className={`font-semibold w-[130px] max-w-full ${
-            status === "pending"
-              ? "bg-white text-primary"
-              : "bg-transparent text-primary"
-          }`}
+          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "pending"
+              ? "bg-white text-black shadow"
+              : "bg-transparent text-gray-500"
+            }`}
           onClick={() => setStatus("pending")}
         >
           Pending Approval
         </Button>
         <Button
-          className={`font-semibold w-[130px] max-w-full ${
-            status === "rejected"
-              ? "bg-white text-primary"
-              : "bg-transparent text-primary"
-          }`}
+          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "rejected"
+              ? "bg-white text-black shadow"
+              : "bg-transparent text-gray-500"
+            }`}
           onClick={() => setStatus("rejected")}
         >
           Rejected

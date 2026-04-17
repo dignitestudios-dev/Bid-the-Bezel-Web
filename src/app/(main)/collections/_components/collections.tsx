@@ -39,6 +39,11 @@ const trendOptions = [
 
 const Collections = (props: Props) => {
   const router = useRouter();
+  const [authFilter, setAuthFilter] = useState<string | undefined>();
+  const [priceRange, setPriceRange] = useState<{
+    min?: number;
+    max?: number;
+  }>({});
   const searchParams = useSearchParams();
   const watchCategory = searchParams.get("category") as WatchCategory;
 
@@ -60,7 +65,9 @@ const Collections = (props: Props) => {
   }>();
 
   const handleSetFilter = (category: WatchCategory) => {
-    router.push(`/collections?category=${category}`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("category", category);
+    router.push(`/collections?${params.toString()}`);
     setFilter(category);
   };
 
@@ -90,7 +97,11 @@ const Collections = (props: Props) => {
   };
   const apiType = categoryToApiType[watchCategory || "all"];
 
-  const { data: ProductData, isLoading } = useGetListing(apiType)
+  const { data: ProductData, isLoading } = useGetListing(
+    apiType,
+    authFilter,
+    priceRange.min,
+    priceRange.max)
 
   return (
     <div className="max-w-screen-2xl mx-auto py-16 w-[90%]">
@@ -100,8 +111,12 @@ const Collections = (props: Props) => {
             <Tabs filter={filter} setFilter={handleSetFilter} />
             <div className="flex items-center gap-2 sm:gap-4">
               <BrandFilterDialog />
-              <PriceFilterDialog />
-              <AuthFilterDialog />
+              <PriceFilterDialog
+                onApply={(min, max) => setPriceRange({ min, max })}
+              />
+              <AuthFilterDialog
+                onApply={setAuthFilter}
+                productLength={ProductData?.data || []} />
             </div>
           </div>
           <Dropdown

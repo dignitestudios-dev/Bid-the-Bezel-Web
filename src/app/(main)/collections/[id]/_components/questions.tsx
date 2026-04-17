@@ -56,8 +56,8 @@ const Questions = (props: Props) => {
       </div>
       <div className="px-4 py-2">
         <span className="text-sm">
-          <Link className="font-semibold" href={"/login"}>Login</Link> or{" "}
-          <Link className="font-semibold" href={"/sign-up"}>Register</Link> to ask questions
+          <Link className="font-semibold" href={"?authstep=login"}>Login</Link> or{" "}
+          <Link className="font-semibold" href={"?authstep=login"}>Register</Link> to ask questions
         </span>
         <div className="h-[400px] overflow-auto">
         {watchFAQs.map((q, idx) => (
