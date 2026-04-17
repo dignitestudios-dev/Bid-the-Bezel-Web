@@ -19,20 +19,7 @@ import Link from "next/link";
 import { useLogout } from "@/features/auth/hooks";
 import Image from "next/image";
 
-const ProfileMenu = ({
-  profileData,
-}: {
-  profileData: {
-    id: number;
-    name: string;
-    email: string;
-    userName?: string;
-    profilePicture?: { location: string };
-    isProfileCompleted: boolean;
-    isEmailVerified: boolean;
-    isSubscribed?: boolean;
-  };
-}) => {
+const ProfileMenu = ({ profileData }: { profileData: User }) => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);

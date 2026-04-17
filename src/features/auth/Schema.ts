@@ -34,9 +34,11 @@ export type ResendOtpPayload = z.infer<typeof resendOtpSchema>;
 
 export const completeProfileSchema = z.object({
     userName: z
-        .string()
+        .string({ message: "Username is required" })
         .min(3, "Username must be at least 3 characters")
-        .max(20, "Username must be at most 20 characters"),
+        .max(20, "Username must be at most 20 characters")
+        .trim()
+        .regex(/^\S+$/, "Username must not contain spaces"),
     profilePicture: z
         .any()
         .refine((file) => file instanceof File && file.size > 0, "Profile picture is required"),
@@ -58,7 +60,13 @@ export type ForgotPasswordPayload = z.infer<typeof forgotPasswordSchema>;
 
 export const updatePasswordSchema = z
     .object({
-        password: z.string().min(6, "Password must be at least 6 characters"),
+        password: z.string()
+            .min(6, "Password must be at least 6 characters")
+            .max(12, "Password must be at most 12 characters")
+            .regex(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+                "Password must include uppercase, lowercase, number, and special character"
+            ),
         confirmPassword: z.string().min(6, "Confirm Password must be at least 6 characters"),
         resetToken: z.string(),
     })

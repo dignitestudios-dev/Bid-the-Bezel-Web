@@ -4,7 +4,10 @@ import { Button } from "../ui/button";
 import { useForgotPassword } from "@/features/auth/hooks";
 import { showError, showSuccess } from "@/lib/toast";
 import { useAppDispatch } from "@/lib/hooks";
-import { ForgotPasswordPayload, forgotPasswordSchema } from "@/features/auth/Schema";
+import {
+  ForgotPasswordPayload,
+  forgotPasswordSchema,
+} from "@/features/auth/Schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -21,14 +24,8 @@ type Step =
   | "reset-password"
   | "password-changed";
 
-const ForgotPassword = ({
-  setStep,
-}: {
-  setStep?: (step: Step) => void;
-}) => {
+const ForgotPassword = ({ setStep }: { setStep?: (step: Step) => void }) => {
   const { mutate, isPending } = useForgotPassword();
-
-
 
   const {
     register,
@@ -44,9 +41,9 @@ const ForgotPassword = ({
   const onSubmit = (body: ForgotPasswordPayload) => {
     mutate(body, {
       onSuccess: () => {
-        localStorage.setItem('email', body.email)
+        localStorage.setItem("email", body.email);
         showSuccess("OTP sent to your email!");
-        setStep?.('otp')
+        setStep?.("otp");
       },
       onError: (err: any) => {
         console.error(err);
@@ -59,10 +56,16 @@ const ForgotPassword = ({
     <div className="w-[340px] max-w-full">
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold">
-          Enter your email and we'll send a link to reset your password
+          Enter your email and we'll send a OTP to reset your password
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <FloatingInput id="email-forgot" label="Email" {...register("email")} error={errors.email?.message} type="email" />
+          <FloatingInput
+            id="email-forgot"
+            label="Email"
+            {...register("email")}
+            error={errors.email?.message}
+            type="email"
+          />
 
           <Button
             type="submit"

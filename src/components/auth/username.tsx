@@ -6,20 +6,38 @@ import { Camera, Loader2 } from "lucide-react";
 
 import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
-import { completeProfileSchema, CompleteProfilePayload } from "@/features/auth/Schema";
+import {
+  completeProfileSchema,
+  CompleteProfilePayload,
+} from "@/features/auth/Schema";
 import { showSuccess } from "@/lib/toast";
 import { useCompleteProfile, useCheckUsername } from "@/features/auth/hooks";
 import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
 
-type AuthStep = "login" | "register" | "otp-register" | "username" | "purchase-plan" | "plan-selected" | "subscription-confirmation" | "forgot-password" | "otp" | "reset-password" | "password-changed";
+type AuthStep =
+  | "login"
+  | "register"
+  | "otp-register"
+  | "username"
+  | "purchase-plan"
+  | "plan-selected"
+  | "subscription-confirmation"
+  | "forgot-password"
+  | "otp"
+  | "reset-password"
+  | "password-changed";
 
 const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutate, isPending: isSubmitting } = useCompleteProfile();
-  const { mutateAsync: checkUsername, isPending: isChecking, data } = useCheckUsername();
+  const {
+    mutateAsync: checkUsername,
+    isPending: isChecking,
+    data,
+  } = useCheckUsername();
 
   const {
     register,
@@ -62,7 +80,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
       onSuccess: () => {
         showSuccess("Profile updated successfully!");
         setStep?.("purchase-plan");
-        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] })
+        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
       },
     });
   };
@@ -95,7 +113,12 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
             className="group relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer overflow-hidden"
           >
             {preview ? (
-              <Image src={preview} fill alt="Preview" className="w-full h-full object-cover" />
+              <Image
+                src={preview}
+                fill
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
             ) : (
               <div className="text-gray-400 flex flex-col items-center">
                 <Camera size={24} />
@@ -103,8 +126,18 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
               </div>
             )}
           </div>
-          <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageChange} />
-          {errors.profilePicture && <p className="text-red-500 text-xs mt-1">{errors.profilePicture.message as string}</p>}
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {errors.profilePicture && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.profilePicture.message as string}
+            </p>
+          )}
         </div>
 
         {/* Username Input with Debounced Check */}
@@ -112,12 +145,11 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
           <FloatingInput
             id="username"
             label="Username"
-            disabled={isChecking || isSubmitting}
+            disabled={isSubmitting}
             {...register("userName", {
               onChange: (e) => {
-
                 debouncedCheck(e.target.value);
-              }
+              },
             })}
             error={errors.userName?.message}
           />
@@ -132,15 +164,19 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
                     <span>Checking...</span>
                   </div>
                 )}
-                {!isChecking && !data?.data.exists && (
+                {!isChecking && !data?.data.exists && !errors.userName && (
                   <div className="flex items-center gap-2 text-sm text-green-600">
-                    <span className="bg-green-50 rounded-full p-0.5 text-[10px]">✓</span>
+                    <span className="bg-green-50 rounded-full p-0.5 text-[10px]">
+                      ✓
+                    </span>
                     <span>Username Available</span>
                   </div>
                 )}
                 {!isChecking && data?.data.exists && (
                   <div className="flex items-center gap-2 text-sm text-red-600">
-                    <span className="bg-red-50 rounded-full p-0.5 text-[10px]">✕</span>
+                    <span className="bg-red-50 rounded-full p-0.5 text-[10px]">
+                      ✕
+                    </span>
                     <span>Username Taken</span>
                   </div>
                 )}

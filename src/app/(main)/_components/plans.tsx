@@ -13,12 +13,11 @@ import React, { useState } from "react";
 type Props = {};
 
 const Plans = (props: Props) => {
-  const dispatch = useAppDispatch();
   const { data, isLoading } = useSubscription();
   const { mutate: buySubscription } = useBuySubscription();
   const { refetch, data: userData } = useMe();
 
-  dispatch(login(userData?.data));
+
 
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 

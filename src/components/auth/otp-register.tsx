@@ -11,7 +11,7 @@ const OtpRegister = ({
   setStep,
   onSuccess,
 }: {
- setStep?: (step: AuthStep) => void;
+  setStep?: (step: AuthStep) => void;
   onSuccess?: () => void;
 }) => {
   const { mutate, isPending } = useOtpVerify();
@@ -21,10 +21,9 @@ const OtpRegister = ({
   const [email, setEmail] = React.useState<string | null>(null);
 
   useEffect(() => {
-    setEmail(localStorage.getItem('email'));
+    setEmail(localStorage.getItem("email"));
   }, []);
   const [timer, setTimer] = useState(120);
-
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -36,13 +35,11 @@ const OtpRegister = ({
     return () => clearInterval(interval);
   }, [timer]);
 
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
-
 
   const {
     handleSubmit,
@@ -55,7 +52,6 @@ const OtpRegister = ({
       otp: "",
     },
   });
-
 
   useEffect(() => {
     setValue("otp", otp.join(""));
@@ -83,7 +79,7 @@ const OtpRegister = ({
 
   const handleKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace") {
       if (otp[index] === "" && index > 0) {
@@ -97,7 +93,7 @@ const OtpRegister = ({
   };
 
   const onSubmit = (data: OtpPayload) => {
-    console.log(data)
+    console.log(data);
     mutate(data, {
       onSuccess: (response) => {
         if (response.data?.user) {
@@ -123,8 +119,8 @@ const OtpRegister = ({
           },
           onError: (err: any) => {
             showError(err);
-          }
-        }
+          },
+        },
       );
     }
   };
@@ -148,12 +144,17 @@ const OtpRegister = ({
             value={digit}
             onChange={(e) => handleOtpChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
-            className={`w-14 h-14 rounded-xl text-center text-xl font-bold border-2 focus:outline-none transition-all ${errors.otp ? "border-red-500" : "border-gray-200 focus:border-gray-700"
-              }`}
+            className={`w-14 h-14 rounded-xl text-center text-xl font-bold border-2 focus:outline-none transition-all ${
+              errors.otp
+                ? "border-red-500"
+                : "border-gray-200 focus:border-gray-700"
+            }`}
           />
         ))}
       </div>
-      {errors.otp && <p className="text-red-500 text-xs mt-2">{errors.otp.message}</p>}
+      {errors.otp && (
+        <p className="text-red-500 text-xs mt-2">{errors.otp.message}</p>
+      )}
 
       <Button
         type="submit"
@@ -171,10 +172,19 @@ const OtpRegister = ({
           disabled={isResending || timer > 0}
           className="font-semibold text-black cursor-pointer hover:underline disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          {isResending ? "Resending..." : timer > 0 ? `Resend in ${formatTime(timer)}` : "Resend"}
+          {isResending
+            ? "Resending..."
+            : timer > 0
+              ? `Resend in ${formatTime(timer)}`
+              : "Resend"}
         </button>
-
       </p>
+      <button
+        onClick={() => setStep?.("login")}
+        className="mt-4 cursor-pointer hover:underline text-sm text-gray-600"
+      >
+        Change Email
+      </button>
     </div>
   );
 };

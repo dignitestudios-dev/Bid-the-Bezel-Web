@@ -160,7 +160,7 @@ export const useDeleteAccount = () =>
    GET PROFILE (ME)
 ========================= */
 export const useMe = () => {
-  return useQuery({
+  return useQuery<MeApiResponse>({
     queryKey: ["get-profile"],
     queryFn: async () => {
       const res = await apiClient.get("/users/me");
