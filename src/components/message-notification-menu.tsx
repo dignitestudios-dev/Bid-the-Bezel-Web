@@ -21,6 +21,29 @@ import Bell from "./icons/Bell";
 import Image from "next/image";
 import NotificationItem from "./icons/NotificationItem";
 import { useRouter } from "next/navigation";
+import NotificationTab from "./ui/notification-tab";
+import MessageTab from "./ui/message-tab";
+
+const notifications = [
+  {
+    title: "You won a bid",
+    description: "Review your bid and add shipping details",
+    isShippingDetails: true,
+    isFav:false
+  },
+  {
+    title: "Watch Authenticated",
+    description: "Your watch authentication approved",
+    isShippingDetails: false,
+     isFav:false
+  },
+  {
+    title: "24 Hours remainig",
+    description: "fav watch",
+    isShippingDetails: false,
+     isFav:true
+  },
+];
 
 const MessageNotificationMenu = () => {
   const router = useRouter();
@@ -33,7 +56,7 @@ const MessageNotificationMenu = () => {
     { title: "Notifications", label: "notifications", icon: <Bell /> },
   ];
   const [activeTab, setActiveTab] = useState<"messages" | "notifications">(
-    "notifications"
+    "notifications",
   );
 
   const handleGoToChats = () => {
@@ -74,36 +97,7 @@ const MessageNotificationMenu = () => {
             {activeTab === "messages" ? (
               <div className="w-full pt-3">
                 {dummyArray.map((msg, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className="cursor-pointer flex gap-2 p-2 rounded-lg group hover:bg-primary! transition-all"
-                    onClick={handleGoToChats}
-                  >
-                    <div className="h-9 w-9 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/images/user.jpg"
-                        alt="User"
-                        width={36}
-                        height={36}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    <div className="flex-1">
-                      <p className="group-hover:text-white font-semibold">
-                        Iamactive & Admin
-                      </p>
-                      <div className="mt-1 flex items-center justify-between gap-5">
-                        <p className="group-hover:text-gray-100 flex-1 text-gray-700 text-sm truncate">
-                          Lectus neque eget ipsum mi tempus sed.
-                        </p>
-
-                        <p className="group-hover:text-white text-black font-medium text-sm">
-                          1 min
-                        </p>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
+                 <MessageTab key={index} handleGoToChats={handleGoToChats}  />
                 ))}
 
                 <div className="mt-2 bg-gray-200 w-full h-px" />
@@ -117,37 +111,15 @@ const MessageNotificationMenu = () => {
               </div>
             ) : (
               <div className="w-full pt-3">
-                {dummyArray.map((msg, index) => (
-                  <DropdownMenuItem
+                {notifications.map((msg, index) => (
+                  <NotificationTab
                     key={index}
-                    className="cursor-pointer flex gap-2 p-2 rounded-lg group hover:bg-primary! transition-all"
-                  >
-                    <div className="w-9 h-9 rounded-full flex justify-center items-center bg-gray-100 group-hover:bg-gray-800">
-                      <NotificationItem />
-                    </div>
-
-                    <div className="flex-1">
-                      <p className="group-hover:text-white font-semibold">
-                        You won a bid
-                      </p>
-                      <div className="mt-1 mb-3 flex items-center justify-between gap-5">
-                        <p className="group-hover:text-gray-100 flex-1 text-gray-700 text-sm truncate">
-                          Review your bid and add shipping details{" "}
-                        </p>
-
-                        <p className="group-hover:text-white text-black font-medium text-sm">
-                          1 min
-                        </p>
-                      </div>
-
-                      <Button
-                        className="group-hover:bg-gray-800 hover:bg-gray-700"
-                        size={"sm"}
-                      >
-                        View
-                      </Button>
-                    </div>
-                  </DropdownMenuItem>
+                    title={msg.title}
+                    description={msg.description}
+                    isFav={msg.isFav}
+                    isShippingDetails={msg.isShippingDetails}
+                    handleGoToChats={handleGoToChats}
+                  />
                 ))}
               </div>
             )}
