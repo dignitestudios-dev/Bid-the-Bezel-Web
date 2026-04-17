@@ -14,9 +14,17 @@ import {
 import { useAppDispatch } from "@/lib/hooks";
 import { login, logout } from "@/lib/slices/authSlice";
 import { useRouter } from "next/navigation";
-import { useCheckUsername, useMe, useUpdateProfile } from "@/features/auth/hooks";
+import {
+  useCheckUsername,
+  useDeleteAccount,
+  useMe,
+  useUpdateProfile,
+} from "@/features/auth/hooks";
 import { Camera, Loader2 } from "lucide-react";
-import { UpdateProfilePayload, updateProfileSchema } from "@/features/auth/Schema";
+import {
+  UpdateProfilePayload,
+  updateProfileSchema,
+} from "@/features/auth/Schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "@/hooks/api/useDebounce";
@@ -36,11 +44,12 @@ const Profile = () => {
   const router = useRouter();
   const { data: userData, isLoading } = useMe();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
-  const { mutate: checkUsername, isPending: isChecking, data } = useCheckUsername();
-  const queryClient = useQueryClient();
-
-
-
+  const {
+    mutate: checkUsername,
+    isPending: isChecking,
+    data,
+  } = useCheckUsername();
+  const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
 
   const {
     register,
@@ -70,14 +79,16 @@ const Profile = () => {
   }, [userData, reset]);
 
   useEffect(() => {
-    if (!debouncedUsername || debouncedUsername.length < 3 || debouncedUsername === userData?.data?.userName) {
+    if (
+      !debouncedUsername ||
+      debouncedUsername.length < 3 ||
+      debouncedUsername === userData?.data?.userName
+    ) {
       // setIsAvailable(null);
       return;
     }
 
-    checkUsername(
-      { userName: debouncedUsername },
-    );
+    checkUsername({ userName: debouncedUsername });
   }, [debouncedUsername, userData?.data?.userName, checkUsername]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,7 +114,7 @@ const Profile = () => {
 
     updateProfile(payload, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["get-profile"] });
+        // queryClient.invalidateQueries({ queryKey: ["get-profile"] });
         showSuccess("Profile updated successfully!");
       },
       onError: (err: any) => {
@@ -113,8 +124,15 @@ const Profile = () => {
   };
 
   const handleDeleteAccount = () => {
-    dispatch(logout());
-    router.push("/");
+    deleteAccount(undefined, {
+      onSuccess: () => {
+        showSuccess("Account deleted successfully!");
+        router.push("/");
+      },
+      onError: (err: any) => {
+        showError(err);
+      },
+    });
   };
 
   const imageSrc =
@@ -182,30 +200,32 @@ const Profile = () => {
                   error={errors.userName?.message}
                 />
 
-                {userName && userName.length >= 3 && userName !== userData?.data?.userName && (
-                  <div className="pt-1">
-                    {isChecking ? (
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                        <span>Checking...</span>
-                      </div>
-                    ) : !data?.data.exists ? (
-                      <div className="flex items-center gap-2 text-sm text-green-600">
-                        <span className="rounded-full bg-green-50 p-1 text-[10px]">
-                          ✓
-                        </span>
-                        <span>Username is available</span>
-                      </div>
-                    ) : data?.data.exists ? (
-                      <div className="flex items-center gap-2 text-sm text-red-600">
-                        <span className="rounded-full bg-red-50 p-1 text-[10px]">
-                          ✕
-                        </span>
-                        <span>This username is already taken</span>
-                      </div>
-                    ) : null}
-                  </div>
-                )}
+                {userName &&
+                  userName.length >= 3 &&
+                  userName !== userData?.data?.userName && (
+                    <div className="pt-1">
+                      {isChecking ? (
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <span>Checking...</span>
+                        </div>
+                      ) : !data?.data.exists ? (
+                        <div className="flex items-center gap-2 text-sm text-green-600">
+                          <span className="rounded-full bg-green-50 p-1 text-[10px]">
+                            ✓
+                          </span>
+                          <span>Username is available</span>
+                        </div>
+                      ) : data?.data.exists ? (
+                        <div className="flex items-center gap-2 text-sm text-red-600">
+                          <span className="rounded-full bg-red-50 p-1 text-[10px]">
+                            ✕
+                          </span>
+                          <span>This username is already taken</span>
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
               </div>
               <div className="col-span-full flex justify-end">
                 <Button size={"lg"} type="submit" disabled={isUpdating}>
@@ -221,7 +241,6 @@ const Profile = () => {
               </div>
             </div>
           </form>
-
         )}
       </div>
 
@@ -231,12 +250,20 @@ const Profile = () => {
         <p>
           {userData?.data?.subscriptions?.map((item: any, index: number) => (
             <>
-              <span className="font-bold text-xl capitalize">{item?.plan?.name}</span>{" "}
-              < span className="font-light" >
-                (3 days of trial left <span className="text-muted-foreground ">|</span> {item?.planType === "buyer" ? "Unlimited Purchases " : item?.isUnlimitedQuota ? "Unlimited Watches " : item?.sellQuota + " Watches Left"}
+              <span className="font-bold text-xl capitalize">
+                {item?.plan?.name}
+              </span>{" "}
+              <span className="font-light">
+                (3 days of trial left{" "}
+                <span className="text-muted-foreground ">|</span>{" "}
+                {item?.planType === "buyer"
+                  ? "Unlimited Purchases "
+                  : item?.isUnlimitedQuota
+                    ? "Unlimited Watches "
+                    : item?.sellQuota + " Watches Left"}
                 )
-              </span></>
-
+              </span>
+            </>
           ))}
         </p>
 
@@ -252,49 +279,15 @@ const Profile = () => {
             <DialogHeader>
               <DialogTitle className="text-2xl">Delete account</DialogTitle>
               <DialogDescription>
-                <p className="text-lg text-gray-700">We’re sorry to see you go.</p>
+                <p className="text-lg text-gray-700">
+                  We’re sorry to see you go.
+                </p>
                 <p className="text-base">
                   Once you delete your account your profile data will be
-                  permanently deleted from bid the bezel. Your past orders
-                  details and orders sold data wont be deleted from our site.
+                  permanently deleted from bid the bezel.
                 </p>
               </DialogDescription>
             </DialogHeader>
-            <div className="py-4 space-y-4">
-              <FloatingInput
-                id="delete-reason"
-                label="Reason for deletion (optional)"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-              />
-              <FloatingInput
-                id="delete-email"
-                label="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <FloatingInput
-                id="delete-password"
-                label="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="understand"
-                  checked={understand}
-                  onChange={(e) => setUnderstand(e.target.checked)}
-                  className="accent-green-600 w-8 h-8 rounded-xl"
-                />
-                <label htmlFor="understand" className="text-sm">
-                  I understand that deleted accounts aren't recoverable.
-                </label>
-              </div>
-            </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
@@ -302,15 +295,22 @@ const Profile = () => {
               <Button
                 className="bg-red-700 hover:bg-red-800"
                 onClick={handleDeleteAccount}
-                disabled={!email || !password || !understand}
+                disabled={isDeleting}
               >
-                Delete Account
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete Account"
+                )}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-    </div >
+    </div>
   );
 };
 

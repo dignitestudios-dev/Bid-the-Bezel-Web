@@ -135,27 +135,40 @@ export const useLogout = () =>
   useApiMutation<void, void>({
     endpoint: "/auth/logout",
     method: "POST",
+    invalidateKeys: ["get-profile"],
     mutationOptions: {
       onSuccess: () => {
         removeToken();
-        // window.location.href = "/login";
+        window.location.href = "/";
       },
     },
   });
 
+export const useDeleteAccount = () =>
+  useApiMutation<void, void>({
+    endpoint: `/auth/delete`,
+    method: "POST",
+    invalidateKeys: ["get-profile"],
+    mutationOptions: {
+      onSuccess: () => {
+        removeToken();
+        window.location.href = "/";
+      },
+    },
+  });
 /* =========================
    GET PROFILE (ME)
 ========================= */
 export const useMe = () => {
   return useQuery({
-    queryKey: ["get-profile"],  
+    queryKey: ["get-profile"],
     queryFn: async () => {
       const res = await apiClient.get("/users/me");
       return res.data;
     },
     enabled: true,
-    staleTime:Infinity, 
-    gcTime:Infinity,
+    staleTime: Infinity,
+    gcTime: Infinity,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
