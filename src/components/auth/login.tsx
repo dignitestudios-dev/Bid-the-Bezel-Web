@@ -82,7 +82,7 @@ const Login = ({
               return;
             }
 
-            showSuccess("Logged in successfully");
+            showSuccess(`${user?.isEmailVerified ? "Logged in" : "Account created successfully!"}`);
             onSuccess();
             queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
           },

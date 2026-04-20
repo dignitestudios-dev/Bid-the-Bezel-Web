@@ -8,7 +8,7 @@ type Props = {
   onApply?: (min?: number, max?: number) => void;
 };
 
-const MAX = 10000;
+const MAX = 5000;
 
 const PriceFilterDialog = (props: Props) => {
   const [open, setOpen] = useState(false);

@@ -14,29 +14,30 @@ const CollectionCard = (props: Props) => {
   const watch = props.watch;
   return (
     <Link href={`/${typeRouteMap[watch.type]}/${watch?._id}`}>
-<div className="flex flex-col h-full bg-[#F7F7F7] border border-gray-200 rounded-xl p-4">        <div className="relative w-full">
-          {watch.isAuthenticated && (
-            <div className="rounded-full absolute top-2 left-2 text-white bg-black/40 px-3 py-1 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10">
-              Authenticated
-            </div>
-          )}
-          {watch.saleType === "auction" && (
-            <div className="rounded-tl-sm absolute bottom-0 right-0 p-3 text-center text-white bg-black/10 px-3 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-br-xl">
-              <h2>Ends In</h2>
-              <h1 className="font-semibold">2D 5H 42M</h1>
-            </div>
-          )}
+      <div className="flex flex-col h-full bg-[#F7F7F7] border border-gray-200 rounded-xl p-4">        <div className="relative w-full">
+        {watch.isAuthenticated && (
+          <div className="rounded-full absolute top-2 left-2 text-white bg-black/40 px-3 py-1 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10">
+            Authenticated
+          </div>
+        )}
+        {watch.saleType === "auction" && (
+          <div className="rounded-tl-sm absolute bottom-0 right-0 p-3 text-center text-white bg-black/10 px-3 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-br-xl">
+            <h2>Ends In</h2>
+            <h1 className="font-semibold">2D 5H 42M</h1>
+          </div>
+        )}
+        <div className="relative w-full h-[220px]">
           <Image
             src={watch.images[0]?.location || "/images/watch.png"}
             alt="img"
-            className="bg-contain w-full rounded-xl"
-            width={500}
+            fill
+            className="object-cover rounded-xl"
             unoptimized
-            height={500}
           />
         </div>
+      </div>
         <div className="pt-4">
-          <h1 className="text-lg font-semibold mb-2">{watch.name}</h1>
+          <h1 className="text-lg font-semibold mb-2">{watch?.brandName}</h1>
           <div className="flex justify-between gap-4">
             <div>
               <h2 className="text-sm">

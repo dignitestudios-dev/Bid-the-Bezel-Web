@@ -101,3 +101,21 @@ export const personalDetailSchema = z.object({
 });
 
 export type PersonalDetailPayload = z.infer<typeof personalDetailSchema>;
+
+
+export const deleteAccountOtpSchema = z.object({
+    otp: z
+        .string()
+        .length(5, "OTP must be exactly 5 digits")
+        .regex(/^\d+$/, "OTP must contain only numbers"),
+});
+
+export type DeleteAccountOtpPayload = z.infer<typeof deleteAccountOtpSchema>;
+
+
+export const changePasswordSchema = z.object({
+    password: z.string().min(6, "Current Password must be at least 6 characters"),
+    newPassword: z.string().min(6, "New Password must be at least 6 characters"),
+});
+
+export type ChangePasswordPayload = z.infer<typeof changePasswordSchema>;

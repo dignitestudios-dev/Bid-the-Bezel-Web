@@ -38,8 +38,8 @@ const Register = ({
     mutate(body, {
       onSuccess: (data) => {
         const user = data?.data?.user;
-        console.log(user, "---------------> user");
-        showSuccess("Account created successfully!");
+
+        showSuccess(`${user?.isEmailVerified ? "Logged in" : "Account created successfully!"}`);
         if (!user?.isEmailVerified) {
           setStep?.("otp-register");
           return;

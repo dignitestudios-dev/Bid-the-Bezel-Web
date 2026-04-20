@@ -21,6 +21,7 @@ const FixedPrice = ({ fixedPrice }: Props) => {
   saleType: item.type === "fixed_price" ? "fixed-price" : item.type,
   isAuthenticated: item.authentication?.status === "approved", 
 }));
+
   return (
     <div className=" bg-[#101f2f]">
       <div className="max-w-screen-2xl text-white py-12 mx-auto bg-[url('/images/fixed-bg.png')]">

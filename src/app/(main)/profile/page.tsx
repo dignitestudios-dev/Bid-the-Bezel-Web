@@ -17,11 +17,16 @@ import { useRouter } from "next/navigation";
 import {
   useCheckUsername,
   useDeleteAccount,
+  useForgotOtpVerify,
+  useForgotPassword,
   useMe,
+  useResendOtp,
   useUpdateProfile,
 } from "@/features/auth/hooks";
 import { Camera, Loader2 } from "lucide-react";
 import {
+  DeleteAccountOtpPayload,
+  deleteAccountOtpSchema,
   UpdateProfilePayload,
   updateProfileSchema,
 } from "@/features/auth/Schema";
@@ -37,10 +42,6 @@ const Profile = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [reason, setReason] = useState("");
-  const [understand, setUnderstand] = useState(false);
   const router = useRouter();
   const { data: userData, isLoading } = useMe();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
@@ -50,6 +51,22 @@ const Profile = () => {
     data,
   } = useCheckUsername();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
+  const { mutate: resendOtp, isPending: isResendOtp } = useForgotPassword();
+  const { mutate, isPending } = useForgotOtpVerify();
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", ""]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [timer, setTimer] = useState(120);
+
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const {
     register,
@@ -122,17 +139,101 @@ const Profile = () => {
       },
     });
   };
+  const {
+    handleSubmit: handleDelete,
+    setValue: setOtpValue,
+    formState: { errors: errorsOtp },
+  } = useForm<DeleteAccountOtpPayload>({
+    resolver: zodResolver(deleteAccountOtpSchema),
+    defaultValues: {
+      otp: "",
+    },
+  });
 
-  const handleDeleteAccount = () => {
-    deleteAccount(undefined, {
+  useEffect(() => {
+    setOtpValue("otp", otp.join(""));
+  }, [otp, setOtpValue]);
+
+  const handleDeleteAccount = (body: DeleteAccountOtpPayload) => {
+    deleteAccount(body,
+      {
+        onSuccess: () => {
+          showSuccess("Account deleted successfully!");
+          router.push("/");
+        },
+        onError: (err: any) => {
+          showError(err);
+        },
+      }
+    );
+  };
+
+
+  const handleOpenDeleteDialog = () => {
+    if (!userData?.data?.email) return;
+
+    resendOtp({ email: userData?.data?.email }, {
       onSuccess: () => {
-        showSuccess("Account deleted successfully!");
-        router.push("/");
+        showSuccess("OTP sent successfully!");
+        setIsDialogOpen(true);
       },
       onError: (err: any) => {
         showError(err);
       },
     });
+  };
+
+
+  const handleOtpChange = (index: number, value: string) => {
+    const numericValue = value.replace(/[^0-9]/g, "");
+
+    if (numericValue.length > 1) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = numericValue;
+    setOtp(newOtp);
+
+    if (numericValue && index < 4) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace") {
+      if (otp[index] === "" && index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      } else {
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
+      }
+    }
+  };
+
+
+  const handleResend = () => {
+    if (userData?.data?.email && timer === 0) {
+      resendOtp(
+        { email: userData?.data?.email },
+        {
+          onSuccess: () => {
+            setTimer(120);
+            showSuccess("OTP resent successfully!");
+          },
+          onError: (err: any) => {
+            showError(err);
+          }
+        }
+      );
+    }
+  };
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const imageSrc =
@@ -245,37 +346,52 @@ const Profile = () => {
       </div>
 
       <div className="pt-6">
-        <p className="mb-3 text-lg font-medium">Subscription Status</p>
+        {(userData?.data?.subscriptions?.length ?? 0) > 0 && (
+          <>
+            <p className="mb-3 text-lg font-medium">Subscription Status</p>
 
-        <p>
-          {userData?.data?.subscriptions?.map((item: any, index: number) => (
-            <>
-              <span className="font-bold text-xl capitalize">
-                {item?.plan?.name}
-              </span>{" "}
-              <span className="font-light">
-                (3 days of trial left{" "}
-                <span className="text-muted-foreground ">|</span>{" "}
-                {item?.planType === "buyer"
-                  ? "Unlimited Purchases "
-                  : item?.isUnlimitedQuota
-                    ? "Unlimited Watches "
-                    : item?.sellQuota + " Watches Left"}
-                )
-              </span>
-            </>
-          ))}
-        </p>
+            <p>
+              {userData?.data?.subscriptions?.map((item: any, index: number) => (
+                <span key={index}>
+                  <span className="font-bold text-xl capitalize">
+                    {item?.plan?.name}
+                  </span>{" "}
+                  <span className="font-light">
+                    (3 days of trial left{" "}
+                    <span className="text-muted-foreground">|</span>{" "}
+                    {item?.planType === "buyer"
+                      ? "Unlimited Purchases "
+                      : item?.isUnlimitedQuota
+                        ? "Unlimited Watches "
+                        : item?.sellQuota + " Watches Left"}
+                    )
+                  </span>
+                </span>
+              ))}
+            </p>
+            <hr className="my-6 border-border" />
+          </>
+        )}
 
-        <hr className="my-6 border-border" />
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-red-700 hover:bg-red-800">
-              Delete Account
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-[90%] w-[420px]">
+
+          <Button
+            className="bg-red-700 hover:bg-red-800"
+            onClick={handleOpenDeleteDialog}
+            disabled={isResendOtp}
+          >
+            {isResendOtp ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending OTP...
+              </>
+            ) : (
+              "Delete Account"
+            )}
+          </Button>
+
+          <DialogContent className="w-full max-w-md sm:max-w-lg">
             <DialogHeader>
               <DialogTitle className="text-2xl">Delete account</DialogTitle>
               <DialogDescription>
@@ -288,13 +404,50 @@ const Profile = () => {
                 </p>
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter>
+            <div className="">
+              <p className="text-sm text-center text-gray-600 mt-3">
+                A 5 digit code has been sent to your email <span className="font-semibold">{userData?.data?.email}</span>
+              </p>
+              <div className="w-full text-center px-2 sm:px-4">
+                <div className="flex justify-center gap-2 sm:gap-3 mt-6">
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      ref={(el) => {
+                        if (el) inputRefs.current[index] = el;
+                      }}
+                      type="text"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(index, e)}
+                      className={`w-14 h-14 rounded-xl text-center text-xl font-bold border-2 focus:outline-none transition-all ${errorsOtp.otp ? "border-red-500" : "border-gray-200 focus:border-gray-700"
+                        }`}
+                    />
+                  ))}
+                </div>
+                {errorsOtp.otp && <p className="text-red-500 text-xs mt-2">{errorsOtp.otp.message}</p>}
+
+                <p className="mt-4 text-sm text-gray-600">
+                  Didn&apos;t get code?{" "}
+                  <button
+                    onClick={handleResend}
+                    disabled={isResendOtp || timer > 0}
+                    className="font-semibold text-black cursor-pointer hover:underline disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    {isResendOtp ? "Resending..." : timer > 0 ? `Resend in ${formatTime(timer)}` : "Resend"}
+                  </button>
+
+                </p>
+              </div>
+            </div>
+            <DialogFooter className="w-full">
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
               <Button
                 className="bg-red-700 hover:bg-red-800"
-                onClick={handleDeleteAccount}
+                onClick={handleDelete(handleDeleteAccount)}
                 disabled={isDeleting}
               >
                 {isDeleting ? (

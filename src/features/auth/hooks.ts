@@ -2,6 +2,7 @@ import { useApiMutation } from "@/hooks/api/useApiMutation";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ChangePasswordPayload,
   CheckUsernamePayload,
   CompleteProfilePayload,
   ForgotPasswordPayload,
@@ -13,6 +14,7 @@ import {
 } from "./Schema";
 
 import { setToken, removeToken, getToken } from "@/lib/cookies";
+
 
 /* =========================
    AUTH: LOGIN
@@ -145,7 +147,7 @@ export const useLogout = () =>
   });
 
 export const useDeleteAccount = () =>
-  useApiMutation<void, void>({
+  useApiMutation<void, { otp: string }>({
     endpoint: `/auth/delete`,
     method: "POST",
     invalidateKeys: ["get-profile"],
@@ -155,6 +157,14 @@ export const useDeleteAccount = () =>
         window.location.href = "/";
       },
     },
+  });
+
+export const useChangePassword = () =>
+  useApiMutation<any, ChangePasswordPayload>({
+    endpoint: "/auth/change-password",
+    method: "POST",
+    invalidateKeys: ["get-profile"],
+
   });
 /* =========================
    GET PROFILE (ME)
@@ -174,3 +184,5 @@ export const useMe = () => {
     refetchOnReconnect: true,
   });
 };
+
+
