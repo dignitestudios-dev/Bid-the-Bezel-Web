@@ -169,6 +169,7 @@ export const useMe = () => {
     enabled: true,
     staleTime: Infinity,
     gcTime: Infinity,
+     retry: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,

@@ -12,7 +12,7 @@ import React, { useState } from "react";
 
 type Props = {};
 
-const Plans = (props: Props) => {
+const SellerPlans = (props: Props) => {
   const { data, isLoading } = useSubscription();
   const { mutate: buySubscription } = useBuySubscription();
   const { refetch, data: userData } = useMe();
@@ -23,7 +23,7 @@ const Plans = (props: Props) => {
 
   const handleBuy = (planId: string) => {
     setLoadingPriceId(planId);
-    const cleanUrl = `${window.location.origin}?plan=success`;
+    const cleanUrl = `${window.location.origin}/seller/sale-type?plan=success`;
     buySubscription(
       { planId, url: cleanUrl },
       {
@@ -37,7 +37,7 @@ const Plans = (props: Props) => {
   return (
     <div className="py-12 max-w-screen-2xl mx-auto w-[92%]">
       <div className="flex flex-col gap-6 items-center">
-        <h1 className="uppercase text-4xl font-semibold">our plans</h1>
+        <h1 className="uppercase text-4xl font-semibold">our Seller</h1>
         <p className="text-sm text-center text-gray-600">
           Browse our three subscription tiers to find the perfect plan for
           selling your timepieces.
@@ -46,7 +46,9 @@ const Plans = (props: Props) => {
         <div className="grid grid-cols-1 items-end md:grid-cols-3 gap-6 w-full">
           {isLoading
             ? [0, 1, 2].map((i) => <PlanSkeleton key={i} />)
-            : data?.data.map((subs: any, index: number) => {
+            : data?.data
+                ?.filter((item: any) => item?.type?.toLowerCase() !== "buyer")
+                .map((subs: any, index: number) => {
                   const isExecutive = subs?.name?.toLowerCase() === "executive";
 
                   return (
@@ -126,4 +128,4 @@ const Plans = (props: Props) => {
   );
 };
 
-export default Plans;
+export default SellerPlans;

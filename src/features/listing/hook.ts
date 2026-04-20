@@ -64,7 +64,7 @@ export const useGetListing = (
 
 
 export const useGetAllListing = () => {
-    return useQuery({
+    return useQuery<HomepageProductsResponse>({
         queryKey: ["get-home-listing"],
         queryFn: async () => {
             const res = await apiClient.get(`/products/homepage`);
