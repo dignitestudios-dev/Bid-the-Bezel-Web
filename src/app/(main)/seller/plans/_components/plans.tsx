@@ -1,6 +1,7 @@
 "use client";
 
 import Plans from "@/app/(main)/_components/plans";
+import SellerPlans from "@/app/(main)/_components/seller-plans";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMe } from "@/features/auth/hooks";
 import { useRouter } from "next/navigation";
@@ -24,7 +25,7 @@ const PlansSubs = () => {
   } else {
     return (
       <div>
-        <Plans />
+        <SellerPlans />
       </div>
     );
   }

@@ -13,6 +13,7 @@ import { setWatchDetails, setWatchId } from "@/lib/slices/addproductSlice";
 import { useAddProduct } from "@/features/products/hook";
 import { generateReferenceId } from "@/lib/helper";
 import { useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 type Props = {
   onNext: () => void;
@@ -20,7 +21,7 @@ type Props = {
 
 const WatchDetailForm = ({ onNext }: Props) => {
   const dispatch = useAppDispatch();
-  const referenceId = generateReferenceId();
+ const referenceId = useMemo(() => generateReferenceId(), []);
 
   const { mutate, isPending } = useAddProduct();
 
@@ -32,6 +33,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
     formState: { errors },
   } = useForm<WatchDetailPayload>({
     resolver: zodResolver(watchDetailSchema),
+    mode: "onChange",
     defaultValues: {
       watchBrand: "",
       modelReference: "",

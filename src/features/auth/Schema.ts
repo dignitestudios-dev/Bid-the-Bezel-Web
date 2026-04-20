@@ -34,11 +34,16 @@ export type ResendOtpPayload = z.infer<typeof resendOtpSchema>;
 
 export const completeProfileSchema = z.object({
     userName: z
-        .string({ message: "Username is required" })
-        .min(3, "Username must be at least 3 characters")
-        .max(20, "Username must be at most 20 characters")
-        .trim()
-        .regex(/^\S+$/, "Username must not contain spaces"),
+  .string({ message: "Username is required" })
+  .trim()
+  .toLowerCase()
+    .min(1, "Username is required")
+  .min(3, "Username must be at least 3 characters")
+  .max(30, "Username must be at most 30 characters")
+  .regex(/^[a-z0-9._]+$/, "Only letters, numbers, dots and underscores allowed")
+  .refine((val) => !val.startsWith("."), "Username cannot start with a dot")
+  .refine((val) => !val.endsWith("."), "Username cannot end with a dot")
+  .refine((val) => !val.includes(".."), "Username cannot contain consecutive dots"),
     profilePicture: z
         .any()
         .refine((file) => file instanceof File && file.size > 0, "Profile picture is required"),
@@ -83,7 +88,15 @@ export const updateProfileSchema = z.object({
         .min(3, "Username must be at least 3 characters")
         .max(20, "Username must be at most 20 characters")
         .optional(),
-    profilePicture: z.any().optional(),
+   profilePicture: z
+  .any()
+  .refine(
+    (file) =>
+      file instanceof File &&
+      file.size > 0 &&
+      file.size <= 5 * 1024 * 1024,
+    "Profile picture must be less than 5MB"
+  ),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     phone: z.string().optional(),

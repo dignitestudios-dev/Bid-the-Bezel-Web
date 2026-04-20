@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { useMe } from "@/features/auth/hooks";
 import { useAppSelector } from "@/lib/hooks";
 import { CircleQuestionMark, SendHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -51,7 +52,8 @@ export const watchFAQs = [
 ];
 
 const Questions = (props: Props) => {
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const { isLoading , data} = useMe();
+  const isLoggedIn = !isLoading && data?.data ? true : false;
   return (
     <div className="rounded-xl border border-[#E3E3E3]">
       <div className="bg-[#F7F7F7] rounded-t-xl font-semibold text-lg md:text-xl flex gap-2 items-center px-6 py-4 border-b">

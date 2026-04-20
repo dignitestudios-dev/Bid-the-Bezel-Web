@@ -6,7 +6,7 @@ import Link from "next/link";
 import { fixedPriceWatches } from "@/lib/constants";
 
 type Props = {
-  fixedPrice: any[]
+  fixedPrice: FixedPriceProduct[]
 };
 const OPTIONS: EmblaOptionsType = { dragFree: true };
 const SLIDE_COUNT = 16;

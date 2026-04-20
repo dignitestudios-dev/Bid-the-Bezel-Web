@@ -15,7 +15,7 @@ export default function Home() {
     <div>
       <Hero />
       <Aunctions />
-      <FixedPrice fixedPrice={data?.data?.fixed_price} />
+      <FixedPrice fixedPrice={data?.data?.fixed_price || []} />
       <TakingOffers />
       <BrowseByCategories />
       <WatchTosell />

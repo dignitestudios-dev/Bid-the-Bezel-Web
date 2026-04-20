@@ -65,7 +65,7 @@ const ProductCard = ({ prod }: any) => {
 
           <div className="flex text-center items-center justify-between py-4">
             <div className="w-1/3">
-              <h2 className="font-thin">Starting Price</h2>
+              <h2 className="font-thin">Price</h2>
               <h1 className="font-semibold">${displayPrice(prod)}</h1>
             </div>
 
