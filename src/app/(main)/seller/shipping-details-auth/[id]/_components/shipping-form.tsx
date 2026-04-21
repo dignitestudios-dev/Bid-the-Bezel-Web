@@ -39,9 +39,10 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
         defaultValues,
     });
 
+
     useEffect(() => {
-        if (data?.data?.shipments?.length > 0) {
-            const shipment = data.data.shipments[0];
+        if (data?.data?.shipments) {
+            const shipment = data?.data?.shipments;
 
             setValue("courier", shipment.courier || "");
             setValue("trackingNumber", shipment.trackingNumber || "");
@@ -103,14 +104,14 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
 
     return (
         <div className=" p-4 flex items-center justify-center">
-            
+
             <div className="bg-white max-w-4xl w-full rounded-lg shadow-sm p-6">
                 {/* Our Info Section */}
                 <div className="flex justify-end">
                     <div>
 
                     </div>
-                  
+
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4 mb-6">
                     <h3 className="text-sm font-semibold mb-3">Our Info</h3>

@@ -9,7 +9,12 @@ import { useState } from "react";
 import AddOtherCard from "./add-card-modal";
 import { Elements } from "@stripe/react-stripe-js";
 import { useQueryClient } from "@tanstack/react-query";
-
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { BillingPaylod, billingSchema } from "@/features/billing/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FloatingInput } from "@/components/ui/floating-input";
+import { usCitiesStates } from "@/constant/country-data";
 
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
@@ -19,18 +24,64 @@ if (!stripeKey) {
 
 const stripePromise = loadStripe(stripeKey);
 
-
 const PaymentDetail = () => {
     const queryClient = useQueryClient()
+    const [billingAddressType, setBillingAddressType] = useState(false)
     const [addOtherCardModal, setOtherCardModal] = useState(false)
     const { id } = useParams()
     const router = useRouter()
-    
+
     const { mutate, isPending } = useAuthenticatePayment()
     const { data, isLoading } = useGetCard()
-    const handlePayment = async () => {
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        formState: { errors },
+    } = useForm<BillingPaylod>({
+        resolver: zodResolver(billingSchema),
+        defaultValues: {
+            country: "US",
+            state: "",
+            city: "",
+            firstName: "",
+            lastName: "",
+            address: "",
+            apartment: "",
+            phone: "",
+            postalCode: "",
+        },
+    });
+
+
+    const state = watch("state");
+    const city = watch("city");
+
+    const stateOptions = Array.from(
+        new Set(usCitiesStates.map((i) => i.state))
+    ).map((state) => ({
+        value: state,
+        label: state,
+    }));
+    const cityOptions = state
+        ? usCitiesStates
+            .filter((i) => i.state === state)
+            .map((i) => ({
+                value: i.city,
+                label: i.city,
+            }))
+        : [];
+
+
+
+
+    const handlePayment = async (shippingDetail: BillingPaylod) => {
         mutate(
-            { id: id as string },
+            {
+                id: id as string,
+                shippingDetail
+            },
             {
                 onSuccess: async (response) => {
                     const status = response?.data?.status;
@@ -51,7 +102,7 @@ const PaymentDetail = () => {
                         }
 
                         if (result.paymentIntent?.status === "succeeded") {
-                            router.push("/seller/watch-listed")
+                            router.push(`/seller/watch-listed?id=${id}`);
                             queryClient.invalidateQueries({ queryKey: ["get-listing-detail", id] });
 
                         }
@@ -62,13 +113,19 @@ const PaymentDetail = () => {
             }
         );
     };
+
+    const onSubmit = (data: BillingPaylod) => {
+
+        handlePayment(data);
+    };
+
     return (
         <Elements stripe={stripePromise}>
             <div className="min-h-screen rounded-sm p-4  md:p-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="grid md:grid-cols-2 shadow-sm ">
                         <div className="space-y-6">
-                            <div className="rounded-lg p-6  md:h-[70vh]">
+                            <div className="rounded-lg p-6  ">
                                 <h2 className="text-    lg font-semibold mb-4">Payment</h2>
                                 {isLoading ? (
                                     <div>Loading....</div>
@@ -104,7 +161,7 @@ const PaymentDetail = () => {
                                         Billing Address
                                     </h2>
                                     <div className="flex flex-col gap-4  border rounded-2xl p-4">
-                                        <label className="flex items-center gap-3 cursor-pointer">
+                                        {/* <label className="flex items-center gap-3 cursor-pointer">
                                             <div className="relative">
                                                 <input
                                                     type="radio"
@@ -117,33 +174,149 @@ const PaymentDetail = () => {
                                             <span className="text-sm font-medium">
                                                 Same as shipping address
                                             </span>
-                                        </label>
-                                        <hr />
-                                        <label className="flex items-center gap-3 cursor-pointer">
+                                        </label> */}
+                                        {/* <hr /> */}
+                                        {/* <label className="flex items-center gap-3 cursor-pointer">
                                             <div className="relative">
                                                 <input
                                                     type="radio"
                                                     name="billingAddress"
-                                                    // checked={billingAddressType === "different"}
-                                                    // onChange={() =>
-                                                    //     setBillingAddressType("different")
-                                                    // }
-                                                    className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                                                    checked={billingAddressType}
+                                                    onClick={() => setBillingAddressType(prev => !prev)}
+                                                    className="w-4 h-4 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
                                                 />
                                             </div>
-                                            <span className="text-sm font-medium">
+                                            <span className="text-sm mb-1 font-medium">
                                                 Use a different billing address
                                             </span>
-                                        </label>
+                                        </label> */}
+                                        {/* {billingAddressType && ( */}
+                                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                                            <div className="mb-4">
+                                                <Select value="US" disabled>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue>United States</SelectValue>
+                                                    </SelectTrigger>
+                                                </Select>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4 mb-4">
+                                                <FloatingInput
+                                                    {...register("firstName")}
+                                                    label="First Name"
+                                                    id="firstName"
+                                                    error={errors.firstName?.message}
+                                                />
+                                                <FloatingInput
+                                                    {...register("lastName")}
+                                                    label="Last Name"
+                                                    id="lastName"
+                                                    error={errors.lastName?.message}
+                                                />
+                                            </div>
+                                            <FloatingInput
+                                                {...register("address")}
+                                                label="Address"
+                                                id="address"
+                                                error={errors.address?.message}
+                                            />
+                                            <FloatingInput
+                                                {...register("apartment")}
+                                                label="Apartment, Suite, etc. (optional)"
+                                                id="apartment"
+                                            />
+                                            <div className="grid grid-cols-2 mt-4 gap-4 ">
+                                                <div>
+                                                    <Select
+                                                        value={state}
+                                                        onValueChange={(val) => {
+                                                            setValue("state", val, { shouldValidate: true });
+                                                            setValue("city", "", { shouldValidate: true });
+                                                        }}
+                                                    >
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Select State" />
+                                                        </SelectTrigger>
+
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                {stateOptions.map((s) => (
+                                                                    <SelectItem key={s.value} value={s.value}>
+                                                                        {s.label}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    {errors.state && (
+                                                        <p className="text-red-500 text-xs mt-1">
+                                                            {errors.state?.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <Select
+                                                        value={city}
+                                                        onValueChange={(val) => {
+                                                            setValue("city", val, { shouldValidate: true });
+                                                        }}
+                                                        disabled={!state}
+                                                    >
+                                                        <SelectTrigger className="w-full">
+                                                            <SelectValue placeholder="Select City" />
+                                                        </SelectTrigger>
+
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                {cityOptions.map((c) => (
+                                                                    <SelectItem key={c.value} value={c.value}>
+                                                                        {c.label}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    {errors.city && (
+                                                        <p className="text-red-500 text-xs mt-1">
+                                                            {errors.city?.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+
+                                            </div>
+                                            <FloatingInput
+                                                {...register("postalCode")}
+                                                label="Postal  code (optional)"
+                                                id="postalCode"
+                                            />
+                                            <div className="mb-6 flex gap-2">
+                                                <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
+                                                    🇺🇸 +1
+                                                </div>
+
+                                                <div className="w-full">
+                                                    <FloatingInput
+                                                        id="phoneNumber"
+                                                        label="Phone Number"
+                                                        {...register("phone")}
+                                                        maxLength={10}
+                                                        error={errors.phone?.message}
+                                                    />
+
+                                                </div>
+                                            </div>
+                                            <Button
+                                                type="submit"
+                                                disabled={isPending}
+                                                className="w-full bg-slate-900 mt-4 text-white rounded-lg py-3 font-medium hover:bg-slate-800 transition-colors"
+                                            >
+                                                {isPending ? "Paying" : "Pay Now"}
+                                            </Button>
+                                        </form>
+
+                                        {/* )} */}
                                     </div>
                                     {/* <Link href={"auth-payment-done"} className="w-full mt-6"> */}
-                                    <Button
-                                        onClick={handlePayment}
-                                        disabled={isPending}
-                                        className="w-full bg-slate-900 mt-4 text-white rounded-lg py-3 font-medium hover:bg-slate-800 transition-colors"
-                                    >
-                                        {isPending ? "Paying" : "Pay Now"}
-                                    </Button>
                                     {/* </Link> */}
                                 </div>
                             </div>

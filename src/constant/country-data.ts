@@ -1,0 +1,22 @@
+export const usCitiesStates = [
+  { city: "New York", state: "New York" },
+  { city: "Los Angeles", state: "California" },
+  { city: "Chicago", state: "Illinois" },
+  { city: "Houston", state: "Texas" },
+  { city: "Phoenix", state: "Arizona" },
+  { city: "Philadelphia", state: "Pennsylvania" },
+  { city: "San Antonio", state: "Texas" },
+  { city: "San Diego", state: "California" },
+  { city: "Dallas", state: "Texas" },
+  { city: "San Jose", state: "California" },
+  { city: "Austin", state: "Texas" },
+  { city: "Jacksonville", state: "Florida" },
+  { city: "Fort Worth", state: "Texas" },
+  { city: "Columbus", state: "Ohio" },
+  { city: "San Francisco", state: "California" },
+  { city: "Charlotte", state: "North Carolina" },
+  { city: "Indianapolis", state: "Indiana" },
+  { city: "Seattle", state: "Washington" },
+  { city: "Denver", state: "Colorado" },
+  { city: "Washington", state: "District of Columbia" }
+];
