@@ -31,7 +31,7 @@ const MyDraftListing = ({
 }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [status, setStatus] = useState<"draft" | "pending" | "rejected">(
+  const [status, setStatus] = useState<"draft" | "pending" | "rejected" >(
     "pending",
   );
   const { data, isLoading, isPending } = useGetMyListing(status);

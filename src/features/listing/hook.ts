@@ -23,6 +23,17 @@ export const useGetMyActiveListing = () => {
         },
     });
 };
+export const useGetMyDeletedActiveListing = () => {
+    return useQuery({
+        queryKey: ["get-my-deleted-listing"],
+        queryFn: async () => {
+            const res = await apiClient.get("/products/seller/list", {
+                params: { status: "deleted" },
+            });
+            return res.data;
+        },
+    });
+};
 
 export const useGetMyListingDetail = (id: string) => {
     return useQuery({

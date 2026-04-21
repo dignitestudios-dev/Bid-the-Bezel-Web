@@ -90,10 +90,7 @@ const Payments = () => {
 
                       const planName = item?.plan?.name?.toLowerCase();
 
-                      if (planName === "basic") {
-                        setSelectedPlanId(item?._id);
-                        setCancelSubscriptionModal(true);
-                      } else if (item?.planType === "buyer") {
+                      if (item?.planType === "buyer") {
                         setSelectedPlanId(item?._id);
                         setCancelSubscriptionModal(true);
                       } else {

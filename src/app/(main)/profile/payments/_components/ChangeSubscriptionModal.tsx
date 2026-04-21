@@ -130,7 +130,7 @@ export function ChangeSubscriptionModal({
                         </div>
 
 
-                        <div className="flex justify-end gap-3 px-10 py-4 border-t">
+                        {/* <div className="flex justify-end gap-3 px-10 py-4 border-t">
                             <button className="px-6 py-2 rounded-full border bg-[#F7F7F7]">
                                 Cancel
                             </button>
@@ -138,7 +138,7 @@ export function ChangeSubscriptionModal({
                             <button className="px-6 py-2 rounded-full bg-[#0D1B2A] text-white">
                                 Save
                             </button>
-                        </div>
+                        </div> */}
                     </>
                 )}
 

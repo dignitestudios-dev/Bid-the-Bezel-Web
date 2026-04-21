@@ -1,27 +1,25 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { useState } from "react";
-import MyListings from "../_components/my-active-listing";
 import MyOrdersItems from "../_components/MyOrdersItems";
-import { useGetMyListing } from "@/features/listing/hook";
-import { ListingSkeleton } from "@/components/skeleton";
 import MyActiveListing from "../_components/my-active-listing";
 import MyDraftListing from "../_components/my-draft-listing";
+import MyDeletedListing from "../_components/my-deleted-listing";
 
 const MyOrders = () => {
-  const [selectedTab, setSelectedTab] = useState<"orders" | "listings" | "draft" | "rejected">(
+  const [selectedTab, setSelectedTab] = useState<"orders" | "listings" | "draft" | "rejected" | "deleted">(
     "orders"
   );
   const [isFulfilled, setIsFulfilled] = useState(true);
-  const status =
 
-    selectedTab === "listings"
-      ? "active"
-      : isFulfilled
-        ? "pending"
-        : "draft";
-
+  selectedTab === "listings"
+    ? "active"
+    : selectedTab === "deleted"
+      ? "deleted"
+      : selectedTab === "draft"
+        ? "draft"
+        : isFulfilled
+          ? "pending"
+          : "";
 
 
 
@@ -53,6 +51,16 @@ const MyOrders = () => {
         >
           Drafts
         </button>
+        <button
+          className={`border-b-[3px] cursor-pointer ${selectedTab === "deleted" ? "border-primary" : "border-transparent"
+            } font-medium text-primary pb-2 transition-all`}
+          onClick={() => {
+            setSelectedTab("deleted")
+            setIsFulfilled(true)
+          }}
+        >
+          Deleted
+        </button>
       </div>
 
       <div className="w-full pt-6">
@@ -62,8 +70,15 @@ const MyOrders = () => {
         {selectedTab === "listings" && (
           <MyActiveListing selectedTab={selectedTab} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
         )}
+        {selectedTab === "deleted" && (
+          <MyDeletedListing
+            selectedTab={selectedTab}
+            isFulfilled={isFulfilled}
+            setIsFulfilled={setIsFulfilled}
+          />
+        )}
         {selectedTab === "orders" && (
-          <MyOrdersItems  />
+          <MyOrdersItems />
         )}
       </div>
     </div>
