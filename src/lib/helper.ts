@@ -39,12 +39,12 @@ export function displayPrice(watch: AuctionWatch | FixedPriceWatch | OfferWatch)
   } else if (watch?.saleType === "fixed-price") {
     return watch.price
   } else if (watch?.saleType === "taking-offer") {
-   return watch.expectedPrice
+    return watch.expectedPrice
   }
 }
 
 
-export const getWatchById = (watchId: string): AuctionWatch|FixedPriceWatch |OfferWatch | undefined => {
+export const getWatchById = (watchId: string): AuctionWatch | FixedPriceWatch | OfferWatch | undefined => {
 
   const auctionMatch = auctionWatches.find(watch => watch.watchId === watchId);
   if (auctionMatch) return auctionMatch;
@@ -56,4 +56,16 @@ export const getWatchById = (watchId: string): AuctionWatch|FixedPriceWatch |Off
   if (offerMatch) return offerMatch;
 
   return undefined;
+};
+
+export const generateReferenceId = () => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  const randomLetters = Array.from({ length: 3 }, () =>
+    letters[Math.floor(Math.random() * letters.length)]
+  ).join("");
+
+  const randomNumbers = Math.floor(1000 + Math.random() * 9000);
+
+  return `${randomLetters}-${randomNumbers}`;
 };

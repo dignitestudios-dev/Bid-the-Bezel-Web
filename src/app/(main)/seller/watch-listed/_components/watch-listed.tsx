@@ -1,21 +1,23 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ReceiptText } from "lucide-react";
+import { useAppSelector } from "@/lib/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-type Props = {};
-
-const WatchListed = (props: Props) => {
+const WatchListed = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const refId = localStorage.getItem("refId")
+
   const handleViewListing = () => {
     const saleType = localStorage.getItem("saleType");
-    console.log("saleType: ", saleType);
+    queryClient.invalidateQueries({ queryKey: ["get-listing-detail"] });
     saleType === "auction"
       ? router.push("/auction/auc-004")
-      : router.push("/fixed-price/fix-001");
+      : router.push(`/fixed-price/${id}`);
   };
   return (
     <div className="h-screen flex gap-2 text-center flex-col justify-center items-center">
@@ -28,14 +30,14 @@ const WatchListed = (props: Props) => {
         />
         <div className="border flex justify-between items-center py-1 px-2 rounded-xl w-full">
           <h1 className=" font-semibold">Watch Reference ID</h1>{" "}
-          <h3 className="text-xs">#76622</h3>
+          <h3 className="text-xs">{refId}</h3>
         </div>
         <div>
           <h1 className="text-2xl font-semibold">Your watch is Listed</h1>
           <p className="text-xs">Your watch auction is live.</p>
         </div>
         <div className="flex items-center gap-2 text-xs">
-          <ReceiptText size={10} /> Download Reciept
+          {/* <ReceiptText size={10} /> Download Reciept */}
         </div>
 
         <Button onClick={handleViewListing} className="w-full text-xs ">

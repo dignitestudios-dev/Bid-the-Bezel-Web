@@ -8,6 +8,7 @@ import CancelListingDialog from "./cancel-listing-dialog";
 import ConfirmCancel from "./confirm-cancel";
 import MoveToTakingDialog from "./move-taking-offer-dialog";
 
+
 type Props = {
   bidders: Bidder[];
 };

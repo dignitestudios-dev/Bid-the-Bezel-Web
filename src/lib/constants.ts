@@ -12,6 +12,7 @@ export const currentUser = {
 export const auctionWatches: AuctionWatch[] = [
   {
     watchId: "auc-001",
+    price: 9500,
     name: "Rolex Submariner 116610LN",
     image:
       "https://images.unsplash.com/photo-1594534475808-b18fc33b045e?w=400&h=400&fit=crop",
@@ -23,6 +24,7 @@ export const auctionWatches: AuctionWatch[] = [
   },
   {
     watchId: "auc-002",
+    price: 7200,
     name: "Omega Speedmaster  Professional",
     image:
       "https://images.unsplash.com/photo-1594534475808-b18fc33b045e?w=400&h=400&fit=crop",
@@ -35,6 +37,7 @@ export const auctionWatches: AuctionWatch[] = [
   {
     watchId: "auc-003",
     name: "TAG Heuer Calibre 16",
+    price: 4100,
     image:
       "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400&h=400&fit=crop",
     basePrice: 4100,
@@ -46,6 +49,7 @@ export const auctionWatches: AuctionWatch[] = [
   {
     watchId: "auc-004",
     name: "Breitling B01 Chronograph",
+    price: 8600,
     image:
       "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=400&h=400&fit=crop",
     basePrice: 8600,
@@ -57,6 +61,7 @@ export const auctionWatches: AuctionWatch[] = [
   {
     watchId: "auc-005",
     name: "IWC Pilot's Watch 41",
+    price: 6400,
     image:
       "https://images.unsplash.com/photo-1639006570490-79c0c53f1080?w=400&h=400&fit=crop",
     basePrice: 6400,
@@ -68,6 +73,7 @@ export const auctionWatches: AuctionWatch[] = [
   {
     watchId: "auc-006",
     name: "Panerai Marina PAM01312",
+    price: 7800,
     image:
       "https://images.unsplash.com/photo-1622434641406-a158123450f9?w=400&h=400&fit=crop",
     basePrice: 7800,
@@ -79,6 +85,7 @@ export const auctionWatches: AuctionWatch[] = [
   {
     watchId: "auc-007",
     name: "Hublot Big Bang Titanium",
+    price: 11200,
     image:
       "https://images.unsplash.com/photo-1639006570490-79c0c53f1080?w=400&h=400&fit=crop",
     basePrice: 11200,
@@ -90,6 +97,7 @@ export const auctionWatches: AuctionWatch[] = [
   {
     watchId: "auc-008",
     name: "Zenith El Chronomaster",
+    price: 6900,
     image:
       "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=400&h=400&fit=crop",
     basePrice: 6900,
@@ -187,6 +195,7 @@ export const offerWatches: OfferWatch[] = [
   {
     watchId: "off-001",
     name: "Jaeger-LeCoultre Reverso ",
+    price: 9800,
     image:
       "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?w=400&h=400&fit=crop",
     expectedPrice: 9800,
@@ -194,83 +203,6 @@ export const offerWatches: OfferWatch[] = [
     saleType: "taking-offer",
     isAuthenticated: true,
     offers: [{ userId: "user-002", offerAmount: 9300 }],
-  },
-  {
-    watchId: "off-002",
-    name: "Breguet Classique 5177",
-    image:
-      "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=400&h=400&fit=crop",
-    expectedPrice: 11500,
-    sellerId: "user-004",
-    saleType: "taking-offer",
-    isAuthenticated: false,
-    offers: [],
-  },
-  {
-    watchId: "off-003",
-    name: "Vacheron Constantin Overseas",
-    image:
-      "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?w=400&h=400&fit=crop",
-    expectedPrice: 14500,
-    sellerId: "skipped_user",
-    saleType: "taking-offer",
-    isAuthenticated: true,
-    offers: [{ userId: "user-003", offerAmount: 13800 }],
-  },
-  {
-    watchId: "off-004",
-    name: "Audemars Piguet Royal Oak ",
-    image:
-      "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=400&h=400&fit=crop",
-    expectedPrice: 32000,
-    sellerId: "user-006",
-    saleType: "taking-offer",
-    isAuthenticated: false,
-    offers: [],
-  },
-  {
-    watchId: "off-005",
-    name: "Patek Philippe  5196G",
-    image:
-      "https://images.unsplash.com/photo-1622434641406-a158123450f9?w=400&h=400&fit=crop",
-    expectedPrice: 29000,
-    sellerId: "user-007",
-    saleType: "taking-offer",
-    isAuthenticated: true,
-    offers: [{ userId: "user-001", offerAmount: 27000 }],
-  },
-  {
-    watchId: "off-006",
-    name: "Blancpain Fifty Fathoms ",
-    image:
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&h=400&fit=crop",
-    expectedPrice: 13500,
-    sellerId: "user-008",
-    saleType: "taking-offer",
-    isAuthenticated: false,
-    offers: [],
-  },
-  {
-    watchId: "off-007",
-    name: "Glashütte Original Senator ",
-    image:
-      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=400&h=400&fit=crop",
-    expectedPrice: 10800,
-    sellerId: "user-002",
-    saleType: "taking-offer",
-    isAuthenticated: true,
-    offers: [],
-  },
-  {
-    watchId: "off-008",
-    name: "Ulysse Nardin Marine ",
-    image:
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&h=400&fit=crop",
-    expectedPrice: 8900,
-    sellerId: "user-003",
-    saleType: "taking-offer",
-    isAuthenticated: false,
-    offers: [{ userId: "user-004", offerAmount: 8600 }],
   },
 ];
 

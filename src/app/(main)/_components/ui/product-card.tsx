@@ -7,18 +7,15 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-type Props = {
-  // isAuthenticated: boolean;
-  prod: AuctionWatch | FixedPriceWatch | OfferWatch;
-};
 
-const ProductCard = ({ prod }: Props) => {
+
+const ProductCard = ({ prod }: any) => {
   const [isFav, setIsFav] = useState(false);
 
   if (!prod) return null;
   return (
     <Link href={`/${prod.saleType}/${prod.watchId}`}>
-      <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-400/10 bg-clip-padding backdrop-filter backdrop-blur- bg-opacity-10 border border-gray-400/30 hover:shadow-lg translate-y-1 transition-all">
+      <div className="flex flex-col h-full text-xs md:text-base p-4 rounded-xl bg-gray-400/10 backdrop-blur border border-gray-400/30 hover:shadow-lg transition-all">
         <div className="relative">
           <button
             onClick={() => setIsFav(!isFav)}
@@ -32,9 +29,8 @@ const ProductCard = ({ prod }: Props) => {
               viewBox="0 0 24 24"
               stroke="white"
               strokeWidth={1}
-              className={`w-7 h-7 transition-all duration-300 ${
-                isFav ? "animate-ping-once" : ""
-              }`}
+              className={`w-7 h-7 transition-all duration-300 ${isFav ? "animate-ping-once" : ""
+                }`}
             >
               <path
                 strokeLinecap="round"
@@ -49,6 +45,7 @@ const ProductCard = ({ prod }: Props) => {
               alt="card"
               fill
               className="object-cover"
+              unoptimized
             />
           </div>
         </div>
@@ -68,23 +65,28 @@ const ProductCard = ({ prod }: Props) => {
 
           <div className="flex text-center items-center justify-between py-4">
             <div className="w-1/3">
-              <h2 className="font-thin">Starting Price</h2>
+              <h2 className="font-thin">Price</h2>
               <h1 className="font-semibold">${displayPrice(prod)}</h1>
             </div>
 
-            <div className="h-10 w-px bg-white/50" />
+            {prod?.saleType !== "fixed-price" && (
 
-            <div className="w-1/3">
-              <h2 className="font-thin">Current Bid</h2>
-              <h1 className="font-semibold">$200</h1>
-            </div>
+              <>
+                <div className="h-10 w-px bg-white/50" />
 
-            <div className="h-10 w-px bg-white/50" />
+                <div className="w-1/3">
+                  <h2 className="font-thin">Current Bid</h2>
+                  <h1 className="font-semibold">$200</h1>
+                </div>
 
-            <div className="w-1/3">
-              <h2 className="font-thin">Ends In</h2>
-              <h1 className="font-semibold">$8700</h1>
-            </div>
+                <div className="h-10 w-px bg-white/50" />
+
+                <div className="w-1/3">
+                  <h2 className="font-thin">Ends In</h2>
+                  <h1 className="font-semibold">2D 5H 42M</h1>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

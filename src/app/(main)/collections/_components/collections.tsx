@@ -14,6 +14,8 @@ import {
   fixedPriceWatches,
   offerWatches,
 } from "@/lib/constants";
+import { useGetListing } from "@/features/listing/hook";
+import { ListingSkeleton } from "@/components/skeleton";
 
 type WatchCategory = "all" | "auction" | "fixed" | "offer";
 type Props = {};
@@ -37,6 +39,11 @@ const trendOptions = [
 
 const Collections = (props: Props) => {
   const router = useRouter();
+  const [authFilter, setAuthFilter] = useState<string | undefined>();
+  const [priceRange, setPriceRange] = useState<{
+    min?: number;
+    max?: number;
+  }>({});
   const searchParams = useSearchParams();
   const watchCategory = searchParams.get("category") as WatchCategory;
 
@@ -58,7 +65,9 @@ const Collections = (props: Props) => {
   }>();
 
   const handleSetFilter = (category: WatchCategory) => {
-    router.push(`/collections?category=${category}`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("category", category);
+    router.push(`/collections?${params.toString()}`);
     setFilter(category);
   };
 
@@ -70,15 +79,29 @@ const Collections = (props: Props) => {
       watchCategory === "all"
         ? setCategorizedWatches(allWatches)
         : watchCategory === "auction"
-        ? setCategorizedWatches(auctionWatches)
-        : watchCategory === "fixed"
-        ? setCategorizedWatches(fixedPriceWatches)
-        : watchCategory === "offer"
-        ? setCategorizedWatches(offerWatches)
-        : setCategorizedWatches(allWatches);
+          ? setCategorizedWatches(auctionWatches)
+          : watchCategory === "fixed"
+            ? setCategorizedWatches(fixedPriceWatches)
+            : watchCategory === "offer"
+              ? setCategorizedWatches(offerWatches)
+              : setCategorizedWatches(allWatches);
       setFilter(watchCategory);
     }
   }, [watchCategory]);
+
+  const categoryToApiType: Record<WatchCategory, string | undefined> = {
+    all: undefined,
+    auction: "auction",
+    fixed: "fixed_price",
+    offer: "taking_offers",
+  };
+  const apiType = categoryToApiType[watchCategory || "all"];
+
+  const { data: ProductData, isLoading } = useGetListing(
+    apiType,
+    authFilter,
+    priceRange.min,
+    priceRange.max)
 
   return (
     <div className="max-w-screen-2xl mx-auto py-16 w-[90%]">
@@ -88,8 +111,12 @@ const Collections = (props: Props) => {
             <Tabs filter={filter} setFilter={handleSetFilter} />
             <div className="flex items-center gap-2 sm:gap-4">
               <BrandFilterDialog />
-              <PriceFilterDialog />
-              <AuthFilterDialog />
+              <PriceFilterDialog
+                onApply={(min, max) => setPriceRange({ min, max })}
+              />
+              <AuthFilterDialog
+                onApply={setAuthFilter}
+                productLength={ProductData?.data || []} />
             </div>
           </div>
           <Dropdown
@@ -100,9 +127,18 @@ const Collections = (props: Props) => {
           />
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {categorizedWatches.map((watch, idx) => (
-            <CollectionCard key={idx} watch={watch} />
-          ))}
+          {isLoading ? (
+            <div>
+              <ListingSkeleton />
+            </div>
+          )
+            : ProductData?.data?.length === 0 ? (
+              <div className="col-span-full flex items-center justify-center text-center py-10">
+                No Product Found
+              </div>
+            ) : ProductData?.data?.map((watch: any, idx: number) => (
+              <CollectionCard key={idx} watch={watch} />
+            ))}
         </div>
       </div>
     </div>

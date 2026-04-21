@@ -14,7 +14,8 @@ import {
 import { useAppSelector } from "@/lib/hooks";
 import { Clock3, Info } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
+
 
 type Props = {
   bidders: Bidder[];
@@ -156,6 +157,7 @@ const CurrentBid = ({ bidders }: Props) => {
             <Input
               placeholder="Enter your amount"
               type="number"
+              min={0}
               value={price}
               onChange={(e) => setPrice(+e.target.value)}
             />
@@ -169,9 +171,14 @@ const CurrentBid = ({ bidders }: Props) => {
           </div>
         </>
       ) : null}
-      <div className={!isLoggedIn ? "w-full flex py-4 justify-center" : "hidden"}>
-        <AuthSidebar hideTrigger={isLoggedIn} />
+      <div
+        className={!isLoggedIn ? "w-full flex py-4 justify-center" : "hidden"}
+      >
+        <Suspense fallback={null}>
+          <AuthSidebar hideTrigger={isLoggedIn} />
+        </Suspense>
       </div>
+
 
       <SubscriptionsDialog
         setCardPopup={setCardPopup}

@@ -25,7 +25,7 @@ const Reviews = () => {
   return (
     <div className="w-full rounded-xl border">
 
-      <div className="flex justify-between items-center font-semibold gap-2 border-b p-4 rounded-t-xl bg-[#F7F7F7] px-5">
+      <div className="flex justify-between items-center font-semibold gap-2 border-b p-4 rounded-t-xl bg-[#F7F7F7]   px-5">
         <h1 className=" flex gap-2 items-center">
           <Star size={18} /> Reviews
         </h1>
@@ -37,7 +37,7 @@ const Reviews = () => {
             </button>
           </DialogTrigger>
 
-          <DialogContent className="  w-full p-0">
+          <DialogContent className="  w-full p-0 ">
             <DialogHeader className="border-b px-6 py-4">
               <DialogTitle>Rating And Reviews</DialogTitle>
             </DialogHeader>
@@ -70,7 +70,8 @@ const Reviews = () => {
                 ))}
               </div>
             </div>
-            <ScrollArea className="h-[300px] px-6">
+            <h1 className="px-6">Reviews</h1>
+            <ScrollArea className="h-[200px] overflow-y-auto px-6">
               <div className="space-y-6">
                 {[1, 2, 3].map((_, i) => (
                   <div key={i}>
@@ -95,8 +96,8 @@ const Reviews = () => {
               </div>
             </ScrollArea>
 
-            <DialogFooter className="border-t px-6 py-4">
-              <Button onClick={() => setOpen(false)} variant="outline">Close</Button>
+            <DialogFooter className="border-t  px-6 py-4">
+              <Button onClick={() => setOpen(false)} className="rounded-[30px] w-[100px]" variant="secondary">Close</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

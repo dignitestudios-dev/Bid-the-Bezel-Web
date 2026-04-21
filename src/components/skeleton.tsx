@@ -52,3 +52,154 @@ export const PlanSkeleton = () => {
         </div>
     );
 };
+
+export const CardSkeleton = () => {
+    return (
+        <div className="rounded-lg border bg-white p-5 shadow-sm animate-pulse">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+                <div className="h-5 w-24 bg-gray-200 rounded"></div>
+                <div className="h-10 w-24 bg-gray-200 rounded-md"></div>
+            </div>
+
+            {/* Card Info */}
+            <div className="flex items-center justify-between py-2 border-b mb-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 bg-gray-200 rounded"></div>
+                    <div className="h-4 w-40 bg-gray-200 rounded"></div>
+                </div>
+            </div>
+
+            {/* Invoices Title */}
+            <div className="h-4 w-24 bg-gray-200 rounded mb-3"></div>
+
+            {/* Table Rows */}
+            <div className="space-y-3">
+                {[1, 2].map((_, i) => (
+                    <div key={i} className="flex justify-between items-center">
+                        <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                        <div className="h-8 w-16 bg-gray-200 rounded"></div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+export const ChangeSubscriptionSkeleton = () => {
+    return (
+        <div className="animate-pulse">
+            {/* Header */}
+            <div className="flex items-center justify-between px-10 py-5 border-b">
+                <div className="h-6 w-48 bg-gray-200 rounded"></div>
+                <div className="w-5 h-5 bg-gray-200 rounded"></div>
+            </div>
+
+            {/* Body */}
+            <div className="flex flex-col gap-4 px-10 py-4">
+
+                {/* Current Plan */}
+                <div className="flex items-center justify-between bg-gray-100 p-4 rounded-lg">
+                    <div className="space-y-2">
+                        <div className="h-3 w-24 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                    </div>
+
+                    <div className="h-5 w-16 bg-gray-200 rounded"></div>
+
+                    <div className="h-8 w-36 bg-gray-200 rounded-full"></div>
+                </div>
+
+                {/* Plans Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                    {[1, 2, 3, 4].map((_, i) => (
+                        <div key={i} className="p-6 rounded-2xl border">
+
+                            {/* Title */}
+                            <div className="h-6 w-24 bg-gray-200 rounded mb-4"></div>
+
+                            {/* Price */}
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="h-8 w-16 bg-gray-200 rounded"></div>
+                                <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                            </div>
+
+                            {/* Button */}
+                            <div className="h-10 w-full bg-gray-200 rounded-full mb-4"></div>
+
+                            {/* Features */}
+                            <div className="space-y-2">
+                                {[1, 2, 3].map((_, j) => (
+                                    <div key={j} className="h-4 w-full bg-gray-200 rounded"></div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-3 px-10 py-4 border-t">
+                <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
+                <div className="h-10 w-24 bg-gray-200 rounded-full"></div>
+            </div>
+        </div>
+    );
+};
+
+export const ListingSkeleton = () => {
+    return (
+        <div className="card p-3 animate-pulse">
+            <div className="flex gap-3">
+                <div className="w-24 h-24 bg-gray-200 rounded-lg"></div>
+
+                <div className="flex-1 space-y-3">
+                    <div className="h-4 bg-gray-200 rounded w-1/2 ml-auto"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                </div>
+            </div>
+
+            <div className="mt-4 h-8 bg-gray-200 rounded"></div>
+        </div>
+    );
+};
+
+export const ProductDetailSkeleton = () => {
+    return (
+        <div className="max-w-screen-2xl mx-auto w-[90%] py-12 animate-pulse">
+
+            {/* Breadcrumb Skeleton */}
+            <div className="h-5 w-40 bg-gray-200 rounded mb-6"></div>
+
+            <div className="flex gap-6">
+
+                {/* Left: Image Skeleton */}
+                <div className="w-1/2 space-y-4">
+                    <div className="h-[400px] bg-gray-200 rounded-xl"></div>
+                    <div className="flex gap-2">
+                        <div className="h-20 w-20 bg-gray-200 rounded"></div>
+                        <div className="h-20 w-20 bg-gray-200 rounded"></div>
+                        <div className="h-20 w-20 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+
+                {/* Right: Details Skeleton */}
+                <div className="w-1/2 space-y-4">
+                    <div className="h-6 w-3/4 bg-gray-200 rounded"></div>
+                    <div className="h-6 w-1/2 bg-gray-200 rounded"></div>
+                    <div className="h-10 w-1/3 bg-gray-200 rounded"></div>
+
+                    <div className="space-y-2">
+                        <div className="h-4 w-full bg-gray-200 rounded"></div>
+                        <div className="h-4 w-5/6 bg-gray-200 rounded"></div>
+                        <div className="h-4 w-4/6 bg-gray-200 rounded"></div>
+                    </div>
+
+                    <div className="h-12 w-full bg-gray-200 rounded mt-6"></div>
+                </div>
+
+            </div>
+        </div>
+    )
+}

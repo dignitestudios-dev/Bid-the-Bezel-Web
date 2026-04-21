@@ -1,77 +1,115 @@
+"use client";
+
 import React, { useState, useEffect, useCallback } from "react";
-import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
+import { EmblaOptionsType } from "embla-carousel";
 import { Thumb } from "./embla-carousel-thumbs-btn";
-import "./style.css";
 import Image from "next/image";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+
+type Slide = {
+  location: string;
+};
+
 type PropType = {
-  slides: number[];
+  slides: Slide[];
   options?: EmblaOptionsType;
 };
 
-const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { slides, options } = props;
+const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [emblaMainRef, emblaMainApi] = useEmblaCarousel(options);
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
     containScroll: "keepSnaps",
     dragFree: true,
   });
 
-  const onThumbClick = useCallback(
-    (index: number) => {
-      if (!emblaMainApi || !emblaThumbsApi) return;
-      emblaMainApi.scrollTo(index);
-    },
-    [emblaMainApi, emblaThumbsApi]
-  );
-
   const onSelect = useCallback(() => {
     if (!emblaMainApi || !emblaThumbsApi) return;
-    setSelectedIndex(emblaMainApi.selectedScrollSnap());
-    emblaThumbsApi.scrollTo(emblaMainApi.selectedScrollSnap());
-  }, [emblaMainApi, emblaThumbsApi, setSelectedIndex]);
+
+    const index = emblaMainApi.selectedScrollSnap();
+    setSelectedIndex(index);
+    emblaThumbsApi.scrollTo(index);
+  }, [emblaMainApi, emblaThumbsApi]);
 
   useEffect(() => {
     if (!emblaMainApi) return;
-    onSelect();
 
+    onSelect();
     emblaMainApi.on("select", onSelect).on("reInit", onSelect);
   }, [emblaMainApi, onSelect]);
 
+  const scrollTo = useCallback(
+    (index: number) => {
+      emblaMainApi?.scrollTo(index);
+    },
+    [emblaMainApi]
+  );
+
+  if (!slides.length) return null;
+
   return (
-    <div className="embla">
-      <div className="embla__viewport" ref={emblaMainRef}>
-        <div className="embla__container">
-          {slides.map((index) => (
-            <div className="embla__slide" key={index}>
-              {/* <div className="embla__slide__number">{index + 1}</div> */}
-              <div className="relative w-full h-[500px]">
-                {" "}
-                {/* Adjust height as needed */}
-                <Image
-                  src="/images/ww.png"
-                  alt="watch"
-                  fill
-                  style={{ objectFit: "cover" }}
-                  className="rounded-lg" // optional, if you want rounded corners
-                />
-              </div>
-            </div>
-          ))}
+    <div className="embla overflow-hidden">
+      {/* MAIN */}
+
+     <div className="embla__viewport overflow-hidden relative" ref={emblaMainRef}>
+  <div className="embla__container flex">
+    {slides?.map((item, index) => (
+      <div className="embla__slide flex-[0_0_100%]" key={index}>
+        <div className="relative w-full h-[500px]">
+          <Image
+            src={item?.location}
+            alt="slide"
+            fill
+            className="object-cover rounded-lg"
+            sizes="100vw"
+            unoptimized
+          />
         </div>
       </div>
+    ))}
+  </div>
 
-      <div className="embla-thumbs">
-        <div className="embla-thumbs__viewport" ref={emblaThumbsRef}>
-          <div className="embla-thumbs__container">
-            {slides.map((index) => (
-              <Thumb
+  {/* LEFT BUTTON */}
+  <button
+    type="button"
+    onClick={() => emblaMainApi?.scrollPrev()}
+    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full w-10 h-10 flex items-center justify-center shadow"
+  >
+     <ArrowLeft size={16} />
+  </button>
+
+  {/* RIGHT BUTTON */}
+  <button
+    type="button"
+    onClick={() => emblaMainApi?.scrollNext()}
+    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full w-10 h-10 flex items-center justify-center shadow"
+  >
+   <ArrowRight size={16} />
+  </button>
+</div>
+
+      {/* THUMBS */}
+      <div className="embla-thumbs mt-4">
+        <div
+          className="embla-thumbs__viewport overflow-hidden"
+          ref={emblaThumbsRef}
+        >
+          <div className="embla-thumbs__container flex ml-[-8px]">
+            {slides.map((item, index) => (
+              <div
                 key={index}
-                onClick={() => onThumbClick(index)}
-                selected={index === selectedIndex}
-                index={index}
-              />
+                className={`flex-[0_0_auto] w-fit  ${index === selectedIndex ? "opacity-100" : "opacity-50"
+                  }`}
+              >
+                <Thumb
+                  index={index}
+                  selected={index === selectedIndex}
+                  src={item?.location}
+                  onClick={() => scrollTo(index)}
+                />
+              </div>
             ))}
           </div>
         </div>

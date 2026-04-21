@@ -8,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumbs";
-import { useMe } from "@/features/auth/hooks";
 import { useAppSelector } from "@/lib/hooks";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";

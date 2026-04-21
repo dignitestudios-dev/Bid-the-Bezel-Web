@@ -16,9 +16,9 @@ type Step =
   | "password-changed";
 
 const PlanSelected = ({
-  setCurrentStep,
+  setStep,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
 }) => {
   return (
     <div className="flex flex-col w-full space-y-6">
@@ -86,7 +86,7 @@ const PlanSelected = ({
 
           {/* Next Button */}
           <Button
-            onClick={() => setCurrentStep?.("subscription-confirmation")}
+            onClick={() => setStep?.("subscription-confirmation")}
             className="w-full rounded-full bg-[#0f1b23] text-white py-3"
           >
             Next

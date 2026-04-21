@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { useMe } from "@/features/auth/hooks";
 import { useAppSelector } from "@/lib/hooks";
 import { CircleQuestionMark, SendHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -51,7 +52,8 @@ export const watchFAQs = [
 ];
 
 const Questions = (props: Props) => {
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const { isLoading , data} = useMe();
+  const isLoggedIn = !isLoading && data?.data ? true : false;
   return (
     <div className="rounded-xl border border-[#E3E3E3]">
       <div className="bg-[#F7F7F7] rounded-t-xl font-semibold text-lg md:text-xl flex gap-2 items-center px-6 py-4 border-b">
@@ -60,13 +62,13 @@ const Questions = (props: Props) => {
       <div className="p-4 ">
         {isLoggedIn ?    <div className="bg-[#F7F7F7] p-2 rounded-lg  flex h-20 flex-col items-end"> 
           <Input placeholder="Ask your question" className="border-none shadow-none focus:shadow-none focus:border-none focus:outline-none" />
-          <SendHorizontal size={50} className="bg-black h-8 p-1 rounded-sm text-white " />
+          <SendHorizontal size={50} className="bg-black mt-2 h-8 p-1 rounded-sm text-white " />
            </div> :    <span className="">
-          <Link className="font-semibold" href={"/login"}>
+          <Link className="font-semibold" href={"?authstep=login"}>
             Login
           </Link>{" "}
           or{" "}
-          <Link className="font-semibold" href={"/sign-up"}>
+          <Link className="font-semibold" href={"?authstep=register"}>
             Register
           </Link>{" "}
           to ask questions

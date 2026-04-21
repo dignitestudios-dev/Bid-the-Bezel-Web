@@ -10,20 +10,75 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumbs";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import WatchDetailForm from "./watch-detail-form";
+import BankDetailForm from "./BankDetailForm";
+import PersonalDetailForm from "./PersonalDetailForm";
+import { useMe } from "@/features/auth/hooks";
+import { useGetCard } from "@/features/billing/hook";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import { useAppSelector } from "@/lib/hooks";
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
+if (!stripeKey) {
+  throw new Error("Missing Stripe key");
+}
+
+const stripePromise = loadStripe(stripeKey);
 
 type Props = {
   // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
 
-const PersonalDetailFixed = ({  }: Props) => {
-  const [steps, setSteps] = useState(1);
-const router = useRouter()
+const PersonalDetailFixed = ({ }: Props) => {
+  const router = useRouter()
+
+  const [bankEditModa, setBankEditMode] = useState(false)
+  const [personalEditMode, setPersonalEditMode] = useState(false)
+  const searchParams = useSearchParams();
+  const { data: userData } = useMe()
+  const { data: cardData } = useGetCard()
+  const watchId = useAppSelector(state => state.addProduct.watchId)
+
+
+
+  const step = (searchParams.get("step") as StepType) || "personal-detail";
+
+  const stepsOrder: StepType[] = [
+    "personal-detail",
+    "watch-detail",
+    "bank-detail",
+  ];
+
+
+  const goToStep = (stepName: StepType) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("step", stepName);
+    router.push(`?${params.toString()}`);
+  };
+
+  const currentIndex = stepsOrder.indexOf(step);
+
+  const nextStep = () => {
+    if (currentIndex < stepsOrder.length - 1) {
+      goToStep(stepsOrder[currentIndex + 1]);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentIndex > 0) {
+      goToStep(stepsOrder[currentIndex - 1]);
+    } else {
+      // router.push("sale-type");
+    }
+  };
+  const handleSubmit = () => {
+    router.push(`/seller/authenticate/${watchId}`)
+  }
+
+
   return (
     <div className="py-12 ">
       <Breadcrumb className="mb-6">
@@ -31,13 +86,7 @@ const router = useRouter()
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
               <button
-                onClick={() => {
-                  if (Number(steps) > 1) {
-                    setSteps((prev) => prev - 1);
-                  } else {
-                    router.push("sale-type")
-                  }
-                }}
+                onClick={prevStep}
                 className="flex items-center gap-2"
               >
                 <ArrowLeft size={18} />
@@ -60,180 +109,50 @@ const router = useRouter()
       </Breadcrumb>
 
       <div className="mb-6 max-w-4xl mx-auto flex justify-between items-center">
+
         <h2 className="font-semibold">
-            {steps == 1 && "Personal details"}
-            {steps == 2 && "Watch details"}
-            {steps == 3 && "Bank details"}
-            </h2>
-        <span className="text-sm text-gray-500">Step {steps}/3</span>
+          {step === "personal-detail" && "Personal details"}
+          {step === "watch-detail" && "Watch details"}
+          {step === "bank-detail" && "Bank details"}
+        </h2>
+
+        <span className="text-sm text-gray-500">Step {currentIndex + 1}/3</span>
       </div>
       <div className="flex max-w-4xl mx-auto justify-between gap-2">
-        {[1, 2, 3].map((stepNum) => (
-          <div key={stepNum} className="w-full h-2 bg-gray-200 rounded mb-8">
+        {stepsOrder.map((_, index) => (
+          <div key={index} className="w-full h-2 bg-gray-200 rounded mb-8">
             <div
               className={cn(
                 "h-2 rounded transition-all duration-500",
-                steps === stepNum
+                index === currentIndex
                   ? "bg-[#415A77]"
-                  : steps > stepNum
-                  ? "bg-green-500"
-                  : "bg-gray-200"
+                  : index < currentIndex
+                    ? "bg-green-500"
+                    : "bg-gray-200"
               )}
             />
           </div>
         ))}
       </div>
 
-      {steps == 1 && (
-        <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
-          <h3 className="font-semibold mb-6 text-2xl ">Personal details</h3>
-
-       
-
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="text-sm mb-1 block">First Name</label>
-              <Input placeholder="Name" />
-            </div>
-
-            <div>
-              <label className="text-sm mb-1 block">Last Name</label>
-              <Input placeholder="Name" />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="text-sm mb-1 block">Email Address</label>
-            <Input placeholder="Email" />
-          </div>
-
-          <div className="mb-6">
-            <label className="text-sm mb-1 block">Phone Number</label>
-            <div className="flex gap-2">
-              <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
-                🇺🇸 +1
-              </div>
-              <Input placeholder="Phone number" />
-            </div>
-          </div>
-
-          <Button
-            className="w-full bg-slate-900 hover:bg-slate-800"
-            onClick={() => setSteps(2)}
-          >
-            Next
-          </Button>
-        </div>
-      )}
-      {steps == 2 && (
-        <div className="bg-white border max-w-4xl mx-auto rounded-xl p-8 shadow-sm">
-          <h3 className="font-semibold mb-6 text-2xl ">Watch Details</h3>
-<div className="bg-[#F7F7F7] p-3 my-8 space-y-2 rounded-xl border">
-  <h1 className="text-xl font-semibold">Watch Reference ID</h1>
-  <h4 className="text-lg font-semibold">#12345</h4>
-</div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="text-sm mb-1 block">Watch Brand</label>
-              <Input placeholder="Name" />
-            </div>
-
-            <div>
-              <label className="text-sm mb-1 block">Model Reference</label>
-              <Input placeholder="Name" />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="text-sm mb-1 block">Price</label>
-            <Input placeholder="Price here" />
-          </div>
-
-          <div className="mb-6">
-            <label className="text-sm mb-1 block">Contents/Notes</label>
-            <textarea
-              className="w-full border rounded-md px-3 py-2 text-sm min-h-[80px]"
-              placeholder="Tell the user about what he/she will be getting in details"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="text-sm mb-1 block">Photos</label>
-            <div className="border-2 border-dashed rounded-lg p-8 text-center bg-gray-50">
-              <div className="flex flex-col items-center">
-                <div className="mb-2">📤</div>
-                <p className="text-sm font-medium mb-1">Click to upload</p>
-                <p className="text-xs text-gray-500">
-                  Only Jpg, Png files (upto 5mb)
-                </p>
-              </div>
-              <p className="text-xs text-gray-400 mt-4 text-right">1/10</p>
-            </div>
-
-            <div className="flex items-center gap-2 mt-3 p-2 bg-gray-50 rounded-md">
-              <div className="w-10 h-10 bg-gray-200 rounded flex-shrink-0"></div>
-              <span className="text-sm flex-1">WatchImage.png (1.5mb)</span>
-              <button className="text-red-500 text-sm">🗑️</button>
-            </div>
-          </div>
-
-          <Button
-            className="w-full bg-slate-900 hover:bg-slate-800"
-            onClick={() => setSteps(3)}
-          >
-            Next
-          </Button>
-        </div>
-      )}
-      {steps == 3 && (
-       <div className="bg-white max-w-4xl mx-auto border rounded-xl p-8 shadow-sm">
-          <h3 className="font-semibold text-2xl  mb-6">Bank Details</h3>
-
-          <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block">Select Bank</label>
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="bank1">Bank of America</SelectItem>
-                <SelectItem value="bank2">Chase Bank</SelectItem>
-                <SelectItem value="bank3">Wells Fargo</SelectItem>
-                <SelectItem value="bank4">Citibank</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="mb-4">
-            <label className="text-sm font-medium mb-2 block">Account Holder Name</label>
-            <Input placeholder="Name here" className="text-sm" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Branch Code</label>
-              <Input placeholder="Branch code here" className="text-sm" />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium mb-2 block">Account Number</label>
-              <Input placeholder="Account number here" className="text-sm" />
-            </div>
-          </div>
-
-          <p className="text-xs text-gray-600 mb-6">
-            By Adding this information you agree to our <a href="#" className="text-blue-600 underline">T&Cs</a> regarding topping up your bank account.
-          </p>
-
-          <Button
-            className="w-full bg-slate-900 hover:bg-slate-800 py-6"
-            onClick={() => router.push("authenticate")}
-          >
-            Next
-          </Button>
-        </div>
-      )}
-    </div>
+      {
+        step == "personal-detail" && (
+          <PersonalDetailForm personalEditMode={personalEditMode} setPersonalEditMode={setPersonalEditMode} userData={userData?.data} onNext={nextStep} />
+        )
+      }
+      {
+        step == "watch-detail" && (
+          <WatchDetailForm onNext={nextStep} />
+        )
+      }
+      {
+        step == "bank-detail" && (
+          <Elements stripe={stripePromise}>
+            <BankDetailForm bankEditModa={bankEditModa} setBankEditMode={setBankEditMode} cardData={cardData} onSubmit={handleSubmit} />
+          </Elements>
+        )
+      }
+    </div >
   );
 };
 

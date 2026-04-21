@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { OtpPayload, otpSchema } from "@/features/auth/Schema";
+import { showError, showSuccess } from "@/lib/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForgotOtpVerify, useForgotPassword, useOtpVerify, useResendOtp } from "@/features/auth/hooks";
 
@@ -19,16 +20,20 @@ type Step =
   | "password-changed";
 
 const Otp = ({
-  setCurrentStep,
+  setStep,
 }: {
-  setCurrentStep?: React.Dispatch<React.SetStateAction<Step>>;
+  setStep?: (step: Step) => void;
 }) => {
   const { mutate, isPending } = useForgotOtpVerify();
   const { mutate: resendOtp, isPending: isResending } = useForgotPassword();
   const [otp, setOtp] = useState<string[]>(["", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const email = localStorage.getItem('email')
-  const [timer, setTimer] = useState(0);
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    setEmail(localStorage.getItem('email'));
+  }, []);
+  const [timer, setTimer] = useState(120);
 
 
   useEffect(() => {
@@ -106,11 +111,13 @@ const Otp = ({
       onSuccess: (response) => {
         if (response?.data?.token) {
           localStorage.setItem("token", response?.data?.token);
-          setCurrentStep?.("reset-password");
+          showSuccess("OTP verified successfully!");
+          setStep?.("reset-password");
         }
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.error(err);
+        showError(err);
       },
     });
   };
@@ -122,7 +129,11 @@ const Otp = ({
         {
           onSuccess: () => {
             setTimer(120);
+            showSuccess("OTP resent successfully!");
           },
+          onError: (err: any) => {
+            showError(err);
+          }
         }
       );
     }
@@ -165,7 +176,7 @@ const Otp = ({
         </Button>
 
         <p className="mt-4 text-sm text-gray-600">
-          Didn't get code?{" "}
+          Didn&apos;t get code?{" "}
           <button
             onClick={handleResend}
             disabled={isResending || timer > 0}

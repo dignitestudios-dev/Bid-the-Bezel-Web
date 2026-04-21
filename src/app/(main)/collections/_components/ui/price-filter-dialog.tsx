@@ -4,9 +4,11 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 
-type Props = {};
+type Props = {
+  onApply?: (min?: number, max?: number) => void;
+};
 
-const MAX = 10000;
+const MAX = 5000;
 
 const PriceFilterDialog = (props: Props) => {
   const [open, setOpen] = useState(false);
@@ -35,7 +37,10 @@ const PriceFilterDialog = (props: Props) => {
     const ratio = (clientX - rect.left) / rect.width;
     return Math.round(clamp(ratio * MAX));
   };
-
+  const handleApply = () => {
+    props.onApply?.(min, max);
+    setOpen(false);
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -114,34 +119,45 @@ const PriceFilterDialog = (props: Props) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-100 p-4 rounded-lg">
               <div className="text-sm text-muted-foreground">From</div>
-              <input
-                type="number"
-                max={MAX}
-                min={0}
-                value={min}
-                onChange={(e) => onMinChange(Number(e.target.value || 0))}
-                className="mt-2 w-full bg-transparent text-lg font-semibold outline-none"
-              />
+              <div className="mt-2 flex items-center">
+                <span className="text-lg font-semibold">$</span>
+                <input
+                  type="number"
+                  max={MAX}
+                  min={0}
+                  value={min}
+                  onChange={(e) => onMinChange(Number(e.target.value || 0))}
+                  className="w-full bg-transparent text-lg font-semibold outline-none ml-1"
+                />
+              </div>
             </div>
 
             <div className="bg-gray-100 p-4 rounded-lg">
               <div className="text-sm text-muted-foreground">To</div>
-              <input
-                type="number"
-                max={MAX}
-                min={0}
-                value={max}
-                onChange={(e) => onMaxChange(Number(e.target.value || 0))}
-                className="mt-2 w-full bg-transparent text-lg font-semibold outline-none"
-              />
+
+              <div className="mt-2 flex items-center">
+                <span className="text-lg font-semibold">$</span>
+                <input
+                  type="number"
+                  max={MAX}
+                  min={0}
+                  value={max}
+                  onChange={(e) => onMaxChange(Number(e.target.value || 0))}
+                  className="w-full bg-transparent text-lg font-semibold outline-none ml-1"
+                />
+              </div>
             </div>
           </div>
 
           <div className="pt-4 border-t flex justify-end gap-3">
-            <Button variant="ghost" onClick={() => setOpen(false)} className="bg-gray-100 rounded-full w-[130px]">
+            <Button variant="ghost" onClick={() => {
+              setOpen(false);
+              setMin(0);
+              setMax(MAX);
+            }} className="bg-gray-100 rounded-full w-[130px]">
               Cancel
             </Button>
-            <Button onClick={() => setOpen(false)} className="rounded-full w-[130px]">
+            <Button onClick={handleApply} className="rounded-full w-[130px]">
               Apply
             </Button>
           </div>

@@ -20,28 +20,42 @@ type Props = {
   watch: any;
 };
 
-const ProductPricing = ({ sellerId, name, price, watch }: Props) => {
+const ProductPricing = ({ price, watch }: Props) => {
   const [isFav, setIsFav] = useState(false);
   const user = useAppSelector((state) => state.auth.user);
+  console.log(watch, "price")
   return (
     <div className="w-[40%] space-y-7">
       {/* <CurrentBid/>
       <TopBids/> */}
-      {user?.id == sellerId ? (
-        <div>
-          <div className="flex justify-between">
-            <h1 className="flex gap-2 text-3xl font-semibold">{name}</h1>
-            {/* <FavBtn isFav={isFav} setIsFav={setIsFav} /> */}
+      {(watch?.authentication?.status === "pending" ||
+        watch?.authentication?.status === "rejected") && (
+          <div
+            className={`${watch?.authentication?.status === "pending"
+              ? "bg-orange-200 text-orange-800"
+              : "bg-red-200 text-red-800"
+              } text-[14px] w-[120px] rounded-lg p-2 text-center`}
+          >
+            {watch?.authentication?.status === "pending"
+              ? "In Review"
+              : "Rejected"}
           </div>
+        )}
+      <div>
+        <div className="flex justify-between">
+          <h1 className="flex gap-2 text-3xl font-semibold">{watch?.brandName}</h1>
+          <FavBtn isFav={isFav} setIsFav={setIsFav} />
+        </div>
+        {watch?.authentication?.status === "approved" && (
+
           <Badge
-            title="Authenticated"
+            title={"Authenticated"}
             className="bg-linear-to-r w-fit text-background text-center from-[#0D1B2A] to-[#415A77]"
           />
-          <h1 className="text-3xl pt-2">${price}.00</h1>
-          {/* <Link href={"/buy-now"}>
-          <Button className="w-full my-6">Buy Now</Button>
-        </Link> */}
+        )}
+        <h1 className="text-3xl pt-2">${price}.00</h1>
 
+        {watch?.buyer && (
           <div className=" border  rounded-2xl mt-4">
             <div className="flex justify-between p-5 pb-0">
               <h3 className="font-semibold">Buyer</h3>{" "}
@@ -67,25 +81,23 @@ const ProductPricing = ({ sellerId, name, price, watch }: Props) => {
               </Link>
             </div>
           </div>
-        </div>
-      ) : (
+        )}
+      </div>
+      {!watch?.isMyProduct && (
         <div>
-          <div className="flex justify-between">
-            <h1 className="flex gap-2 text-3xl font-semibold">{name}</h1>
-            <FavBtn isFav={isFav} setIsFav={setIsFav} />
-          </div>
-          <Badge
-            title="Authenticated"
-            className="bg-linear-to-r w-fit text-background text-center from-[#0D1B2A] to-[#415A77]"
-          />
-          <h1 className="text-3xl pt-2">${price} </h1>
-          <Link href={`/buy-now/${watch?.watchId}`}>
-            <Button className="w-full my-6">Buy Now</Button>
-          </Link>
+          {/* href={`/buy-now/${watch?._id}`} */}
+          {/* <Link > */}
+          <Button className="w-full ">Buy Now</Button>
+          {/* </Link> */}
         </div>
-      )}
 
-      {watch.isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
+      )}
+      {/* {user?.id == sellerId ? (
+        
+      ) : (
+      )} */}
+
+      {watch?.authentication?.status === "approved" ? <AuthStatus /> : <UnAuthStatus />}
       <Reviews />
     </div>
   );
