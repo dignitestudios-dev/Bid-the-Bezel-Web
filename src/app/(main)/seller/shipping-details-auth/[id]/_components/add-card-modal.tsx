@@ -77,7 +77,7 @@ const AddOtherCard = ({
 
         addCard({ paymentMethodId: res.paymentMethod.id }, {
             onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ["get-cards"] })
+                // queryClient.invalidateQueries({ queryKey: ["get-cards"] })
                 setOpen(false)
             },
             onSettled: () => {

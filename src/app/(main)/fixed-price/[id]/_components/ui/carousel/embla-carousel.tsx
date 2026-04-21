@@ -96,11 +96,11 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
           className="embla-thumbs__viewport overflow-hidden"
           ref={emblaThumbsRef}
         >
-          <div className="embla-thumbs__container flex gap-3">
+          <div className="embla-thumbs__container flex ml-[-8px]">
             {slides.map((item, index) => (
               <div
                 key={index}
-                className={`flex-[0_0_auto] ${index === selectedIndex ? "opacity-100" : "opacity-50"
+                className={`flex-[0_0_auto] w-fit  ${index === selectedIndex ? "opacity-100" : "opacity-50"
                   }`}
               >
                 <Thumb

@@ -32,7 +32,18 @@ export const useAddCard = () =>
       }
     },
   });
+export const useSetDefaultCard = (cardId: string) =>
 
+  useApiMutation<any, { cardId: string }>({
+    endpoint: `/billing/default-card/${cardId}`,
+    method: "POST",
+    invalidateKeys: ["get-profile", "get-cards"],
+    mutationOptions: {
+      onSuccess: (data) => {
+        showSuccess(data?.data?.message || "Default card updated successfully");
+      }
+    },
+  });
 export const useAddBankAccount = () =>
   useApiMutation<any, { url: string }>({
     endpoint: "/billing/create-account",

@@ -21,19 +21,18 @@ type Props = {
 };
 
 const ConnectBankModal = ({ open, setOpen, userBankAccount }: Props) => {
-    const dispatch = useAppDispatch()
-    const { data } = useMe()
+
     const { mutateAsync: addBankAccount, isPending } = useAddBankAccount()
 
     const handleAddBankAccount = () => {
         addBankAccount({ url: window.location.href })
     }
 
-    useEffect(() => {
-        if (data?.data) {
-            dispatch(login(data.data));
-        }
-    }, [data]);
+    // useEffect(() => {
+    //     if (data?.data) {
+    //         dispatch(login(data.data));
+    //     }
+    // }, [data]);
     
     return (
         <Dialog open={open} onOpenChange={setOpen}>
