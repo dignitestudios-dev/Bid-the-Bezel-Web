@@ -82,9 +82,7 @@ export function CancelSubscriptionModal({
                         </h2>
 
                         <p className="text-gray-600 leading-relaxed font-medium">
-                            Lorem Et Ultricies Tincidunt Lacinia Maecenas Erat. Non Lacus At Eget Auctor
-                            Ultrices Volutpat Vitae Vestibulum. Ut Elit Scelerisque Vivamus In Mauris Viverra Et
-                            Eros.
+                          Your active subscription will be cancelled, and no future charges will be applied after the current billing cycle ends. You will continue to have access to subscription features until the expiry date. This action cannot be undone.
                         </p>
 
                         <div className="mt-4">
