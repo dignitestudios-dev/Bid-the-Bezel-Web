@@ -14,6 +14,7 @@ import { useAddProduct } from "@/features/products/hook";
 import { generateReferenceId } from "@/lib/helper";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Props = {
   onNext: () => void;
@@ -30,6 +31,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
     handleSubmit,
     setValue,
     watch,
+    getValues,
     formState: { errors },
   } = useForm<WatchDetailPayload>({
     resolver: zodResolver(watchDetailSchema),
@@ -89,12 +91,42 @@ const WatchDetailForm = ({ onNext }: Props) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <FloatingInput
-              id="watchBrand"
-              label="Watch Brand"
-              {...register("watchBrand")}
-              error={errors.watchBrand?.message}
-            />
+            <div className="space-y-1">
+      {/* <label className="text-sm font-medium">Watch Brand</label> */}
+
+       <Select
+    value={getValues("watchBrand")}
+    
+    onValueChange={(value) => {
+      setValue("watchBrand", value, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }}
+  >
+        <SelectTrigger  className={`peer w-full rounded-xl border-2 bg-white px-4 py-7  text-[15px] text-black focus:outline-none transition-all ${errors.watchBrand
+              ? "border-red-500"
+              : "border-gray-200 focus:border-gray-700"
+            }`} >
+          <SelectValue placeholder="Select watch brand" />
+        </SelectTrigger>
+
+        <SelectContent>
+          <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
+  <SelectItem value="richard_mille">Richard Mille</SelectItem>
+  <SelectItem value="bovet">Bovet</SelectItem>
+  <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
+  <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
+  <SelectItem value="louis_monne">Louis Monne</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {errors.watchBrand?.message && (
+        <p className="text-sm text-red-500">
+          {errors.watchBrand.message}
+        </p>
+      )}
+    </div>
           </div>
           <div>
             <FloatingInput

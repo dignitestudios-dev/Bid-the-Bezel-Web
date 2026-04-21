@@ -15,6 +15,7 @@ import { CancelSubscriptionModal } from "./_components/CancelSubscriptionModal";
 import { SubscriptionCancelledModal } from "./_components/SubscriptionCancelledModal";
 import { useAddBankAccount, useGetCard } from "@/features/billing/hook";
 import { useRouter } from "next/navigation";
+import Card from "./_components/ui/card";
 
 const Payments = () => {
   const router = useRouter()
@@ -105,15 +106,10 @@ const Payments = () => {
             )
           })
           }
-
+ 
+                    
           <div className="space-y-6">
-            {cardLoading ?
-              (
-                <CardSkeleton />
-              )
-              : cardData?.data?.cards?.map((card: any, index: number) => {
-                return (
-                  <div key={index} className="rounded-lg border bg-white p-5 shadow-sm">
+              <div className="rounded-lg border bg-white p-5 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-base font-semibold">Payment</h3>
                       <Link href={"/card"}>
@@ -122,82 +118,24 @@ const Payments = () => {
                           size={"lg"}
                           className="border border-border rounded-md"
                         >
-                          Update
+                          Add New Card
                         </Button>
                       </Link>{" "}
-                    </div>
-
-                    <div className="flex items-center justify-between py-2 border-b mb-4">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <Wallet />
-                        </div>
-                        <div>
-                          <div className=" font-medium">{card?.brand} ● ● ● ● {card?.last4}</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className=" font-medium mb-3">Invoices</div>
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left  border-collapse">
-                          <thead>
-                            <tr className="text-xs text-muted-foreground">
-                              <th className="py-2">Date</th>
-                              <th className="py-2">Total</th>
-                              <th className="py-2">Status</th>
-                              <th className="py-2">Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr className="border-t">
-                              <td className="py-3">Oct 20 2025</td>
-                              <td className="py-3">$18</td>
-                              <td className="py-3">
-                                <Badge color="bg-yellow-100 text-yellow-800">
-                                  On Hold
-                                </Badge>
-                              </td>
-                              <td className="py-3">
-                                <button
-                                  onClick={openInvoice}
-                                  className="px-3 py-1 border rounded-md "
-                                >
-                                  View
-                                </button>
-                              </td>
-                            </tr>
-
-                            <tr className="border-t">
-                              <td className="py-3">Oct 20 2025</td>
-                              <td className="py-3">$200</td>
-                              <td className="py-3">
-                                <Badge color="bg-emerald-100 text-emerald-800">
-                                  Paid
-                                </Badge>
-                              </td>
-                              <td className="py-3">
-                                <button
-                                  onClick={openInvoice}
-                                  className="px-3 py-1 border rounded-md "
-                                >
-                                  View
-                                </button>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+                    </div>  
+            {cardLoading ?
+              (
+                <CardSkeleton />
+              )
+              : cardData?.data?.cards?.map((card, index) => {
+                return (
+                <Card key={index} card={card} openInvoice={openInvoice}  />
                 )
               })}
-
+</div>
             {/* Bank Account Card */}
             {cardLoading ? (
               <CardSkeleton />
-            ) : cardData?.data?.banks?.length > 0 ? (
+            ) : cardData?.data && cardData?.data?.banks.length > 0 ? (
               cardData?.data?.banks?.map((bank: any, index: number) => {
                 return (
                   <div key={index} className="rounded-lg border bg-white p-5 shadow-sm">
@@ -303,6 +241,7 @@ const Payments = () => {
                 </Button>
               </div>
             )}
+     
           </div>
         </div>
       </div>

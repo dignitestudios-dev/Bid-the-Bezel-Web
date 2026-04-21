@@ -12,7 +12,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import WatchDetailForm from "./WatchDetailForm";
+import WatchDetailForm from "./watch-detail-form";
 import BankDetailForm from "./BankDetailForm";
 import PersonalDetailForm from "./PersonalDetailForm";
 import { useMe } from "@/features/auth/hooks";

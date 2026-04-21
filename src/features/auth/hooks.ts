@@ -176,7 +176,7 @@ export const useMe = () => {
       const res = await apiClient.get("/users/me");
       return res.data;
     },
-    enabled: true,
+    enabled: getToken() ? true : false,
     staleTime: Infinity,
     gcTime: Infinity,
      retry: false,

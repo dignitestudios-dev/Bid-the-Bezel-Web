@@ -21,6 +21,18 @@ export const useAddCard = () =>
     },
   });
 
+  export const useDeleteCard = (cardId: string) =>
+  useApiMutation<any, { cardId: string }>({
+    endpoint: `/billing/delete-card/${cardId}`, 
+    method: "POST",
+    invalidateKeys: ["get-profile", "get-cards"],
+    mutationOptions: {
+      onSuccess: (data) => {
+        showSuccess(data?.data?.message || "Card deleted successfully");
+      }
+    },
+  });
+
 export const useAddBankAccount = () =>
   useApiMutation<any, { url: string }>({
     endpoint: "/billing/create-account",
@@ -52,7 +64,7 @@ export const useUpdateBankAccount = () =>
   });
 
 export const useGetCard = () => {
-  return useQuery({
+  return useQuery<FinancialDetailsResponse>({
     queryKey: ["get-cards"],
     queryFn: async () => {
       const res = await apiClient.get("/billing/financials/details");

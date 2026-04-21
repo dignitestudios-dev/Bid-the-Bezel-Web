@@ -37,7 +37,7 @@ const PersonalDetailForm = ({ onNext, userData, personalEditMode, setPersonalEdi
             onNext();
         }
     };
-    const onSubmit = (data: PersonalDetailPayload) => {
+    const onSubmit = (data: any) => {
         mutate(data, {
             onSuccess: () => {
                 onNext();
