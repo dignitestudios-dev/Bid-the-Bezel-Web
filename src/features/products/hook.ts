@@ -2,6 +2,7 @@ import { useApiMutation } from "@/hooks/api/useApiMutation";
 import { WatchDetailPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
 import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[id]/_components/shipping-form";
+import { BillingPaylod } from "../billing/schema";
 
 
 export const useAddProduct = () =>
@@ -89,7 +90,7 @@ export const useAuthenticate = () =>
     });
 
 export const useAuthenticatePayment = () =>
-    useApiMutation<any, { id: string }>({
+    useApiMutation<any, any>({
         endpoint: ({ id }) => `/products/${id}/authenticate/seller/payment`,
         method: "POST",
         invalidateKeys: ["get-profile", "get-cards"],
