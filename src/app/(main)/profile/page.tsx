@@ -399,8 +399,7 @@ const Profile = () => {
                   We’re sorry to see you go.
                 </p>
                 <p className="text-base">
-                  Once you delete your account your profile data will be
-                  permanently deleted from bid the bezel.
+                 Your account and all associated data will be permanently deleted. If you have an active subscription, it will also be cancelled upon account deletion. This action cannot be undone.
                 </p>
               </DialogDescription>
             </DialogHeader>

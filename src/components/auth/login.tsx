@@ -102,7 +102,7 @@ const Login = ({
   return (
     <div className="w-[340px] max-w-full">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <h2 className="text-2xl font-semibold">Welcome Back</h2>
+        <h2 className="text-2xl font-semibold">Login or sign up</h2>
 
         <FloatingInput
           id="email"
@@ -135,7 +135,7 @@ const Login = ({
           disabled={isPending}
           className="w-full rounded-full hover:bg-[#0b1d2a]"
         >
-          {isPending ? "Logging in..." : "Log In"}
+          {isPending ? "Logging in..." : "Create Account"}
         </Button>
       </form>
 
@@ -163,7 +163,7 @@ const Login = ({
           Continue with Apple
         </Button>
 
-        <p className="text-center mt-5">
+        {/* <p className="text-center mt-5">
           First time here?{" "}
           <button
             onClick={() => setStep?.("register")}
@@ -171,7 +171,7 @@ const Login = ({
           >
             Create an account
           </button>
-        </p>
+        </p> */}
       </div>
     </div>
   );

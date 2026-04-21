@@ -133,7 +133,7 @@ const AuthSidebar = ({
   const getTitle = () => {
     switch (currentStep) {
       case "login":
-        return "Login";
+        return "Login or sign up";
       case "register":
         return "Create an account";
       case "otp-register":
