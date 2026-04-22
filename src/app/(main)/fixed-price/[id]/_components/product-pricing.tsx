@@ -53,7 +53,7 @@ const ProductPricing = ({ price, watch }: Props) => {
             className="bg-linear-to-r w-fit text-background text-center from-[#0D1B2A] to-[#415A77]"
           />
         )}
-        <h1 className="text-3xl pt-2">${price}.00</h1>
+        <h1 className="text-3xl pt-2">${price}</h1>
 
         {watch?.buyer && (
           <div className=" border  rounded-2xl mt-4">

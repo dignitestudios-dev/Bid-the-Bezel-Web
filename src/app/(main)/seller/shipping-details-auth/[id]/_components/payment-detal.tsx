@@ -224,12 +224,14 @@ const PaymentDetail = () => {
                           {...register("firstName")}
                           label="First Name"
                           id="firstName"
+                          maxLength={50}
                           error={errors.firstName?.message}
                         />
                         <FloatingInput
                           {...register("lastName")}
                           label="Last Name"
                           id="lastName"
+                          maxLength={50}
                           error={errors.lastName?.message}
                         />
                       </div>
@@ -237,12 +239,14 @@ const PaymentDetail = () => {
                         {...register("address")}
                         label="Address"
                         id="address"
+                        maxLength={250}
                         error={errors.address?.message}
                       />
                       <FloatingInput
                         {...register("apartment")}
                         label="Apartment, Suite, etc. (optional)"
                         id="apartment"
+                        maxLength={100}
                       />
                       <div className="grid grid-cols-2 mt-4 gap-4 ">
                         <div>
@@ -306,6 +310,7 @@ const PaymentDetail = () => {
                         {...register("postalCode")}
                         label="Postal  code (optional)"
                         id="postalCode"
+                        maxLength={5}
                       />
                       <div className="mb-6 flex gap-2">
                         <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
