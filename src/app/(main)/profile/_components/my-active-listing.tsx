@@ -49,18 +49,20 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
       </div>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
         {isLoading && <Skeleton className="w-full h-24" />}
-        {data?.data?.length === 0 ? (
+        {data?.data && data?.data?.length === 0 ? (
           <div className="col-span-2 flex items-center justify-center text-center">
             No Product Found
           </div>
 
-        ) : data?.data?.map((product: any, index: number) => (
+        ) : data?.data?.map((product:any, index:any) => (
           <ListingCard key={index}
               image={product?.images[0]?.location}
               title={product?.title}
               brandName={product?.brandName}
               price={product?.price}
               type={product?.type}
+              model={product?.model}
+              description={product?.description}
               status={product.status}
               id={product?._id}
               isDraftShown={product?.isDraftShown}  />

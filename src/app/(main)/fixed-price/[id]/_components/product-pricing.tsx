@@ -43,7 +43,7 @@ const ProductPricing = ({ price, watch }: Props) => {
         )}
       <div>
         <div className="flex justify-between">
-          <h1 className="flex gap-2 text-3xl font-semibold">{watch?.brandName}</h1>
+          <h1 className="flex gap-2 text-3xl font-semibold">{watch?.model}</h1>
           <FavBtn isFav={isFav} setIsFav={setIsFav} />
         </div>
         {watch?.authentication?.status === "approved" && (
