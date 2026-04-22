@@ -7,8 +7,9 @@ export const loginSchema = z.object({
         .email("Invalid email address"),
 
     password: z
-        .string()
-        .min(6, "Password must be at least 6 characters")
+        .string({ message: "Password is required" })
+        .min(1, "Password is required")
+        .min(8, "Password must be at least 8 characters")
         .max(12, "Password must be at most 12 characters")
         .regex(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
@@ -39,7 +40,7 @@ export const completeProfileSchema = z.object({
   .toLowerCase()
     .min(1, "Username is required")
   .min(3, "Username must be at least 3 characters")
-  .max(30, "Username must be at most 30 characters")
+  .max(20, "Username must be at most 20 characters")
   .regex(/^[a-z0-9._]+$/, "Only letters, numbers, dots and underscores allowed")
   .refine((val) => !val.startsWith("."), "Username cannot start with a dot")
   .refine((val) => !val.endsWith("."), "Username cannot end with a dot")

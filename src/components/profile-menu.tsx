@@ -40,7 +40,7 @@ const ProfileMenu = ({ profileData }: { profileData: User }) => {
               alt="profile"
               width={56}
               height={56}
-              className="rounded-full"
+              className="rounded-full w-16 h-16"
             />
             <p className="font-semibold">{profileData?.userName}</p>
             <p className="text-gray-400 font-light text-sm">

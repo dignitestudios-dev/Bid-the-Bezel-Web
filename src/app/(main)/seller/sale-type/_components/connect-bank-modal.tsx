@@ -9,10 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useAddBankAccount } from "@/features/billing/hook";
-import { useAppDispatch } from "@/lib/hooks";
-import { login } from "@/lib/slices/authSlice";
-import { useMe } from "@/features/auth/hooks";
-import { useEffect } from "react";
+
 
 type Props = {
     open: boolean;
