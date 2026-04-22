@@ -107,7 +107,17 @@ const ListingCard = ({
         </div>
       )}
 
-
+      {status === "active" && (
+        <div className="p-4 border-t border-dashed bg-red-50/50 flex flex-col sm:flex-row gap-3">
+          <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => setDeleteDialog(true)}
+          >
+            Delete Product
+          </Button>
+        </div>
+      )}
       <div
         className={`p-3 text-white font-medium text-center  ${
           type === "auction"

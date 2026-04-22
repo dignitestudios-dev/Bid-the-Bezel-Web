@@ -33,7 +33,9 @@ const Password = () => {
   });
 
   const onSubmit = (data: ChangePasswordPayload) => {
-    mutate(data, {
+    const { confirmPassword, ...payload } = data;
+
+    mutate(payload as any, {
       onSuccess: (response) => {
         reset()
         showSuccess(response?.message)
@@ -63,8 +65,15 @@ const Password = () => {
           {...register("newPassword")}
           error={errors.newPassword?.message}
         />
+        <FloatingInput
+          id="confirmPassword"
+          label="Confirm Password"
+          type="password"
+          {...register("confirmPassword")}
+          error={errors.confirmPassword?.message}
+        />
 
-        <Button type="submit" disabled={isPending} className="mt-10">{isPending ? "Changing..." : "Change Password"}</Button>
+        <Button type="submit" disabled={isPending} className="mt-2">{isPending ? "Changing..." : "Change Password"}</Button>
       </form>
     </div>
   );

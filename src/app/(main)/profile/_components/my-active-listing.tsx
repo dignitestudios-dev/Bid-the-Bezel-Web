@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-
+import ListingCard from "./ui/listing-card";
 
 type ListingType = "fixed" | "auction" | "taking-offers";
 
@@ -22,12 +22,31 @@ type Fav = {
 
 
 const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfilled: boolean, setIsFulfilled: (value: boolean) => void, selectedTab: string }) => {
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  const { data, isLoading } = useGetMyActiveListing();
+  const [status, setStatus] = useState<"active" | "sold">("active")
+  const { data, isLoading } = useGetMyListing(status);
   return (
     <div>
-
+  <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">
+        <Button
+          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "active"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-gray-500"
+            }`}
+          onClick={() => setStatus("active")}
+        >
+          Unfulfilled
+        </Button>
+    
+        <Button
+          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "sold"
+              ? "bg-white text-black shadow"
+              : "bg-transparent text-gray-500"
+            }`}
+          onClick={() => setStatus("sold")}
+        >
+          Sold
+        </Button>
+      </div>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
         {isLoading && <Skeleton className="w-full h-24" />}
         {data?.data?.length === 0 ? (
@@ -36,55 +55,15 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
           </div>
 
         ) : data?.data?.map((product: any, index: number) => (
-          <div className="card p-0 relative overflow-hidden">
-            <div onClick={() => {
-              queryClient.invalidateQueries({ queryKey: ["get-listing-detail"] })
-              router.push(`/fixed-price/${product?._id}`)
-            }}
-              key={index} className="p-3 cursor-pointer w-full flex items-start gap-3">
-              <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
-                <Image
-                  src={product?.images[0]?.location}
-                  alt={product?.title}
-                  width={96}
-                  height={96}
-                  unoptimized
-                  className="object-contain w-full h-full"
-                />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-lg font-semibold text-end">${product?.price}</p>
-                <p className="text-lg font-medium">{product?.brandName}</p>
-              </div>
-            </div>
-
-            {!isFulfilled && (
-              <div className="p-3 grid grid-cols-2 gap-5">
-                <span></span>
-                <Button onClick={() => router.push(`/fixed-price/${product?._id}`)}  >
-                  {/* <Link href={`/buyer/shipping-details/${product?._id}`} className="w-full"> */}
-                  Fill Shipping Details
-                  {/* </Link> */}
-                </Button>
-              </div>
-            )}
-
-            <div
-              className={`p-3 text-white font-medium text-center  ${product.type === "auction"
-                ? "bg-[#415A77]"
-                : product.type === "fixed_price"
-                  ? "bg-[#778DA9]"
-                  : "bg-[#D9B918]"
-                }`}
-            >
-              {product.type === "auction"
-                ? "Auction"
-                : product.type === "fixed_price"
-                  ? "Fixed Price"
-                  : "Taking Offers"}
-            </div>
-          </div>
+          <ListingCard key={index}
+              image={product?.images[0]?.location}
+              title={product?.title}
+              brandName={product?.brandName}
+              price={product?.price}
+              type={product?.type}
+              status={product.status}
+              id={product?._id}
+              isDraftShown={product?.isDraftShown}  />
         ))}
       </div>
     </div>
