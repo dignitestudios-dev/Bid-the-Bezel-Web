@@ -11,6 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useMe } from "@/features/auth/hooks";
 import { useAppSelector } from "@/lib/hooks";
 import { Clock3, Info } from "lucide-react";
 import Image from "next/image";
@@ -23,6 +24,8 @@ type Props = {
 
 const CurrentBid = ({ bidders }: Props) => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const { data: user, isLoading } = useMe();
+
   const [subsPopup, setSubsPopup] = useState(false);
   const [cardPopup, setCardPopup] = useState(false);
   const [cancelBid, setCancelBid] = useState(false);
@@ -71,7 +74,7 @@ const CurrentBid = ({ bidders }: Props) => {
         )}
       </div>
 
-      {isLoggedIn ? (
+      {!isLoading && user ? (
         <>
           <div className="px-6 pt-6 border-t  space-y-4">
             <h1 className=" font-semibold flex items-center gap-2">
@@ -172,10 +175,11 @@ const CurrentBid = ({ bidders }: Props) => {
         </>
       ) : null}
       <div
-        className={!isLoggedIn ? "w-full flex py-4 justify-center" : "hidden"}
+        className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}
       >
+        
         <Suspense fallback={null}>
-          <AuthSidebar hideTrigger={isLoggedIn} />
+          <AuthSidebar hideTrigger={!!user || isLoading} loader={isLoading} />
         </Suspense>
       </div>
 

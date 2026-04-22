@@ -12,7 +12,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import WatchDetailForm from "./watch-detail-form";
+
 import BankDetailForm from "./BankDetailForm";
 import PersonalDetailForm from "./PersonalDetailForm";
 import { useMe } from "@/features/auth/hooks";
@@ -20,6 +20,7 @@ import { useGetCard } from "@/features/billing/hook";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useAppSelector } from "@/lib/hooks";
+import WatchDetailForm from "./watch-detail-form";
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
 if (!stripeKey) {

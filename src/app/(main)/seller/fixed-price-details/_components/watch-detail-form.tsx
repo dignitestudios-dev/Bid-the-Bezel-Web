@@ -22,7 +22,7 @@ type Props = {
 
 const WatchDetailForm = ({ onNext }: Props) => {
   const dispatch = useAppDispatch();
- const referenceId = useMemo(() => generateReferenceId(), []);
+  const referenceId = useMemo(() => generateReferenceId(), []);
 
   const { mutate, isPending } = useAddProduct();
 
@@ -73,12 +73,12 @@ const WatchDetailForm = ({ onNext }: Props) => {
   };
 
   const handleRemovePhoto = (index: number) => {
-  const currentPhotos = watch("photos") || [];
+    const currentPhotos = watch("photos") || [];
 
-  const updatedPhotos = currentPhotos.filter((_, i) => i !== index);
+    const updatedPhotos = currentPhotos.filter((_, i) => i !== index);
 
-  setValue("photos", updatedPhotos, { shouldValidate: true });
-};
+    setValue("photos", updatedPhotos, { shouldValidate: true });
+  };
 
   return (
     <div className="bg-white border max-w-4xl mx-auto rounded-xl p-8 shadow-sm">
@@ -92,41 +92,41 @@ const WatchDetailForm = ({ onNext }: Props) => {
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <div className="space-y-1">
-      {/* <label className="text-sm font-medium">Watch Brand</label> */}
+              {/* <label className="text-sm font-medium">Watch Brand</label> */}
 
-       <Select
-    value={getValues("watchBrand")}
-    
-    onValueChange={(value) => {
-      setValue("watchBrand", value, {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-    }}
-  >
-        <SelectTrigger  className={`peer w-full rounded-xl border-2 bg-white px-4 py-7  text-[15px] text-black focus:outline-none transition-all ${errors.watchBrand
-              ? "border-red-500"
-              : "border-gray-200 focus:border-gray-700"
-            }`} >
-          <SelectValue placeholder="Select watch brand" />
-        </SelectTrigger>
+              <Select
+                value={getValues("watchBrand")}
 
-        <SelectContent>
-          <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
-  <SelectItem value="richard_mille">Richard Mille</SelectItem>
-  <SelectItem value="bovet">Bovet</SelectItem>
-  <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
-  <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
-  <SelectItem value="louis_monne">Louis Monne</SelectItem>
-        </SelectContent>
-      </Select>
+                onValueChange={(value) => {
+                  setValue("watchBrand", value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
+                }}
+              >
+                <SelectTrigger className={`peer w-full rounded-xl border-2 bg-white px-4 py-7  text-[15px] text-black focus:outline-none transition-all ${errors.watchBrand
+                  ? "border-red-500"
+                  : "border-gray-200 focus:border-gray-700"
+                  }`} >
+                  <SelectValue placeholder="Select watch brand" />
+                </SelectTrigger>
 
-      {errors.watchBrand?.message && (
-        <p className="text-sm text-red-500">
-          {errors.watchBrand.message}
-        </p>
-      )}
-    </div>
+                <SelectContent>
+                  <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
+                  <SelectItem value="richard_mille">Richard Mille</SelectItem>
+                  <SelectItem value="bovet">Bovet</SelectItem>
+                  <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
+                  <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
+                  <SelectItem value="louis_monne">Louis Monne</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {errors.watchBrand?.message && (
+                <p className="text-sm text-red-500">
+                  {errors.watchBrand.message}
+                </p>
+              )}
+            </div>
           </div>
           <div>
             <FloatingInput
@@ -155,6 +155,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
             className={`peer w-full rounded-xl border-2 bg-white px-4 pt-6 pb-2 text-[15px] text-black focus:outline-none transition-all min-h-[100px]
       ${errors.contents ? "border-red-500" : "border-gray-200 focus:border-gray-700"}
     `}
+            maxLength={200}
             {...register("contents")}
           />
 
@@ -205,33 +206,33 @@ const WatchDetailForm = ({ onNext }: Props) => {
             <p className="mt-2 text-xs text-red-500">{errors.photos.message}</p>
           )}
 
-       {watch("photos")?.length > 0 && (
-  <div className="mt-3 space-y-2">
-    {watch("photos").map((file, idx) => (
-      <div
-        key={idx}
-        className="flex items-center gap-2 p-2 bg-gray-50 rounded-md"
-      >
-        <img
-          src={file.url}
-          alt={file.name}
-          className="w-10 h-10 object-cover rounded"
-        />
+          {watch("photos")?.length > 0 && (
+            <div className="mt-3 space-y-2">
+              {watch("photos").map((file, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 p-2 bg-gray-50 rounded-md"
+                >
+                  <img
+                    src={file.url}
+                    alt={file.name}
+                    className="w-10 h-10 object-cover rounded"
+                  />
 
-        <span className="text-sm flex-1">{file.name}</span>
+                  <span className="text-sm flex-1">{file.name}</span>
 
-        {/* ❌ Remove Button */}
-        <button
-          type="button"
-          onClick={() => handleRemovePhoto(idx)}
-          className="text-red-500 text-xs font-medium hover:underline"
-        >
-          Remove
-        </button>
-      </div>
-    ))}
-  </div>
-)}
+                  {/* ❌ Remove Button */}
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePhoto(idx)}
+                    className="text-red-500 text-xs font-medium hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <Button

@@ -34,16 +34,16 @@ export type ResendOtpPayload = z.infer<typeof resendOtpSchema>;
 
 export const completeProfileSchema = z.object({
     userName: z
-  .string({ message: "Username is required" })
-  .trim()
-  .toLowerCase()
-    .min(1, "Username is required")
-  .min(3, "Username must be at least 3 characters")
-  .max(30, "Username must be at most 30 characters")
-  .regex(/^[a-z0-9._]+$/, "Only letters, numbers, dots and underscores allowed")
-  .refine((val) => !val.startsWith("."), "Username cannot start with a dot")
-  .refine((val) => !val.endsWith("."), "Username cannot end with a dot")
-  .refine((val) => !val.includes(".."), "Username cannot contain consecutive dots"),
+        .string({ message: "Username is required" })
+        .trim()
+        .toLowerCase()
+        .min(1, "Username is required")
+        .min(3, "Username must be at least 3 characters")
+        .max(30, "Username must be at most 30 characters")
+        .regex(/^[a-z0-9._]+$/, "Only letters, numbers, dots and underscores allowed")
+        .refine((val) => !val.startsWith("."), "Username cannot start with a dot")
+        .refine((val) => !val.endsWith("."), "Username cannot end with a dot")
+        .refine((val) => !val.includes(".."), "Username cannot contain consecutive dots"),
     profilePicture: z
         .any()
         .refine((file) => file instanceof File && file.size > 0, "Profile picture is required"),
@@ -88,15 +88,15 @@ export const updateProfileSchema = z.object({
         .min(3, "Username must be at least 3 characters")
         .max(20, "Username must be at most 20 characters")
         .optional(),
-   profilePicture: z
-  .any()
-  .refine(
-    (file) =>
-      file instanceof File &&
-      file.size > 0 &&
-      file.size <= 5 * 1024 * 1024,
-    "Profile picture must be less than 5MB"
-  ),
+    profilePicture: z
+        .any()
+        .refine(
+            (file) =>
+                file instanceof File &&
+                file.size > 0 &&
+                file.size <= 5 * 1024 * 1024,
+            "Profile picture must be less than 5MB"
+        ),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     phone: z.string().optional(),
@@ -125,10 +125,29 @@ export const deleteAccountOtpSchema = z.object({
 
 export type DeleteAccountOtpPayload = z.infer<typeof deleteAccountOtpSchema>;
 
+export const changePasswordSchema = z
+    .object({
+        password: z
+            .string()
+            .min(1, "Current Password is required")
+            .min(8, "Current Password must be at least 8 characters"),
 
-export const changePasswordSchema = z.object({
-    password: z.string().min(6, "Current Password must be at least 6 characters"),
-    newPassword: z.string().min(6, "New Password must be at least 6 characters"),
-});
+        newPassword: z
+            .string()
+            .min(1, "New Password is required")
+            .min(8, "New Password must be at least 8 characters")
+            .max(12, "New Password must be at most 12 characters")
+            .regex(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+                "New Password must include uppercase, lowercase, number, and special character"
+            ),
 
+        confirmPassword: z
+            .string()
+            .min(1, "Confirm Password is required"),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+        message: "Passwords do not match",
+        path: ["confirmPassword"],
+    });
 export type ChangePasswordPayload = z.infer<typeof changePasswordSchema>;
