@@ -23,7 +23,7 @@ export const useAddCard = () =>
 
   export const useDeleteCard = (cardId: string) =>
   useApiMutation<any, { cardId: string }>({
-    endpoint: `/billing/delete-card/${cardId}`, 
+    endpoint: (data) => `/billing/delete-card/${data.cardId}`,
     method: "POST",
     invalidateKeys: ["get-profile", "get-cards"],
     mutationOptions: {
@@ -34,8 +34,8 @@ export const useAddCard = () =>
   });
 export const useSetDefaultCard = (cardId: string) =>
 
-  useApiMutation<any, { cardId: string }>({
-    endpoint: `/billing/default-card/${cardId}`,
+  useApiMutation<any, {cardId: string}>({
+    endpoint: (data) => `/billing/default-card/${data.cardId}`,
     method: "POST",
     invalidateKeys: ["get-profile", "get-cards"],
     mutationOptions: {

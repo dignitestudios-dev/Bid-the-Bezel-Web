@@ -29,8 +29,6 @@ const MyDraftListing = ({
   setIsFulfilled: (value: boolean) => void;
   selectedTab: string;
 }) => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
   const [status, setStatus] = useState<"draft" | "pending" | "rejected" >(
     "pending",
   );
