@@ -67,22 +67,24 @@ const MyDraftListing = ({
 
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
         {(isLoading || isPending) && <Skeleton className="w-full h-24" />}
-        {data?.data?.length === 0 ? (
+        {!isLoading && data?.data && data?.data?.length === 0 ? (
           <div className="col-span-2 flex items-center justify-center text-center">
             No Product Found
           </div>
         ) : (
-          data?.data?.map((product: any, index: number) => (
+          data?.data?.map((product: Product, index: number) => (
             <ListingCard
               key={index}
-              image={product?.images[0]?.location}
-              title={product?.title}
+              image={product?.images[0]?.location!}
+              title={product?.description}
+              model={product?.model}
               brandName={product?.brandName}
-              price={product?.price}
+              price={Number(product?.price).toFixed(2)}
               type={product?.type}
-              status={status}
+              description={product?.description}
+              status={product.status}
               id={product?._id}
-              isDraftShown={product?.isDraftShown}
+              isDraftShown={product?.isDraftPageShown}
             />
           ))
         )}

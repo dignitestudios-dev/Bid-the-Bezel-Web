@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { AlertUnauthenticatedDialog } from "./alert-unauthenticated-dialog";
 import { AlertDeleteDialog } from "./alert-delete-dialog";
 import Link from "next/link";
+import { UpdateProductDialog } from "./update-product-dialog";
 
 type Props = {
   link?: string;
@@ -17,6 +18,8 @@ type Props = {
   status: string;
   isDraftShown: boolean;
   brandName: string;
+  description: string;
+  model: string;
   id: string;
 };
 
@@ -28,15 +31,18 @@ const ListingCard = ({
   status,
   isDraftShown,
   brandName,
+  description,
+  model,
   id,
 }: Props) => {
   const router = useRouter();
   const [unAuthenticateDialog, setUnAuthenticateDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
+  const [updateDialog, setUpdateDialog] = useState(false);
 
   return (
     <div className="card p-0 relative overflow-hidden">
-      {status == "pending" ? (
+      {status == "pending" || status === "active" || status === "sold" ? (
         <Link
           href={`/fixed-price/${id}`}
           className="p-3 w-full flex items-start gap-3"
@@ -54,7 +60,7 @@ const ListingCard = ({
 
           <div className="flex-1">
             <p className="text-lg font-semibold text-end">${price}</p>
-            <p className="text-lg font-medium">{brandName}</p>
+            <p className="text-lg font-medium">{model}</p>
           </div>
         </Link>
       ) : (
@@ -78,9 +84,16 @@ const ListingCard = ({
       )}
 
       {!isDraftShown && status === "draft" && (
-        <div className="p-4 border-t border-dashed">
+        <div className="p-4 border-t border-dashed  flex flex-col sm:flex-row gap-3">
+             <Button
+            variant="destructive"
+            className="flex-1"
+            onClick={() => setDeleteDialog(true)}
+          >
+            Delete Product
+          </Button>
           <Button
-            className="w-full"
+            className="w-[60%]"
             onClick={() => router.push(`/seller/shipping-details-auth/${id}`)}
           >
             Fill Shipping Details
@@ -116,6 +129,13 @@ const ListingCard = ({
           >
             Delete Product
           </Button>
+          <Button
+            variant="default"
+            className="flex-1"
+            onClick={() => setUpdateDialog(true)}
+          >
+            Update Product
+          </Button>
         </div>
       )}
       <div
@@ -143,6 +163,7 @@ const ListingCard = ({
         open={deleteDialog}
         setOpen={setDeleteDialog}
       />
+      <UpdateProductDialog model={model} open={updateDialog} setOpen={setUpdateDialog} id={id} initialTitle={brandName} initialDescription={description} />
     </div>
   );
 };

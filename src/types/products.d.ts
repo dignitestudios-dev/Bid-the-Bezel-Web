@@ -103,3 +103,4 @@ interface ProductImage {
   mimetype: string | null;
   size: number | null;
 }
+

@@ -13,7 +13,7 @@ const MAX = 5000;
 const PriceFilterDialog = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [min, setMin] = useState(0);
-  const [max, setMax] = useState(8653);
+  const [max, setMax] = useState(5000);
 
   const onMinChange = (v: number) => {
     const val = Math.min(Math.max(0, v), max);

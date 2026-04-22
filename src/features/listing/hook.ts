@@ -2,7 +2,7 @@ import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGetMyListing = (status: string) => {
-    return useQuery({
+    return useQuery<ProductsResponse>({
         queryKey: ["get-my-listing", status],
         queryFn: async () => {
             const res = await apiClient.get("/products/seller/list", {
@@ -13,7 +13,7 @@ export const useGetMyListing = (status: string) => {
     });
 };
 export const useGetMyActiveListing = () => {
-    return useQuery({
+    return useQuery<ProductsResponse>({
         queryKey: ["get-my-active-listing"],
         queryFn: async () => {
             const res = await apiClient.get("/products/seller/list", {
