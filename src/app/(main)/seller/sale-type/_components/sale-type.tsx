@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import ConnectBankModal from "./connect-bank-modal";
+import { useMe } from "@/features/auth/hooks";
 
 type Props = {
   // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
@@ -14,7 +15,8 @@ type Props = {
 const SaleType = ({ }: Props) => {
   const router = useRouter();
   const [modalOpen, setModalOen] = useState(false)
-  const userBankAccount = useAppSelector((state) => state.auth.user?.stripeAccountStatus)
+  const { data, isLoading } = useMe()
+  const userBankAccount = data?.data?.stripeAccountStatus
 
   const handleAuction = () => {
     if (userBankAccount === "not-provided" || userBankAccount === "pending" || userBankAccount === "rejected" || userBankAccount === "review") {
