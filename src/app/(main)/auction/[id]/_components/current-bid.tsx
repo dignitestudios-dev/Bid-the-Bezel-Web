@@ -14,6 +14,7 @@ import {
 import { useMe } from "@/features/auth/hooks";
 import { usePlaceBid } from "@/features/bidding/hooks";
 import { useAppSelector } from "@/lib/hooks";
+import { showSuccess } from "@/lib/toast";
 import { Clock3, Info } from "lucide-react";
 import Image from "next/image";
 import React, { useState, Suspense } from "react";
@@ -52,8 +53,9 @@ const CurrentBid = ({ product , bidsData }: Props) => {
     placeBidMutation.mutate(
       { id: product._id, amount: price },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           setSuccessPopup(false);
+showSuccess( data?.data?.message || "Bid placed successfully!");
           setBidPlaced(true);
         },
         onError: (error) => {

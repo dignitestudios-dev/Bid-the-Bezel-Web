@@ -8,7 +8,7 @@ import { EmblaOptionsType } from 'embla-carousel'
 import Questions from './questions'
 
 type Props = {
-  product: any;
+  product: AuctionProduct;
 }
 
 const OPTIONS: EmblaOptionsType = {}
@@ -16,7 +16,6 @@ const OPTIONS: EmblaOptionsType = {}
 const ProductDetail = ({ product }: Props) => {
   const [isFav, setIsFav] = useState(false);
   const isAuthenticated = product?.authentication?.status === 'authenticated';
-
   return (
     <div className='lg:w-[60%] space-y-8'>
       <div>

@@ -10,11 +10,22 @@ import {
 import { useGetProductBids } from "@/features/bidding/hooks";
 import Image from "next/image";
 
-function BidsList({ bidsToShow, time, topBidAmount }: { bidsToShow: Bid[]; time: boolean; topBidAmount?: number }) {
+function BidsList({
+  bidsToShow,
+  time,
+  topBidAmount,
+}: {
+  bidsToShow: Bid[];
+  time: boolean;
+  topBidAmount?: number;
+}) {
   return (
     <div className="space-y-3">
       {bidsToShow.map((bid, idx) => (
-        <div key={idx} className="grid grid-cols-[1fr_auto_auto] items-center gap-4">
+        <div
+          key={idx}
+          className="grid grid-cols-[1fr_auto_auto] items-center gap-4"
+        >
           <div className="flex items-center gap-3">
             {bid.currentBidder?.profilePicture?.location ? (
               <Image
@@ -28,8 +39,12 @@ function BidsList({ bidsToShow, time, topBidAmount }: { bidsToShow: Bid[]; time:
               <div className="w-5 h-5 md:w-8 md:h-8 rounded-full bg-gray-200" />
             )}
             <div className="flex items-center gap-1">
-              {bid.amount === topBidAmount && <Crown className="h-3 w-3 md:w-4 md:h-4 text-yellow-500" />}
-              <p className="md:text-base text-sm font-medium">{bid.currentBidder?.userName}</p>
+              {bid.amount === topBidAmount && (
+                <Crown className="h-3 w-3 md:w-4 md:h-4 text-yellow-500" />
+              )}
+              <p className="md:text-base text-sm font-medium">
+                {bid.currentBidder?.userName}
+              </p>
             </div>
           </div>
           {time && (
@@ -37,16 +52,24 @@ function BidsList({ bidsToShow, time, topBidAmount }: { bidsToShow: Bid[]; time:
               {new Date(bid.bidPlacedAt).toLocaleTimeString()}
             </p>
           )}
-          <p className="text-xs md:text-sm font-semibold text-right">${bid.amount}</p>
+          <p className="text-xs md:text-sm font-semibold text-right">
+            ${bid.amount}
+          </p>
         </div>
       ))}
     </div>
   );
 }
 
-export default function TopBids({ bidsData , currentPage , setCurrentPage }: { bidsData: ProductBidsResponse; currentPage: number; setCurrentPage: (page: number) => void }) {
-
-
+export default function TopBids({
+  bidsData,
+  currentPage,
+  setCurrentPage,
+}: {
+  bidsData: ProductBidsResponse;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+}) {
   const bids = bidsData?.data ?? [];
   const pagination = bidsData?.pagination;
   const totalItems = pagination?.totalItems ?? 0;
@@ -72,15 +95,35 @@ export default function TopBids({ bidsData , currentPage , setCurrentPage }: { b
           </div>
         </div>
 
-        <BidsList bidsToShow={bids.slice(0, 3)} time={true} topBidAmount={topBidAmount} />
+        <BidsList
+          bidsToShow={bids.slice(0, 3)}
+          time={true}
+          topBidAmount={topBidAmount}
+        />
 
         <div className="mt-4 pt-3 border-t">
           <h1 className="text-xl font-semibold mb-3">All Bidders</h1>
           <div className="flex items-center justify-between">
             <div className="flex -space-x-2">
-              {[...Array(Math.min(5, totalItems))].map((_, i) => (
-                <div key={i} className="w-7 h-7 rounded-full border bg-gray-200" />
-              ))}
+              {bids?.slice(0, 5).map((bid, i) => {
+                const img = bid.currentBidder?.profilePicture?.location;
+
+                return img ? (
+                  <Image
+                    key={i}
+                    src={img}
+                    alt={bid.currentBidder?.userName || "bidder"}
+                    width={28}
+                    height={28}
+                    className="w-7 h-7 rounded-full border object-cover"
+                  />
+                ) : (
+                  <div
+                    key={i}
+                    className="w-7 h-7 rounded-full border bg-gray-200"
+                  />
+                );
+              })}
               {totalItems > 5 && (
                 <div className="w-7 h-7 rounded-full border bg-gray-100 flex items-center justify-center text-xs">
                   +{totalItems - 5}
@@ -101,7 +144,11 @@ export default function TopBids({ bidsData , currentPage , setCurrentPage }: { b
                 <div className="grid grid-cols-[1fr_auto_auto] font-semibold items-center gap-4">
                   <h1>User</h1> <h2>bids</h2>{" "}
                 </div>
-                <BidsList bidsToShow={currentBids} time={false} topBidAmount={topBidAmount} />
+                <BidsList
+                  bidsToShow={currentBids}
+                  time={false}
+                  topBidAmount={topBidAmount}
+                />
 
                 {/* Pagination */}
                 <div className="flex justify-center text-sm items-center mt-4 gap-3">
