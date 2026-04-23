@@ -83,7 +83,7 @@ const ListingCard = ({
         </div>
       )}
 
-      {!isDraftShown && status === "draft" && (
+      {status === "draft" && (
         <div className="p-4 border-t border-dashed  flex flex-col sm:flex-row gap-3">
              <Button
             variant="destructive"

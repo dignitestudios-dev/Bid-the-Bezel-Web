@@ -47,37 +47,35 @@ interface FixedPriceProduct {
   updatedAt: string;
 }
 
-interface AuctionProduct {
+ interface AuctionProduct {
   _id: string;
   brandName: string;
   model: string;
   price: number;
+  effectivePrice: number;
   soldPrice: number;
   description: string | null;
   referenceId: string;
+
   type: "auction";
-  status: string;
-  currentHolder: string;
-  deliveryFlow: string;
+  status: "active" | "inactive" | "sold"; // adjust if more statuses exist
+  currentHolder: "seller" | "buyer";
+
+  deliveryFlow: "at_seller" | "shipping"; // extend if needed
   isDeleted: boolean;
 
   seller: Seller;
-  buyer: any;
+  buyer: Buyer | null;
 
   images: ProductImage[];
 
-  authFlow: {
-    sellerRequestedPreAuth: boolean;
-    buyerRequestedAuth: boolean;
-  };
+  authFlow: AuthFlow;
 
-  authentication: {
-    status: string;
-    authenticatedBy: any;
-    authenticatedAt: string | null;
-  };
+  authentication: Authentication;
 
-  shipments: any[];
+  shipments: Shipment[];
+
+  auction: AuctionDetails;
 
   isMyProduct: boolean;
   isDraftPageShown: boolean;

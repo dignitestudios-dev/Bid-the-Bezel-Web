@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useMe } from "@/features/auth/hooks";
+import { usePlaceBid } from "@/features/bidding/hooks";
 import { useAppSelector } from "@/lib/hooks";
 import { Clock3, Info } from "lucide-react";
 import Image from "next/image";
@@ -19,12 +20,25 @@ import React, { useState, Suspense } from "react";
 
 
 type Props = {
-  bidders: Bidder[];
+  product: AuctionProduct;
+  bidsData: ProductBidsResponse;
 };
 
-const CurrentBid = ({ bidders }: Props) => {
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+const CurrentBid = ({ product , bidsData }: Props) => {
   const { data: user, isLoading } = useMe();
+
+  const auction = product?.auction;
+  const placeBidMutation = usePlaceBid();
+
+  const timeLeft = React.useMemo(() => {
+    if (!auction?.endsAt) return "--";
+    const diff = new Date(auction.endsAt).getTime() - Date.now();
+    if (diff <= 0) return "Ended";
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    return `${d}D ${h}H ${m}M`;
+  }, [auction?.endsAt]);
 
   const [subsPopup, setSubsPopup] = useState(false);
   const [cardPopup, setCardPopup] = useState(false);
@@ -35,40 +49,53 @@ const CurrentBid = ({ bidders }: Props) => {
   const [bidPlaced, setBidPlaced] = useState(false);
 
   const handlePlaceBid = () => {
-    setSuccessPopup(false);
-    setBidPlaced(true);
+    placeBidMutation.mutate(
+      { id: product._id, amount: price },
+      {
+        onSuccess: () => {
+          setSuccessPopup(false);
+          setBidPlaced(true);
+        },
+        onError: (error) => {
+          console.error("Failed to place bid:", error);
+          // Optionally show error toast here if needed
+        },
+      }
+    );
   };
 
   const handleInitializeBidding = () => {
     if (price === 0) return;
+    if(user?.data.isBuyerPlanPurchased) {
+      handlePlaceBid();
+      return;
+    }
     setSubsPopup(true);
   };
 
   return (
     <div className="rounded-xl w-full border border-[#E3E3E3]">
-      <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b  border-[#E3E3E3]  py-4">
-        {" "}
-        <Clock3 color="#14A752" /> 2D 5H 42M{" "}
-        <span className="font-medium">left</span>
+      <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
+        <Clock3 color="#14A752" /> {timeLeft}
+        {/* <span className="font-medium">left</span> */}
       </h1>
-      <div className="p-6  border-[#E3E3E3]">
+      <div className="p-6 border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
-          <h3 className=" font-semibold">Current Bid</h3>
+          <h3 className="font-semibold">Current Bid</h3>
           <h1 className="text-2xl font-semibold">
-            {bidders.length >= 1 ? "$500.00" : "$00.00"}
+            {bidsData.data[0].amount > 0 ? `$${bidsData.data[0].amount.toFixed(2)}` : "$00.00"}
           </h1>
         </div>
-        {bidders.length >= 1 ? (
+        {bidsData.data ? (
           <div className="flex gap-2 items-start">
-            <Image src={"/images/dp.png"} alt="dp" width={60} height={60} />
+            <Image src={bidsData.data[0].currentBidder.profilePicture.location} alt="dp" width={60} height={60} />
             <div className="my-2">
-              <h1 className="font-semibold  mb-1">Guessmyusername</h1>
-              <h5 className="text-xs">Bid 20m ago</h5>
+              <h1 className="font-semibold mb-1">{bidsData?.data[0].currentBidder?.userName ?? "Anonymous"}</h1>
+              <h5 className="text-xs">Current highest bidder</h5>
             </div>
           </div>
         ) : (
           <div className="p-8 flex items-center justify-center capitalize font-semibold">
-            {" "}
             <h4>no bid yet</h4>
           </div>
         )}
@@ -144,7 +171,7 @@ const CurrentBid = ({ bidders }: Props) => {
                   <Button
                     onClick={() =>
                       setPrice((prev) => {
-                        if (prev === 0) return 700;
+                        // if (prev === 0) return 700;
                         return prev + 200;
                       })
                     }
@@ -167,7 +194,7 @@ const CurrentBid = ({ bidders }: Props) => {
             <Button
               onClick={handleInitializeBidding}
               className="text-sm md:px-20 py-3"
-              disabled={price === 0}
+              disabled={price === 0 || placeBidMutation.isPending}
             >
               Place Bid
             </Button>
@@ -186,6 +213,7 @@ const CurrentBid = ({ bidders }: Props) => {
 
       <SubscriptionsDialog
         setCardPopup={setCardPopup}
+             id={product._id}
         subsPopup={subsPopup}
         setSubsPopup={setSubsPopup}
       />
@@ -200,6 +228,7 @@ const CurrentBid = ({ bidders }: Props) => {
         visaCardPopup={visaCardPopup}
       />
       <SubscribeSuccessfully
+ 
         setSuccessPopup={setSuccessPopup}
         successPopup={successPopup}
         onClose={handlePlaceBid}

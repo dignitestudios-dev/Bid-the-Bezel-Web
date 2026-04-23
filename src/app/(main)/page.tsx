@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
-      <Aunctions />
+      <Aunctions auctionWatches={data?.data.auction || []}  />
       <FixedPrice fixedPrice={data?.data?.fixed_price || []} />
       <TakingOffers />
       <BrowseByCategories />

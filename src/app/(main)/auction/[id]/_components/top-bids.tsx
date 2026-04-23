@@ -7,55 +7,53 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useGetProductBids } from "@/features/bidding/hooks";
+import Image from "next/image";
 
-const bids = [
-  {
-    name: "Guessmyusername",
-    time: "11:12:22 AM",
-    amount: "$702.87",
-    top: true,
-  },
-  { name: "Arandomuser", time: "11:12:22 AM", amount: "$902.87" },
-  { name: "Justabidder", time: "11:12:22 AM", amount: "$1287.87" },
-  { name: "Anotherparticipant", time: "11:13:10 AM", amount: "$675.50" },
-  { name: "UserX123", time: "11:13:45 AM", amount: "$1450.00" },
-  { name: "BidMaster88", time: "11:14:01 AM", amount: "$230.00" },
-  { name: "CompetitiveBidder", time: "11:14:30 AM", amount: "$320.75" },
-  { name: "SmartInvestor", time: "11:15:10 AM", amount: "$500.99" },
-  { name: "DailyBidder", time: "11:15:45 AM", amount: "$1255.50" },
-];
-
-function BidsList({ bidsToShow , time }: { bidsToShow: typeof bids , time:boolean }) {
+function BidsList({ bidsToShow, time, topBidAmount }: { bidsToShow: Bid[]; time: boolean; topBidAmount?: number }) {
   return (
     <div className="space-y-3">
       {bidsToShow.map((bid, idx) => (
-        <div
-          key={idx}
-          className="grid grid-cols-[1fr_auto_auto] items-center gap-4"
-        >
+        <div key={idx} className="grid grid-cols-[1fr_auto_auto] items-center gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-5 h-5 md:w-8 md:h-8 rounded-full bg-gray-200" />
+            {bid.currentBidder?.profilePicture?.location ? (
+              <Image
+                src={bid.currentBidder.profilePicture.location}
+                alt={bid.currentBidder.userName}
+                width={32}
+                height={32}
+                className="w-5 h-5 md:w-8 md:h-8 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-5 h-5 md:w-8 md:h-8 rounded-full bg-gray-200" />
+            )}
             <div className="flex items-center gap-1">
-              {bid.top && <Crown className="h-3 w-3 md:w-4 md:h-4 text-yellow-500" />}
-              <p className="md:text-base text-sm font-medium">{bid.name}</p>
+              {bid.amount === topBidAmount && <Crown className="h-3 w-3 md:w-4 md:h-4 text-yellow-500" />}
+              <p className="md:text-base text-sm font-medium">{bid.currentBidder?.userName}</p>
             </div>
           </div>
-          {time &&  
-          
-          <p className="text-xs md:text-sm  text-right">{bid.time}</p>
-          }
-          <p className="text-xs md:text-sm font-semibold text-right">{bid.amount}</p>
+          {time && (
+            <p className="text-xs md:text-sm text-right">
+              {new Date(bid.bidPlacedAt).toLocaleTimeString()}
+            </p>
+          )}
+          <p className="text-xs md:text-sm font-semibold text-right">${bid.amount}</p>
         </div>
       ))}
     </div>
   );
 }
 
-export default function TopBids() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const bidsPerPage = 10;
+export default function TopBids({ bidsData , currentPage , setCurrentPage }: { bidsData: ProductBidsResponse; currentPage: number; setCurrentPage: (page: number) => void }) {
 
-  const totalPages = Math.ceil(bids.length / bidsPerPage);
+
+  const bids = bidsData?.data ?? [];
+  const pagination = bidsData?.pagination;
+  const totalItems = pagination?.totalItems ?? 0;
+  const totalPages = pagination?.totalPages ?? 1;
+  const topBidAmount = bids[0]?.amount;
+
+  const bidsPerPage = pagination?.itemsPerPage ?? 10;
   const startIndex = (currentPage - 1) * bidsPerPage;
   const currentBids = bids.slice(startIndex, startIndex + bidsPerPage);
 
@@ -74,21 +72,20 @@ export default function TopBids() {
           </div>
         </div>
 
-        <BidsList bidsToShow={bids.slice(0, 3)} time={true}/>
+        <BidsList bidsToShow={bids.slice(0, 3)} time={true} topBidAmount={topBidAmount} />
 
         <div className="mt-4 pt-3 border-t">
           <h1 className="text-xl font-semibold mb-3">All Bidders</h1>
           <div className="flex items-center justify-between">
             <div className="flex -space-x-2">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-7 h-7 rounded-full border bg-gray-200"
-                />
+              {[...Array(Math.min(5, totalItems))].map((_, i) => (
+                <div key={i} className="w-7 h-7 rounded-full border bg-gray-200" />
               ))}
-              <div className="w-7 h-7 rounded-full border bg-gray-100 flex items-center justify-center text-xs">
-                +191
-              </div>
+              {totalItems > 5 && (
+                <div className="w-7 h-7 rounded-full border bg-gray-100 flex items-center justify-center text-xs">
+                  +{totalItems - 5}
+                </div>
+              )}
             </div>
 
             <Dialog>
@@ -104,7 +101,7 @@ export default function TopBids() {
                 <div className="grid grid-cols-[1fr_auto_auto] font-semibold items-center gap-4">
                   <h1>User</h1> <h2>bids</h2>{" "}
                 </div>
-                <BidsList bidsToShow={currentBids} time={false} />
+                <BidsList bidsToShow={currentBids} time={false} topBidAmount={topBidAmount} />
 
                 {/* Pagination */}
                 <div className="flex justify-center text-sm items-center mt-4 gap-3">

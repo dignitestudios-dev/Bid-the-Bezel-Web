@@ -10,36 +10,45 @@ import MoveToTakingDialog from "./move-taking-offer-dialog";
 
 
 type Props = {
-  bidders: Bidder[];
+  product: any;
 };
 
-const CurrentBidSeller = ({ bidders }: Props) => {
+const CurrentBidSeller = ({ product }: Props) => {
   const [cancelListing, setCancelListing] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState(false);
   const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
+  const auction = product?.auction;
+
+  const timeLeft = React.useMemo(() => {
+    if (!auction?.endsAt) return "--";
+    const diff = new Date(auction.endsAt).getTime() - Date.now();
+    if (diff <= 0) return "Ended";
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    return `${d}D ${h}H ${m}M`;
+  }, [auction?.endsAt]);
+
+  const hasBidder = !!auction?.currentBidder;
   return (
     <div className=" border  rounded-2xl mt-4">
-      <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b  border-[#E3E3E3]  py-4">
-        {" "}
-        <Clock3 color="red" /> 0D 0H 0M{" "}
+      <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
+        <Clock3 color="red" /> {timeLeft}
         <span className="font-medium">left</span>
       </h1>
       <div className="flex justify-between p-5">
-        <h3 className="font-semibold">
-          {bidders.length >= 1 ? "Bid Winner" : "Current Bid"}
-        </h3>{" "}
+        <h3 className="font-semibold">{hasBidder ? "Bid Winner" : "Current Bid"}</h3>
         <h1 className="text-2xl font-semibold">
-          {" "}
-          {bidders.length >= 1 ? "$900.0" : "$00.0"}
-        </h1>{" "}
+          {auction?.currentBidAmount > 0 ? `$${auction.currentBidAmount.toFixed(2)}` : "$00.0"}
+        </h1>
       </div>
-      {bidders.length >= 1 ? (
+      {hasBidder ? (
         <>
           <div className="flex border-b items-center p-5 gap-3">
             <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
             <div>
-              <h1 className="font-semibold mb-2">GuessMyname</h1>
-              <h5>Bid 20m ago</h5>
+              <h1 className="font-semibold mb-2">{auction.currentBidder?.userName ?? "Anonymous"}</h1>
+              <h5>Current highest bidder</h5>
             </div>
           </div>
 

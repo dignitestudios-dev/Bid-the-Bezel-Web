@@ -18,7 +18,7 @@ import {
 
 
 type PropType = {
-  slides: AuctionWatch[] | FixedPriceWatch[] | OfferWatch[];
+  slides: AuctionProduct[] | FixedPriceProduct[] ;
   options?: EmblaOptionsType;
   FColor?: string;
   // isAuthenticated: boolean;
