@@ -104,6 +104,7 @@ const BankDetailForm = ({
                         value={name}
                         disabled={!bankEditModa}
                         onChange={(e) => setName(e.target.value)}
+                        maxLength={50}
                     />
                     <div className="grid grid-cols-2 gap-4">
                         <FloatingInput
@@ -112,6 +113,7 @@ const BankDetailForm = ({
                             value={branchCode}
                             disabled={!bankEditModa}
                             onChange={(e) => setBranchCode(e.target.value)}
+                            maxLength={9}
                         />
 
                         <FloatingInput

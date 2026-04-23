@@ -66,6 +66,7 @@ const PersonalDetailForm = ({ onNext, userData, personalEditMode, setPersonalEdi
                             label="First Name"
                             {...register("firstName")}
                             disabled={!personalEditMode}
+                            maxLength={50}
                             error={errors.firstName?.message}
                         />
 
@@ -76,6 +77,7 @@ const PersonalDetailForm = ({ onNext, userData, personalEditMode, setPersonalEdi
                             id="LastName"
                             label="Last Name"
                             {...register("lastName")}
+                            maxLength={50}
                             disabled={!personalEditMode}
                             error={errors.lastName?.message}
                         />
@@ -89,6 +91,7 @@ const PersonalDetailForm = ({ onNext, userData, personalEditMode, setPersonalEdi
                         label="Email Address"
                         disabled
                         {...register("email")}
+                        maxLength={250}
                         error={errors.email?.message}
                     />
 

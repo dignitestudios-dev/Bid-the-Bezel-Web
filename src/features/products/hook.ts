@@ -51,35 +51,38 @@ export const useUnAuthenticate = () =>
         },
     });
 
-    export const useUpdateProduct = () =>
-  useApiMutation<any, { id: string; brandName: string; description: string; model: string }>({
-    endpoint: ({ id }) => `/products/${id}`,
-    method: "PATCH",
-    isMultiPart: false, // no files → use JSON
-    toBody: (data) => ({
-      brandName: data.brandName,
-      description: data.description,
-      model: data.model,
+export const useUpdateProduct = () =>
+    useApiMutation<any, { id: string; brandName: string; description: string; model: string }>({
+        endpoint: ({ id }) => `/products/${id}`,
+        method: "PATCH",
+        isMultiPart: false, // no files → use JSON
+        toBody: (data) => ({
+            brandName: data.brandName,
+            description: data.description,
+            model: data.model,
 
-    }),
-    invalidateKeys: ["get-profile", "get-my-listing"],
-    mutationOptions: {
-      onSuccess: (data) => {
-        showSuccess(data?.message);
-      },
-      onError: (err) => {
-        showError(err?.message);
-      },
-    },
-  });
+        }),
+        invalidateKeys: ["get-profile", "get-my-listing"],
+        mutationOptions: {
+            onSuccess: (data) => {
+                showSuccess(data?.message);
+            },
+            onError: (err) => {
+                showError(err?.message);
+            },
+        },
+    });
 export const deleteProduct = () =>
     useApiMutation<any, { id: string }>({
         endpoint: ({ id }) => `/products/${id}`,
         method: "DELETE",
         invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing"],
         mutationOptions: {
+            onSuccess: (data) => {
+                showSuccess(data?.message);
+            },
             onError: (err) => {
-                showError(err);
+                showError(err?.message);
             },
         },
     });
