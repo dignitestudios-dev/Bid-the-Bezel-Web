@@ -110,6 +110,7 @@ const Login = ({
           type="email"
           {...register("email")}
           error={errors.email?.message}
+          maxLength={256}
         />
 
         <FloatingInput
@@ -118,6 +119,7 @@ const Login = ({
           type="password"
           {...register("password")}
           error={errors.password?.message}
+          maxLength={256}
         />
 
         <div className="w-full flex justify-end">

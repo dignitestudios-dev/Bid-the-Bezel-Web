@@ -346,32 +346,29 @@ const Profile = () => {
       </div>
 
       <div className="pt-6">
-        {(userData?.data?.subscriptions?.length ?? 0) > 0 && (
-          <>
-            <p className="mb-3 text-lg font-medium">Subscription Status</p>
+        <p className="mb-3 text-lg font-medium">Subscription Status</p>
 
-            <p>
-              {userData?.data?.subscriptions?.map((item: any, index: number) => (
-                <span key={index}>
-                  <span className="font-bold text-xl capitalize">
-                    {item?.plan?.name}
-                  </span>{" "}
-                  <span className="font-light">
-                    (3 days of trial left{" "}
-                    <span className="text-muted-foreground">|</span>{" "}
-                    {item?.planType === "buyer"
-                      ? "Unlimited Purchases "
-                      : item?.isUnlimitedQuota
-                        ? "Unlimited Watches "
-                        : item?.sellQuota + " Watches Left"}
-                    )
-                  </span>
-                </span>
-              ))}
-            </p>
-            <hr className="my-6 border-border" />
-          </>
-        )}
+        <div className="space-y-2">
+          {userData?.data?.subscriptions?.map((item: any, index: number) => (
+            <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+              <span className="font-bold text-xl capitalize">
+                {item?.plan?.name}
+              </span>
+
+              <span className="font-light text-muted-foreground">
+                (3 days of trial left |{" "}
+                {item?.planType === "buyer"
+                  ? "Unlimited Purchases"
+                  : item?.isUnlimitedQuota
+                    ? "Unlimited Watches"
+                    : `${item?.sellQuota} Watches Left`}
+                )
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <hr className="my-6 border-border" />
 
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -399,7 +396,7 @@ const Profile = () => {
                   We’re sorry to see you go.
                 </p>
                 <p className="text-base">
-                 Your account and all associated data will be permanently deleted. If you have an active subscription, it will also be cancelled upon account deletion. This action cannot be undone.
+                  Your account and all associated data will be permanently deleted. If you have an active subscription, it will also be cancelled upon account deletion. This action cannot be undone.
                 </p>
               </DialogDescription>
             </DialogHeader>
