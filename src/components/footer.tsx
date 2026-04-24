@@ -73,7 +73,7 @@ const Footer = () => {
                       </li>
                       <li>
                         <Link href="/collections?category=fixed" className="hover:text-white">
-                          Fixed Price
+                        Marketplace
                         </Link>
                       </li>
                       <li>

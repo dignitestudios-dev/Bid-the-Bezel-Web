@@ -150,7 +150,7 @@ const ListingCard = ({
         {type === "auction"
           ? "Auction"
           : type === "fixed_price"
-            ? "Fixed Price"
+            ? "Marketplace"
             : "Taking Offers"}
       </div>
       <AlertUnauthenticatedDialog

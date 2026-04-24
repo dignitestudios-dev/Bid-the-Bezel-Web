@@ -20,8 +20,8 @@ export const watchDetailSchema = z.object({
   .string()
   .min(1, "Price is required")
   .regex(/^\d+(\.\d{1,2})?$/, "Only valid numbers with up to 2 decimals allowed")
-  .refine((val) => Number(val) > 0, "Price must be greater than 0")
-  .refine((val) => Number(val) <= 5000, "Price cannot be more than 5000"),
+  .refine((val) => Number(val) > 0, "Price must be greater than 0"),
+//   .refine((val) => Number(val) <= 5000, "Price cannot be more than 5000"),
 
     contents: z
         .string()

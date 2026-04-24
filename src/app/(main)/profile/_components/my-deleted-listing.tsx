@@ -81,7 +81,7 @@ const MyDeletedListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulf
                             {product.type === "auction"
                                 ? "Auction"
                                 : product.type === "fixed_price"
-                                    ? "Fixed Price"
+                                    ? "Marketplace"
                                     : "Taking Offers"}
                         </div>
                     </div>
