@@ -74,7 +74,7 @@ const DeliveryForm = ({ authenticate, productId,
                 isAuthRequested: authenticate,
             },
             {
-                onSuccess: async (response) => {
+                onSuccess: async (response: any) => {
                     showSuccess('Order placed successfully')
                     const status = response?.data?.status;
                     const clientSecret = response?.data?.clientSecret;
