@@ -1,4 +1,4 @@
-import { useApiMutation } from "@/hooks/api/useApiMutation";
+import { useApiMutation } from "@/hooks/api/use-api-mutation";
 import { AuctionWatchPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
 

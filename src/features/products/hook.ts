@@ -1,4 +1,4 @@
-import { useApiMutation } from "@/hooks/api/useApiMutation";
+import { useApiMutation } from "@/hooks/api/use-api-mutation";
 import { WatchDetailPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
 import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[id]/_components/shipping-form";
@@ -76,7 +76,7 @@ export const deleteProduct = () =>
     useApiMutation<any, { id: string }>({
         endpoint: ({ id }) => `/products/${id}`,
         method: "DELETE",
-        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing"],
+        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing" , "get-my-deleted-listing"],
         mutationOptions: {
             onSuccess: (data) => {
                 showSuccess(data?.message);

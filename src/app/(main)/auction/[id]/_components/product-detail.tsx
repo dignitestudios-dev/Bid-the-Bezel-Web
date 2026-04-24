@@ -28,7 +28,10 @@ const ProductDetail = ({ product }: Props) => {
           </h1>
           <FavBtn isFav={isFav} setIsFav={setIsFav} />
         </div>
+        <div className='flex items-center justify-between gap-4'>
         <h1 className='text-xl md:text-3xl'>${product?.price} <span className='text-base'>Starting Price</span></h1>
+        <h1 className='text-xl md:text-3xl'>${product?.effectivePrice} <span className='text-base'>Effective Price</span></h1>
+        </div>
         <p className='text-sm text-gray-500 mt-1'>Ref: {product?.referenceId}</p>
       </div>
 

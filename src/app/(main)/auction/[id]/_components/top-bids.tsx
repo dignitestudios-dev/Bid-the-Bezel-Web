@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, Crown } from "lucide-react";
+import React from "react";
+import { ChevronLeft, ChevronRight, Crown, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -7,20 +7,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useGetProductBids } from "@/features/bidding/hooks";
 import Image from "next/image";
 
 function BidsList({
   bidsToShow,
   time,
   topBidAmount,
+  isLoading = false,
 }: {
   bidsToShow: Bid[];
   time: boolean;
+  isLoading?: boolean;
   topBidAmount?: number;
 }) {
   return (
     <div className="space-y-3">
+      {isLoading&& (
+        <div className="text-center py-10">
+          <Loader2 className="animate-spin mx-auto" size={24} />
+        </div>
+      )}
       {bidsToShow.map((bid, idx) => (
         <div
           key={idx}
@@ -39,7 +45,7 @@ function BidsList({
               <div className="w-5 h-5 md:w-8 md:h-8 rounded-full bg-gray-200" />
             )}
             <div className="flex items-center gap-1">
-              {bid.amount === topBidAmount && (
+              {idx == 0 && (
                 <Crown className="h-3 w-3 md:w-4 md:h-4 text-yellow-500" />
               )}
               <p className="md:text-base text-sm font-medium">
@@ -47,13 +53,15 @@ function BidsList({
               </p>
             </div>
           </div>
+
           {time && (
             <p className="text-xs md:text-sm text-right">
               {new Date(bid.bidPlacedAt).toLocaleTimeString()}
             </p>
           )}
+
           <p className="text-xs md:text-sm font-semibold text-right">
-            ${bid.amount}
+            ${bid.amount}+
           </p>
         </div>
       ))}
@@ -62,23 +70,26 @@ function BidsList({
 }
 
 export default function TopBids({
-  bidsData,
+  topBids,
+  paginatedBids,
+  pagination,
   currentPage,
+  paginatedBidsLoading,
   setCurrentPage,
 }: {
-  bidsData: ProductBidsResponse;
+  topBids: Bid[];
+  paginatedBids: Bid[];
+  paginatedBidsLoading: boolean;
+  pagination?: {
+    totalItems: number;
+    totalPages: number;
+  };
   currentPage: number;
   setCurrentPage: (page: number) => void;
 }) {
-  const bids = bidsData?.data ?? [];
-  const pagination = bidsData?.pagination;
   const totalItems = pagination?.totalItems ?? 0;
   const totalPages = pagination?.totalPages ?? 1;
-  const topBidAmount = bids[0]?.amount;
-
-  const bidsPerPage = pagination?.itemsPerPage ?? 10;
-  const startIndex = (currentPage - 1) * bidsPerPage;
-  const currentBids = bids.slice(startIndex, startIndex + bidsPerPage);
+  const topBidAmount = topBids?.[0]?.amount;
 
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -96,16 +107,18 @@ export default function TopBids({
         </div>
 
         <BidsList
-          bidsToShow={bids.slice(0, 3)}
+          bidsToShow={topBids}
           time={true}
           topBidAmount={topBidAmount}
         />
 
         <div className="mt-4 pt-3 border-t">
           <h1 className="text-xl font-semibold mb-3">All Bidders</h1>
+
           <div className="flex items-center justify-between">
+            {/* Avatars (use topBids or paginatedBids — your choice) */}
             <div className="flex -space-x-2">
-              {bids?.slice(0, 5).map((bid, i) => {
+              {topBids?.slice(0, 5).map((bid, i) => {
                 const img = bid.currentBidder?.profilePicture?.location;
 
                 return img ? (
@@ -124,33 +137,37 @@ export default function TopBids({
                   />
                 );
               })}
+
               {totalItems > 5 && (
                 <div className="w-7 h-7 rounded-full border bg-gray-100 flex items-center justify-center text-xs">
                   +{totalItems - 5}
                 </div>
               )}
             </div>
-
             <Dialog>
               <DialogTrigger asChild>
                 <button className="text-sm font-semibold text-primary">
                   View All
                 </button>
               </DialogTrigger>
+
               <DialogContent className="max-w-md!">
                 <DialogHeader>
                   <DialogTitle>All Bidders</DialogTitle>
                 </DialogHeader>
+
                 <div className="grid grid-cols-[1fr_auto_auto] font-semibold items-center gap-4">
-                  <h1>User</h1> <h2>bids</h2>{" "}
+                  <h1>User</h1>
+                  <h2>bids</h2>
                 </div>
+
+                {/* PAGINATED DATA */}
                 <BidsList
-                  bidsToShow={currentBids}
+                  bidsToShow={paginatedBids}
                   time={false}
                   topBidAmount={topBidAmount}
+                  isLoading={paginatedBidsLoading}
                 />
-
-                {/* Pagination */}
                 <div className="flex justify-center text-sm items-center mt-4 gap-3">
                   <button
                     className="px-3 py-1 border flex items-center rounded disabled:opacity-50"
@@ -160,7 +177,6 @@ export default function TopBids({
                     <ChevronLeft size={14} /> Back
                   </button>
 
-                  {/* Page numbers */}
                   {[...Array(totalPages)].map((_, i) => (
                     <button
                       key={i}
