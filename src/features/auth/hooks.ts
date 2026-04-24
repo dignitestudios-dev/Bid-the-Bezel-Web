@@ -23,7 +23,7 @@ export const useLogin = () =>
   useApiMutation<AuthResponse, LoginPayload>({
     endpoint: "/auth",
     method: "POST",
-    invalidateKeys: ["get-profile"],
+    invalidateKeys: ["get-profile", "get-listing-detail"],
     mutationOptions: {
       onSuccess: (data) => {
         const token = data?.data?.token;
@@ -179,7 +179,7 @@ export const useMe = () => {
     enabled: getToken() ? true : false,
     staleTime: Infinity,
     gcTime: Infinity,
-     retry: false,
+    retry: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,

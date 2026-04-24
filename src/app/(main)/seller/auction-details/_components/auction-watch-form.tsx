@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AuctionWatchPayload, auctionWatchSchema } from "@/features/auction/schema";
 import { useAddAuctionProduct } from "@/features/auction/hook";
+import z from "zod";
 
 type Props = {
     onNext: () => void;
@@ -27,7 +28,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm<AuctionWatchPayload>({
+    } = useForm<z.input<typeof auctionWatchSchema>>({
         resolver: zodResolver(auctionWatchSchema),
         mode: "onChange",
         defaultValues: {
@@ -57,8 +58,8 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
         setValue("photos", fileArray, { shouldValidate: true });
     };
 
-    const onSubmit = (data: AuctionWatchPayload) => {
-        mutate(data, {
+    const onSubmit = (data: z.input<typeof auctionWatchSchema>) => {
+        mutate(data as AuctionWatchPayload, {
             onSuccess: (response) => {
                 if (response?.data) {
                     setWatchId(response?.data?._id)

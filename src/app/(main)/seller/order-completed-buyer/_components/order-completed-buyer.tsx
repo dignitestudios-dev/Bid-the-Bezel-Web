@@ -1,11 +1,19 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useSearchParams } from "next/navigation";
+
 
 type Props = {};
 
 const OrderCompletedBuyer = (props: Props) => {
+  const params = useSearchParams();
+
+  const price = params.get("price");
+  const auth = params.get("auth");
+  const total = params.get("total");
   return (
     <div className="flex justify-center min-h-screen items-center">
       <div className="w-[50%] flex flex-col items-center">
@@ -32,17 +40,19 @@ const OrderCompletedBuyer = (props: Props) => {
           <div className="space-y-3 ">
             <div className="flex items-center justify-between">
               <span className="text-gray-700">Watch Payment</span>
-              <span className="font-medium ">$3500</span>
+              <span className="font-medium ">${price}</span>
             </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-gray-700">3% Platform Fees</span>
-              <span className="font-medium ">$105</span>
-            </div>
+            {Number(auth) > 0 && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-700">Authentication Fee</span>
+                <span className="font-medium ">${auth}</span>
+              </div>
+            )}
 
             <div className="border-t border-gray-300 pt-3 flex items-center justify-between">
               <span className="font-semibold ">Total</span>
-              <span className="font-semibold ">$3395</span>
+              <span className="font-semibold ">${total}</span>
             </div>
           </div>
         </div>

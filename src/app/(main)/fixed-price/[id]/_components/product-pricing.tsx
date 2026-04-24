@@ -12,6 +12,8 @@ import { useAppSelector } from "@/lib/hooks";
 import { MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import UnAuthStatus from "@/app/(main)/auction/[id]/_components/unauth-status";
+import { useRouter } from "next/navigation";
+import { useMe } from "@/features/auth/hooks";
 
 type Props = {
   sellerId?: string;
@@ -21,15 +23,19 @@ type Props = {
 };
 
 const ProductPricing = ({ price, watch }: Props) => {
+  const router = useRouter()
   const [isFav, setIsFav] = useState(false);
-  const user = useAppSelector((state) => state.auth.user);
-  console.log(watch, "price")
+  const { data: user, isLoading } = useMe();
+
   return (
     <div className="w-[40%] space-y-7">
       {/* <CurrentBid/>
       <TopBids/> */}
-      {(watch?.authentication?.status === "pending" ||
-        watch?.authentication?.status === "rejected") && (
+      {(
+        (watch.status === "pending" || watch.status === "rejected") &&
+        (watch?.authentication?.status === "pending" ||
+          watch?.authentication?.status === "rejected")
+      ) && (
           <div
             className={`${watch?.authentication?.status === "pending"
               ? "bg-orange-200 text-orange-800"
@@ -85,9 +91,16 @@ const ProductPricing = ({ price, watch }: Props) => {
       </div>
       {!watch?.isMyProduct && (
         <div>
-          {/* href={`/buy-now/${watch?._id}`} */}
+          {/* href={``} */}
           {/* <Link > */}
-          <Button className="w-full ">Buy Now</Button>
+          {!isLoading && user ? (
+
+            <Button onClick={() => router.push(`/buy-now/${watch?._id}`)} className="w-full ">Buy Now</Button>
+
+          ) : (
+            <Button onClick={() => router.push(`?authstep=login`)} className="w-full ">Login</Button>
+
+          )}
           {/* </Link> */}
         </div>
 

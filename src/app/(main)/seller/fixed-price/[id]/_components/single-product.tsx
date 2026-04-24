@@ -10,7 +10,6 @@ import {
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
 import ProductDetail from "./product-detail";
 import ProductPricing from "./product-pricing";
 
@@ -47,8 +46,8 @@ const SingleProduct = (props: Props) => {
       </Breadcrumb>
 
       <div className="flex justify-between gap-4" >
-        <ProductDetail/>
-        <ProductPricing/>
+        <ProductDetail />
+        <ProductPricing />
       </div>
     </div>
   );
