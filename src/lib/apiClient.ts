@@ -49,7 +49,7 @@ apiClient.interceptors.response.use(
 
       if (typeof window !== "undefined") {
         removeToken();
-        // window.location.href = "/login";
+        window.location.href = "/";
       }
     }
 

@@ -22,7 +22,7 @@ const BiddingDetail = ({ product }: Props) => {
   const { data: bidsData , isLoading:bidsLoading } = useGetProductBids(product?._id,1 , 10);
   const { data: paginatedBids , isLoading:
 paginatedBidsLoading } = useGetProductBids(product?._id,currentPage , 10);
-
+// bidsData?.data?.[0]?.currentBidder?.
   if(bidsLoading ){
     return <BidSkeleton/>
   }
