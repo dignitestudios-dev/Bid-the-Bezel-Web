@@ -34,7 +34,7 @@ const Tabs = ({ filter, setFilter }: Props) => {
         )}
         onClick={() => setFilter("fixed")}
       >
-        Fixed Price{" "}
+        Marketplace{" "}
       </button>
       <button
         className={cn(

@@ -50,7 +50,7 @@ const EmblaCarousel: React.FC<PropType> = ({
           {/* <div className={cn(styles.embla__slide, "md:block w-10! hidden")} /> */}
           {slides?.length === 0 ? (
             <div className="w-full flex justify-center items-center py-20">
-              <p className="text-center text-gray-400">No Fixed Price Product Found</p>
+              <p className="text-center text-gray-400">No Marketplace Product Found</p>
             </div>
           ) : slides?.map((w, index) => (
             <div

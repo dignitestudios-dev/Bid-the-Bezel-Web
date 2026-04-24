@@ -1,5 +1,5 @@
 "use client";
-import { useApiMutation } from "@/hooks/api/useApiMutation";
+import { useApiMutation } from "@/hooks/api/use-api-mutation";
 import { apiClient } from "@/lib/apiClient";
 import { showError, showSuccess } from "@/lib/toast";
 import { useQuery } from "@tanstack/react-query";

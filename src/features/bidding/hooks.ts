@@ -1,4 +1,4 @@
-import { useApiMutation } from "@/hooks/api/useApiMutation";
+import { useApiMutation } from "@/hooks/api/use-api-mutation";
 // import { WatchDetailPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
 import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[id]/_components/shipping-form";
@@ -17,16 +17,15 @@ export const useGetProductBids = (
 
     queryFn: async () => {
       const res = await apiClient.get(`/products/${id}/bids`, {
-        params: {
-          page,
-          limit,
-        },
+        params: { page, limit },
       });
 
       return res.data;
     },
 
     enabled: !!id,
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
   });
 };
 

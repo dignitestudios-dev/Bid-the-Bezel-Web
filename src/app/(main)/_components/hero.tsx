@@ -46,14 +46,14 @@ const Hero = () => {
         <div className="flex flex-wrap justify-between items-center text-white h-full md:px-14 px-4 min-h-[750px]">
           <div className="md:w-[42%] relative z-50 w-full space-y-4">
             <h1 className="text-3xl md:text-6xl text-white font-semibold">
-              Discover Certified Timepieces
+             Discover Luxury Timepieces
             </h1>
             <p className="text-white/90 ">
               Explore our curated collection of watches available for immediate
               purchase. Find the perfect timepiece to add to your collection
               today.
             </p>
-            <Link
+            {/* <Link
               href={"/seller/plans"}
               className="flex items-center w-fit gap-2 bg-[#415A77]  rounded-full pr-2 pl-3 py-2 hover:shadow-md transition"
             >
@@ -61,7 +61,7 @@ const Hero = () => {
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-linear-to-r from-[#415A77] to-gray-400">
                 <ArrowRight size={14} color="white" />
               </span>
-            </Link>
+            </Link> */}
           </div>
           <div className="md:w-[30%] w-full relative h-[420px]">
             {/* show all three tilted/stacked and rotate order over time */}

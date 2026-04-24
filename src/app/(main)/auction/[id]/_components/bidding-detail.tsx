@@ -8,6 +8,7 @@ import { useAppSelector } from "@/lib/hooks";
 import CurrentBidSeller from "./current-bid-seller";
 import UnAuthStatus from "./unauth-status";
 import { useGetProductBids } from "@/features/bidding/hooks";
+import BidSkeleton from "./ui/bid-skeleton";
 
 type Props = {
   product: AuctionProduct;
@@ -18,10 +19,12 @@ const BiddingDetail = ({ product }: Props) => {
   const isSeller = user?.id === product?.seller?._id;
   const isAuthenticated = product?.authentication?.status === 'authenticated';
     const [currentPage, setCurrentPage] = useState(1);
-  const { data: bidsData , isLoading } = useGetProductBids(product?._id);
+  const { data: bidsData , isLoading:bidsLoading } = useGetProductBids(product?._id,1 , 10);
+  const { data: paginatedBids , isLoading:
+paginatedBidsLoading } = useGetProductBids(product?._id,currentPage , 10);
 
-  if(isLoading){
-    return <div>Loading...</div>
+  if(bidsLoading ){
+    return <BidSkeleton/>
   }
   return (
     <div className="lg:w-[40%] space-y-7">
@@ -30,7 +33,14 @@ const BiddingDetail = ({ product }: Props) => {
       ) : (
         <CurrentBid product={product} bidsData={bidsData!} />
       )}  
-      <TopBids bidsData={bidsData!} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+    <TopBids
+  topBids={bidsData?.data ?? []}
+  paginatedBids={paginatedBids?.data ?? []}
+  pagination={paginatedBids?.pagination}
+  currentPage={currentPage}
+  paginatedBidsLoading={paginatedBidsLoading}
+  setCurrentPage={setCurrentPage}
+/>
       {isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
       <Reviews />
     </div>

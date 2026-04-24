@@ -20,7 +20,7 @@ const FixedPrice = ({ fixedPrice }: Props) => {
       <div className="max-w-screen-2xl text-white py-12 mx-auto bg-[url('/images/fixed-bg.png')]">
         <div className="space-y-6">
           <div className="flex justify-between px-12">
-            <h2 className="font-bold text-xl">Fixed Price</h2>
+            <h2 className="font-bold text-xl">Marketplace</h2>
             <Link
               href={"/collections?category=fixed"}
               className="border border-[#E3E3E3]/30 rounded-full px-3 py-2 flex items-center text-sm gap-2"
