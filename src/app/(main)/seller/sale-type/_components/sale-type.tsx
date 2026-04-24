@@ -63,7 +63,7 @@ const SaleType = ({ }: Props) => {
           <div className="w-[400px] flex flex-col justify-between items-center p-5 h-[400px] bg-[#415A77] rounded-xl">
             <div className="flex flex-col items-center gap-4 text-white text-center">
               <Banknote fill="white" stroke="#415A77" size={50} />
-              <h1 className="text-lg font-semibold">Fixed Price</h1>
+              <h1 className="text-lg font-semibold">Marketplace</h1>
               <p className="">
                 Fermentum consequat vitae a tellus blandit donec orci nunc. Amet
                 velit sagittis ornare volutpat proin morbi dui. Eget nisl
