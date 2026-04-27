@@ -181,7 +181,7 @@ const handleIncrease = () => {
       ) : (
         <>
         <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg" >
-          <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 rounded-full" />
+          <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 bg-contain rounded-full" />
           <h1 className="text-xl font-semibold">
             {currentBidder?.userName}
           </h1>
