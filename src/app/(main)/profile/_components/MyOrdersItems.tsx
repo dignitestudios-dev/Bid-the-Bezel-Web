@@ -104,56 +104,59 @@ const MyOrdersItems = () => {
   return (
     <>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto">
-        {orders?.data?.map((item: any, index: number) => (
-          <div
-            key={`${item.id}-${index}`}
-            className="card p-0 relative overflow-hidden"
-          >
-            {item?.isReceived && (
-              <div className="absolute top-5 -left-[52px] -rotate-45 w-[180px] text-center py-1 bg-[#14A752] border-b-2 font-medium text-white border-[#E3E3E3]">
-                Received
-              </div>
-            )}
-
-            <div className="p-3 w-full flex items-start gap-3">
-              <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
-                <Image
-                  src={item?.product?.images?.[0]?.location}
-                  alt={item?.product?.brandName}
-                  width={96}
-                  height={96}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-lg font-semibold text-end">{item?.product?.price}</p>
-                <p className="text-lg font-medium">{item?.product?.brandName}</p>
-              </div>
-            </div>
-
-            <div className="p-3 flex justify-end">
-              <Button className="w-[200px]" onClick={() => openDialog(item?.trackingHistory)}>
-                Track
-              </Button>
-            </div>
-
+        {orders?.data?.length === 0 ?
+          <div className="col-span-2 text-center">No Orders Yet</div>
+          :
+          orders?.data?.map((item: any, index: number) => (
             <div
-              className={`p-3 text-white font-medium text-center  ${item?.product?.type === "auction"
-                ? "bg-[#415A77]"
-                : item?.product?.type === "fixed_price"
-                  ? "bg-[#778DA9]"
-                  : "bg-[#D9B918]"
-                }`}
+              key={`${item.id}-${index}`}
+              className="card p-0 relative overflow-hidden"
             >
-              {item?.product?.type === "auction"
-                ? "Auction"
-                : item?.product?.type === "fixed_price"
-                  ? "Fixed"
-                  : "Taking Offers"}
+              {item?.isReceived && (
+                <div className="absolute top-5 -left-[52px] -rotate-45 w-[180px] text-center py-1 bg-[#14A752] border-b-2 font-medium text-white border-[#E3E3E3]">
+                  Received
+                </div>
+              )}
+
+              <div className="p-3 w-full flex items-start gap-3">
+                <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
+                  <Image
+                    src={item?.product?.images?.[0]?.location}
+                    alt={item?.product?.brandName}
+                    width={96}
+                    height={96}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+
+                <div className="flex-1">
+                  <p className="text-lg font-semibold text-end">{item?.product?.price}</p>
+                  <p className="text-lg font-medium">{item?.product?.brandName}</p>
+                </div>
+              </div>
+
+              <div className="p-3 flex justify-end">
+                <Button className="w-[200px]" onClick={() => openDialog(item?.trackingHistory)}>
+                  Track
+                </Button>
+              </div>
+
+              <div
+                className={`p-3 text-white font-medium text-center  ${item?.product?.type === "auction"
+                  ? "bg-[#415A77]"
+                  : item?.product?.type === "fixed_price"
+                    ? "bg-[#778DA9]"
+                    : "bg-[#D9B918]"
+                  }`}
+              >
+                {item?.product?.type === "auction"
+                  ? "Auction"
+                  : item?.product?.type === "fixed_price"
+                    ? "Fixed"
+                    : "Taking Offers"}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <OrderStatusTrackingDialog
