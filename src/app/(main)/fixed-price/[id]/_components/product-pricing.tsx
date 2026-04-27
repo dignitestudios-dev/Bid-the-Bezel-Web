@@ -61,15 +61,15 @@ const ProductPricing = ({ price, watch }: Props) => {
         )}
         <h1 className="text-3xl pt-2">${price}</h1>
 
-        {watch?.buyer && (
+        {!isLoading && user && watch?.buyer && (
           <div className=" border  rounded-2xl mt-4">
             <div className="flex justify-between p-5 pb-0">
               <h3 className="font-semibold">Buyer</h3>{" "}
             </div>
             <div className="flex border-b items-center p-5 gap-3">
-              <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
+              <Image src={watch?.buyer?.profilePicture?.location || "/images/dp.png"} alt="al" width={60} height={60} />
               <div>
-                <h1 className="font-semibold mb-2">GuessMyname</h1>
+                <h1 className="font-semibold mb-2">{watch?.buyer?.userName}</h1>
               </div>
             </div>
 
@@ -81,10 +81,21 @@ const ProductPricing = ({ price, watch }: Props) => {
                   Chat with Buyer
                 </Button>
               </Link>
+              {watch?.status === "sold" && watch?.deliveryFlow === "at_seller" && (
 
-              <Link href={"/buyer/shipping-details"} className="w-full">
-                <Button className="text-base w-full">Fill out Shipping</Button>
-              </Link>
+                <Button onClick={() => router?.push(`/buyer/shipping-details/${watch?._id}`)} className="text-base w-full">Fill out Shipping</Button>
+
+
+              )}
+              {watch?.status === "sold" && watch?.deliveryFlow === "marketplace" && (
+
+                <Button
+                  onClick={() => router?.push(`/buyer/shipping-details/${watch?._id}`)}
+                  className="text-base w-full"
+                >
+                  Fill out Shipping
+                </Button>
+              )}
             </div>
           </div>
         )}

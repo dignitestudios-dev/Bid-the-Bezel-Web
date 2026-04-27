@@ -22,11 +22,11 @@ type Fav = {
 
 
 const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfilled: boolean, setIsFulfilled: (value: boolean) => void, selectedTab: string }) => {
-  const [status, setStatus] = useState<"active" | "sold">("active")
+  const [status, setStatus] = useState<"active" | "sold" | "unfulfilled">("active")
   const { data, isLoading } = useGetMyListing(status);
   return (
     <div>
-  <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">
+      <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">
         <Button
           className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "active"
             ? "bg-white text-black shadow"
@@ -34,17 +34,26 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
             }`}
           onClick={() => setStatus("active")}
         >
-          Unfulfilled
+          Active
         </Button>
-    
+
         <Button
           className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "sold"
-              ? "bg-white text-black shadow"
-              : "bg-transparent text-gray-500"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-gray-500"
             }`}
           onClick={() => setStatus("sold")}
         >
           Sold
+        </Button>
+        <Button
+          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "unfulfilled"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-gray-500"
+            }`}
+          onClick={() => setStatus("unfulfilled")}
+        >
+          Unfulfilled
         </Button>
       </div>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
@@ -54,18 +63,18 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
             No Product Found
           </div>
 
-        ) : data?.data?.map((product:any, index:any) => (
+        ) : data?.data?.map((product: any, index: any) => (
           <ListingCard key={index}
-              image={product?.images[0]?.location}
-              title={product?.title}
-              brandName={product?.brandName}
-              price={product?.price}
-              type={product?.type}
-              model={product?.model}
-              description={product?.description}
-              status={product.status}
-              id={product?._id}
-              isDraftShown={product?.isDraftShown}  />
+            image={product?.images[0]?.location}
+            title={product?.title}
+            brandName={product?.brandName}
+            price={product?.price}
+            type={product?.type}
+            model={product?.model}
+            description={product?.description}
+            status={product.status}
+            id={product?._id}
+            isDraftShown={product?.isDraftShown} />
         ))}
       </div>
     </div>

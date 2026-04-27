@@ -2,6 +2,10 @@
 import EmblaCarousel from './ui/carousel/embla-carousel'
 import { EmblaOptionsType } from 'embla-carousel'
 import Questions from './questions'
+import Answers from './answers'
+import { useGetQuestions } from '@/features/product-qa/hook'
+import { useState } from 'react'
+import { QASkeleton } from '@/components/skeleton'
 type Props = {
   productData: any
 }
@@ -11,6 +15,9 @@ const OPTIONS: EmblaOptionsType = {}
 const ProductDetail = ({ productData }: Props) => {
 
   const slides = productData?.images ?? [];
+  const [page, setPage] = useState(1);
+  const { data: productQAndA, isLoading } = useGetQuestions(productData?._id, page)
+  const pagination = productQAndA?.pagination
 
 
   return (
@@ -28,7 +35,24 @@ const ProductDetail = ({ productData }: Props) => {
         <h1 className='font-semibold break-all'>Contents</h1>
         {productData?.description}
       </div>
-      <Questions />
+      {isLoading ? (
+        <QASkeleton />
+      ) : productData?.isMyProduct ? (
+        <Answers
+          productQAndA={productQAndA?.data}
+          page={page}
+          setPage={setPage}
+          pagination={pagination}
+        />
+      ) : (
+        <Questions
+          id={productData?._id}
+          productQAndA={productQAndA?.data}
+          page={page}
+          setPage={setPage}
+          pagination={pagination}
+        />
+      )}
     </div>
   )
 }

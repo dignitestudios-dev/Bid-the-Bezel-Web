@@ -18,7 +18,7 @@ type Props = {
   // setCurrentStep: React.Dispatch<React.SetStateAction<Step>>;
 };
 
-const ShippingDetail = ({}: Props) => {
+const ShippingDetail = ({ }: Props) => {
   const [steps, setSteps] = useState(1);
   const [selectedCard, setSelectedCard] = useState<string>("visa");
 

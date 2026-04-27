@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import OrderStatusTrackingDialog from "./OrderStatusTrackingDialog";
 import OrderStatusTrackingDialogNoAuth from "./OrderStatusTrackingDialogNoAuth";
+import { useGetOrders } from "@/features/order/hooks";
 
 // Dummy data for illustration purposes
 type ListingType = "fixed" | "auction" | "taking-offers";
@@ -83,6 +84,8 @@ const items: Fav[] = [
 ];
 
 const MyOrdersItems = () => {
+  const { data: orders, isLoading } = useGetOrders()
+  console.log(orders)
   const [open, setOpen] = useState(false);
   const [openNoAuth, setOpenNoAuth] = useState(false);
 
@@ -101,12 +104,12 @@ const MyOrdersItems = () => {
   return (
     <>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto">
-        {items.map((it, index) => (
+        {orders?.data?.map((item: any, index: number) => (
           <div
-            key={`${it.id}-${index}`}
+            key={`${item.id}-${index}`}
             className="card p-0 relative overflow-hidden"
           >
-            {it.isReceived && (
+            {item?.isReceived && (
               <div className="absolute top-5 -left-[52px] -rotate-45 w-[180px] text-center py-1 bg-[#14A752] border-b-2 font-medium text-white border-[#E3E3E3]">
                 Received
               </div>
@@ -115,8 +118,8 @@ const MyOrdersItems = () => {
             <div className="p-3 w-full flex items-start gap-3">
               <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
                 <Image
-                  src={it.image}
-                  alt={it.title}
+                  src={item?.product?.images?.[0]?.location}
+                  alt={item?.product?.brandName}
                   width={96}
                   height={96}
                   className="object-cover w-full h-full"
@@ -124,37 +127,30 @@ const MyOrdersItems = () => {
               </div>
 
               <div className="flex-1">
-                <p className="text-lg font-semibold text-end">{it.price}</p>
-                <p className="text-lg font-medium">{it.title}</p>
+                <p className="text-lg font-semibold text-end">{item?.product?.price}</p>
+                <p className="text-lg font-medium">{item?.product?.brandName}</p>
               </div>
             </div>
 
-            <div className="p-3 grid grid-cols-2 gap-5">
-              {/* <Button variant={"outline"}>Track Courier</Button> */}
-              <span></span>
-              <Button
-                onClick={() => {
-                  it.isAuthenticated ? openDialog(it) : openDialogNoAuth(it);
-                }}
-              >
+            <div className="p-3 flex justify-end">
+              <Button className="w-[200px]" onClick={() => openDialog(item?.trackingHistory)}>
                 Track
               </Button>
             </div>
 
             <div
-              className={`p-3 text-white font-medium text-center  ${
-                it.type === "auction"
-                  ? "bg-[#415A77]"
-                  : it.type === "fixed"
+              className={`p-3 text-white font-medium text-center  ${item?.product?.type === "auction"
+                ? "bg-[#415A77]"
+                : item?.product?.type === "fixed_price"
                   ? "bg-[#778DA9]"
                   : "bg-[#D9B918]"
-              }`}
+                }`}
             >
-              {it.type === "auction"
+              {item?.product?.type === "auction"
                 ? "Auction"
-                : it.type === "fixed"
-                ? "Fixed"
-                : "Taking Offers"}
+                : item?.product?.type === "fixed_price"
+                  ? "Fixed"
+                  : "Taking Offers"}
             </div>
           </div>
         ))}
@@ -162,19 +158,20 @@ const MyOrdersItems = () => {
 
       <OrderStatusTrackingDialog
         open={open}
+        item={selected}
         onOpenChange={(v) => {
           if (!v) setSelected(null);
           setOpen(v);
         }}
       />
 
-      <OrderStatusTrackingDialogNoAuth
+      {/* <OrderStatusTrackingDialogNoAuth
         open={openNoAuth}
         onOpenChange={(v) => {
           if (!v) setSelected(null);
           setOpenNoAuth(v);
         }}
-      />
+      /> */}
     </>
   );
 };

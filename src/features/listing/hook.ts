@@ -42,7 +42,7 @@ export const useGetMyListingDetail = (id: string) => {
             const res = await apiClient.get(`/products/${id}`);
             return res.data;
         },
-    
+        refetchOnWindowFocus: false,
     });
 };
 

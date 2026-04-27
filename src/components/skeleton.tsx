@@ -203,3 +203,39 @@ export const ProductDetailSkeleton = () => {
         </div>
     )
 }
+
+export const QASkeleton = () => {
+    return (
+      <div className="rounded-xl border border-[#E3E3E3]">
+          <div className="bg-[#F7F7F7] rounded-t-xl flex gap-2 items-center px-6 py-4 border-b">
+            <div className="animate-pulse bg-gray-200 rounded-full w-6 h-6" />
+            <div className="animate-pulse bg-gray-200 rounded w-52 h-5" />
+          </div>
+          <div className="p-4">
+            <div className="h-[400px] overflow-hidden space-y-1">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="border-b border-[#E3E3E3] pb-4">
+                  <div className="flex items-start gap-4 py-2">
+                    <div className="animate-pulse bg-gray-200 rounded w-[30px] h-[30px] flex-shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <div className="animate-pulse bg-gray-200 rounded h-3 w-[85%]" />
+                      <div className="animate-pulse bg-gray-200 rounded h-3 w-[55%]" />
+                      <div className="flex gap-2">
+                        <div className="animate-pulse bg-gray-200 rounded h-2.5 w-16" />
+                        <div className="animate-pulse bg-gray-200 rounded h-2.5 w-20" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="animate-pulse bg-gray-200 rounded ml-10 h-3 w-10" />
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-[#E3E3E3]">
+              <div className="animate-pulse bg-gray-200 rounded w-12 h-7" />
+              <div className="animate-pulse bg-gray-200 rounded w-10 h-3" />
+              <div className="animate-pulse bg-gray-200 rounded w-12 h-7" />
+            </div>
+          </div>
+        </div>
+    );
+};
