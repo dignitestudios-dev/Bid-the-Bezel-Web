@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   onApply?: (value?: string) => void;
@@ -11,10 +10,6 @@ type Props = {
 };
 
 const AuthFilterDialog = (props: Props) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const authParam = searchParams.get("authentication");
-
   const [open, setOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [unauthenticated, setUnauthenticated] = useState(false);
@@ -79,6 +74,8 @@ const AuthFilterDialog = (props: Props) => {
               setOpen(false);
               setAuthenticated(false);
               setUnauthenticated(false);
+              props.onApply?.(undefined);
+
             }} className="bg-gray-100 rounded-full w-[130px]">
               Cancel
             </Button>

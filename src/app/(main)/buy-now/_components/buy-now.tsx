@@ -2,15 +2,13 @@
 import React, { JSX, use, useState } from "react";
 import { Check, ShieldCheck } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import Card from "@/components/icons/Card";
-import CardBrands from "@/components/icons/CardBrands";
-import Wallet from "@/components/icons/Wallet";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/features/auth/hooks";
 import DeliveryForm from "./delivery-form";
 import CardsList from "./card-list";
 import Image from "next/image";
 import BuyNowSkeleton from "./ui/buy-now-skeleton";
+import { useGetMyListingDetail } from "@/features/listing/hook";
 
 
 const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
