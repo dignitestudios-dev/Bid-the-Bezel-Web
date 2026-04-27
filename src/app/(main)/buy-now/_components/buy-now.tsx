@@ -1,27 +1,37 @@
 "use client";
-import React, { useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import React, { JSX, use, useState } from "react";
+import { Check, ShieldCheck } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { useParams } from "next/navigation";
+import Card from "@/components/icons/Card";
+import CardBrands from "@/components/icons/CardBrands";
+import Wallet from "@/components/icons/Wallet";
+import { useRouter } from "next/navigation";
 import { useMe } from "@/features/auth/hooks";
 import DeliveryForm from "./delivery-form";
 import CardsList from "./card-list";
 import Image from "next/image";
+import BuyNowSkeleton from "./ui/buy-now-skeleton";
 
 
-const BuyNow = ({ productData }: { productData: any }) => {
+const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
+  const router = useRouter();
   const { data: userData } = useMe()
-  const { id } = useParams();
 
+  const { data: productData, isLoading } = useGetMyListingDetail(id as string);
   const [authenticate, setAuthenticate] = useState(false);
 
   const basePrice = productData?.data?.price;
   const authFee = 250;
-
   const total = basePrice + (authenticate ? authFee : 0);
+  
+  if(!isLoading && productData.data.status == "sold"){
+    router.push(`/`)
+  }
 
-
-
+  if(isLoading){
+    return <BuyNowSkeleton/>
+  }
+  if (!id) return null;
   return (
     <div className="flex min-h-screen bg-gray-50">
       <div className="w-full lg:w-[55%] p-8 lg:p-12 bg-white">

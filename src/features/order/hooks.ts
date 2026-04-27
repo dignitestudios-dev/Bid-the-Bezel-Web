@@ -9,7 +9,7 @@ export const useCreateOrder = () =>
     useApiMutation<any, OrderPayload>({
         endpoint: `/orders`,
         method: "POST",
-        invalidateKeys: ["get-home-listing"],
+        invalidateKeys: ["get-home-listing" , "get-listing-detail"],
         mutationOptions: {
             onError: (error: any) => {
                 showError(error?.response.data.message);
