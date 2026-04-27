@@ -23,7 +23,7 @@ const ProductCard = ({
 
   return (
     <Link href={product.route}>
-      <div className="flex flex-col h-full text-xs md:text-base p-4 rounded-xl bg-gray-400/10 backdrop-blur border border-gray-400/30 hover:shadow-lg transition-all">
+      <div className={cn("flex flex-col h-full text-xs md:text-base p-4 rounded-xl  hover:shadow-lg transition-all" , product.isAuction ? "border bg-gray-300/10" : " bg-gray-700/10")}>
         <div className="relative">
 
           <button
@@ -83,12 +83,12 @@ const ProductCard = ({
           </h1>
 
           {/* PRICE + AUCTION INFO */}
-          <div className="flex text-center items-center justify-between py-4">
+          <div className="flex text-center items-center w-full justify-between pt-2">
 
             {/* Price */}
             <div className="w-1/3">
-              <h2 className="font-thin">Price</h2>
-              <h1 className="font-semibold">
+              <h2 className="font-thin">{product.isAuction ? "Starting Price" : ""}</h2>
+              <h1 className={cn("font-semibold" , product.isAuction ? "text-center" : "text-start")}>
                 ${product.price}
               </h1>
             </div>

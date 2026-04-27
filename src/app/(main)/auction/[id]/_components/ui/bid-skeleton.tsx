@@ -7,14 +7,12 @@ type Props = {};
 
 const BidSkeleton = (props: Props) => {
   return (
-    <div className="w-[40%] rounded-xl border border-[#E3E3E3] p-4 space-y-6">
+    <div className="md:w-[40%] rounded-xl border border-[#E3E3E3] p-4 space-y-6">
 
-      {/* ---------------- CLOCK ---------------- */}
       <div className="flex justify-center">
         <Skeleton className="h-6 w-28 rounded-md" />
       </div>
 
-      {/* ---------------- CURRENT BID ---------------- */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <Skeleton className="h-5 w-28" />
@@ -30,7 +28,6 @@ const BidSkeleton = (props: Props) => {
         </div>
       </div>
 
-      {/* ---------------- PLACE BID ---------------- */}
       <div className="space-y-4 pt-4 border-t">
         <Skeleton className="h-5 w-32" />
 
@@ -47,7 +44,6 @@ const BidSkeleton = (props: Props) => {
         </div>
       </div>
 
-      {/* ---------------- RECENT TOP BIDS ---------------- */}
       <div className="space-y-3 pt-4 border-t">
         <div className="flex items-center gap-2">
           <Skeleton className="h-5 w-40" />
@@ -65,7 +61,6 @@ const BidSkeleton = (props: Props) => {
         ))}
       </div>
 
-      {/* ---------------- ALL BIDDERS ---------------- */}
       <div className="space-y-3 pt-4 border-t">
         <div className="flex justify-between items-center">
           <Skeleton className="h-5 w-28" />

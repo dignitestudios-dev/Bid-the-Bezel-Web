@@ -86,7 +86,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
   };
 
   return (
-    <div className="w-[340px] max-w-full">
+    <div className="w-[340px] max-w-full md:px-0 px-4">
       <div className="flex items-center justify-between mb-6 text-sm font-medium text-gray-600">
         <span>Step</span>
         <span>2/3</span>

@@ -1,23 +1,57 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-    email: z
-        .string()
-        .min(1, "Email is required").max(255, "Email must be at most 255 characters")
-        .email("Invalid email address"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .max(255)
+    .email("Invalid email address"),
 
-    password: z
-        .string({ message: "Password is required" })
-        .min(1, "Password is required")
-        .min(8, "Password must be at least 8 characters")
-        .max(12, "Password must be at most 12 characters")
-        .regex(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
-            "Password must include uppercase, lowercase, number, and special character"
-        ),
-    method: z.literal("email"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .max(12, "Password must be at most 12 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+      "Password must include uppercase, lowercase, number, and special character"
+    ),
+
+  method: z.literal("email"),
+});
+export type CredPayload = LoginPayload | z.infer<typeof registerSchema>;
+export const emailSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .max(255, "Email must be at most 255 characters")
+    .email("Invalid email address"),
 });
 
+export const registerSchema = z
+  .object({
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .max(255)
+      .email("Invalid email address"),
+
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(12, "Password must be at most 12 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+        "Password must include uppercase, lowercase, number, and special character"
+      ),
+
+    confirmPassword: z.string(),
+
+    method: z.literal("email"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 export type LoginPayload = z.infer<typeof loginSchema>;
 
 export const otpSchema = z.object({

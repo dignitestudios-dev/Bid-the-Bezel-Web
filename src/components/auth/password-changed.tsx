@@ -20,7 +20,7 @@ const PasswordChanged = ({
   setStep?: (step: Step) => void;
 }) => {
   return (
-    <div className="flex justify-center items-center min-h-screen w-full py-12">
+    <div className="flex justify-center items-center md:px-0 px-4 min-h-screen w-full py-12">
       <div className="w-[340px] max-w-full text-center">
         <h2 className="text-2xl font-semibold">Password Changed.</h2>
         <p className="text-gray-600 mt-3">

@@ -99,6 +99,12 @@ export const useCheckUsername = () =>
     method: "POST",
   });
 
+
+  export const useCheckEmail = () =>
+  useApiMutation({
+    endpoint: "/auth/check-email",
+    method: "POST",
+  });
 /* =========================
    COMPLETE PROFILE
 ========================= */
@@ -145,6 +151,8 @@ export const useLogout = () =>
       },
     },
   });
+
+
 
 export const useDeleteAccount = () =>
   useApiMutation<void, { otp: string }>({
