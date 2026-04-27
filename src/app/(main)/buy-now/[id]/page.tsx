@@ -1,21 +1,32 @@
-"use client"
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
 import BuyNow from "../_components/buy-now";
-import { getWatchById } from "@/lib/helper";
-import { useParams } from "next/navigation";
+import { useEffect } from "react";
+import { useGetMyListingDetail } from "@/features/listing/hook";
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
+const Page = () => {
+  const params = useParams();
+  const router = useRouter();
 
-const page = ({ params }: Props) => {
-  const { id } = useParams();
-  const watch = getWatchById(id as string);
+  const id = params?.id as string;
+
+  const { data, isLoading } = useGetMyListingDetail(id);
+
+  useEffect(() => {
+    if (!isLoading && data?.data?.status === "sold") {
+      router.replace("/");
+    }
+  }, [data?.data, isLoading, router]);
+
+
+
 
   return (
     <div className="max-w-screen-2xl p-2 mx-auto">
-      <BuyNow watch={watch} />
+      <BuyNow productData={data} />
     </div>
   );
 };
 
-export default page;
+export default Page;

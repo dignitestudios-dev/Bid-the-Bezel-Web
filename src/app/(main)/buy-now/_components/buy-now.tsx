@@ -1,23 +1,18 @@
 "use client";
-import React, { use, useState } from "react";
-import { Check, ShieldCheck } from "lucide-react";
+import React, { useState } from "react";
+import { ShieldCheck } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import Card from "@/components/icons/Card";
-import CardBrands from "@/components/icons/CardBrands";
-import Wallet from "@/components/icons/Wallet";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useMe } from "@/features/auth/hooks";
 import DeliveryForm from "./delivery-form";
 import CardsList from "./card-list";
-import { useGetMyListingDetail } from "@/features/listing/hook";
 import Image from "next/image";
 
 
-const BuyNow = ({ watch }: { watch: any }) => {
-  const router = useRouter();
+const BuyNow = ({ productData }: { productData: any }) => {
   const { data: userData } = useMe()
   const { id } = useParams();
-  const { data: productData, isLoading } = useGetMyListingDetail(id as string);
+
   const [authenticate, setAuthenticate] = useState(false);
 
   const basePrice = productData?.data?.price;
