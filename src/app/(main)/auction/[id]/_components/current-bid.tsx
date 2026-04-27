@@ -253,7 +253,19 @@ const handleIncrease = () => {
       )}
     </>
   )
-) : null}
+) : 
+  isEnded &&  <>
+        <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg" >
+          <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 bg-contain rounded-full" />
+          <h1 className="text-xl font-semibold">
+            {currentBidder?.userName}
+          </h1>
+          </div>
+          <h1 className="text-2xl text-center pb-4 font-bold mt-5">
+            Bid winner
+          </h1>
+        </>
+}
 
       {/* AUTH SIDEBAR (UNCHANGED) */}
       <div className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}>

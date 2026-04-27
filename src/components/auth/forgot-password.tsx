@@ -53,7 +53,7 @@ const ForgotPassword = ({ setStep }: { setStep?: (step: Step) => void }) => {
   };
 
   return (
-    <div className="w-[340px] max-w-full">
+    <div className="w-[340px] max-w-full md:px-0 px-4">
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold">
           Enter your email and we'll send a OTP to reset your password

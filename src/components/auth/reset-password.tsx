@@ -58,7 +58,7 @@ const ResetPassword = ({
   }, []);
 
   return (
-    <div className="w-[340px] max-w-full">
+    <div className="w-[340px] max-w-full md:px-0 px-4">
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold">Reset your password</h2>
         <form onSubmit={handleSubmit(onsubmit)} className="space-y-3">

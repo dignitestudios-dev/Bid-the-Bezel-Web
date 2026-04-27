@@ -141,7 +141,7 @@ const Otp = ({
 
   return (
     <div className="">
-      <div className="w-[420px] max-w-full text-center">
+      <div className="w-[420px] max-w-full text-center md:px-0 px-4">
         <h2 className="text-2xl font-semibold">Verify your email</h2>
         <p className="text-sm text-gray-600 mt-3">
           A 5 digit code has been sent to your email {email}

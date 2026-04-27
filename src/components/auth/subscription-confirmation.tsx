@@ -28,7 +28,7 @@ const SubscriptionConfirmation = ({
   };
 
   return (
-    <div className="flex justify-center items-center h-full w-full py-12 bg-[url('/images/shape-subscription-confirmation.png')] bg-contain bg-center bg-no-repeat">
+    <div className="flex justify-center md:px-0 px-4 items-center h-full w-full py-12 bg-[url('/images/shape-subscription-confirmation.png')] bg-contain bg-center bg-no-repeat">
       <div className="w-[340px] max-w-full text-center space-y-12">
         {/* Watch Icon */}
         <Image
