@@ -6,13 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { showError, showSuccess } from "@/lib/toast";
 import { FloatingInput } from "../ui/floating-input";
 import { Button } from "../ui/button";
-import { useCheckEmail, useLogin } from "@/features/auth/hooks";
+import { useCheckEmail, useLogin, useUpdateFcmToken } from "@/features/auth/hooks";
 import { emailSchema, loginSchema, registerSchema } from "@/features/auth/Schema";
 import Google from "../icons/Google";
 import Apple from "../icons/Apple";
 import { signInWithGoogle } from "@/lib/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
+import { generateFCMToken } from "@/lib/fcm";
 
 type EmailForm = z.infer<typeof emailSchema>;
 type LoginForm = z.infer<typeof loginSchema>;
@@ -27,7 +28,7 @@ const Login = ({
 }) => {
   const { mutate: loginMutate, isPending: loginPending } = useLogin();
   const { mutate: checkEmail, isPending: checkPending } = useCheckEmail();
-
+  const { mutate: updateFcmToken } = useUpdateFcmToken();
   const [step, setLocalStep] = useState<"email" | "login" | "register">("email");
   const [checkedEmail, setCheckedEmail] = useState("");
 
@@ -68,8 +69,16 @@ const Login = ({
 
   const handleLogin = (body: LoginForm) => {
     loginMutate(body, {
-      onSuccess: (data) => {
+      onSuccess: async(data) => {
         const user = data?.data?.user;
+          try {
+        const token = await generateFCMToken();
+        if (token) {
+          updateFcmToken(token);
+        }
+      } catch (e) {
+        console.error("FCM token error:", e);
+      }
         if (!user?.isEmailVerified) { setStep?.("otp-register"); return; }
         if (!user?.isProfileCompleted) { setStep?.("username"); return; }
         showSuccess("Logged in successfully");
@@ -81,8 +90,16 @@ const Login = ({
 
   const handleRegister = (body: RegisterForm) => {
     loginMutate({ email: body.email, password: body.password, method: "email" }, {
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         const user = data?.data?.user;
+             try {
+        const token = await generateFCMToken();
+        if (token) {
+          updateFcmToken(token);
+        }
+      } catch (e) {
+        console.error("FCM token error:", e);
+      }
         showSuccess("Account created successfully!");
         if (!user?.isEmailVerified) { setStep?.("otp-register"); return; }
         if (!user?.isProfileCompleted) { setStep?.("username"); return; }
@@ -97,8 +114,17 @@ const Login = ({
     try {
       const { token } = await signInWithGoogle();
       loginMutate({ method: "google", idToken: token } as any, {
-        onSuccess: (data) => {
+        onSuccess: async(data) => {
           const user = data?.data?.user;
+                try {
+        const fcmToken = await generateFCMToken();
+        console.log(fcmToken)
+        if (fcmToken) {
+          updateFcmToken(fcmToken);
+        }
+      } catch (e) {
+        console.error("FCM token error:", e);
+      }
           if (!user?.isEmailVerified) { setStep?.("otp-register"); return; }
           if (!user?.isProfileCompleted) { setStep?.("username"); return; }
           showSuccess("Logged in successfully");

@@ -116,6 +116,19 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
                 <span className="font-medium">$250</span>
               </div>
             )}
+
+            {productData.data.type == "auction" && (
+              <>
+              <div className="flex justify-between ">
+                <span className="text-gray-600">10% with holding bid amount</span>
+                <span className="font-medium">-${(basePrice * 0.1).toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between ">
+                <span className="text-gray-600">Amount after initial bid cut</span>
+                <span className="font-medium">${(basePrice - basePrice * 0.1).toFixed(2)}</span>
+              </div>
+              </>
+            )}
             {/* <div className="flex justify-between ">
               <span className="text-gray-600">Shipping</span>
               <span className="font-medium">$120.50</span>
@@ -124,7 +137,13 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
               <span>TOTAL</span>
               <span>
                 {" "}
-                <span className="font-light">USD</span> ${total.toFixed(2)}
+                {productData.data.type == "auction" ?(
+                  <span className=" mr-2">
+                    ${(basePrice - basePrice * 0.1).toFixed(2)}
+                  </span>
+                ): <>
+                <span className="font-light">USD</span> <span>${total.toFixed(2)}</span></>}
+                 
               </span>
             </div>
           </div>

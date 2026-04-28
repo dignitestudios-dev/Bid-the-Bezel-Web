@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-const PROTECTED_ROUTES = ["/profile", "/dashboard" , "/seller" , "/favorites"];
+const PROTECTED_ROUTES = ["/profile", "/dashboard" , "/seller" , "/favorites" , "/buy-now" , "/buyer" , "/chats"];
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
