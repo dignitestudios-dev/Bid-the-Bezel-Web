@@ -9,6 +9,7 @@ export const loginSchema = z.object({
 
   password: z
     .string()
+    .min(1, "Password is required")
     .min(8, "Password must be at least 8 characters")
     .max(12, "Password must be at most 12 characters")
     .regex(
@@ -37,6 +38,7 @@ export const registerSchema = z
 
     password: z
       .string()
+      .min(1, "Password is required")
       .min(8, "Password must be at least 8 characters")
       .max(12, "Password must be at most 12 characters")
       .regex(
