@@ -9,14 +9,17 @@ import ConfirmCancel from "./confirm-cancel";
 import MoveToTakingDialog from "./move-taking-offer-dialog";
 
 type Props = {
-  product: any;
+  product: AuctionProduct;
+  bidsData: ProductBidsResponse;
 };
 
-const CurrentBidSeller = ({ product }: Props) => {
+const CurrentBidSeller = ({ product, bidsData }: Props) => {
   const [cancelListing, setCancelListing] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState(false);
   const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
   const auction = product?.auction;
+
+  const currentBidder = bidsData?.data?.[0]?.currentBidder;
 
   const timeLeft = React.useMemo(() => {
     if (!auction?.endsAt) return "--";
@@ -27,13 +30,17 @@ const CurrentBidSeller = ({ product }: Props) => {
     const m = Math.floor((diff % 3600000) / 60000);
     return `${d}D ${h}H ${m}M`;
   }, [auction?.endsAt]);
+
   const isEnded = timeLeft === "Ended";
   const hasBidder = !!auction?.currentBidder;
+
+  const displayTime = isEnded ? "0D 0H 0M" : timeLeft;
+  const iconColor = isEnded ? "#FF0000" : "#14A752";
   return (
     <div className=" border  rounded-2xl mt-4">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
-        <Clock3 color="red" /> {timeLeft}
-        <span className="font-medium">left</span>
+        <Clock3 color={iconColor} />
+        {displayTime} left
       </h1>
       <div className="flex justify-between p-5">
         <h3 className="font-semibold">
@@ -48,17 +55,22 @@ const CurrentBidSeller = ({ product }: Props) => {
       {isEnded ? (
         hasBidder ? (
           <>
-            <div className="flex border-b items-center p-5 gap-3">
-              <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
-              <div>
-                <h1 className="font-semibold mb-2">
-                  {auction.currentBidder?.userName ?? "Anonymous"}
-                </h1>
-                <h5>Current highest bidder</h5>
+            <div className="flex gap-2 items-start">
+              <Image
+                src={currentBidder.profilePicture.location}
+                alt="dp"
+                className="rounded-full"
+                width={60}
+                height={60}
+              />
+              <div className="my-2">
+                <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
+                <h5 className="text-xs">Current highest bidder</h5>
               </div>
             </div>
             {product.status === "sold" &&
-              product.deliveryFlow == "at_seller" && (
+              product.deliveryFlow == "at_seller" &&
+              product.isMyProduct && (
                 <div className="flex flex-col gap-2 p-5 w-full">
                   <Link href={"/chats"} className="w-full">
                     <Button className="w-full h-12 py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
@@ -104,12 +116,18 @@ const CurrentBidSeller = ({ product }: Props) => {
         )
       ) : hasBidder ? (
         <div className="flex items-center px-5 pb-5 gap-3">
-          <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
-          <div>
-            <h1 className="font-semibold mb-2">
-              {auction.currentBidder?.userName ?? "Anonymous"}
-            </h1>
-            <h5>Current highest bidder</h5>
+          <div className="flex gap-2 items-start">
+            <Image
+              src={currentBidder.profilePicture.location}
+              alt="dp"
+              className="rounded-full"
+              width={60}
+              height={60}
+            />
+            <div className="my-2">
+              <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
+              <h5 className="text-xs">Current highest bidder</h5>
+            </div>
           </div>
         </div>
       ) : (

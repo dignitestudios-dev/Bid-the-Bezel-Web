@@ -29,7 +29,7 @@ paginatedBidsLoading } = useGetProductBids(product?._id,currentPage , 10);
   return (
     <div className="lg:w-[40%] space-y-7">
       {product.isMyProduct ? (
-        <CurrentBidSeller product={product} />
+        <CurrentBidSeller product={product} bidsData={bidsData!} />
       ) : (
         <CurrentBid product={product} bidsData={bidsData!} />
       )}  

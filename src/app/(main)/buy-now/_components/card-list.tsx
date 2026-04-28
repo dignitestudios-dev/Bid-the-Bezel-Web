@@ -32,6 +32,7 @@ const CardsList = () => {
                             <button
                                 onClick={() => { setDefaultCard({ cardId: card._id }) }}
                                 key={index}
+                                disabled={data.data.cards.length === 1}
                                 className={cn("border-b block w-full text-left", isSettingDefaultPending && "pointer-events-none opacity-50", data.data.cards.length - 1 === index && "border-b-0")}
                             >
                                 <label className="flex items-center justify-between p-3  cursor-pointer">

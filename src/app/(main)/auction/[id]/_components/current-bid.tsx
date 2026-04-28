@@ -25,6 +25,7 @@ import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
 import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type Props = {
   product: AuctionProduct;
@@ -148,6 +149,7 @@ const handleIncrease = () => {
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
+              className="rounded-full"
               width={60}
               height={60}
             />
@@ -177,6 +179,14 @@ const handleIncrease = () => {
           <p className="text-sm text-gray-500 mt-1">
             Congratulations! You placed the highest bid.
           </p>
+          <div className="flex flex-col gap-4 w-full pt-4" >
+            <button className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg">cancel bid</button>
+               <Link href={`/buy-now/${product._id}`} className="w-full">
+                    <Button className="text-base w-full">
+                      Fill out Shipping
+                    </Button>
+                  </Link>
+          </div>
         </>
       ) : (
         <>

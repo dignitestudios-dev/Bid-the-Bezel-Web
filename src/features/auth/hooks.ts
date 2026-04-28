@@ -19,6 +19,15 @@ import { setToken, removeToken, getToken } from "@/lib/cookies";
 /* =========================
    AUTH: LOGIN
 ========================= */
+
+export const useUpdateFcmToken = () =>
+  useApiMutation({
+    endpoint: "/auth/update-fcm",
+    method: "POST",
+    toBody: (token: string) => ({ fcmToken: token }),
+    // invalidateKeys: ["get-profile", "get-listing-detail" , "get-home-listing"],
+  });
+
 export const useLogin = () =>
   useApiMutation<AuthResponse, LoginPayload>({
     endpoint: "/auth",
