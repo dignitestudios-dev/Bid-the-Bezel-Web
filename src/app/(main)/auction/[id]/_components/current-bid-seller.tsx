@@ -43,7 +43,7 @@ const CurrentBidSeller = ({ product }: Props) => {
         </h1>
       </div>
     {isEnded ? (
-  hasBidder ? (
+  hasBidder && product.status === "sold" && product.deliveryFlow == "at_seller" ? (
     <>
       <div className="flex border-b items-center p-5 gap-3">
         <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
