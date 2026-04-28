@@ -158,7 +158,7 @@ const Questions = ({ id, productQAndA, page, setPage, pagination }: Props) => {
             )) : <div className="text-center my-10">No Questions</div>}
         </div>
         {/* Pagination */}
-        {pagination && (
+        {productQAndA?.length > 0 && pagination && (
           <Pagination
             page={page}
             pagination={pagination}

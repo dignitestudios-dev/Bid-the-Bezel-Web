@@ -5,7 +5,11 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import EmblaCarousel from './ui/carousel/embla-carousel'
 import { EmblaOptionsType } from 'embla-carousel'
-import Questions from './questions'
+import Questions from '@/app/(main)/fixed-price/[id]/_components/questions'
+import { QASkeleton } from '@/components/skeleton'
+import Answers from '@/app/(main)/fixed-price/[id]/_components/answers'
+import { useGetQuestions } from '@/features/product-qa/hook'
+
 
 type Props = {
   product: AuctionProduct;
@@ -16,12 +20,15 @@ const OPTIONS: EmblaOptionsType = {}
 const ProductDetail = ({ product }: Props) => {
   const [isFav, setIsFav] = useState(false);
   const isAuthenticated = product?.authentication?.status === 'authenticated';
+  const [page, setPage] = useState(1);
+  const { data: productQAndA, isLoading } = useGetQuestions(product?._id, page)
+  const pagination = productQAndA?.pagination
   return (
     <div className='lg:w-[60%] space-y-8'>
       <div>
         <div className='flex justify-between'>
           <h1 className='flex gap-2 items-start text-xl md:text-3xl font-semibold'>
-             {product?.model}
+            {product?.model}
             {isAuthenticated && (
               <Badge title='Authenticated' className='bg-linear-to-r text-background text-center from-[#0D1B2A] to-[#415A77]' />
             )}
@@ -29,8 +36,8 @@ const ProductDetail = ({ product }: Props) => {
           <FavBtn isFav={isFav} setIsFav={setIsFav} />
         </div>
         <div className='flex items-center justify-between gap-4'>
-        <h1 className='text-xl md:text-3xl'>${product?.price} <span className='text-base'>Starting Price</span></h1>
-        <h1 className='text-xl md:text-3xl'>${product?.effectivePrice} <span className='text-base'>Effective Price</span></h1>
+          <h1 className='text-xl md:text-3xl'>${product?.price} <span className='text-base'>Starting Price</span></h1>
+          <h1 className='text-xl md:text-3xl'>${product?.effectivePrice} <span className='text-base'>Effective Price</span></h1>
         </div>
         <p className='text-sm text-gray-500 mt-1'>Ref: {product?.referenceId}</p>
       </div>
@@ -44,7 +51,24 @@ const ProductDetail = ({ product }: Props) => {
         <p>{product?.description}</p>
       </div>
 
-      <Questions />
+      {isLoading ? (
+        <QASkeleton />
+      ) : product?.isMyProduct ? (
+        <Answers
+          productQAndA={productQAndA?.data}
+          page={page}
+          setPage={setPage}
+          pagination={pagination}
+        />
+      ) : (
+        <Questions
+          id={product?._id}
+          productQAndA={productQAndA?.data}
+          page={page}
+          setPage={setPage}
+          pagination={pagination}
+        />
+      )}
     </div>
   )
 }

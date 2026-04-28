@@ -70,7 +70,13 @@ const Answers = ({ productQAndA, page, setPage, pagination }: Props) => {
                     </span>}
 
                 <div className="h-[400px] overflow-auto">
-                    {productQAndA?.map((q: any, i: number) => (
+                    {productQAndA?.length === 0 ? (
+
+                        <div className='flex items-center justify-center h-full'>No Questions & Answers Yet</div>
+
+
+
+                    ) : productQAndA?.map((q: any, i: number) => (
                         <div key={i} className="border-b border-[#E3E3E3] pb-4">
                             <div className="flex items-start gap-4  py-2">
                                 <svg
@@ -124,7 +130,7 @@ const Answers = ({ productQAndA, page, setPage, pagination }: Props) => {
                                             <h5>{q?.answeredBy?.userName || "User"}</h5>
                                             <span className="font-thin">
                                                 {formatDate(q?.updatedAt
-)}
+                                                )}
                                             </span>
                                         </div>
                                     </div>
@@ -179,7 +185,7 @@ const Answers = ({ productQAndA, page, setPage, pagination }: Props) => {
                     ))}
 
                 </div>
-                {pagination && (
+                {productQAndA?.length > 0 && pagination && (
                     <Pagination
                         page={page}
                         pagination={pagination}

@@ -37,15 +37,7 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
           Active
         </Button>
 
-        <Button
-          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "sold"
-            ? "bg-white text-black shadow"
-            : "bg-transparent text-gray-500"
-            }`}
-          onClick={() => setStatus("sold")}
-        >
-          Sold
-        </Button>
+
         <Button
           className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "unfulfilled"
             ? "bg-white text-black shadow"
@@ -54,6 +46,15 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
           onClick={() => setStatus("unfulfilled")}
         >
           Unfulfilled
+        </Button>
+        <Button
+          className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "sold"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-gray-500"
+            }`}
+          onClick={() => setStatus("sold")}
+        >
+          Sold
         </Button>
       </div>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
@@ -64,7 +65,9 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
           </div>
 
         ) : data?.data?.map((product: any, index: any) => (
-          <ListingCard key={index}
+          <ListingCard
+            key={index}
+            product={product}
             image={product?.images[0]?.location}
             title={product?.title}
             brandName={product?.brandName}

@@ -81,13 +81,13 @@ const ProductPricing = ({ price, watch }: Props) => {
                   Chat with Buyer
                 </Button>
               </Link>
-              {watch?.status === "sold" && watch?.deliveryFlow === "at_seller" && (
+              {watch?.isMyProduct && watch?.status === "sold" && watch?.deliveryFlow === "at_seller" && (
 
                 <Button onClick={() => router?.push(`/buyer/shipping-details/${watch?._id}`)} className="text-base w-full">Fill out Shipping</Button>
 
 
               )}
-              {watch?.status === "sold" && watch?.deliveryFlow === "marketplace" && (
+              {/* {watch?.status === "sold" && watch?.deliveryFlow === "marketplace" && (
 
                 <Button
                   onClick={() => router?.push(`/buyer/shipping-details/${watch?._id}`)}
@@ -95,7 +95,7 @@ const ProductPricing = ({ price, watch }: Props) => {
                 >
                   Fill out Shipping
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
         )}
