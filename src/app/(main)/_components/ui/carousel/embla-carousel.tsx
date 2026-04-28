@@ -18,7 +18,7 @@ import {
 
 
 type PropType = {
-  slides: AuctionProduct[] | FixedPriceProduct[] ;
+  slides: AuctionProduct[] | FixedPriceProduct[];
   options?: EmblaOptionsType;
   FColor?: string;
   // isAuthenticated: boolean;
@@ -38,7 +38,7 @@ const EmblaCarousel: React.FC<PropType> = ({
     onNextButtonClick,
   } = usePrevNextButtons(emblaApi);
   const { selectedSnap, snapCount } = useSelectedSnapDisplay(emblaApi);
-
+  console.log(slides, "slide")
   return (
     <section className={styles.embla}>
       <div
@@ -60,7 +60,8 @@ const EmblaCarousel: React.FC<PropType> = ({
               )}
               key={index}
             >
-              <ProductCard prod={w} />
+
+              <ProductCard prod={w} id={w?._id} />
             </div>
           ))}
         </div>

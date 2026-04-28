@@ -150,7 +150,7 @@ const ListingCard = ({
           <Button
             variant="default"
             className="flex-1"
-            onClick={() => router.push(`/buyer/shipping-details/${id}`)}
+            onClick={() => router.push(`/seller/shipping-details/${id}`)}
           >
             Fill Shipping Details
           </Button>

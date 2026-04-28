@@ -14,6 +14,8 @@ import Image from "next/image";
 import UnAuthStatus from "@/app/(main)/auction/[id]/_components/unauth-status";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/features/auth/hooks";
+import { useAddProductToFavorite } from "@/features/fav-product/hook";
+import { showSuccess } from "@/lib/toast";
 
 type Props = {
   sellerId?: string;
@@ -24,8 +26,23 @@ type Props = {
 
 const ProductPricing = ({ price, watch }: Props) => {
   const router = useRouter()
-  const [isFav, setIsFav] = useState(false);
+  const [isFav, setIsFav] = useState(watch?.isFavorite);
   const { data: user, isLoading } = useMe();
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(watch?._id || "");
+  const handleAddToFavorite = () => {
+    addProductToFavorite(undefined, {
+      onSuccess: () => {
+        setIsFav((prev: boolean) => !prev);
+
+        showSuccess(
+          isFav
+            ? "Product removed from favorites"
+            : "Product added to favorites"
+        );
+
+      },
+    });
+  };
 
   return (
     <div className="w-[40%] space-y-7">
@@ -50,7 +67,18 @@ const ProductPricing = ({ price, watch }: Props) => {
       <div>
         <div className="flex justify-between">
           <h1 className="flex gap-2 text-3xl font-semibold">{watch?.model}</h1>
-          <FavBtn isFav={isFav} setIsFav={setIsFav} />
+          {!watch?.isMyProduct && (
+
+            <button
+              disabled={isPending}
+              className="cursor-pointer disabled:cursor-not-allowed"
+              onClick={handleAddToFavorite}
+            >
+              <div className="pointer-events-none">
+                <FavBtn isFav={isFav} />
+              </div>
+            </button>
+          )}
         </div>
         {watch?.authentication?.status === "approved" && (
 
@@ -83,7 +111,7 @@ const ProductPricing = ({ price, watch }: Props) => {
               </Link>
               {watch?.isMyProduct && watch?.status === "sold" && watch?.deliveryFlow === "at_seller" && (
 
-                <Button onClick={() => router?.push(`/buyer/shipping-details/${watch?._id}`)} className="text-base w-full">Fill out Shipping</Button>
+                <Button onClick={() => router?.push(`/seller/shipping-details/${watch?._id}`)} className="text-base w-full">Fill out Shipping</Button>
 
 
               )}

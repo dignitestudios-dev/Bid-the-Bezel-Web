@@ -42,12 +42,13 @@ interface FixedPriceProduct {
 
   isMyProduct: boolean;
   isDraftPageShown: boolean;
+  isFavorite: boolean;
 
   createdAt: string;
   updatedAt: string;
 }
 
- interface AuctionProduct {
+interface AuctionProduct {
   _id: string;
   brandName: string;
   model: string;
@@ -76,7 +77,7 @@ interface FixedPriceProduct {
   shipments: Shipment[];
 
   auction: AuctionDetails;
-
+  isFavorite: boolean;
   isMyProduct: boolean;
   isDraftPageShown: boolean;
 

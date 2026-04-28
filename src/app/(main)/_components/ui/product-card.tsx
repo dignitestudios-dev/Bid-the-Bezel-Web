@@ -1,10 +1,13 @@
 "use client";
 
 import Badge from "@/components/ui/badge";
+import { useAddProductToFavorite } from "@/features/fav-product/hook";
 import { displayPrice } from "@/lib/helper";
 import { mapProductToUI } from "@/lib/mappers/product.mapper";
+import { showSuccess } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import { formatTimeLeft } from "@/lib/utils/date.utils";
+import { Loader, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -12,45 +15,78 @@ import React, { useState } from "react";
 
 const ProductCard = ({
   prod,
+  id
 }: {
   prod: AuctionProduct | FixedPriceProduct;
+  id: string
 }) => {
-  const [isFav, setIsFav] = useState(false);
+
+
 
   if (!prod) return null;
 
+  const [isFav, setIsFav] = useState(prod?.isFavorite);
+
   const product = mapProductToUI(prod);
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(id || "");
+  const handleAddToFavorite = () => {
+    addProductToFavorite(undefined, {
+      onSuccess: () => {
+        setIsFav((prev: boolean) => !prev);
+        showSuccess(
+          isFav
+            ? "Product removed from favorites"
+            : "Product added to favorites"
+        );
+
+      },
+    });
+  };
+
 
   return (
     <Link href={product.route}>
-      <div className={cn("flex flex-col h-full text-xs md:text-base p-4 rounded-xl  hover:shadow-lg transition-all" , product.isAuction ? "border bg-gray-300/10" : " bg-gray-700/10")}>
+      <div className={cn("flex flex-col h-full text-xs md:text-base p-4 rounded-xl  hover:shadow-lg transition-all", product.isAuction ? "border bg-gray-300/10" : " bg-gray-700/10")}>
         <div className="relative">
 
           <button
+            disabled={isPending}
             onClick={(e) => {
-              e.preventDefault(); 
-              setIsFav((prev) => !prev);
+              e.preventDefault();
+              handleAddToFavorite();
             }}
             className={cn(
-              "absolute top-3 right-3 z-10 w-10 h-10 rounded-lg flex items-center justify-center",
-              "bg-gray-300/20 backdrop-blur-md shadow-md transition-all duration-300",
-              isFav ? "scale-110" : "scale-100"
+              "absolute top-3 cursor-pointer right-3 z-10 w-10 h-10 rounded-lg flex items-center justify-center",
+              "bg-gray-300/20 backdrop-blur-md shadow-md transition-all duration-300"
             )}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill={isFav ? "red" : "none"}
-              viewBox="0 0 24 24"
-              stroke="white"
-              strokeWidth={1}
-              className={cn("w-7 h-7", isFav && "animate-ping-once")}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 8.25c0-2.485-2.099-4.5-4.687-4.5-1.935 0-3.597 1.126-4.313 2.733-.716-1.607-2.378-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-              />
-            </svg>
+            <div className="relative flex items-center justify-center">
+
+              {/* ❤️ Heart */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                stroke="white"
+                strokeWidth={1}
+                fill={isFav ? "red" : "none"}
+                className={cn(
+                  "w-7 h-7 transition-all duration-300",
+                  isFav && "scale-110"
+                )}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.687-4.5-1.935 0-3.597 1.126-4.313 2.733-.716-1.607-2.378-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                />
+              </svg>
+
+
+              {isPending && (
+                <span className="absolute inline-flex h-8 w-8 rounded-full bg-red-400 opacity-75 animate-ping"></span>
+              )}
+
+            </div>
           </button>
 
           {/* Image */}
@@ -88,7 +124,7 @@ const ProductCard = ({
             {/* Price */}
             <div className="w-1/3">
               <h2 className="font-thin">{product.isAuction ? "Starting Price" : ""}</h2>
-              <h1 className={cn("font-semibold" , product.isAuction ? "text-center" : "text-start")}>
+              <h1 className={cn("font-semibold", product.isAuction ? "text-center" : "text-start")}>
                 ${product.price}
               </h1>
             </div>

@@ -9,6 +9,8 @@ import Questions from '@/app/(main)/fixed-price/[id]/_components/questions'
 import { QASkeleton } from '@/components/skeleton'
 import Answers from '@/app/(main)/fixed-price/[id]/_components/answers'
 import { useGetQuestions } from '@/features/product-qa/hook'
+import { useAddProductToFavorite } from '@/features/fav-product/hook'
+import { showSuccess } from '@/lib/toast'
 
 
 type Props = {
@@ -18,10 +20,25 @@ type Props = {
 const OPTIONS: EmblaOptionsType = {}
 
 const ProductDetail = ({ product }: Props) => {
-  const [isFav, setIsFav] = useState(false);
   const isAuthenticated = product?.authentication?.status === 'authenticated';
   const [page, setPage] = useState(1);
   const { data: productQAndA, isLoading } = useGetQuestions(product?._id, page)
+  const [isFav, setIsFav] = useState(product?.isFavorite);
+
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(product?._id || "");
+  const handleAddToFavorite = () => {
+    addProductToFavorite(undefined, {
+      onSuccess: () => {
+        setIsFav((prev: boolean) => !prev);
+        showSuccess(
+          isFav
+            ? "Product removed from favorites"
+            : "Product added to favorites"
+        );
+
+      },
+    });
+  };
   const pagination = productQAndA?.pagination
   return (
     <div className='lg:w-[60%] space-y-8'>
@@ -33,7 +50,15 @@ const ProductDetail = ({ product }: Props) => {
               <Badge title='Authenticated' className='bg-linear-to-r text-background text-center from-[#0D1B2A] to-[#415A77]' />
             )}
           </h1>
-          <FavBtn isFav={isFav} setIsFav={setIsFav} />
+          <button
+            disabled={isPending}
+            onClick={handleAddToFavorite}
+            className='cursor-pointer '
+          >
+            <div className="pointer-events-none">
+              <FavBtn isFav={isFav} />
+            </div>
+          </button>
         </div>
         <div className='flex items-center justify-between gap-4'>
           <h1 className='text-xl md:text-3xl'>${product?.price} <span className='text-base'>Starting Price</span></h1>
