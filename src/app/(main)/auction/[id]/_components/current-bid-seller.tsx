@@ -28,7 +28,7 @@ const CurrentBidSeller = ({ product }: Props) => {
     const m = Math.floor((diff % 3600000) / 60000);
     return `${d}D ${h}H ${m}M`;
   }, [auction?.endsAt]);
-
+  const isEnded = timeLeft === "Ended"; 
   const hasBidder = !!auction?.currentBidder;
   return (
     <div className=" border  rounded-2xl mt-4">
@@ -37,62 +37,81 @@ const CurrentBidSeller = ({ product }: Props) => {
         <span className="font-medium">left</span>
       </h1>
       <div className="flex justify-between p-5">
-        <h3 className="font-semibold">{hasBidder ? "Bid Winner" : "Current Bid"}</h3>
+        <h3 className="font-semibold">{hasBidder && isEnded ? "Bid Winner" : "Current Bid"}</h3>
         <h1 className="text-2xl font-semibold">
           {auction?.currentBidAmount > 0 ? `$${auction.currentBidAmount.toFixed(2)}` : "$00.0"}
         </h1>
       </div>
-      {hasBidder ? (
-        <>
-          <div className="flex border-b items-center p-5 gap-3">
-            <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
-            <div>
-              <h1 className="font-semibold mb-2">{auction.currentBidder?.userName ?? "Anonymous"}</h1>
-              <h5>Current highest bidder</h5>
-            </div>
-          </div>
+    {isEnded ? (
+  hasBidder ? (
+    <>
+      <div className="flex border-b items-center p-5 gap-3">
+        <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
+        <div>
+          <h1 className="font-semibold mb-2">
+            {auction.currentBidder?.userName ?? "Anonymous"}
+          </h1>
+          <h5>Current highest bidder</h5>
+        </div>
+      </div>
 
-          <div className="flex flex-col gap-2 p-5 w-full">
-            <Link href={"/chats"} className="w-full">
-              <Button className="w-full h-12 py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
-                {" "}
-                <MessageCircleMore size={25} />
-                Chat with Buyer
-              </Button>
-            </Link>
-            <Link href={"/seller/shipping-details"} className="w-full">
-              <Button className="text-base w-full">Fill out Shipping</Button>
-            </Link>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="flex capitalize font-semibold justify-center py-4 items-center">
-            <h4>no bid yet</h4>
-          </div>
-          <div className="flex flex-col gap-2 p-5 w-full border-t">
-            <p className="text-sm">
-              Your listing failed to atrract any buyers.
-            </p>
-            <Button
-              onClick={() => setMoveToTakingOffer(true)}
-              className=" text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
-            >
-              {" "}
-              <Move />
-              Move to takings offers section
-            </Button>
-            {/* <Link href={"/seller/shipping-details"} className="w-full"> */}
-            <Button
-              onClick={() => setCancelListing(true)}
-              className="text-base bg-red-700 text-white w-full"
-            >
-              Cancel Listing
-            </Button>
-            {/* </Link> */}
-          </div>
-        </>
-      )}
+      <div className="flex flex-col gap-2 p-5 w-full">
+        <Link href={"/chats"} className="w-full">
+          <Button className="w-full h-12 py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
+            <MessageCircleMore size={25} />
+            Chat with Buyer
+          </Button>
+        </Link>
+        <Link href={"/seller/shipping-details"} className="w-full">
+          <Button className="text-base w-full">Fill out Shipping</Button>
+        </Link>
+      </div>
+    </>
+  ) : (
+    <>
+      <div className="flex capitalize font-semibold justify-center py-4 items-center">
+        <h4>no bid yet</h4>
+      </div>
+
+      <div className="flex flex-col gap-2 p-5 w-full border-t">
+        <p className="text-sm">
+          Your listing failed to atrract any buyers.
+        </p>
+
+        <Button
+          onClick={() => setMoveToTakingOffer(true)}
+          className="text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
+        >
+          <Move />
+          Move to takings offers section
+        </Button>
+
+        <Button
+          onClick={() => setCancelListing(true)}
+          className="text-base bg-red-700 text-white w-full"
+        >
+          Cancel Listing
+        </Button>
+      </div>
+    </>
+  )
+) : (
+  hasBidder ? (
+    <div className="flex items-center px-5 pb-5 gap-3">
+      <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
+      <div>
+        <h1 className="font-semibold mb-2">
+          {auction.currentBidder?.userName ?? "Anonymous"}
+        </h1>
+        <h5>Current highest bidder</h5>
+      </div>
+    </div>
+  ) : (
+    <div className="flex capitalize font-semibold justify-center py-4 items-center">
+      <h4>no bid yet</h4>
+    </div>
+  )
+)}
       <CancelListingDialog
         cancelListing={cancelListing}
         setCancelListing={setCancelListing}

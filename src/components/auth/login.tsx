@@ -25,7 +25,6 @@ const Login = ({
   setStep?: (step: AuthStep) => void;
   onSuccess: () => void;
 }) => {
-  const queryClient = useQueryClient();
   const { mutate: loginMutate, isPending: loginPending } = useLogin();
   const { mutate: checkEmail, isPending: checkPending } = useCheckEmail();
 
@@ -75,7 +74,6 @@ const Login = ({
         if (!user?.isProfileCompleted) { setStep?.("username"); return; }
         showSuccess("Logged in successfully");
         onSuccess();
-        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
       },
       onError: (err: any) => { console.error(err); showError(err); },
     });
@@ -89,7 +87,7 @@ const Login = ({
         if (!user?.isEmailVerified) { setStep?.("otp-register"); return; }
         if (!user?.isProfileCompleted) { setStep?.("username"); return; }
         onSuccess();
-        queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
+
       },
       onError: (err: any) => { console.error(err); showError(err); },
     });
@@ -105,7 +103,6 @@ const Login = ({
           if (!user?.isProfileCompleted) { setStep?.("username"); return; }
           showSuccess("Logged in successfully");
           onSuccess();
-          queryClient.invalidateQueries({ queryKey: ["get-home-listing"] });
         },
         onError: (err: any) => { console.error(err); showError(err); },
       });
@@ -118,8 +115,6 @@ const Login = ({
   return (
     <div className="w-[340px] max-w-full md:px-0 px-4">
       <h2 className="text-2xl font-semibold mb-3">Login or sign up</h2>
-
-      {/* STEP 1 — email only */}
       {step === "email" && (
         <form onSubmit={emailForm.handleSubmit(handleCheckEmail)} className="space-y-3">
           <FloatingInput
@@ -135,8 +130,6 @@ const Login = ({
           </Button>
         </form>
       )}
-
-      {/* STEP 2a — existing user: password only */}
       {step === "login" && (
         <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-3">
           <FloatingInput
@@ -166,8 +159,6 @@ const Login = ({
           </Button>
         </form>
       )}
-
-      {/* STEP 2b — new user: password + confirm password */}
       {step === "register" && (
         <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-3">
           <FloatingInput
@@ -200,13 +191,11 @@ const Login = ({
           </Button>
         </form>
       )}
-
       <div className="flex items-center gap-3 py-5">
         <div className="w-full h-[1.5px] bg-gray-200" />
         <p className="text-gray-600 text-sm font-medium">Or</p>
         <div className="w-full h-[1.5px] bg-gray-200" />
       </div>
-
       <div className="space-y-3">
         <Button disabled={loginPending} onClick={handleGoogleLogin} className="bg-[#F7F7F7] hover:bg-[#0b1d2a]/80 rounded-full w-full text-black">
           <Google />
