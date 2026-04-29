@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import { useMe } from "@/features/auth/hooks";
-import { usePlaceBid } from "@/features/bidding/hooks";
+import { useCancelBid, usePlaceBid } from "@/features/bidding/hooks";
 import { showSuccess } from "@/lib/toast";
 
 import AuthSidebar from "@/components/auth-sidebar";
@@ -50,8 +50,8 @@ type BidForm = {
 const CurrentBid = ({ product, bidsData }: Props) => {
   const { data: user, isLoading } = useMe();
   const placeBidMutation = usePlaceBid();
-
-
+  const cancelBidMutation = useCancelBid();
+const [cancelBid , setCancelBid] = React.useState<boolean>(false);
 
   const auction = product?.auction;
 
@@ -75,7 +75,7 @@ const isWinner = product.auction.currentBidder === user?.data?._id;
 
   const watchedAmount = watch("amount");
 
-  /* ---------------- TIME ---------------- */
+
   const timeLeft = useMemo(() => {
     if (!auction?.endsAt) return "--";
     const diff = new Date(auction.endsAt).getTime() - Date.now();
@@ -167,10 +167,9 @@ const handleIncrease = () => {
         )}
       </div>
 
-      {/* BID SECTION (UNCHANGED STRUCTURE) */}
-     {!isLoading && user ? (
+     {!isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
   isEnded ? (
-    <div className="px-6 py-6 border-t text-center">
+    <div className={cn( currentBidder ? "px-6 py-6 border-t text-center" :"")}>
       {isWinner ? (
         <>
           <h1 className="text-xl font-semibold text-green-600">
@@ -180,7 +179,7 @@ const handleIncrease = () => {
             Congratulations! You placed the highest bid.
           </p>
           <div className="flex flex-col gap-4 w-full pt-4" >
-            <button className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg">cancel bid</button>
+            <button onClick={()=>setCancelBid(true)} className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg">cancel bid</button>
                <Link href={`/buy-now/${product._id}`} className="w-full">
                     <Button className="text-base w-full">
                       Fill out Shipping
@@ -188,7 +187,7 @@ const handleIncrease = () => {
                   </Link>
           </div>
         </>
-      ) : (
+      ) : currentBidder && (
         <>
         <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg" >
           <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 bg-contain rounded-full" />
@@ -264,18 +263,64 @@ const handleIncrease = () => {
     </>
   )
 ) : 
-  isEnded &&  <>
-        <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg" >
-          <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 bg-contain rounded-full" />
-          <h1 className="text-xl font-semibold">
-            {currentBidder?.userName}
-          </h1>
-          </div>
-          <h1 className="text-2xl text-center pb-4 font-bold mt-5">
-            Bid winner
-          </h1>
-        </>
+isEnded && !cancelBid && (
+  <>
+    <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
+      <Image
+        unoptimized
+        width={50}
+        height={50}
+        src={currentBidder?.profilePicture?.location}
+        alt="pic"
+        className="w-6 h-6 bg-contain rounded-full"
+      />
+      <h1 className="text-xl font-semibold">
+        {currentBidder?.userName}
+      </h1>
+    </div>
+
+    <h1 className="text-2xl text-center pb-4 font-bold mt-5">
+      Bid winner
+    </h1>
+  </>
+)}
+
+{isEnded && cancelBid && (
+   <div className="w-full flex flex-col items-center justify-center text-center py-10">
+      <h1 className="text-2xl font-bold">Bidding Fees</h1>
+
+      <p className="text-gray-600 text-sm mt-3 max-w-md">
+        10% of your bid amount will be lost if you cancel your bid. Are you sure
+        you want to continue?
+      </p>
+
+      <div className="flex gap-4 mt-8 w-full max-w-md">
+        <button
+          onClick={()=>setCancelBid(false)}
+            disabled={cancelBidMutation.isPending}
+          className="w-1/2 bg-gray-100 hover:bg-gray-200 text-black py-2 rounded-lg font-medium"
+        >
+          Back
+        </button>
+
+        <button
+          onClick={() => {
+            cancelBidMutation.mutate(
+              { id: product._id },
+              { onSuccess: () => setCancelBid(false) }
+            );
+          }}
+          disabled={cancelBidMutation.isPending}
+          className="w-1/2 bg-red-700 hover:bg-red-800 text-white py-3 rounded-lg font-medium"
+        >
+          {cancelBidMutation.isPending ? "Cancelling..." : "Cancel Bid"}
+        </button>
+      </div>
+    </div>
+)
 }
+
+
 
       {/* AUTH SIDEBAR (UNCHANGED) */}
       <div className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}>

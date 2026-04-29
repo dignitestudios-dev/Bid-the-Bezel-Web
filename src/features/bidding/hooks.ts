@@ -29,6 +29,24 @@ export const useGetProductBids = (
   });
 };
 
+export const useCancelBid = () =>
+    useApiMutation<any, { id: string }>({
+        endpoint: ({ id }) => `/products/${id}/bid`,
+        method: "DELETE",
+        invalidateKeys: [
+            "get-profile",
+            "get-cards",
+            "shipping-result",
+            "get-my-listing",
+            "get-listing-detail",
+        ],
+        mutationOptions: {
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
+
 export const usePlaceBid = () => {
   return useApiMutation<
     any,

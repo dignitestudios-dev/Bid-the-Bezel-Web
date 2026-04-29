@@ -59,7 +59,7 @@ interface AuctionProduct {
   referenceId: string;
 
   type: "auction";
-  status: "active" | "inactive" | "sold"; // adjust if more statuses exist
+  status: "active" | "inactive" | "sold" | "deleted"; // adjust if more statuses exist
   currentHolder: "seller" | "buyer";
 
   deliveryFlow: "at_seller" | "shipping"; // extend if needed

@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import CancelListingDialog from "./cancel-listing-dialog";
 import ConfirmCancel from "./confirm-cancel";
 import MoveToTakingDialog from "./move-taking-offer-dialog";
+import RepostAuctionDialog from "./repost-auction-dialog";
 
 type Props = {
   product: AuctionProduct;
@@ -16,12 +17,14 @@ type Props = {
 const CurrentBidSeller = ({ product, bidsData }: Props) => {
   const [cancelListing, setCancelListing] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState(false);
+  const [repostAuction, setRepostAuction] = useState(false);
+ 
   const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
+
   const auction = product?.auction;
 
   const currentBidder = bidsData?.data?.[0]?.currentBidder;
-
-  const timeLeft = React.useMemo(() => {
+    const timeLeft = React.useMemo(() => {
     if (!auction?.endsAt) return "--";
     const diff = new Date(auction.endsAt).getTime() - Date.now();
     if (diff <= 0) return "Ended";
@@ -52,7 +55,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             : "$00.0"}
         </h1>
       </div>
-      {isEnded ? (
+      {isEnded && product.status !== "deleted" ? (
         hasBidder ? (
           <>
             <div className="flex gap-2 items-start">
@@ -97,6 +100,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 Your listing failed to atrract any buyers.
               </p>
 
+            
               <Button
                 onClick={() => setMoveToTakingOffer(true)}
                 className="text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
@@ -104,13 +108,20 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 <Move />
                 Move to takings offers section
               </Button>
-
+<div className="flex items-center gap-2 w-full" >
               <Button
                 onClick={() => setCancelListing(true)}
-                className="text-base bg-red-700 text-white w-full"
+                className="text-base bg-red-700 hover:bg-red-800 text-white w-[50%]"
               >
                 Cancel Listing
               </Button>
+                <Button
+                onClick={() => setRepostAuction(true)}
+                className="text-base bg-white border w-[50%] text-green-600 hover:bg-[#f8f3f3]  hover:text-green-700 flex justify-center gap-2"
+              >
+                Restart Auction
+              </Button>
+              </div>
             </div>
           </>
         )
@@ -135,7 +146,13 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
           <h4>no bid yet</h4>
         </div>
       )}
+      <RepostAuctionDialog
+        open={repostAuction}
+        setOpen={setRepostAuction}
+        productId={product?._id}
+      />
       <CancelListingDialog
+      id={product?._id}
         cancelListing={cancelListing}
         setCancelListing={setCancelListing}
         setCancelSuccess={setCancelSuccess}
@@ -145,9 +162,11 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         setCancelSuccess={setCancelSuccess}
       />
       <MoveToTakingDialog
+      id={product?._id}
         setMoveToTakingOffer={setMoveToTakingOffer}
         moveToTakingOffer={moveToTakingOffer}
       />
+
     </div>
   );
 };

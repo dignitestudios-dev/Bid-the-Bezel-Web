@@ -35,8 +35,7 @@ const ListingCard = ({
   description,
   model,
   id,
-  product
-
+  product,
 }: Props) => {
   const router = useRouter();
   const [unAuthenticateDialog, setUnAuthenticateDialog] = useState(false);
@@ -129,13 +128,16 @@ const ListingCard = ({
 
       {status === "active" && (
         <div className="p-4 border-t border-dashed bg-red-50/50 flex flex-col sm:flex-row gap-3">
-          <Button
-            variant="destructive"
-            className="flex-1"
-            onClick={() => setDeleteDialog(true)}
-          >
-            Delete Product
-          </Button>
+          {!product.auction.currentBidder && (
+            <Button
+              variant="destructive"
+              className="flex-1"
+              onClick={() => setDeleteDialog(true)}
+            >
+              Delete Product
+            </Button>
+          )}
+
           <Button
             variant="default"
             className="flex-1"
@@ -145,24 +147,27 @@ const ListingCard = ({
           </Button>
         </div>
       )}
-      {product?.isMyProduct && product?.deliveryFlow === "at_seller" && product?.status === "sold" && (
-        <div className="p-4 border-t border-dashed bg-red-50/50 flex flex-col sm:flex-row gap-3">
-          <Button
-            variant="default"
-            className="flex-1"
-            onClick={() => router.push(`/seller/shipping-details/${id}`)}
-          >
-            Fill Shipping Details
-          </Button>
-        </div>
-      )}
+      {product?.isMyProduct &&
+        product?.deliveryFlow === "at_seller" &&
+        product?.status === "sold" && (
+          <div className="p-4 border-t border-dashed bg-red-50/50 flex flex-col sm:flex-row gap-3">
+            <Button
+              variant="default"
+              className="flex-1"
+              onClick={() => router.push(`/seller/shipping-details/${id}`)}
+            >
+              Fill Shipping Details
+            </Button>
+          </div>
+        )}
       <div
-        className={`p-3 text-white font-medium text-center  ${type === "auction"
-          ? "bg-[#415A77]"
-          : type === "fixed_price"
-            ? "bg-[#778DA9]"
-            : "bg-[#D9B918]"
-          }`}
+        className={`p-3 text-white font-medium text-center  ${
+          type === "auction"
+            ? "bg-[#415A77]"
+            : type === "fixed_price"
+              ? "bg-[#778DA9]"
+              : "bg-[#D9B918]"
+        }`}
       >
         {type === "auction"
           ? "Auction"
