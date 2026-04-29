@@ -42,7 +42,7 @@ const BiddingDetail = ({ product }: Props) => {
         setCurrentPage={setCurrentPage}
       />
       {isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
-      <Reviews />
+      <Reviews sellerId={product?.seller?._id} />
     </div>
   );
 };
