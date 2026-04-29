@@ -20,17 +20,17 @@ const ConfirmCancel = ({setCancelSuccess , cancelSuccess}: Props) => {
             Buy Subscription
           </DialogTitle>
         </AlertDialogHeader>
-        <div className="w-full  rounded-xl flex flex-col items-center bg-white p-4 py-12 ">
+        <div className="w-full  rounded-xl flex flex-col items-center bg-white  py-12 ">
             <ListingCancel/>
             <div className='text-center py-4 space-y-2'>
                 <h1 className='text-xl font-semibold'>Listing Cancelled</h1>
                 <h4>Your listing is cancelled</h4>
             </div>
-            <div>
+            <div className='w-full'>
                 <Link href={"/"} className='w-full mt-4 ' >
           <Button
             onClick={() => setCancelSuccess(false)}
-            className=" w-full py-4 bg-black text-white border "
+            className="w-full py-4 bg-black text-white border "
           >
             Back to Home
           </Button>

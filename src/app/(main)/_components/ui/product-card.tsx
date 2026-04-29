@@ -14,7 +14,7 @@ const ProductCard = ({
   prod,
   id
 }: {
-  prod: AuctionProduct | FixedPriceProduct;
+  prod: AuctionProduct | FixedPriceProduct | TakingOfferProduct;
   id: string
 }) => {
 

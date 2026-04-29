@@ -1,7 +1,7 @@
 
 
 export const mapProductToUI = (
-  prod: AuctionProduct | FixedPriceProduct
+  prod: AuctionProduct | FixedPriceProduct | TakingOfferProduct
 ): ProductUI => {
   const base: BaseProductUI = {
     id: prod._id,
@@ -20,6 +20,17 @@ export const mapProductToUI = (
       isAuction: true,
       currentBid: prod.auction?.currentBidAmount ?? 0,
       endsAt: prod?.auction?.endsAt,
+    };
+
+    
+  }
+
+  if (prod.type === "taking_offers") {
+    return {
+      ...base,
+      type: "taking_offers",
+      route: `/taking-offer/${prod._id}`,
+      isAuction: false,
     };
   }
 
