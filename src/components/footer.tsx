@@ -103,16 +103,67 @@ const Footer = () => {
                 </ul>
               </div>
 
-              {/* COMPANY */}
-              <div>
-                <h3 className="font-semibold mb-4">Company</h3>
-                <ul className="space-y-3 text-base text-white/80">
-                  <li>About</li>
-                  <li>FAQs</li>
-                  <li>Contact us</li>
-                  <li>Terms of Use</li>
-                  <li>Privacy Policy</li>
-                </ul>
+              <div className="flex gap-32">
+                <div>
+                  <h3 className="font-semibold mb-4">Navigation</h3>
+                  <ul className="space-y-3 text-base text-white/80">
+                    <ul className="space-y-3 text-base text-white/80">
+                      <li>
+                        <Link href="/" className="hover:text-white">Home</Link>
+                      </li>
+                      <li>
+                        <Link href="/collections?category=auction" className="hover:text-white">
+                          Auction Watches
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/collections?category=fixed" className="hover:text-white">
+                        Marketplace
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/collections?category=all" className="hover:text-white">
+                          Categories
+                        </Link>
+                      </li>
+                    </ul>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-4">Company</h3>
+                  <ul className="space-y-3 text-base text-white/80">
+                    <li>About</li>
+                    <li>FAQs</li>
+                    <li>Contact us</li>
+                    <li>Terms of Use</li>
+                    <li>Privacy Policy</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-4">Contacts us</h3>
+                  <ul className="space-y-3 text-base text-white/80">
+                    <li className="flex items-center gap-2">
+                      <span>
+                        <Mail />
+                      </span>
+                      support@Bidthebezel.com
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span>
+                        <Phone />
+                      </span>
+                      +1 (310) 925-3575
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span>
+                        <MapPin />
+                      </span>
+                      Los Angeles
+                    </li>
+                  </ul>
+                </div>
               </div>
 
               {/* CONTACT */}

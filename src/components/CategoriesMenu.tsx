@@ -32,7 +32,7 @@ const CategoriesMenu = () => {
             href={"/collections?category=fixed"}
             className="flex justify-between items-center gap-5 font-bold"
           >
-           Marketplace
+            Marketplace
             <ChevronRight className="font-bold" />
           </Link>
         </DropdownMenuItem>
