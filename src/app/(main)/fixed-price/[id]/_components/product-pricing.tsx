@@ -26,16 +26,14 @@ type Props = {
 
 const ProductPricing = ({ price, watch }: Props) => {
   const router = useRouter()
-  const [isFav, setIsFav] = useState(watch?.isFavorite);
   const { data: user, isLoading } = useMe();
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(watch?._id || "");
   const handleAddToFavorite = () => {
     addProductToFavorite(undefined, {
       onSuccess: () => {
-        setIsFav((prev: boolean) => !prev);
 
         showSuccess(
-          isFav
+          watch?.isFavorite
             ? "Product removed from favorites"
             : "Product added to favorites"
         );
@@ -75,7 +73,7 @@ const ProductPricing = ({ price, watch }: Props) => {
               onClick={handleAddToFavorite}
             >
               <div className="pointer-events-none">
-                <FavBtn isFav={isFav} />
+                <FavBtn isFav={watch?.isFavorite} />
               </div>
             </button>
           )}

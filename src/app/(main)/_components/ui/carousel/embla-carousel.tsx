@@ -38,7 +38,7 @@ const EmblaCarousel: React.FC<PropType> = ({
     onNextButtonClick,
   } = usePrevNextButtons(emblaApi);
   const { selectedSnap, snapCount } = useSelectedSnapDisplay(emblaApi);
-  console.log(slides, "slide")
+  
   return (
     <section className={styles.embla}>
       <div

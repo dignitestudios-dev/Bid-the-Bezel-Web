@@ -4,13 +4,11 @@ import { showError } from "@/lib/toast";
 import { useQuery } from "@tanstack/react-query";
 
 export const useAddProductToFavorite = (id: string) =>
-
-    useApiMutation<any, any>({
+    useApiMutation<any, void>({
         endpoint: `/favorites/${id}`,
         method: "POST",
         invalidateKeys: ["get-home-listing", "fav-list", "get-listing-detail", "get-listing"],
         mutationOptions: {
-
             onError: (error: any) => {
                 showError(error?.response.data.message);
             }

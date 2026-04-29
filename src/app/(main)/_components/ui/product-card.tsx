@@ -2,15 +2,12 @@
 
 import Badge from "@/components/ui/badge";
 import { useAddProductToFavorite } from "@/features/fav-product/hook";
-import { displayPrice } from "@/lib/helper";
 import { mapProductToUI } from "@/lib/mappers/product.mapper";
 import { showSuccess } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import { formatTimeLeft } from "@/lib/utils/date.utils";
-import { Loader, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
 
 
 const ProductCard = ({
@@ -21,25 +18,22 @@ const ProductCard = ({
   id: string
 }) => {
 
-
-
   if (!prod) return null;
 
-  const [isFav, setIsFav] = useState(prod?.isFavorite);
+
 
   const product = mapProductToUI(prod);
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(id || "");
+
   const handleAddToFavorite = () => {
     addProductToFavorite(undefined, {
       onSuccess: () => {
-        setIsFav((prev: boolean) => !prev);
         showSuccess(
-          isFav
+          prod?.isFavorite
             ? "Product removed from favorites"
             : "Product added to favorites"
         );
-
-      },
+      }
     });
   };
 
@@ -68,10 +62,10 @@ const ProductCard = ({
                 viewBox="0 0 24 24"
                 stroke="white"
                 strokeWidth={1}
-                fill={isFav ? "red" : "none"}
+                fill={prod?.isFavorite ? "red" : "none"}
                 className={cn(
                   "w-7 h-7 transition-all duration-300",
-                  isFav && "scale-110"
+                  prod?.isFavorite && "scale-110"
                 )}
               >
                 <path

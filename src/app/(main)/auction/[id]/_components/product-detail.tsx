@@ -31,7 +31,7 @@ const ProductDetail = ({ product }: Props) => {
       onSuccess: () => {
         setIsFav((prev: boolean) => !prev);
         showSuccess(
-          isFav
+          product?.isFavorite
             ? "Product removed from favorites"
             : "Product added to favorites"
         );
@@ -56,7 +56,7 @@ const ProductDetail = ({ product }: Props) => {
             className='cursor-pointer '
           >
             <div className="pointer-events-none">
-              <FavBtn isFav={isFav} />
+              <FavBtn isFav={product?.isFavorite} />
             </div>
           </button>
         </div>
