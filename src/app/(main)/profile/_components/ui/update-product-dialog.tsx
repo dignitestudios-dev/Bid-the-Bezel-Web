@@ -36,7 +36,7 @@ export const updateProductSchema = z.object({
     .min(1, "Description is required")
     .min(10, "Description must be at least 10 characters")
     .max(200, "Description must be at most 200 characters"),
-    model: z
+  model: z
     .string()
     .trim()
     .min(1, "Model is required")
@@ -58,7 +58,7 @@ export function UpdateProductDialog({
   setOpen: (open: boolean) => void;
   initialTitle?: string;
   initialDescription?: string;
-    model?: string;
+  model?: string;
 }) {
   const { mutate: updateProduct, isPending } = useUpdateProduct();
 
@@ -75,7 +75,7 @@ export function UpdateProductDialog({
     defaultValues: {
       brandName: initialTitle,
       description: initialDescription,
-        model: model,
+      model: model,
     },
   });
 
@@ -88,9 +88,9 @@ export function UpdateProductDialog({
         onSuccess: () => {
           setOpen(false);
           reset({
-            brandName:values.brandName,
-            description:values.description,
-              model: values.model,
+            brandName: values.brandName,
+            description: values.description,
+            model: values.model,
           });
         },
       }
@@ -99,7 +99,7 @@ export function UpdateProductDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogContent>
+      <AlertDialogContent className="max-w-lg w-full">
         <AlertDialogHeader>
           <AlertDialogTitle>Update Product</AlertDialogTitle>
           <AlertDialogDescription>
@@ -110,52 +110,53 @@ export function UpdateProductDialog({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Title */}
           <div>
-           <Select
-                value={initialTitle}
+            <Select
+              value={initialTitle}
 
-                onValueChange={(value) => {
-                  setValue("brandName", value, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  });
-                }}
-              >
-                <SelectTrigger className={`peer w-full rounded-xl border-2 bg-white px-4 py-7  text-[15px] text-black focus:outline-none transition-all ${errors.brandName
-                  ? "border-red-500"
-                  : "border-gray-200 focus:border-gray-700"
-                  }`} >
-                  <SelectValue placeholder="Select watch brand" />
-                </SelectTrigger>
+              onValueChange={(value) => {
+                setValue("brandName", value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+              }}
+            >
+              <SelectTrigger className={`peer w-full rounded-xl border-2 bg-white px-4 py-7  text-[15px] text-black focus:outline-none transition-all ${errors.brandName
+                ? "border-red-500"
+                : "border-gray-200 focus:border-gray-700"
+                }`} >
+                <SelectValue placeholder="Select watch brand" />
+              </SelectTrigger>
 
-                <SelectContent>
-                  <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
-                  <SelectItem value="richard_mille">Richard Mille</SelectItem>
-                  <SelectItem value="bovet">Bovet</SelectItem>
-                  <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
-                  <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
-                  <SelectItem value="louis_monne">Louis Monne</SelectItem>
-                </SelectContent>
-              </Select>
+              <SelectContent>
+                <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
+                <SelectItem value="richard_mille">Richard Mille</SelectItem>
+                <SelectItem value="bovet">Bovet</SelectItem>
+                <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
+                <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
+                <SelectItem value="louis_monne">Louis Monne</SelectItem>
+              </SelectContent>
+            </Select>
             {errors.brandName && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.brandName.message}
               </p>
             )}
           </div>
-<FloatingInput 
-id="model"
-label="Model"
-{...register("model")}
-error={errors.model?.message}
-/>
+          <FloatingInput
+            id="model"
+            label="Model"
+            {...register("model")}
+            error={errors.model?.message}
+          />
           {/* Description */}
           <div>
             <Textarea
-                id="description"
+              id="description"
               placeholder="Enter description"
               {...register("description")}
               rows={7}
               maxLength={200}
+              className="w-full break-all whitespace-pre-wrap"
             />
             {errors.description && (
               <p className="text-red-500 text-sm mt-1">

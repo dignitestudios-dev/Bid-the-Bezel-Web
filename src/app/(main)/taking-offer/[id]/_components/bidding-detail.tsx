@@ -1,34 +1,48 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import CurrentBid from "./current-bid";
 import TopBids from "./top-bids";
 import AuthStatus from "./auth-status";
 import Reviews from "./reviews";
 import { useAppSelector } from "@/lib/hooks";
 import CurrentBidSeller from "./current-bid-seller";
-import UnAuthStatus from "@/app/(main)/auction/[id]/_components/unauth-status";
+import UnAuthStatus from "./unauth-status";
+import { useGetProductBids } from "@/features/bidding/hooks";
+import BidSkeleton from "./ui/bid-skeleton";
 
 type Props = {
-  sellerId?: string;
-  name?: string;
-  price?: number;
-  watch: OfferWatch;
+  product: AuctionProduct;
 };
 
-const BiddingDetail = ({ sellerId, watch }: Props) => {
+const BiddingDetail = ({ product }: Props) => {
   const user = useAppSelector((state) => state.auth.user);
-
+  const isSeller = user?.id === product?.seller?._id;
+  const isAuthenticated = product?.authentication?.status === 'authenticated';
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(product?._id, 1, 10);
+  const { data: paginatedBids, isLoading:
+    paginatedBidsLoading } = useGetProductBids(product?._id, currentPage, 10);
+  // bidsData?.data?.[0]?.currentBidder?.
+  if (bidsLoading) {
+    return <BidSkeleton />
+  }
   return (
     <div className="lg:w-[40%] space-y-7">
-      {user?.id == sellerId ? (
-        <CurrentBidSeller bidders={watch.offers} />
+      {product.isMyProduct ? (
+        <CurrentBidSeller product={product} bidsData={bidsData!} />
       ) : (
-        <CurrentBid bidders={watch.offers} watch={watch} />
+        <CurrentBid product={product} bidsData={bidsData!} />
       )}
-
-      <TopBids />
-      {watch.isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
-      <Reviews />
+      <TopBids
+        topBids={bidsData?.data ?? []}
+        paginatedBids={paginatedBids?.data ?? []}
+        pagination={paginatedBids?.pagination}
+        currentPage={currentPage}
+        paginatedBidsLoading={paginatedBidsLoading}
+        setCurrentPage={setCurrentPage}
+      />
+      {isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
+      <Reviews sellerId={product?.seller?._id} />
     </div>
   );
 };

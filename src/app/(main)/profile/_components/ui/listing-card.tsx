@@ -21,6 +21,7 @@ type Props = {
   description: string;
   model: string;
   id: string;
+  product?: any;
 };
 
 const ListingCard = ({
@@ -34,19 +35,24 @@ const ListingCard = ({
   description,
   model,
   id,
+  product,
 }: Props) => {
   const router = useRouter();
   const [unAuthenticateDialog, setUnAuthenticateDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [updateDialog, setUpdateDialog] = useState(false);
 
+  let pathname =
+    type === "auction"
+      ? `/auction/${id}`
+      : type === "fixed_price"
+        ? `/fixed-price/${id}`
+        : `/fixed-price/${id}`;
+
   return (
     <div className="card p-0 relative overflow-hidden">
       {status == "pending" || status === "active" || status === "sold" ? (
-        <Link
-          href={`/fixed-price/${id}`}
-          className="p-3 w-full flex items-start gap-3"
-        >
+        <Link href={pathname} className="p-3 w-full flex items-start gap-3">
           <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
             <Image
               src={image}
@@ -78,14 +84,14 @@ const ListingCard = ({
 
           <div className="flex-1">
             <p className="text-lg font-semibold text-end">${price}</p>
-            <p className="text-lg font-medium">{brandName}</p>
+            <p className="text-lg font-medium">{model}</p>
           </div>
         </div>
       )}
 
-      {!isDraftShown && status === "draft" && (
+      {status === "draft" && (
         <div className="p-4 border-t border-dashed  flex flex-col sm:flex-row gap-3">
-             <Button
+          <Button
             variant="destructive"
             className="flex-1"
             onClick={() => setDeleteDialog(true)}
@@ -122,13 +128,16 @@ const ListingCard = ({
 
       {status === "active" && (
         <div className="p-4 border-t border-dashed bg-red-50/50 flex flex-col sm:flex-row gap-3">
-          <Button
-            variant="destructive"
-            className="flex-1"
-            onClick={() => setDeleteDialog(true)}
-          >
-            Delete Product
-          </Button>
+          {!product.auction.currentBidder && (
+            <Button
+              variant="destructive"
+              className="flex-1"
+              onClick={() => setDeleteDialog(true)}
+            >
+              Delete Product
+            </Button>
+          )}
+
           <Button
             variant="default"
             className="flex-1"
@@ -138,14 +147,26 @@ const ListingCard = ({
           </Button>
         </div>
       )}
+      {product?.isMyProduct &&
+        product?.deliveryFlow === "at_seller" &&
+        product?.status === "sold" && (
+          <div className="p-4 border-t border-dashed bg-red-50/50 flex flex-col sm:flex-row gap-3">
+            <Button
+              variant="default"
+              className="flex-1"
+              onClick={() => router.push(`/seller/shipping-details/${id}`)}
+            >
+              Fill Shipping Details
+            </Button>
+          </div>
+        )}
       <div
-        className={`p-3 text-white font-medium text-center  ${
-          type === "auction"
-            ? "bg-[#415A77]"
-            : type === "fixed_price"
-              ? "bg-[#778DA9]"
-              : "bg-[#D9B918]"
-        }`}
+        className={`p-3 text-white font-medium text-center  ${type === "auction"
+          ? "bg-[#415A77]"
+          : type === "fixed_price"
+            ? "bg-[#778DA9]"
+            : "bg-[#D9B918]"
+          }`}
       >
         {type === "auction"
           ? "Auction"
@@ -163,7 +184,14 @@ const ListingCard = ({
         open={deleteDialog}
         setOpen={setDeleteDialog}
       />
-      <UpdateProductDialog model={model} open={updateDialog} setOpen={setUpdateDialog} id={id} initialTitle={brandName} initialDescription={description} />
+      <UpdateProductDialog
+        model={model}
+        open={updateDialog}
+        setOpen={setUpdateDialog}
+        id={id}
+        initialTitle={brandName}
+        initialDescription={description}
+      />
     </div>
   );
 };

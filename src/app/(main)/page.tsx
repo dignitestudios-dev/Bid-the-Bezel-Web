@@ -10,13 +10,13 @@ import WatchTosell from "./_components/watch-to-sell";
 
 export default function Home() {
   const { data } = useGetAllListing()
-  
+
   return (
     <div>
       <Hero />
-      <Aunctions />
+      <Aunctions auctionWatches={data?.data.auction || []} />
       <FixedPrice fixedPrice={data?.data?.fixed_price || []} />
-      <TakingOffers />
+      <TakingOffers takingOffers={data?.data?.taking_offers || []} />
       <BrowseByCategories />
       <WatchTosell />
       <Plans />

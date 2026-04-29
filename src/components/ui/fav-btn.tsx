@@ -2,14 +2,14 @@ import React, { Dispatch, SetStateAction } from 'react'
 
 type Props = {
     isFav:boolean;
-    setIsFav: Dispatch<SetStateAction<boolean>>
+    setIsFav?: Dispatch<SetStateAction<boolean>>
 }
 
 const FavBtn = ({isFav , setIsFav}: Props) => {
   return (
      <div className="">
                     <button
-                      onClick={() => setIsFav(!isFav)}
+                      onClick={() => setIsFav?.(!isFav)}
                       className={`w-6 h-6 md:w-10 md:h-10 rounded-lg flex items-center justify-center 
                       bg-[#F7F7F7] backdrop-blur-md shadow-md transition-all duration-300
                       ${isFav ? "scale-110" : "scale-100"}`}

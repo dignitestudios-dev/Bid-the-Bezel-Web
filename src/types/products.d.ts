@@ -4,8 +4,43 @@ interface HomepageProductsResponse {
   data: {
     fixed_price: FixedPriceProduct[];
     auction: AuctionProduct[];
-    taking_offers: any[];
+    taking_offers: TakingOfferProduct[];
   };
+}
+
+ interface TakingOfferProduct {
+  _id: string;
+  brandName: string;
+  model: string;
+  price: number;
+  effectivePrice: number;
+  soldPrice: number;
+  description: string;
+  referenceId: string;
+  type: "taking_offers";
+  status: "active" | string;
+  currentHolder: "seller" | "buyer" | string;
+  deliveryFlow: "at_seller" | string;
+  isDeleted: boolean;
+
+  seller: User;
+  buyer: User | null;
+
+  images: ProductImage[];
+
+  authFlow: AuthFlow;
+  authentication: Authentication;
+
+  shipments: Record<string, any>;
+
+  auction: Auction;
+
+  isMyProduct: boolean;
+  isDraftPageShown: boolean;
+  isFavorite: boolean;
+
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface FixedPriceProduct {
@@ -42,6 +77,7 @@ interface FixedPriceProduct {
 
   isMyProduct: boolean;
   isDraftPageShown: boolean;
+  isFavorite: boolean;
 
   createdAt: string;
   updatedAt: string;
@@ -52,33 +88,31 @@ interface AuctionProduct {
   brandName: string;
   model: string;
   price: number;
+  effectivePrice: number;
   soldPrice: number;
   description: string | null;
   referenceId: string;
+
   type: "auction";
-  status: string;
-  currentHolder: string;
-  deliveryFlow: string;
+  status: "active" | "inactive" | "sold" | "deleted"; // adjust if more statuses exist
+  currentHolder: "seller" | "buyer";
+
+  deliveryFlow: "at_seller" | "shipping"; // extend if needed
   isDeleted: boolean;
 
   seller: Seller;
-  buyer: any;
+  buyer: Buyer | null;
 
   images: ProductImage[];
 
-  authFlow: {
-    sellerRequestedPreAuth: boolean;
-    buyerRequestedAuth: boolean;
-  };
+  authFlow: AuthFlow;
 
-  authentication: {
-    status: string;
-    authenticatedBy: any;
-    authenticatedAt: string | null;
-  };
+  authentication: Authentication;
 
-  shipments: any[];
+  shipments: Shipment[];
 
+  auction: AuctionDetails;
+  isFavorite: boolean;
   isMyProduct: boolean;
   isDraftPageShown: boolean;
 

@@ -142,6 +142,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
           <FloatingInput
             id="price"
             label="Price"
+            type="number"
             maxLength={5000}
             {...register("price")}
             error={errors.price?.message}

@@ -1,4 +1,4 @@
-import { useApiMutation } from "@/hooks/api/useApiMutation";
+import { useApiMutation } from "@/hooks/api/use-api-mutation";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -19,11 +19,20 @@ import { setToken, removeToken, getToken } from "@/lib/cookies";
 /* =========================
    AUTH: LOGIN
 ========================= */
+
+export const useUpdateFcmToken = () =>
+  useApiMutation({
+    endpoint: "/auth/update-fcm",
+    method: "POST",
+    toBody: (token: string) => ({ fcmToken: token }),
+    // invalidateKeys: ["get-profile", "get-listing-detail" , "get-home-listing"],
+  });
+
 export const useLogin = () =>
   useApiMutation<AuthResponse, LoginPayload>({
     endpoint: "/auth",
     method: "POST",
-    invalidateKeys: ["get-profile"],
+    invalidateKeys: ["get-profile", "get-listing-detail" , "get-home-listing"],
     mutationOptions: {
       onSuccess: (data) => {
         const token = data?.data?.token;
@@ -99,6 +108,12 @@ export const useCheckUsername = () =>
     method: "POST",
   });
 
+
+  export const useCheckEmail = () =>
+  useApiMutation({
+    endpoint: "/auth/check-email",
+    method: "POST",
+  });
 /* =========================
    COMPLETE PROFILE
 ========================= */
@@ -146,6 +161,8 @@ export const useLogout = () =>
     },
   });
 
+
+
 export const useDeleteAccount = () =>
   useApiMutation<void, { otp: string }>({
     endpoint: `/auth/delete`,
@@ -179,7 +196,7 @@ export const useMe = () => {
     enabled: getToken() ? true : false,
     staleTime: Infinity,
     gcTime: Infinity,
-     retry: false,
+    retry: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,

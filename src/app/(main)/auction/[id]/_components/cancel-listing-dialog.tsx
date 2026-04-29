@@ -2,16 +2,26 @@ import ListingCancel from '@/components/icons/ListingCancel'
 import { AlertDialogHeader } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { deleteProduct } from '@/features/products/hook'
 import Image from 'next/image'
 import React, { Dispatch, SetStateAction } from 'react'
 
 type Props = {
+  id:string;
     cancelListing:boolean;
 setCancelListing: Dispatch<SetStateAction<boolean>>;
 setCancelSuccess: Dispatch<SetStateAction<boolean>>
 }
 
-const CancelListingDialog = ({setCancelListing , cancelListing , setCancelSuccess}: Props) => {
+const CancelListingDialog = ({setCancelListing , id ,  cancelListing , setCancelSuccess}: Props) => {
+   const {mutateAsync , isPending} = deleteProduct()
+   
+   const handleDelete = async () => {
+  const res = await mutateAsync({ id });
+  if (res?.success) {
+    setCancelListing(false);
+  }
+};
   return (
    <Dialog open={cancelListing} onOpenChange={setCancelListing}>
       <DialogContent className="md:max-w-lg  overflow-y-auto">
@@ -29,15 +39,17 @@ const CancelListingDialog = ({setCancelListing , cancelListing , setCancelSucces
             <div className='flex justify-center gap-4'>
           <Button
             onClick={() => {setCancelListing(false);}}
+            disabled={isPending}
             className="w-[80%] mx-auto mt-4 py-4 bg-gray-100 text-black border "
           >
             Close
           </Button>
           <Button
-            onClick={() => {setCancelListing(false); setCancelSuccess(true)}}
+            onClick={handleDelete}
+            disabled={isPending}
             className="w-[80%] mx-auto mt-4 py-4 bg-red-700 text-white border "
           >
-            Cancel
+            Yes
           </Button>
           </div>
         </div>

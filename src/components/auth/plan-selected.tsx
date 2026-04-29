@@ -21,7 +21,7 @@ const PlanSelected = ({
   setStep?: (step: Step) => void;
 }) => {
   return (
-    <div className="flex flex-col w-full space-y-6">
+    <div className="flex flex-col w-full space-y-6 md:px-0 px-4">
       <div className="bg-gray-100 w-full flex justify-center items-center">
         {/* Selected Plan Card */}
         <div className="p-6 rounded-2xl border-2 w-[340px] max-w-full border-gray-700 shadow-lg">

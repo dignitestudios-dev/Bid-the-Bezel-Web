@@ -1,8 +1,7 @@
-import { useApiMutation } from "@/hooks/api/useApiMutation";
+import { useApiMutation } from "@/hooks/api/use-api-mutation";
 import { WatchDetailPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
 import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[id]/_components/shipping-form";
-import { BillingPaylod } from "../billing/schema";
 
 
 export const useAddProduct = () =>
@@ -52,38 +51,85 @@ export const useUnAuthenticate = () =>
         },
     });
 
-    export const useUpdateProduct = () =>
-  useApiMutation<any, { id: string; brandName: string; description: string; model: string }>({
-    endpoint: ({ id }) => `/products/${id}`,
-    method: "PATCH",
-    isMultiPart: false, // no files → use JSON
-    toBody: (data) => ({
-      brandName: data.brandName,
-      description: data.description,
-      model: data.model,
-
-    }),
-    invalidateKeys: ["get-profile", "get-my-listing"],
+export const useMoveToTakingOffers = () =>
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `/products/${id}/taking-offers`,
+    method: "PUT",
+    invalidateKeys: [
+      "get-profile",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+    ],
+    
     mutationOptions: {
-      onSuccess: (data) => {
+        onSuccess: (data) => {
         showSuccess(data?.message);
       },
       onError: (err) => {
-        showError(err?.message);
+        showError(err);
       },
     },
   });
-export const deleteProduct = () =>
-    useApiMutation<any, { id: string }>({
-        endpoint: ({ id }) => `/products/${id}`,
-        method: "DELETE",
-        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing"],
+
+ export const useRelistAuction = () =>
+    useApiMutation<any, { id: string; days: number }>({
+        endpoint: ({ id }) => `/products/${id}/relist-auction`,
+        method: "POST",
+        toBody: ({ days }) => ({
+          auctionDays:days,
+        }),
+        invalidateKeys: [
+            "get-profile",
+            "shipping-result",
+            "get-my-listing",
+            "get-listing-detail",
+        ],
         mutationOptions: {
             onError: (err) => {
                 showError(err);
             },
         },
     });
+export const useUpdateProduct = () =>
+    useApiMutation<any, { id: string; brandName: string; description: string; model: string }>({
+        endpoint: ({ id }) => `/products/${id}`,
+        method: "PATCH",
+        isMultiPart: false, // no files → use JSON
+        toBody: (data) => ({
+            brandName: data.brandName,
+            description: data.description,
+            model: data.model,
+
+        }),
+        invalidateKeys: ["get-profile", "get-my-listing"],
+        mutationOptions: {
+            onSuccess: (data) => {
+                showSuccess(data?.message);
+            },
+            onError: (err) => {
+                showError(err?.message);
+            },
+        },
+    });
+
+
+export const deleteProduct = () =>
+    useApiMutation<{message: string , success:boolean}, { id: string }>({
+        endpoint: ({ id }) => `/products/${id}`,
+        method: "DELETE",
+        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing" , "get-my-deleted-listing" ,"get-listing-detail"],
+        mutationOptions: {
+            onSuccess: (data) => {
+                showSuccess(data?.message);
+            },
+            onError: (err) => {
+                showError(err?.message);
+            },
+        },
+    });
+
+
 
 export const useAuthenticate = () =>
     useApiMutation<any, AuthenticatePayload>({

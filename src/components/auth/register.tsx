@@ -100,7 +100,7 @@ const Register = ({
   };
 
   return (
-    <div className="w-[340px] max-w-full">
+    <div className="w-[340px] max-w-full md:px-0 px-4">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <h2 className="text-2xl font-semibold">Lets get your account set up</h2>
 

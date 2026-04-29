@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import OrderCompletedBuyer from "./_components/order-completed-buyer";
 
 type Props = {};
@@ -6,7 +6,9 @@ type Props = {};
 const page = (props: Props) => {
   return (
     <div>
-      <OrderCompletedBuyer />
+      <Suspense fallback={<div>Loading...</div>}>
+        <OrderCompletedBuyer />
+      </Suspense>
     </div>
   );
 };

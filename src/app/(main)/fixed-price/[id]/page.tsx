@@ -11,9 +11,8 @@ type Props = {
 
 const Page = ({ params }: Props) => {
   const { id } = use(params);
-  const router = useRouter();
   const { data, isLoading } = useGetMyListingDetail(id);
-  const shouldRedirect = data?.data?.isDraftPageShown;
+
 
   return (
     <div>

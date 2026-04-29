@@ -16,7 +16,7 @@ const WatchListed = () => {
     const saleType = localStorage.getItem("saleType");
     queryClient.invalidateQueries({ queryKey: ["get-listing-detail"] });
     saleType === "auction"
-      ? router.push("/auction/auc-004")
+      ? router.push(`/auction/${id}`)
       : router.push(`/fixed-price/${id}`);
   };
   return (

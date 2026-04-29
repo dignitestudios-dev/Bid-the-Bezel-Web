@@ -21,9 +21,7 @@ type Props = {
 
 const SingleProduct = ({ id, productData }: Props) => {
   const router = useRouter();
-  // if (productData.isDraftPageShown) {
-  //   router.replace(`/seller/shipping-details-auth/${id}`);
-  // }
+  
 
   return (
     <div className="max-w-screen-2xl mx-auto w-[90%] py-12">

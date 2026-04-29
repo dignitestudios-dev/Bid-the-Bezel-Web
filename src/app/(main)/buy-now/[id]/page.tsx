@@ -1,20 +1,17 @@
-import React, { use } from "react";
 import BuyNow from "../_components/buy-now";
-import { getWatchById } from "@/lib/helper";
 
-type Props = {
+interface Props {
   params: Promise<{ id: string }>;
-};
+}
 
-const page = ({ params }: Props) => {
-  const { id } = use(params);
-  const watch = getWatchById(id);
+const Page = async ({ params }: Props) => {
+  const { id } = await params;
 
   return (
-    <div className="max-w-screen-2xl mx-auto">
-      <BuyNow watch={watch} />
+    <div className="max-w-screen-2xl p-2 mx-auto">
+      <BuyNow id={id} />
     </div>
   );
 };
 
-export default page;
+export default Page;

@@ -1,0 +1,283 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { FloatingInput } from "@/components/ui/floating-input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { generateReferenceId } from "@/lib/helper";
+import { useMemo } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AuctionWatchPayload, auctionWatchSchema } from "@/features/auction/schema";
+import { useAddAuctionProduct } from "@/features/auction/hook";
+import z from "zod";
+
+type Props = {
+    onNext: () => void;
+    setWatchId: React.Dispatch<React.SetStateAction<string | null>>;
+};
+
+const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
+    const referenceId = useMemo(() => generateReferenceId(), []);
+
+    const { mutate, isPending } = useAddAuctionProduct();
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        watch,
+        getValues,
+        formState: { errors },
+    } = useForm<z.input<typeof auctionWatchSchema>>({
+        resolver: zodResolver(auctionWatchSchema),
+        mode: "onChange",
+        defaultValues: {
+            auctionDays: 3,
+            watchBrand: "",
+            modelReference: "",
+            referenceId: referenceId,
+            price: "",
+            contents: "",
+            photos: [],
+        },
+    });
+
+    const selectedDays = watch("auctionDays");
+
+    const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+
+        if (!files) return;
+
+        const fileArray = Array.from(files).map((file) => ({
+            file,
+            name: file.name,
+            url: URL.createObjectURL(file),
+        }));
+
+        setValue("photos", fileArray, { shouldValidate: true });
+    };
+
+    const onSubmit = (data: z.input<typeof auctionWatchSchema>) => {
+        mutate(data as AuctionWatchPayload, {
+            onSuccess: (response) => {
+                if (response?.data) {
+                    setWatchId(response?.data?._id)
+                    onNext();
+
+                }
+            },
+        });
+    };
+
+    const handleRemovePhoto = (index: number) => {
+        const currentPhotos = watch("photos") || [];
+
+        const updatedPhotos = currentPhotos.filter((_, i) => i !== index);
+
+        setValue("photos", updatedPhotos, { shouldValidate: true });
+    };
+
+    return (
+        <div className="bg-white border max-w-4xl mx-auto rounded-xl p-8 shadow-sm">
+            <h3 className="font-semibold mb-6 text-2xl ">Watch Details</h3>
+            <div className="bg-[#F7F7F7] p-3 my-8 space-y-2 rounded-xl border">
+                <h1 className="text-xl font-semibold">Watch Reference ID</h1>
+                <h4 className="text-lg font-semibold">{referenceId}</h4>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="mb-6">
+                    <p className="text-sm font-medium mb-2">
+                        Select Auction Days <span className="text-red-500">*</span>
+                    </p>
+
+                    <div className="flex gap-3">
+                        {[3, 5, 7].map((day) => (
+                            <button
+                                key={day}
+                                type="button"
+                                onClick={() =>
+                                    setValue("auctionDays", day, {
+                                        shouldValidate: true,
+                                        shouldDirty: true,
+                                    })
+                                }
+                                className={`px-4 py-2 rounded-full border text-sm transition-all
+          ${selectedDays === day
+                                        ? "bg-slate-800 text-white"
+                                        : "bg-white text-gray-700"
+                                    }
+        `}
+                            >
+                                {day} Days
+                            </button>
+                        ))}
+                    </div>
+
+                    {errors.auctionDays?.message && (
+                        <p className="mt-2 text-sm text-red-500">
+                            {errors.auctionDays.message}
+                        </p>
+                    )}
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <div className="space-y-1">
+                            {/* <label className="text-sm font-medium">Watch Brand</label> */}
+
+                            <Select
+                                value={getValues("watchBrand")}
+
+                                onValueChange={(value) => {
+                                    setValue("watchBrand", value, {
+                                        shouldValidate: true,
+                                        shouldDirty: true,
+                                    });
+                                }}
+                            >
+                                <SelectTrigger className={`peer w-full rounded-xl border-2 bg-white px-4 py-7  text-[15px] text-black focus:outline-none transition-all ${errors.watchBrand
+                                    ? "border-red-500"
+                                    : "border-gray-200 focus:border-gray-700"
+                                    }`} >
+                                    <SelectValue placeholder="Select watch brand" />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
+                                    <SelectItem value="richard_mille">Richard Mille</SelectItem>
+                                    <SelectItem value="bovet">Bovet</SelectItem>
+                                    <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
+                                    <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
+                                    <SelectItem value="louis_monne">Louis Monne</SelectItem>
+                                </SelectContent>
+                            </Select>
+
+                            {errors.watchBrand?.message && (
+                                <p className="text-sm text-red-500">
+                                    {errors.watchBrand.message}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    <div>
+                        <FloatingInput
+                            id="modelReference"
+                            label="Model Reference"
+                            {...register("modelReference")}
+                            error={errors.modelReference?.message}
+                        />
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <FloatingInput
+                        id="price"
+                        label="Price"
+                        type="number"
+                        maxLength={5000}
+                        {...register("price")}
+                        error={errors.price?.message}
+                    />
+                </div>
+
+                <div className="relative w-full mb-6">
+                    <textarea
+                        id="contents"
+                        placeholder=" "
+                        className={`peer w-full rounded-xl border-2 bg-white px-4 pt-6 pb-2 text-[15px] text-black focus:outline-none transition-all min-h-[100px]
+      ${errors.contents ? "border-red-500" : "border-gray-200 focus:border-gray-700"}
+    `}
+                        maxLength={200}
+                        {...register("contents")}
+                    />
+
+                    <label
+                        htmlFor="contents"
+                        className={`pointer-events-none absolute left-4 top-2 text-[14px] transition-all duration-200
+      peer-placeholder-shown:top-4 peer-placeholder-shown:text-[16px]
+      peer-focus:top-2 peer-focus:text-[14px]
+      ${errors.contents ? "text-red-500" : "text-gray-500 peer-focus:text-gray-700"}
+    `}
+                    >
+                        Contents / Notes
+                    </label>
+
+                    {errors.contents?.message && (
+                        <p className="mt-1 text-xs text-red-500">
+                            {errors.contents.message}
+                        </p>
+                    )}
+                </div>
+
+                <div className="mb-6">
+                    <label className="text-sm mb-1 block">Photos</label>
+
+                    <input
+                        type="file"
+                        multiple
+                        accept="image/png, image/jpeg"
+                        className="hidden"
+                        id="photos"
+                        onChange={handlePhotoUpload}
+                    />
+
+                    <label
+                        htmlFor="photos"
+                        className="border-2 border-dashed rounded-lg p-8 text-center bg-gray-50 block cursor-pointer"
+                    >
+                        <div className="flex flex-col items-center">
+                            <div className="mb-2">📤</div>
+                            <p className="text-sm font-medium mb-1">Click to upload</p>
+                            <p className="text-xs text-gray-500">
+                                Only JPG, PNG files (upto 5MB)
+                            </p>
+                        </div>
+                    </label>
+
+                    {errors.photos?.message && (
+                        <p className="mt-2 text-xs text-red-500">{errors.photos.message}</p>
+                    )}
+
+                    {watch("photos")?.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                            {watch("photos").map((file, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex items-center gap-2 p-2 bg-gray-50 rounded-md"
+                                >
+                                    <img
+                                        src={file.url}
+                                        alt={file.name}
+                                        className="w-10 h-10 object-cover rounded"
+                                    />
+
+                                    <span className="text-sm flex-1">{file.name}</span>
+
+                                    {/* ❌ Remove Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemovePhoto(idx)}
+                                        className="text-red-500 text-xs font-medium hover:underline"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <Button
+                    className="w-full bg-slate-900 hover:bg-slate-800"
+                    type="submit"
+                    disabled={isPending}
+                >
+                    {isPending ? "Submitting" : "Next"}
+                </Button>
+            </form>
+        </div>
+    );
+};
+
+export default AuctionWatchDetailForm;

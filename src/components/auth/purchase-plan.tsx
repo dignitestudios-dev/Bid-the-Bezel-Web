@@ -40,8 +40,8 @@ const PurchasePlan = ({
     );
   };
   return (
-    <div className="w-full">
-      <div className="w-[340px] max-w-full mx-auto">
+    <div className="w-full ">
+      <div className="w-[340px] max-w-full mx-auto md:px-0 px-4">
         <div className="flex items-center justify-between mb-6">
           <span className="text-sm font-medium text-gray-600">Step</span>
           <span className="text-sm font-medium text-gray-600">3/3</span>

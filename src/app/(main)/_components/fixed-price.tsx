@@ -13,14 +13,7 @@ const SLIDE_COUNT = 16;
 const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 const FixedPrice = ({ fixedPrice }: Props) => {
   
-  const mappedData = fixedPrice?.map((item: any) => ({
-  watchId: item._id,
-  name: `${item.brandName} `,
-  image: item.images?.[0]?.location || "https://picsum.photos/400",
-  price: item.price,
-  saleType: item.type === "fixed_price" ? "fixed-price" : item.type,
-  isAuthenticated: item.authentication?.status === "approved", 
-}));
+
 
   return (
     <div className=" bg-[#101f2f]">
@@ -50,7 +43,7 @@ const FixedPrice = ({ fixedPrice }: Props) => {
           <EmblaCarousel
             FColor="16, 31, 47"
             // @ts-ignore
-            slides={mappedData}
+            slides={fixedPrice}
             options={OPTIONS}
           />
         </div>

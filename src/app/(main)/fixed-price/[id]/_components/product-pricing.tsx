@@ -1,17 +1,17 @@
 "use client";
-import React, { useState } from "react";
-import CurrentBid from "./current-bid";
-import TopBids from "./top-bids";
 import AuthStatus from "./auth-status";
 import Reviews from "./reviews";
 import FavBtn from "@/components/ui/fav-btn";
 import Badge from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/hooks";
 import { MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import UnAuthStatus from "@/app/(main)/auction/[id]/_components/unauth-status";
+import { useRouter } from "next/navigation";
+import { useMe } from "@/features/auth/hooks";
+import { useAddProductToFavorite } from "@/features/fav-product/hook";
+import { showSuccess } from "@/lib/toast";
 
 type Props = {
   sellerId?: string;
@@ -21,15 +21,32 @@ type Props = {
 };
 
 const ProductPricing = ({ price, watch }: Props) => {
-  const [isFav, setIsFav] = useState(false);
-  const user = useAppSelector((state) => state.auth.user);
-  console.log(watch, "price")
+  const router = useRouter()
+  const { data: user, isLoading } = useMe();
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(watch?._id || "");
+  const handleAddToFavorite = () => {
+    addProductToFavorite(undefined, {
+      onSuccess: () => {
+
+        showSuccess(
+          watch?.isFavorite
+            ? "Product removed from favorites"
+            : "Product added to favorites"
+        );
+
+      },
+    });
+  };
+
   return (
     <div className="w-[40%] space-y-7">
       {/* <CurrentBid/>
       <TopBids/> */}
-      {(watch?.authentication?.status === "pending" ||
-        watch?.authentication?.status === "rejected") && (
+      {(
+        (watch.status === "pending" || watch.status === "rejected") &&
+        (watch?.authentication?.status === "pending" ||
+          watch?.authentication?.status === "rejected")
+      ) && (
           <div
             className={`${watch?.authentication?.status === "pending"
               ? "bg-orange-200 text-orange-800"
@@ -44,7 +61,18 @@ const ProductPricing = ({ price, watch }: Props) => {
       <div>
         <div className="flex justify-between">
           <h1 className="flex gap-2 text-3xl font-semibold">{watch?.model}</h1>
-          <FavBtn isFav={isFav} setIsFav={setIsFav} />
+          {!watch?.isMyProduct && (
+
+            <button
+              disabled={isPending}
+              className="cursor-pointer disabled:cursor-not-allowed"
+              onClick={handleAddToFavorite}
+            >
+              <div className="pointer-events-none">
+                <FavBtn isFav={watch?.isFavorite} />
+              </div>
+            </button>
+          )}
         </div>
         {watch?.authentication?.status === "approved" && (
 
@@ -55,15 +83,15 @@ const ProductPricing = ({ price, watch }: Props) => {
         )}
         <h1 className="text-3xl pt-2">${price}</h1>
 
-        {watch?.buyer && (
+        {!isLoading && user && watch?.buyer && (
           <div className=" border  rounded-2xl mt-4">
             <div className="flex justify-between p-5 pb-0">
               <h3 className="font-semibold">Buyer</h3>{" "}
             </div>
             <div className="flex border-b items-center p-5 gap-3">
-              <Image src={"/images/dp.png"} alt="al" width={60} height={60} />
+              <Image src={watch?.buyer?.profilePicture?.location || "/images/dp.png"} alt="al" width={60} height={60} />
               <div>
-                <h1 className="font-semibold mb-2">GuessMyname</h1>
+                <h1 className="font-semibold mb-2">{watch?.buyer?.userName}</h1>
               </div>
             </div>
 
@@ -75,19 +103,37 @@ const ProductPricing = ({ price, watch }: Props) => {
                   Chat with Buyer
                 </Button>
               </Link>
+              {watch?.isMyProduct && watch?.status === "sold" && watch?.deliveryFlow === "at_seller" && (
 
-              <Link href={"/buyer/shipping-details"} className="w-full">
-                <Button className="text-base w-full">Fill out Shipping</Button>
-              </Link>
+                <Button onClick={() => router?.push(`/seller/shipping-details/${watch?._id}`)} className="text-base w-full">Fill out Shipping</Button>
+
+
+              )}
+              {/* {watch?.status === "sold" && watch?.deliveryFlow === "marketplace" && (
+
+                <Button
+                  onClick={() => router?.push(`/buyer/shipping-details/${watch?._id}`)}
+                  className="text-base w-full"
+                >
+                  Fill out Shipping
+                </Button>
+              )} */}
             </div>
           </div>
         )}
       </div>
       {!watch?.isMyProduct && (
         <div>
-          {/* href={`/buy-now/${watch?._id}`} */}
+          {/* href={``} */}
           {/* <Link > */}
-          <Button className="w-full ">Buy Now</Button>
+          {!isLoading && user ? (
+
+            <Button onClick={() => router.push(`/buy-now/${watch?._id}`)} className="w-full ">Buy Now</Button>
+
+          ) : (
+            <Button onClick={() => router.push(`?authstep=login`)} className="w-full ">Login</Button>
+
+          )}
           {/* </Link> */}
         </div>
 
@@ -98,7 +144,7 @@ const ProductPricing = ({ price, watch }: Props) => {
       )} */}
 
       {watch?.authentication?.status === "approved" ? <AuthStatus /> : <UnAuthStatus />}
-      <Reviews />
+      <Reviews sellerId={watch?.seller?._id} />
     </div>
   );
 };
