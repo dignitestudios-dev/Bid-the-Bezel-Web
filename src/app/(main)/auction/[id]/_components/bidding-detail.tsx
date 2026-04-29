@@ -42,7 +42,7 @@ paginatedBidsLoading } = useGetProductBids(product?._id,currentPage , 10);
   setCurrentPage={setCurrentPage}
 />
       {isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
-      <Reviews />
+      <Reviews sellerId={product?.seller?._id} />
     </div>
   );
 };
