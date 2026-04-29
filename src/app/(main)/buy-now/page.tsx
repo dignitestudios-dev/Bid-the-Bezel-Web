@@ -1,10 +1,14 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 const page = () => {
   const router = useRouter();
-  router.push("/");
+
+  useEffect(() => {
+    router.push("/");
+  }, [router]);
+
   return <div>page</div>;
 };
 

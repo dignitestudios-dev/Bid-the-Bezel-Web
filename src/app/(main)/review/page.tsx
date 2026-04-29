@@ -3,7 +3,7 @@ import LeaveAReview from './_components/LeaveAReview'
 
 const page = () => {
   return (
-    <LeaveAReview/>
+    <></>
   )
 }
 
