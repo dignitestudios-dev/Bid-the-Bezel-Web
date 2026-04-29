@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  item: any;
+  item: TrackingHistory[];
 }
 
 const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }) => {
@@ -84,7 +84,7 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }
         </div>
         <DialogFooter>
           <div className="flex gap-3 w-full ">
-            <Button className="rounded-full flex-1 bg-[#14A752] text-white">
+            <Button disabled={!item?.[item?.length - 2]?.isMarked}  className="rounded-full flex-1 bg-[#14A752] text-white">
               Mark as Received
             </Button>
             <Button

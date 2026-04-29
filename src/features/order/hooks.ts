@@ -21,7 +21,7 @@ export const useCreateOrder = () =>
 
 
 export const useGetOrders = () => {
-    return useQuery({
+    return useQuery<OrderApiResponse>({
         queryKey: ["get-orders"],
         queryFn: async () => {
             const res = await apiClient.get(`/orders`);

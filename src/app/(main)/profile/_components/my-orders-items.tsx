@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import OrderStatusTrackingDialog from "./OrderStatusTrackingDialog";
-import OrderStatusTrackingDialogNoAuth from "./OrderStatusTrackingDialogNoAuth";
+import OrderStatusTrackingDialog from "./order-status-tracking-dialog";
+import OrderStatusTrackingDialogNoAuth from "./order-status-tracking-dialog-no-auth";
 import { useGetOrders } from "@/features/order/hooks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Dummy data for illustration purposes
 type ListingType = "fixed" | "auction" | "taking-offers";
@@ -85,38 +86,39 @@ const items: Fav[] = [
 
 const MyOrdersItems = () => {
   const { data: orders, isLoading } = useGetOrders()
-  console.log(orders)
   const [open, setOpen] = useState(false);
   const [openNoAuth, setOpenNoAuth] = useState(false);
+console.log(orders)
+  const [selected, setSelected] = useState<TrackingHistory[] | null>(null);
 
-  const [selected, setSelected] = useState<Fav | null>(null);
-
-  function openDialog(item: Fav) {
+  function openDialog(item: TrackingHistory[]) {
     setSelected(item);
     setOpen(true);
   }
 
-  function openDialogNoAuth(item: Fav) {
-    setSelected(item);
-    setOpenNoAuth(true);
-  }
-
+  // function openDialogNoAuth(item: TrackingHistory) {
+  //   setSelected(item);
+  //   setOpenNoAuth(true);
+  // }
+if(isLoading){
+  return <Skeleton className="w-full h-24" />
+}
   return (
     <>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto">
-        {orders?.data?.length === 0 ?
+        {!isLoading && orders?.data?.length === 0 ?
           <div className="col-span-2 text-center">No Orders Yet</div>
           :
-          orders?.data?.map((item: any, index: number) => (
+          orders?.data?.map((item: Order, index: number) => (
             <div
-              key={`${item.id}-${index}`}
+              key={`${item._id}-${index}`}
               className="card p-0 relative overflow-hidden"
             >
-              {item?.isReceived && (
+              {/* {item?.isReceived && (
                 <div className="absolute top-5 -left-[52px] -rotate-45 w-[180px] text-center py-1 bg-[#14A752] border-b-2 font-medium text-white border-[#E3E3E3]">
                   Received
                 </div>
-              )}
+              )} */}
 
               <div className="p-3 w-full flex items-start gap-3">
                 <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
@@ -152,7 +154,7 @@ const MyOrdersItems = () => {
                 {item?.product?.type === "auction"
                   ? "Auction"
                   : item?.product?.type === "fixed_price"
-                    ? "Fixed"
+                    ? "Marketplace"
                     : "Taking Offers"}
               </div>
             </div>
@@ -161,7 +163,7 @@ const MyOrdersItems = () => {
 
       <OrderStatusTrackingDialog
         open={open}
-        item={selected}
+        item={selected!}
         onOpenChange={(v) => {
           if (!v) setSelected(null);
           setOpen(v);
