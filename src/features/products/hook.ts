@@ -51,6 +51,46 @@ export const useUnAuthenticate = () =>
         },
     });
 
+export const useMoveToTakingOffers = () =>
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `/products/${id}/taking-offers`,
+    method: "PUT",
+    invalidateKeys: [
+      "get-profile",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+    ],
+    
+    mutationOptions: {
+        onSuccess: (data) => {
+        showSuccess(data?.message);
+      },
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
+
+ export const useRelistAuction = () =>
+    useApiMutation<any, { id: string; days: number }>({
+        endpoint: ({ id }) => `/products/${id}/relist-auction`,
+        method: "POST",
+        toBody: ({ days }) => ({
+          auctionDays:days,
+        }),
+        invalidateKeys: [
+            "get-profile",
+            "shipping-result",
+            "get-my-listing",
+            "get-listing-detail",
+        ],
+        mutationOptions: {
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
 export const useUpdateProduct = () =>
     useApiMutation<any, { id: string; brandName: string; description: string; model: string }>({
         endpoint: ({ id }) => `/products/${id}`,
@@ -72,11 +112,13 @@ export const useUpdateProduct = () =>
             },
         },
     });
+
+
 export const deleteProduct = () =>
-    useApiMutation<any, { id: string }>({
+    useApiMutation<{message: string , success:boolean}, { id: string }>({
         endpoint: ({ id }) => `/products/${id}`,
         method: "DELETE",
-        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing" , "get-my-deleted-listing"],
+        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing" , "get-my-deleted-listing" ,"get-listing-detail"],
         mutationOptions: {
             onSuccess: (data) => {
                 showSuccess(data?.message);
@@ -86,6 +128,8 @@ export const deleteProduct = () =>
             },
         },
     });
+
+
 
 export const useAuthenticate = () =>
     useApiMutation<any, AuthenticatePayload>({

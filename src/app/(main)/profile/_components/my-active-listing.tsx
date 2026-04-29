@@ -64,20 +64,20 @@ const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfi
             No Product Found
           </div>
 
-        ) : data?.data?.map((product: any, index: any) => (
+        ) : data?.data?.map((product: Product, index: any) => (
           <ListingCard
             key={index}
             product={product}
             image={product?.images[0]?.location}
-            title={product?.title}
+            title={product?.brandName}
             brandName={product?.brandName}
-            price={product?.price}
+            price={String(product?.price)}
             type={product?.type}
             model={product?.model}
             description={product?.description}
             status={product.status}
             id={product?._id}
-            isDraftShown={product?.isDraftShown} />
+            isDraftShown={product?.isDraftPageShown} />
         ))}
       </div>
     </div>
