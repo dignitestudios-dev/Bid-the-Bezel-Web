@@ -5,6 +5,7 @@ interface OrderApiResponse {
   pagination: Pagination;
 }
 
+
 interface Pagination {
   itemsPerPage: number;
   currentPage: number;
@@ -134,4 +135,9 @@ interface TrackingHistory {
   isMarked: boolean;
   timestamp: string | null;
   trackingLink?: string | null;
+  orderId: string;
 }
+type TrackingDialogData = {
+  orderId: string;
+  trackingHistory: TrackingHistory[];
+};

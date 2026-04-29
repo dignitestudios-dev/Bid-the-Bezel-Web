@@ -1,14 +1,10 @@
 "use client";
-import React, { useState } from "react";
-import CurrentBid from "./current-bid";
-import TopBids from "./top-bids";
 import AuthStatus from "./auth-status";
 import Reviews from "./reviews";
 import FavBtn from "@/components/ui/fav-btn";
 import Badge from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/hooks";
 import { MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import UnAuthStatus from "@/app/(main)/auction/[id]/_components/unauth-status";
@@ -148,7 +144,7 @@ const ProductPricing = ({ price, watch }: Props) => {
       )} */}
 
       {watch?.authentication?.status === "approved" ? <AuthStatus /> : <UnAuthStatus />}
-      <Reviews />
+      <Reviews sellerId={watch?.seller?._id} />
     </div>
   );
 };

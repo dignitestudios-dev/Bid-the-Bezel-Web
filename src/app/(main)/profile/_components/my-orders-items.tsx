@@ -5,6 +5,7 @@ import OrderStatusTrackingDialog from "./order-status-tracking-dialog";
 import OrderStatusTrackingDialogNoAuth from "./order-status-tracking-dialog-no-auth";
 import { useGetOrders } from "@/features/order/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
+import LeaveAReviewModal from "../../review/_components/LeaveAReview";
 
 // Dummy data for illustration purposes
 type ListingType = "fixed" | "auction" | "taking-offers";
@@ -87,22 +88,27 @@ const items: Fav[] = [
 const MyOrdersItems = () => {
   const { data: orders, isLoading } = useGetOrders()
   const [open, setOpen] = useState(false);
-  const [openNoAuth, setOpenNoAuth] = useState(false);
-console.log(orders)
-  const [selected, setSelected] = useState<TrackingHistory[] | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [selected, setSelected] = useState<TrackingDialogData | null>(null);
 
-  function openDialog(item: TrackingHistory[]) {
+  function openDialog(item: TrackingDialogData) {
     setSelected(item);
     setOpen(true);
+  }
+
+  function openReviewDialog(item: any) {
+    setSelectedReview(item);
+    setReviewOpen(true);
   }
 
   // function openDialogNoAuth(item: TrackingHistory) {
   //   setSelected(item);
   //   setOpenNoAuth(true);
   // }
-if(isLoading){
-  return <Skeleton className="w-full h-24" />
-}
+  if (isLoading) {
+    return <Skeleton className="w-full h-24" />
+  }
   return (
     <>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto">
@@ -137,8 +143,14 @@ if(isLoading){
                 </div>
               </div>
 
-              <div className="p-3 flex justify-end">
-                <Button className="w-[200px]" onClick={() => openDialog(item?.trackingHistory)}>
+              <div className="p-3 flex justify-end gap-3">
+                <Button className="w-[200px]" variant={'secondary'} onClick={() => openReviewDialog(item)}>
+                  Leave A Review
+                </Button>
+                <Button className="w-[200px]" onClick={() => openDialog({
+                  orderId: item?._id,
+                  trackingHistory: item?.trackingHistory,
+                })}>
                   Track
                 </Button>
               </div>
@@ -169,6 +181,7 @@ if(isLoading){
           setOpen(v);
         }}
       />
+      <LeaveAReviewModal selectedReview={selectedReview} open={reviewOpen} onOpenChange={setReviewOpen} />
 
       {/* <OrderStatusTrackingDialogNoAuth
         open={openNoAuth}

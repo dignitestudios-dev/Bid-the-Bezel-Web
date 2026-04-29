@@ -8,13 +8,15 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useMarkAsReceived } from "@/features/order/hooks";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  item: TrackingHistory[];
+  item: any;
 }
 
 const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }) => {
+  const { mutate: markAsReceived, isPending } = useMarkAsReceived(item?.orderId)
   console.log(item)
   return (
     <Dialog open={open} onOpenChange={(v) => onOpenChange(v)}>
@@ -27,7 +29,7 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }
           <div className="flex">
             <div className="relative">
               <div className="flex flex-col items-center">
-                {item?.map((step: any, idx: number) => (
+                {item?.trackingHistory?.map((step: any, idx: number) => (
                   <React.Fragment key={idx}>
                     <div className="flex flex-col items-center gap-2">
                       <div
@@ -41,7 +43,7 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }
                       </div>
                     </div>
 
-                    {idx !== item.length - 1 && (
+                    {idx !== item?.trackingHistory?.length - 1 && (
                       <div
                         className={`h-10 w-0.5 transform -translate-x-1/2
               ${step?.isMarked ? "bg-[#14A752]" : "bg-gray-300"
@@ -55,7 +57,7 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }
           </div>
 
           <div>
-            {item?.map((i: any, idx: number) => (
+            {item?.trackingHistory?.map((i: any, idx: number) => (
               <div key={idx} className="mb-6">
                 <h4 className="text-lg font-semibold capitalize">
                   {i?.status?.replace("_", " ")}
@@ -84,8 +86,11 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }
         </div>
         <DialogFooter>
           <div className="flex gap-3 w-full ">
-            <Button disabled={!item?.[item?.length - 2]?.isMarked}  className="rounded-full flex-1 bg-[#14A752] text-white">
-              Mark as Received
+            <Button
+              disabled={isPending || !item?.allowMarkAsRecieved}
+              onClick={() => markAsReceived({ orderId: item?.orderId })}
+              className="rounded-full flex-1 bg-[#14A752] text-white">
+              {isPending ? "Marking as received..." : "Mark as Received"}
             </Button>
             <Button
               variant={"outline"}

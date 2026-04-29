@@ -30,3 +30,18 @@ export const useGetOrders = () => {
         refetchOnWindowFocus: false,
     });
 };
+
+
+
+export const useMarkAsReceived = (id: string) =>
+
+    useApiMutation<any, { orderId: string }>({
+        endpoint: `/orders/${id}/buyer`,
+        method: "PATCH",
+        invalidateKeys: ["get-orders"],
+        mutationOptions: {
+            onError: (error: any) => {
+                showError(error?.response.data.message);
+            }
+        },
+    });
