@@ -5,7 +5,7 @@ import { Thumb } from "./embla-carousel-thumbs-btn";
 import "./style.css";
 import Image from "next/image";
 type PropType = {
-  slides: number[];
+  slides: { location: string }[];
   options?: EmblaOptionsType;
 };
 
@@ -43,17 +43,17 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
     <div className="embla">
       <div className="embla__viewport" ref={emblaMainRef}>
         <div className="embla__container">
-          {slides.map((index) => (
+          {slides.map((s, index) => (
             <div className="embla__slide" key={index}>
               {/* <div className="embla__slide__number">{index + 1}</div> */}
               <div className="relative w-full h-[500px]">
                 {" "}
                 {/* Adjust height as needed */}
                 <Image
-                  src="/images/ww.png"
+                  src={s.location}
                   alt="watch"
                   fill
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "contain" }}
                   className="rounded-lg" // optional, if you want rounded corners
                 />
               </div>
@@ -65,12 +65,13 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       <div className="embla-thumbs">
         <div className="embla-thumbs__viewport" ref={emblaThumbsRef}>
           <div className="embla-thumbs__container">
-            {slides.map((index) => (
+            {slides.map((s, index) => (
               <Thumb
                 key={index}
                 onClick={() => onThumbClick(index)}
                 selected={index === selectedIndex}
                 index={index}
+                slide={s}
               />
             ))}
           </div>

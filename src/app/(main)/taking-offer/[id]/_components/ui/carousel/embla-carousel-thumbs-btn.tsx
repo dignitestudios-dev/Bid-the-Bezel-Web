@@ -4,11 +4,12 @@ import React from 'react'
 type PropType = {
   selected: boolean
   index: number
+  slide: { location: string }
   onClick: () => void
 }
 
 export const Thumb: React.FC<PropType> = (props) => {
-  const { selected, index, onClick } = props
+  const { selected, slide, index, onClick } = props
 
   return (
     <div
@@ -24,7 +25,7 @@ export const Thumb: React.FC<PropType> = (props) => {
         className="embla-thumbs__slide__number relative w-40! h-28! overflow-hidden rounded-sm!"
       >
         <Image
-          src="/images/ww.png"
+          src={slide.location}
           alt="watch"
           fill
           style={{ objectFit: 'cover' }}

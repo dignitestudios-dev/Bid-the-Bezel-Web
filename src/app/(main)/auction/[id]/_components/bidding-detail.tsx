@@ -18,13 +18,13 @@ const BiddingDetail = ({ product }: Props) => {
   const user = useAppSelector((state) => state.auth.user);
   const isSeller = user?.id === product?.seller?._id;
   const isAuthenticated = product?.authentication?.status === 'authenticated';
-    const [currentPage, setCurrentPage] = useState(1);
-  const { data: bidsData , isLoading:bidsLoading } = useGetProductBids(product?._id,1 , 10);
-  const { data: paginatedBids , isLoading:
-paginatedBidsLoading } = useGetProductBids(product?._id,currentPage , 10);
-// bidsData?.data?.[0]?.currentBidder?.
-  if(bidsLoading ){
-    return <BidSkeleton/>
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(product?._id, 1, 10);
+  const { data: paginatedBids, isLoading:
+    paginatedBidsLoading } = useGetProductBids(product?._id, currentPage, 10);
+  // bidsData?.data?.[0]?.currentBidder?.
+  if (bidsLoading) {
+    return <BidSkeleton />
   }
   return (
     <div className="lg:w-[40%] space-y-7">
@@ -32,15 +32,15 @@ paginatedBidsLoading } = useGetProductBids(product?._id,currentPage , 10);
         <CurrentBidSeller product={product} bidsData={bidsData!} />
       ) : (
         <CurrentBid product={product} bidsData={bidsData!} />
-      )}  
-    <TopBids
-  topBids={bidsData?.data ?? []}
-  paginatedBids={paginatedBids?.data ?? []}
-  pagination={paginatedBids?.pagination}
-  currentPage={currentPage}
-  paginatedBidsLoading={paginatedBidsLoading}
-  setCurrentPage={setCurrentPage}
-/>
+      )}
+      <TopBids
+        topBids={bidsData?.data ?? []}
+        paginatedBids={paginatedBids?.data ?? []}
+        pagination={paginatedBids?.pagination}
+        currentPage={currentPage}
+        paginatedBidsLoading={paginatedBidsLoading}
+        setCurrentPage={setCurrentPage}
+      />
       {isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
       <Reviews />
     </div>

@@ -10,89 +10,15 @@ import LeaveAReviewModal from "../../review/_components/LeaveAReview";
 // Dummy data for illustration purposes
 type ListingType = "fixed" | "auction" | "taking-offers";
 
-type Fav = {
-  id: string;
-  title: string;
-  user: string;
-  price: string;
-  image: string;
-  type: ListingType;
-  isReceived: boolean;
-  isAuthenticated: boolean;
-};
-
-const items: Fav[] = [
-  {
-    id: "1",
-    title: "Audemars Piguet Royal Oak",
-    user: "Arandomuser",
-    price: "$765.76",
-    image: "/images/fav.jpg",
-    type: "fixed",
-
-    isReceived: true,
-    isAuthenticated: true,
-  },
-  {
-    id: "2",
-    title: "Rolex Submariner Date",
-    user: "WatchCollector",
-    price: "$1,250.00",
-    image: "/images/fav.jpg",
-    type: "auction",
-    isReceived: false,
-    isAuthenticated: false,
-  },
-  {
-    id: "3",
-    title: "Patek Philippe Nautilus",
-    user: "LuxuryHub",
-    price: "$3,500",
-    image: "/images/fav.jpg",
-    type: "auction",
-    isReceived: false,
-    isAuthenticated: true,
-  },
-  {
-    id: "4",
-    title: "Omega Speedmaster Moonwatch",
-    user: "TimeVault",
-    price: "$980.00",
-    image: "/images/fav.jpg",
-    type: "taking-offers",
-    isReceived: true,
-    isAuthenticated: false,
-  },
-  {
-    id: "5",
-    title: "Cartier Santos Large",
-    user: "EliteWatches",
-    price: "$1,120.00",
-    image: "/images/fav.jpg",
-    type: "fixed",
-    isReceived: false,
-    isAuthenticated: true,
-  },
-  {
-    id: "6",
-    title: "Cartier Santos Large",
-    user: "EliteWatches",
-    price: "$1,120.00",
-    image: "/images/fav.jpg",
-    type: "fixed",
-    isReceived: false,
-    isAuthenticated: false,
-  },
-];
 
 const MyOrdersItems = () => {
   const { data: orders, isLoading } = useGetOrders()
   const [open, setOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
-  const [selected, setSelected] = useState<TrackingDialogData | null>(null);
+  const [selected, setSelected] = useState<any | null>(null);
 
-  function openDialog(item: TrackingDialogData) {
+  function openDialog(item: any) {
     setSelected(item);
     setOpen(true);
   }
@@ -139,16 +65,20 @@ const MyOrdersItems = () => {
 
                 <div className="flex-1">
                   <p className="text-lg font-semibold text-end">{item?.product?.price}</p>
-                  <p className="text-lg font-medium">{item?.product?.brandName}</p>
+                  <p className="text-lg font-medium">{item?.product?.model}</p>
                 </div>
               </div>
 
               <div className="p-3 flex justify-end gap-3">
-                <Button className="w-[200px]" variant={'secondary'} onClick={() => openReviewDialog(item)}>
-                  Leave A Review
-                </Button>
+                {item?.status === "delivered" && !item?.isReviewSubmitted &&
+                  (
+                    <Button className="w-[200px]" variant={'secondary'} onClick={() => openReviewDialog(item)}>
+                      Leave A Review
+                    </Button>
+
+                  )}
                 <Button className="w-[200px]" onClick={() => openDialog({
-                  orderId: item?._id,
+                  orderItem: item,
                   trackingHistory: item?.trackingHistory,
                 })}>
                   Track

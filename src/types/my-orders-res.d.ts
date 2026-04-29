@@ -34,6 +34,7 @@ interface Order {
   isAuthRequested: boolean;
   createdAt: string;
   updatedAt: string;
+  isReviewSubmitted: boolean
 }
 
 interface Product {

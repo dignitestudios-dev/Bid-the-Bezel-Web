@@ -14,15 +14,21 @@ import React from "react";
 import ProductDetail from "./product-detail";
 import BiddingDetail from "./bidding-detail";
 import { displayPrice, getWatchById } from "@/lib/helper";
+import { useGetMyListingDetail } from "@/features/listing/hook";
+import { ProductDetailSkeleton } from "@/components/skeleton";
 
 type Props = {
   id: string;
+
 };
 
 const SingleProduct = ({ id }: Props) => {
   const router = useRouter();
+  const { data, isLoading } = useGetMyListingDetail(id);
+  console.log("data", data);
+
   const watch = getWatchById(id);
-  if (watch?.saleType !== "taking-offer") return null;
+  // if (watch?.saleType !== "taking-offer") return null;
   return (
     <div className="max-w-screen-2xl mx-auto w-[90%] py-12">
       <Breadcrumb className="mb-5">
@@ -50,14 +56,17 @@ const SingleProduct = ({ id }: Props) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
+      {isLoading ?
+        <ProductDetailSkeleton />
+        :
+        <div className="flex lg:flex-row flex-col justify-between gap-4">
+          <ProductDetail
+            product={data?.data}
 
-      <div className="flex lg:flex-row flex-col justify-between gap-4">
-        <ProductDetail
-          name={watch?.name}
-          price={watch && displayPrice(watch)}
-        />
-        <BiddingDetail watch={watch!} sellerId={watch?.sellerId} />
-      </div>
+          />
+          <BiddingDetail watch={data?.data} sellerId={data?.data?.seller?._id} />
+        </div>
+      }
     </div>
   );
 };

@@ -84,7 +84,7 @@ const ListingCard = ({
 
           <div className="flex-1">
             <p className="text-lg font-semibold text-end">${price}</p>
-            <p className="text-lg font-medium">{brandName}</p>
+            <p className="text-lg font-medium">{model}</p>
           </div>
         </div>
       )}
@@ -161,13 +161,12 @@ const ListingCard = ({
           </div>
         )}
       <div
-        className={`p-3 text-white font-medium text-center  ${
-          type === "auction"
-            ? "bg-[#415A77]"
-            : type === "fixed_price"
-              ? "bg-[#778DA9]"
-              : "bg-[#D9B918]"
-        }`}
+        className={`p-3 text-white font-medium text-center  ${type === "auction"
+          ? "bg-[#415A77]"
+          : type === "fixed_price"
+            ? "bg-[#778DA9]"
+            : "bg-[#D9B918]"
+          }`}
       >
         {type === "auction"
           ? "Auction"
