@@ -3,17 +3,17 @@ import { AlertDialogHeader } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import Image from 'next/image'
-import Link from 'next/link'
 import React, { Dispatch, SetStateAction } from 'react'
 
 type Props = {
-    cancelSuccess:boolean;
+    cancelListing:boolean;
+setCancelListing: Dispatch<SetStateAction<boolean>>;
 setCancelSuccess: Dispatch<SetStateAction<boolean>>
 }
 
-const ConfirmCancel = ({setCancelSuccess , cancelSuccess}: Props) => {
+const CancelListingDialog = ({setCancelListing , cancelListing , setCancelSuccess}: Props) => {
   return (
-   <Dialog open={cancelSuccess} onOpenChange={setCancelSuccess}>
+   <Dialog open={cancelListing} onOpenChange={setCancelListing}>
       <DialogContent className="md:max-w-lg  overflow-y-auto">
         <AlertDialogHeader className="text-center hidden">
           <DialogTitle className="text-2xl  font-semibold">
@@ -22,19 +22,23 @@ const ConfirmCancel = ({setCancelSuccess , cancelSuccess}: Props) => {
         </AlertDialogHeader>
         <div className="w-full  rounded-xl flex flex-col items-center bg-white p-4 py-12 ">
             <ListingCancel/>
-            <div className='text-center py-4 space-y-2'>
-                <h1 className='text-xl font-semibold'>Listing Cancelled</h1>
-                <h4>Your listing is cancelled</h4>
+                <div className='text-center'>
+                <h1 className='text-xl font-semibold'>Cancel listing?</h1>
+                <h4>Listing will be cancelled</h4>
             </div>
-            <div>
-                <Link href={"/"} className='w-full mt-4 ' >
+            <div className='flex justify-center gap-4'>
           <Button
-            onClick={() => setCancelSuccess(false)}
-            className=" w-full py-4 bg-black text-white border "
+            onClick={() => {setCancelListing(false);}}
+            className="w-[80%] mx-auto mt-4 py-4 bg-gray-100 text-black border "
           >
-            Back to Home
+            Close
           </Button>
-          </Link>
+          <Button
+            onClick={() => {setCancelListing(false); setCancelSuccess(true)}}
+            className="w-[80%] mx-auto mt-4 py-4 bg-red-700 text-white border "
+          >
+            Cancel
+          </Button>
           </div>
         </div>
 
@@ -49,4 +53,4 @@ const ConfirmCancel = ({setCancelSuccess , cancelSuccess}: Props) => {
   )
 }
 
-export default ConfirmCancel
+export default CancelListingDialog

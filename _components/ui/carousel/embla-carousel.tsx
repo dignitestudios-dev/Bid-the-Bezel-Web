@@ -5,7 +5,7 @@ import { Thumb } from "./embla-carousel-thumbs-btn";
 import "./style.css";
 import Image from "next/image";
 type PropType = {
-  slides: {location: string}[];
+  slides: { location: string }[];
   options?: EmblaOptionsType;
 };
 
@@ -43,7 +43,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
     <div className="embla">
       <div className="embla__viewport" ref={emblaMainRef}>
         <div className="embla__container">
-          {slides.map((s,index) => (
+          {slides.map((s, index) => (
             <div className="embla__slide" key={index}>
               {/* <div className="embla__slide__number">{index + 1}</div> */}
               <div className="relative w-full h-[500px]">

@@ -5,33 +5,31 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import EmblaCarousel from './ui/carousel/embla-carousel'
 import { EmblaOptionsType } from 'embla-carousel'
-import Questions from '@/app/(main)/fixed-price/[id]/_components/questions'
 import { QASkeleton } from '@/components/skeleton'
 import Answers from '@/app/(main)/fixed-price/[id]/_components/answers'
 import { useGetQuestions } from '@/features/product-qa/hook'
+import Questions from '@/app/(main)/fixed-price/[id]/_components/questions'
 import { useAddProductToFavorite } from '@/features/fav-product/hook'
 import { showSuccess } from '@/lib/toast'
-import { useGetProductBids } from '@/features/bidding/hooks'
-
-
 type Props = {
-  product: AuctionProduct;
+  name?: string;
+  price?: number
+  product: any
 }
 
 const OPTIONS: EmblaOptionsType = {}
-
-const ProductDetail = ({ product }: Props) => {
-    const { data: bidsData , isLoading:bidsLoading } = useGetProductBids(product?._id,1 , 10);
-  const isAuthenticated = product?.authentication?.status === 'authenticated';
+const SLIDE_COUNT = 10
+const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
+const ProductDetail = ({ name, price, product }: Props) => {
   const [page, setPage] = useState(1);
+  const isAuthenticated = product?.authentication?.status === 'authenticated';
+
   const { data: productQAndA, isLoading } = useGetQuestions(product?._id, page)
-  const [isFav, setIsFav] = useState(product?.isFavorite);
 
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(product?._id || "");
   const handleAddToFavorite = () => {
     addProductToFavorite(undefined, {
       onSuccess: () => {
-        setIsFav((prev: boolean) => !prev);
         showSuccess(
           product?.isFavorite
             ? "Product removed from favorites"
@@ -42,6 +40,8 @@ const ProductDetail = ({ product }: Props) => {
     });
   };
   const pagination = productQAndA?.pagination
+
+
   return (
     <div className='lg:w-[60%] space-y-8'>
       <div>
@@ -62,22 +62,16 @@ const ProductDetail = ({ product }: Props) => {
             </div>
           </button>
         </div>
-        <div className='flex items-center justify-between gap-4'>
-          <h1 className='text-xl md:text-3xl'>${product?.price} <span className='text-base'>Starting Price</span></h1>
-          <h1 className='text-xl md:text-3xl'>${bidsData?.data?.[0]?.product?.effectivePrice} <span className='text-base'>Effective Price</span></h1>
-        </div>
-        <p className='text-sm text-gray-500 mt-1'>Ref: {product?.referenceId}</p>
+        <h1 className='text-xl md:text-3xl'>${product?.price} <sub className='mb-4 text-xs'>Starting Price</sub></h1>
       </div>
 
       <div className='my-4'>
         <EmblaCarousel slides={product?.images ?? []} options={OPTIONS} />
       </div>
-
       <div>
-        <h1 className='font-semibold'>Description</h1>
-        <p>{product?.description}</p>
+        <h1 className='font-semibold'>Contents</h1>
+        {product?.description}
       </div>
-
       {isLoading ? (
         <QASkeleton />
       ) : product?.isMyProduct ? (

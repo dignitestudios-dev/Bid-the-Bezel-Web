@@ -18,5 +18,9 @@ type FixedProductUI = BaseProductUI & {
   type: "fixed_price";
   isAuction: false;
 };
+type TakingOfferUI = BaseProductUI & {
+  type: "taking_offers";
+  isAuction: false;
+};
 
- type ProductUI = AuctionProductUI | FixedProductUI;
+ type ProductUI = AuctionProductUI | FixedProductUI | TakingOfferUI ;

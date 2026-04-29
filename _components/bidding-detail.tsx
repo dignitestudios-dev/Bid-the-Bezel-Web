@@ -6,9 +6,11 @@ import AuthStatus from "./auth-status";
 import Reviews from "./reviews";
 import { useAppSelector } from "@/lib/hooks";
 import CurrentBidSeller from "./current-bid-seller";
-import UnAuthStatus from "./unauth-status";
+
 import { useGetProductBids } from "@/features/bidding/hooks";
-import BidSkeleton from "./ui/bid-skeleton";
+import BidSkeleton from "@/app/(main)/auction/[id]/_components/ui/bid-skeleton";
+import UnAuthStatus from "@/app/(main)/auction/[id]/_components/unauth-status";
+
 
 type Props = {
   product: AuctionProduct;
@@ -42,7 +44,7 @@ const BiddingDetail = ({ product }: Props) => {
         setCurrentPage={setCurrentPage}
       />
       {isAuthenticated ? <AuthStatus /> : <UnAuthStatus />}
-      <Reviews sellerId={product?.seller?._id} />
+      <Reviews />
     </div>
   );
 };
