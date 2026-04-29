@@ -86,18 +86,25 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }
         </div>
         <DialogFooter>
           <div className="flex gap-3 w-full ">
-            {item?.orderItem?.status === "shipped" && (
-              <Button
-                disabled={isPending || !item?.orderItem?.allowMarkAsRecieved}
-                onClick={() => markAsReceived({ orderId: item?.orderItem?._id }, {
-                  onSuccess: () => {
-                    onOpenChange(false)
+            {(item?.orderItem?.status === "shipped" ||
+              item?.orderItem?.status === "pending") && (
+                <Button
+                  disabled={isPending || !item?.orderItem?.allowMarkAsRecieved}
+                  onClick={() =>
+                    markAsReceived(
+                      { orderId: item?.orderItem?._id },
+                      {
+                        onSuccess: () => {
+                          onOpenChange(false);
+                        },
+                      }
+                    )
                   }
-                })}
-                className="rounded-full flex-1 bg-[#14A752] text-white">
-                {isPending ? "Marking as received..." : "Mark as Received"}
-              </Button>
-            )}
+                  className="rounded-full flex-1 bg-[#14A752] text-white "
+                >
+                  {isPending ? "Marking as received..." : "Mark as Received"}
+                </Button>
+              )}
             <Button
               variant={"outline"}
               className="flex-1 rounded-full"
