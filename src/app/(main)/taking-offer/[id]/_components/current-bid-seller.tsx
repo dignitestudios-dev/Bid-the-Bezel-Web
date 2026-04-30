@@ -48,7 +48,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         </div>
       ) : (
         <>
-          <div className="flex gap-2 items-start px-5 pt-5">
+          <div className="flex gap-2 items-start p-5">
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
@@ -73,7 +73,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                     Chat with Buyer
                   </Button>
                 </Link>
-                <Link href={"/seller/shipping-details"} className="w-full">
+                <Link href={`/seller/shipping-details/${product._id}`} className="w-full">
                   <Button className="text-base w-full">Fill out Shipping</Button>
                 </Link>
               </div>
