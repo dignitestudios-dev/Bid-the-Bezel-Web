@@ -26,6 +26,7 @@ import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { timeAgo } from "@/lib/helper";
 
 type Props = {
   product: AuctionProduct;
@@ -60,7 +61,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   }, [bidsData]);
 
   const currentBidder = bidsData?.data?.[0]?.currentBidder;
-  const isWinner = product.auction.currentBidder === user?.data?._id;
+  const isAccepted = bidsData?.data?.[0]?.status === "accepted";
+  const isWinner = isAccepted && currentBidder && product.auction.currentBidder === user?.data?._id;
   const {
     register,
     handleSubmit,
@@ -157,7 +159,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               <h1 className="font-semibold mb-1">
                 {currentBidder.userName}
               </h1>
-              <h5 className="text-xs">Current highest bidder</h5>
+                    <h5 className="text-xs ">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              </h5>
             </div>
           </div>
         ) : (
@@ -168,38 +171,21 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       </div>
 
       {!isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
-        isEnded ? (
-          <div className={cn(currentBidder ? "px-6 py-6 border-t text-center" : "")}>
-            {isWinner ? (
-              <>
-                <h1 className="text-xl font-semibold text-green-600">
-                  You won the bid 🎉
-                </h1>
-                <p className="text-sm text-gray-500 mt-1">
-                  Congratulations! You placed the highest bid.
-                </p>
-                <div className="flex flex-col gap-4 w-full pt-4" >
-                  <button onClick={() => setCancelBid(true)} className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg">cancel bid</button>
-                  <Link href={`/buy-now/${product._id}`} className="w-full">
-                    <Button className="text-base w-full">
-                      Fill out Shipping
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            ) : currentBidder && (
-              <>
-                <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg" >
-                  <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 bg-contain rounded-full" />
-                  <h1 className="text-xl font-semibold">
-                    {currentBidder?.userName}
-                  </h1>
-                </div>
-                <h1 className="text-2xl font-bold mt-5">
-                  Bid winner
-                </h1>
-              </>
-            )}
+        isWinner ? (
+          <div className="px-6 py-6 border-t text-center">
+            <h1 className="text-xl font-semibold text-green-600">You are the bid winner 🎉</h1>
+            <p className="text-sm text-gray-500 mt-1">Your offer has been accepted by the seller.</p>
+            <Link href={`/buy-now/${product._id}`} className="w-full block mt-4">
+              <Button className="text-base w-full">Fill out Shipping</Button>
+            </Link>
+          </div>
+        ) : isSold && currentBidder ? (
+          <div className="px-6 py-6 border-t text-center">
+            <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
+              <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
+              <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
+            </div>
+            <h1 className="text-2xl font-bold mt-5">Offer Winner</h1>
           </div>
         ) : (
           <>
@@ -262,63 +248,25 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             )}
           </>
         )
-      ) :
-        isEnded && !cancelBid && (
-          <>
-            <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
-              <Image
-                unoptimized
-                width={50}
-                height={50}
-                src={currentBidder?.profilePicture?.location}
-                alt="pic"
-                className="w-6 h-6 bg-contain rounded-full"
-              />
-              <h1 className="text-xl font-semibold">
-                {currentBidder?.userName}
-              </h1>
-            </div>
-
-            <h1 className="text-2xl text-center pb-4 font-bold mt-5">
-              Bid winner
-            </h1>
-          </>
-        )}
-
-      {isEnded && cancelBid && (
-        <div className="w-full flex flex-col items-center justify-center text-center py-10">
-          <h1 className="text-2xl font-bold">Bidding Fees</h1>
-
-          <p className="text-gray-600 text-sm mt-3 max-w-md">
-            10% of your bid amount will be lost if you cancel your bid. Are you sure
-            you want to continue?
-          </p>
-
-          <div className="flex gap-4 mt-8 w-full max-w-md">
-            <button
-              onClick={() => setCancelBid(false)}
-              disabled={cancelBidMutation.isPending}
-              className="w-1/2 bg-gray-100 hover:bg-gray-200 text-black py-2 rounded-lg font-medium"
-            >
-              Back
-            </button>
-
-            <button
-              onClick={() => {
-                cancelBidMutation.mutate(
-                  { id: product._id },
-                  { onSuccess: () => setCancelBid(false) }
-                );
-              }}
-              disabled={cancelBidMutation.isPending}
-              className="w-1/2 bg-red-700 hover:bg-red-800 text-white py-3 rounded-lg font-medium"
-            >
-              {cancelBidMutation.isPending ? "Cancelling..." : "Cancel Bid"}
-            </button>
-          </div>
+      ) : isWinner && !cancelBid ? (
+        <div className="px-6 py-6 border-t text-center">
+          <h1 className="text-xl font-semibold text-green-600">You are the bid winner 🎉</h1>
+          <p className="text-sm text-gray-500 mt-1">Your offer has been accepted by the seller.</p>
+          <Link href={`/buy-now/${product._id}`} className="w-full block mt-4">
+            <Button className="text-base w-full">Fill out Shipping</Button>
+          </Link>
         </div>
-      )
-      }
+      ) : isSold && !cancelBid && currentBidder && (
+        <div className="px-6 py-6 border-t text-center">
+          <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
+            <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
+            <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
+          </div>
+          <h1 className="text-2xl text-center pb-4 font-bold mt-5">Offer Winner</h1>
+        </div>
+      )}
+
+
 
 
 

@@ -11,6 +11,8 @@ interface Bid {
   totalBidAmount: number;
   bidPlacedAt: string;
   product: BidProduct;
+  status: "pending" | "accepted" | "rejected" | "cancelled";
+  _id: string;
 }
 
 interface CurrentBidder {

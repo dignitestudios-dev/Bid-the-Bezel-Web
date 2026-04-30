@@ -8,6 +8,7 @@ import CancelListingDialog from "./cancel-listing-dialog";
 import ConfirmCancel from "./confirm-cancel";
 import MoveToTakingDialog from "./move-taking-offer-dialog";
 import RepostAuctionDialog from "./repost-auction-dialog";
+import { timeAgo } from "@/lib/helper";
 
 type Props = {
   product: AuctionProduct;
@@ -58,7 +59,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
       {isEnded && product.status !== "deleted" ? (
         hasBidder ? (
           <>
-            <div className="flex gap-2 items-start">
+            <div className="flex gap-2 px-4 pb-2 items-start">
               <Image
                 src={currentBidder.profilePicture.location}
                 alt="dp"
@@ -68,7 +69,9 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
               />
               <div className="my-2">
                 <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-                <h5 className="text-xs">Current highest bidder</h5>
+                 <h5 className="text-xs ">Bid {" "}
+                              {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                            </h5>
               </div>
             </div>
             {product.status === "sold" &&
@@ -81,7 +84,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                       Chat with Buyer
                     </Button>
                   </Link>
-                  <Link href={"/seller/shipping-details"} className="w-full">
+                  <Link href={`/seller/shipping-details/${product?._id}`} className="w-full">
                     <Button className="text-base w-full">
                       Fill out Shipping
                     </Button>

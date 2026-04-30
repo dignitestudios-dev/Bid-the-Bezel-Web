@@ -26,6 +26,7 @@ import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { timeAgo } from "@/lib/helper";
 
 type Props = {
   product: AuctionProduct;
@@ -157,7 +158,9 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               <h1 className="font-semibold mb-1">
                 {currentBidder.userName}
               </h1>
-              <h5 className="text-xs">Current highest bidder</h5>
+                 <h5 className="text-xs ">Bid {" "}
+                              {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                            </h5>
             </div>
           </div>
         ) : (
