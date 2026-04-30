@@ -76,8 +76,22 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const watchedAmount = watch("amount");
 
 
-  const isSold = product?.status === "sold";
-  // const isWinner = product?.auction?.currentBidder === user?.data?._id;
+  const timeLeft = useMemo(() => {
+    if (!auction?.endsAt) return "--";
+    const diff = new Date(auction.endsAt).getTime() - Date.now();
+    if (diff <= 0) return "Ended";
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    return `${d}D ${h}H ${m}M`;
+  }, [auction?.endsAt]);
+
+
+
+  const isEnded = timeLeft === "Ended";
+
+  const displayTime = isEnded ? "0D 0H 0M" : timeLeft;
+  const iconColor = isEnded ? "#FF0000" : "#14A752";
 
   /* ---------------- POPUPS ---------------- */
   const [subsPopup, setSubsPopup] = React.useState(false);
@@ -118,8 +132,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   return (
     <div className="rounded-xl w-full border border-[#E3E3E3]">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
-        <Clock3 color="#D9B918" />
-        Taking Offers
+        <Clock3 color={iconColor} />
+        {displayTime} left
       </h1>
 
       <div className="p-6 border-[#E3E3E3]">
@@ -154,46 +168,75 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       </div>
 
       {!isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
-        isSold ? (
-          <div className="px-6 py-6 border-t text-center">
+        isEnded ? (
+          <div className={cn(currentBidder ? "px-6 py-6 border-t text-center" : "")}>
             {isWinner ? (
               <>
-                <h1 className="text-xl font-semibold text-green-600">You won the bid 🎉</h1>
-                <p className="text-sm text-gray-500 mt-1">Congratulations! You placed the highest offer.</p>
-                <div className="flex flex-col gap-4 w-full pt-4">
+                <h1 className="text-xl font-semibold text-green-600">
+                  You won the bid 🎉
+                </h1>
+                <p className="text-sm text-gray-500 mt-1">
+                  Congratulations! You placed the highest bid.
+                </p>
+                <div className="flex flex-col gap-4 w-full pt-4" >
                   <button onClick={() => setCancelBid(true)} className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg">cancel bid</button>
                   <Link href={`/buy-now/${product._id}`} className="w-full">
-                    <Button className="text-base w-full">Fill out Shipping</Button>
+                    <Button className="text-base w-full">
+                      Fill out Shipping
+                    </Button>
                   </Link>
                 </div>
               </>
-            ) : currentBidder ? (
+            ) : currentBidder && (
               <>
-                <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
-                  <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
-                  <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
+                <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg" >
+                  <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 bg-contain rounded-full" />
+                  <h1 className="text-xl font-semibold">
+                    {currentBidder?.userName}
+                  </h1>
                 </div>
-                <h1 className="text-2xl font-bold mt-5">Offer Winner</h1>
+                <h1 className="text-2xl font-bold mt-5">
+                  Bid winner
+                </h1>
               </>
-            ) : null}
+            )}
           </div>
         ) : (
           <>
             <div className="px-6 pt-6 border-t space-y-4">
               <h1 className="font-semibold flex items-center gap-2">
-                Place your offer
+                Place your bid
                 <Tooltip>
-                  <TooltipTrigger asChild><Info size={14} color="gray" /></TooltipTrigger>
-                  <TooltipContent className="bg-gray-100 w-[200px] text-gray-600">10% escrow fee applies</TooltipContent>
+                  <TooltipTrigger asChild>
+                    <Info size={14} color="gray" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-gray-100 w-[200px] text-gray-600">
+                    10% escrow fee applies
+                  </TooltipContent>
                 </Tooltip>
               </h1>
-              <div className="text-center">
-                <h1 className="text-2xl font-semibold">${watchedAmount || 0}.00</h1>
-                <h3 className="text-xs">Your Offer</h3>
+
+              <div>
+                <div className="text-center">
+                  <h1 className="text-2xl font-semibold">
+                    ${watchedAmount || 0}.00
+                  </h1>
+                  <h3 className="text-xs">Your Bid</h3>
+                </div>
               </div>
-              <Button onClick={handleIncrease} className="bg-[#415A77] w-full py-3">+200</Button>
+
+              <Button
+                onClick={handleIncrease}
+                className="bg-[#415A77] w-full py-3"
+              >
+                +200
+              </Button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex items-center px-6 p-4 gap-2">
+
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex items-center px-6 p-4 gap-2"
+            >
               <div className="w-full">
                 <Input
                   placeholder="Enter your amount"
@@ -202,24 +245,47 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                   {...register("amount", { valueAsNumber: true })}
                 />
               </div>
-              <Button type="submit" className="text-sm md:px-20 py-3" disabled={!isValid || placeBidMutation.isPending}>
-                Place Offer
+
+              <Button
+                type="submit"
+                className="text-sm md:px-20 py-3"
+                disabled={!isValid || placeBidMutation.isPending}
+              >
+                Place Bid
               </Button>
             </form>
-            {errors.amount && <p className="text-red-500 text-xs px-6 -mt-2">{errors.amount.message}</p>}
+
+            {errors.amount && (
+              <p className="text-red-500 text-xs px-6 -mt-2">
+                {errors.amount.message}
+              </p>
+            )}
           </>
         )
-      ) : isSold && !cancelBid && currentBidder && (
-        <div className="px-6 py-6 border-t text-center">
-          <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
-            <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
-            <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
-          </div>
-          <h1 className="text-2xl text-center pb-4 font-bold mt-5">Offer Winner</h1>
-        </div>
-      )}
+      ) :
+        isEnded && !cancelBid && (
+          <>
+            <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
+              <Image
+                unoptimized
+                width={50}
+                height={50}
+                src={currentBidder?.profilePicture?.location}
+                alt="pic"
+                className="w-6 h-6 bg-contain rounded-full"
+              />
+              <h1 className="text-xl font-semibold">
+                {currentBidder?.userName}
+              </h1>
+            </div>
 
-      {isSold && cancelBid && (
+            <h1 className="text-2xl text-center pb-4 font-bold mt-5">
+              Bid winner
+            </h1>
+          </>
+        )}
+
+      {isEnded && cancelBid && (
         <div className="w-full flex flex-col items-center justify-center text-center py-10">
           <h1 className="text-2xl font-bold">Bidding Fees</h1>
 
