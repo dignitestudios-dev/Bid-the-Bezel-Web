@@ -55,7 +55,7 @@ const CollectionCard = (props: Props) => {
           </div>
         </div>
         <div className="pt-4">
-          <h1 className="text-lg font-semibold mb-2">{watch?.brandName}</h1>
+          <h1 className="text-lg font-semibold mb-2 truncate">{watch?.brandName} {watch.model}</h1>
           <div className="flex justify-between gap-4">
             <div>
               <h2 className="text-sm">

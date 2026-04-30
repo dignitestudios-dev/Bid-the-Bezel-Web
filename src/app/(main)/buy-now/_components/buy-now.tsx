@@ -18,7 +18,7 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
   const { data: productData, isLoading } = useGetMyListingDetail(id as string);
   const [authenticate, setAuthenticate] = useState(false);
 
-  const basePrice = productData?.data?.price;
+  const basePrice = productData?.data.type =="fixed_price" ? productData.data.price : productData?.data?.effectivePrice;
   const authFee = 250;
   const total = basePrice + (authenticate ? authFee : 0);
   
@@ -101,7 +101,7 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
             <p className="flex-1 font-medium text-lg">
               {productData?.data?.brandName}
             </p>
-            <div className=" font-medium">${productData?.data?.price}</div>
+            <div className=" font-medium">${basePrice}</div>
           </div>
 
           {/* Price Breakdown */}
@@ -117,7 +117,7 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
               </div>
             )}
 
-            {productData.data.type == "auction" && (
+            {productData.data.type == "auction" || productData.data.type == "taking_offers" && (
               <>
               <div className="flex justify-between ">
                 <span className="text-gray-600">10% with holding bid amount</span>

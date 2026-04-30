@@ -39,10 +39,7 @@ const bidSchema = (currentBid: number) =>
     amount: z
       .number({ message: "Enter valid amount" })
       .positive("Must be greater than 0")
-      .refine((val) => {
-        // ✅ ensure max 2 decimal places safely
-        return Number.isInteger(val * 100);
-      }, {
+      .multipleOf(0.01, {
         message: "Max 2 decimal places allowed",
       })
       .refine((val) => {
@@ -216,7 +213,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               <div>
                 <div className="text-center">
                   <h1 className="text-2xl font-semibold">
-                    ${watchedAmount || 0}.00
+                    ${watchedAmount || 0}
                   </h1>
                   <h3 className="text-xs">Your Bid</h3>
                 </div>
@@ -239,6 +236,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                   placeholder="Enter your amount"
                   className={cn("w-full", errors.amount && "border-red-500")}
                   type="number"
+                  step="0.01"
                   {...register("amount", { valueAsNumber: true })}
                 />
               </div>
