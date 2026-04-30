@@ -1,6 +1,7 @@
 "use client";
+import { useMe } from "@/features/auth/hooks";
 import { useAddProductToFavorite } from "@/features/fav-product/hook";
-import { showSuccess } from "@/lib/toast";
+import { showError, showSuccess } from "@/lib/toast";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -14,9 +15,11 @@ const typeRouteMap: Record<string, string> = {
 const CollectionCard = (props: Props) => {
   const [isFav, setIsFav] = useState(props?.watch?.isFavorite);
   const watch = props.watch;
-  console.log(watch)
+  const { data: userData } = useMe()
+
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(watch?._id || "");
   const handleAddToFavorite = () => {
+    if (!userData?.data) return showError("Please login to add product to favorites");
     addProductToFavorite(undefined, {
       onSuccess: () => {
         setIsFav((prev: boolean) => !prev);
