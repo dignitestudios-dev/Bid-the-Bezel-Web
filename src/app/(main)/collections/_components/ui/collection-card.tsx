@@ -14,6 +14,7 @@ const typeRouteMap: Record<string, string> = {
 const CollectionCard = (props: Props) => {
   const [isFav, setIsFav] = useState(props?.watch?.isFavorite);
   const watch = props.watch;
+  console.log(watch)
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(watch?._id || "");
   const handleAddToFavorite = () => {
     addProductToFavorite(undefined, {
@@ -37,7 +38,7 @@ const CollectionCard = (props: Props) => {
               Authenticated
             </div>
           )}
-          {watch.saleType === "auction" && (
+          {watch.type === "auction" && (
             <div className="rounded-tl-sm absolute bottom-0 right-0 p-3 text-center text-white bg-black/10 px-3 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-br-xl">
               <h2>Ends In</h2>
               <h1 className="font-semibold">2D 5H 42M</h1>
@@ -65,13 +66,13 @@ const CollectionCard = (props: Props) => {
                 ${watch?.price}
               </h1>
             </div>
-            {watch.saleType === "auction" && (
+            {watch.type === "auction" && (
               <>
                 <div className="w-px bg-gray-400 " />
                 <div>
                   <h2 className="text-sm">Current Bid</h2>{" "}
                   <h1 className="font-semibold text-lg">
-                    ${watch?.bidders?.[0]?.bidAmount || "0"}
+                    ${watch?.auction.currentBidAmount || "0"}
                   </h1>
                 </div>
               </>

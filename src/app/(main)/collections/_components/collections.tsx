@@ -128,9 +128,13 @@ const Collections = (props: Props) => {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {isLoading ? (
-            <div>
+            // <div className="" >
+            <>
               <ListingSkeleton />
-            </div>
+              <ListingSkeleton />
+              <ListingSkeleton />
+              <ListingSkeleton />
+              </>
           )
             : ProductData?.data?.length === 0 ? (
               <div className="col-span-full flex items-center justify-center text-center py-10">
