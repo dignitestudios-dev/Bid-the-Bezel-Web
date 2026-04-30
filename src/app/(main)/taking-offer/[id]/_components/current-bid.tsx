@@ -179,7 +179,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               <Button className="text-base w-full">Fill out Shipping</Button>
             </Link>
           </div>
-        ) : isSold && currentBidder ? (
+        ) :  currentBidder ? (
           <div className="px-6 py-6 border-t text-center">
             <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
               <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
@@ -256,7 +256,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             <Button className="text-base w-full">Fill out Shipping</Button>
           </Link>
         </div>
-      ) : isSold && !cancelBid && currentBidder && (
+      ) :  !cancelBid && currentBidder && (
         <div className="px-6 py-6 border-t text-center">
           <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
             <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
