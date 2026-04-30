@@ -1,13 +1,13 @@
-import Move from "@/components/icons/Move";
-import { Button } from "@/components/ui/button";
+import { timeAgo } from "@/lib/helper";
 import { Clock3, MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import CancelListingDialog from "./cancel-listing-dialog";
 import ConfirmCancel from "./confirm-cancel";
-import MoveToTakingDialog from "./move-taking-offer-dialog";
 import RepostAuctionDialog from "./repost-auction-dialog";
+import ConfirmBidDialog from "./confirm-bid-dialog";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   product: AuctionProduct;
@@ -19,9 +19,9 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
   const [cancelSuccess, setCancelSuccess] = useState(false);
   const [repostAuction, setRepostAuction] = useState(false);
  
-  const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
+  const [confirmBid, setConfirmBid] = useState(false);
 
-  const auction = product?.auction;
+  const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
 
   const currentBidder = bidsData?.data?.[0]?.currentBidder;
   const isSold = product?.status === "sold";
@@ -37,84 +37,18 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
           {hasBidder && isSold ? "Offer Winner" : "Current Offer"}
         </h3>
         <h1 className="text-2xl font-semibold">
-          {auction?.currentBidAmount > 0
-            ? `$${auction.currentBidAmount.toFixed(2)}`
+          {product?.auction?.currentBidAmount > 0
+            ? `$${product?.auction?.currentBidAmount.toFixed(2)}`
             : "$00.0"}
         </h1>
       </div>
-      { product.status !== "deleted" ? (
-        hasBidder ? (
-          <>
-            <div className="flex gap-2 items-start">
-              <Image
-                src={currentBidder.profilePicture.location}
-                alt="dp"
-                className="rounded-full"
-                width={60}
-                height={60}
-              />
-              <div className="my-2">
-                <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-                <h5 className="text-xs">Current highest bidder</h5>
-              </div>
-            </div>
-            {product.status === "sold" &&
-              product.deliveryFlow == "at_seller" &&
-              product.isMyProduct && (
-                <div className="flex flex-col gap-2 p-5 w-full">
-                  <Link href={"/chats"} className="w-full">
-                    <Button className="w-full h-12 py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
-                      <MessageCircleMore size={25} />
-                      Chat with Buyer
-                    </Button>
-                  </Link>
-                  <Link href={"/seller/shipping-details"} className="w-full">
-                    <Button className="text-base w-full">
-                      Fill out Shipping
-                    </Button>
-                  </Link>
-                </div>
-              )}
-          </>
-        ) : (
-          <>
-            <div className="flex capitalize font-semibold justify-center py-4 items-center">
-              <h4>no bid yet</h4>
-            </div>
-
-            <div className="flex flex-col gap-2 p-5 w-full border-t">
-              <p className="text-sm">
-                Your listing failed to atrract any buyers.
-              </p>
-
-            
-              <Button
-                onClick={() => setMoveToTakingOffer(true)}
-                className="text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
-              >
-                <Move />
-                Move to takings offers section
-              </Button>
-<div className="flex items-center gap-2 w-full" >
-              <Button
-                onClick={() => setCancelListing(true)}
-                className="text-base bg-red-700 hover:bg-red-800 text-white w-[50%]"
-              >
-                Cancel Listing
-              </Button>
-                <Button
-                onClick={() => setRepostAuction(true)}
-                className="text-base bg-white border w-[50%] text-green-600 hover:bg-[#f8f3f3]  hover:text-green-700 flex justify-center gap-2"
-              >
-                Restart Auction
-              </Button>
-              </div>
-            </div>
-          </>
-        )
-      ) : hasBidder ? (
-        <div className="flex items-center px-5 pb-5 gap-3">
-          <div className="flex gap-2 items-start">
+      {!hasBidder ? (
+        <div className="flex capitalize font-semibold justify-center py-8 items-center">
+          <h4>no bid yet</h4>
+        </div>
+      ) : (
+        <>
+          <div className="flex gap-2 items-start px-5 pt-5">
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
@@ -124,15 +58,55 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             />
             <div className="my-2">
               <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-              <h5 className="text-xs">Current highest bidder</h5>
+              <h5 className="text-xs ">Bid {" "}
+                {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              </h5>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="flex capitalize font-semibold justify-center py-4 items-center">
-          <h4>no bid yet</h4>
-        </div>
+
+          {isSold ? (
+            product.deliveryFlow === "at_seller" && product.isMyProduct && (
+              <div className="flex flex-col gap-2 p-5 w-full">
+                <Link href={"/chats"} className="w-full">
+                  <Button className="w-full h-12 py-2 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
+                    <MessageCircleMore size={25} />
+                    Chat with Buyer
+                  </Button>
+                </Link>
+                <Link href={"/seller/shipping-details"} className="w-full">
+                  <Button className="text-base w-full">Fill out Shipping</Button>
+                </Link>
+              </div>
+            )
+          ) : bidsData.data[0].status === "pending" && (
+            <div className="flex flex-col gap-2 p-5 w-full border-t space-y-2">
+            
+              <div className="flex items-center gap-2">
+              <Button
+              variant={"dangerous"}
+                onClick={() => setCancelListing(true)}
+                className=" w-[50%]"
+              >
+                Cancel Listing
+              </Button>
+              <Button
+                onClick={() => setConfirmBid(true)}
+                className="text-base bg-green-600 w-[50%] hover:bg-green-700 text-white"
+              >
+                Confirm Bid
+              </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
+      <ConfirmBidDialog
+        open={confirmBid}
+        setOpen={setConfirmBid}
+        productId={bidsData?.data[0]?._id}
+        bidder={currentBidder}
+        amount={bidsData?.data?.[0]?.amount ?? 0}
+      />
       <RepostAuctionDialog
         open={repostAuction}
         setOpen={setRepostAuction}
@@ -148,11 +122,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         cancelSuccess={cancelSuccess}
         setCancelSuccess={setCancelSuccess}
       />
-      <MoveToTakingDialog
-      id={product?._id}
-        setMoveToTakingOffer={setMoveToTakingOffer}
-        moveToTakingOffer={moveToTakingOffer}
-      />
+ 
 
     </div>
   );

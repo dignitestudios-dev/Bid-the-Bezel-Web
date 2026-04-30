@@ -58,6 +58,14 @@ export const getWatchById = (watchId: string): AuctionWatch | FixedPriceWatch | 
   return undefined;
 };
 
+export const timeAgo = (date: string | Date): string => {
+  const diff = Date.now() - new Date(date).getTime();
+  const m = Math.floor(diff / 60000);
+  const h = Math.floor(diff / 3600000);
+  const d = Math.floor(diff / 86400000);
+  return d > 0 ? `${d}d ago` : h > 0 ? `${h}h ago` : m > 0 ? `${m}m ago` : 'Just now';
+};
+
 export const generateReferenceId = () => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

@@ -123,12 +123,9 @@ const ProductCard = ({
               </h1>
             </div>
 
-            {/* Auction Only Section */}
             {product.isAuction && (
               <>
                 <div className="h-10 w-px bg-white/50" />
-
-                {/* Current Bid */}
                 <div className="w-1/3">
                   <h2 className="font-thin">Current Bid</h2>
                   <h1 className="font-semibold">

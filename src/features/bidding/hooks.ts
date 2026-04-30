@@ -47,6 +47,25 @@ export const useCancelBid = () =>
         },
     });
 
+export const useConfirmBid = () =>
+    useApiMutation<any, { id: string }>({
+        endpoint: ({ id }) => `products/bids/${id}/accept`,
+        method: "POST",
+        invalidateKeys: [
+            "get-profile",
+            "get-cards",
+            "shipping-result",
+            "get-my-listing",
+            "get-listing-detail",
+            "product-bids",
+        ],
+        mutationOptions: {
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
+
 export const usePlaceBid = () => {
   return useApiMutation<
     any,

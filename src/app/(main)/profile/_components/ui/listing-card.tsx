@@ -42,12 +42,14 @@ const ListingCard = ({
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [updateDialog, setUpdateDialog] = useState(false);
 
-  let pathname =
-    type === "auction"
-      ? `/auction/${id}`
-      : type === "fixed_price"
-        ? `/fixed-price/${id}`
-        : `/fixed-price/${id}`;
+let pathname =
+  type === "auction"
+    ? `/auction/${id}`
+    : type === "fixed_price"
+    ? `/fixed-price/${id}`
+    : type === "taking_offers"
+    ? `/taking-offer/${id}`
+    : `/fixed-price/${id}`;
 
   return (
     <div className="card p-0 relative overflow-hidden">
