@@ -39,9 +39,19 @@ const bidSchema = (currentBid: number) =>
     amount: z
       .number({ message: "Enter valid amount" })
       .positive("Must be greater than 0")
-      .min(1, { message: "Must be greater than 0" })
-      .int("Must be a whole number")
-    ,
+      .refine((val) => {
+        // ✅ ensure max 2 decimal places safely
+        return Number.isInteger(val * 100);
+      }, {
+        message: "Max 2 decimal places allowed",
+      })
+      .refine((val) => {
+        const digits = val.toString().replace(".", "");
+        return digits.length <= 7;
+      }, {
+        message: "Bid amount is too high",
+      }),
+
   });
 
 type BidForm = {
@@ -88,7 +98,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
     return `${d}D ${h}H ${m}M`;
   }, [auction?.endsAt]);
 
-
+  const isSold = product.status === "sold";
 
   const isEnded = timeLeft === "Ended";
 
@@ -134,15 +144,15 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   return (
     <div className="rounded-xl w-full border border-[#E3E3E3]">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
-        <Clock3 color={iconColor} />
-        {displayTime} left
+        <Clock3 color="#D9B918" />
+        Taking Offers
       </h1>
 
       <div className="p-6 border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
-          <h3 className="font-semibold">Current Bid</h3>
+          <h3 className="font-semibold">Highest Offer</h3>
           <h1 className="text-2xl font-semibold">
-            {currentBid > 0 ? `$${currentBid.toFixed(2)}` : "$00.00"}
+            {currentBid > 0 ? `$${bidsData?.data?.[0]?.product?.effectivePrice.toFixed(2)}` : "$00.00"}
           </h1>
         </div>
 
@@ -151,15 +161,16 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
-              className="rounded-full"
-              width={60}
-              height={60}
+              className="rounded-full w-[70px] h-[70px] "
+              width={50}
+              height={50}
+
             />
             <div className="my-2">
               <h1 className="font-semibold mb-1">
                 {currentBidder.userName}
               </h1>
-                    <h5 className="text-xs ">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              <h5 className="text-xs ">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>
@@ -179,7 +190,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               <Button className="text-base w-full">Fill out Shipping</Button>
             </Link>
           </div>
-        ) :  currentBidder ? (
+        ) : isSold && currentBidder ? (
           <div className="px-6 py-6 border-t text-center">
             <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
               <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
@@ -256,7 +267,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             <Button className="text-base w-full">Fill out Shipping</Button>
           </Link>
         </div>
-      ) :  !cancelBid && currentBidder && (
+      ) : isSold && !cancelBid && currentBidder && (
         <div className="px-6 py-6 border-t text-center">
           <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
             <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />

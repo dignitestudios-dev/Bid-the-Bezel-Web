@@ -49,7 +49,7 @@ const PlanSuccessDialog = ({
             className="w-full bg-[#0D1B2A] hover:bg-[#1B263B] text-white py-6 rounded-xl text-lg font-semibold transition-all duration-200 active:scale-[0.98]"
             onClick={() => onOpenChange?.(false)}
           >
-            Continue to Dashboard
+            Continue 
           </AlertDialogAction>
         </div>
       </AlertDialogContent>

@@ -101,7 +101,7 @@ export default function TopBids({
       <div className="p-6">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold">Recent Top Bids</h3>
+            <h3 className="text-lg font-semibold">Recent Top Offers</h3>
             <span className="w-2 h-2 rounded-full bg-green-500" />
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function TopBids({
         />
 
         <div className="mt-4 pt-3 border-t">
-          <h1 className="text-xl font-semibold mb-3">All Bidders</h1>
+          <h1 className="text-xl font-semibold mb-3">All Offers</h1>
 
           <div className="flex items-center justify-between">
             {/* Avatars (use topBids or paginatedBids — your choice) */}
@@ -153,7 +153,7 @@ export default function TopBids({
 
               <DialogContent className="max-w-md!">
                 <DialogHeader>
-                  <DialogTitle>All Bidders</DialogTitle>
+                  <DialogTitle>All Offers</DialogTitle>
                 </DialogHeader>
 
                 <div className="grid grid-cols-[1fr_auto_auto] font-semibold items-center gap-4">

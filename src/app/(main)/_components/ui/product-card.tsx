@@ -1,13 +1,15 @@
 "use client";
 
 import Badge from "@/components/ui/badge";
+import { useMe } from "@/features/auth/hooks";
 import { useAddProductToFavorite } from "@/features/fav-product/hook";
 import { mapProductToUI } from "@/lib/mappers/product.mapper";
-import { showSuccess } from "@/lib/toast";
+import { showError, showSuccess } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import { formatTimeLeft } from "@/lib/utils/date.utils";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 
 const ProductCard = ({
@@ -19,13 +21,14 @@ const ProductCard = ({
 }) => {
 
   if (!prod) return null;
+  const router = useRouter()
 
-
-
+  const { data: userData } = useMe()
   const product = mapProductToUI(prod);
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(id || "");
 
   const handleAddToFavorite = () => {
+    if (!userData?.data) return showError("Please login to add product to favorites");
     addProductToFavorite(undefined, {
       onSuccess: () => {
         showSuccess(

@@ -39,10 +39,19 @@ const bidSchema = (currentBid: number) =>
     amount: z
       .number({ message: "Enter valid amount" })
       .positive("Must be greater than 0")
-      .min(1, { message: "Must be greater than 0" })
-      .int("Must be a whole number")
-    ,
-  });
+      .refine((val) => {
+        // ✅ ensure max 2 decimal places safely
+        return Number.isInteger(val * 100);
+      }, {
+        message: "Max 2 decimal places allowed",
+      })
+      .refine((val) => {
+        const digits = val.toString().replace(".", "");
+        return digits.length <= 7;
+      }, {
+        message: "Bid amount is too high",
+      }),
+  })
 
 type BidForm = {
   amount: number;
@@ -139,9 +148,9 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
       <div className="p-6 border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
-          <h3 className="font-semibold">Current Bid</h3>
+          <h3 className="font-semibold">Highest Bid</h3>
           <h1 className="text-2xl font-semibold">
-            {currentBid > 0 ? `$${currentBid.toFixed(2)}` : "$00.00"}
+            {bidsData?.data?.[0]?.product?.effectivePrice > 0 ? `$${bidsData?.data[0]?.product?.effectivePrice.toFixed(2)}` : "$00.00"}
           </h1>
         </div>
 
@@ -150,17 +159,17 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
-              className="rounded-full"
-              width={60}
-              height={60}
+              className="rounded-full w-[70px] h-[70px] "
+              width={50}
+              height={50}
             />
             <div className="my-2">
               <h1 className="font-semibold mb-1">
                 {currentBidder.userName}
               </h1>
-                 <h5 className="text-xs ">Bid {" "}
-                              {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
-                            </h5>
+              <h5 className="text-xs ">Bid {" "}
+                {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              </h5>
             </div>
           </div>
         ) : (
@@ -222,7 +231,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               <div>
                 <div className="text-center">
                   <h1 className="text-2xl font-semibold">
-                    ${watchedAmount || 0}.00
+                    ${watchedAmount || 0}
                   </h1>
                   <h3 className="text-xs">Your Bid</h3>
                 </div>
@@ -242,6 +251,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             >
               <div className="w-full">
                 <Input
+                  max={6}
+                  step={0.01}
                   placeholder="Enter your amount"
                   className={cn("w-full", errors.amount && "border-red-500")}
                   type="number"
