@@ -11,7 +11,7 @@ import UnAuthStatus from "@/app/(main)/auction/[id]/_components/unauth-status";
 import { useRouter } from "next/navigation";
 import { useMe } from "@/features/auth/hooks";
 import { useAddProductToFavorite } from "@/features/fav-product/hook";
-import { showSuccess } from "@/lib/toast";
+import { showError, showSuccess } from "@/lib/toast";
 
 type Props = {
   sellerId?: string;
@@ -25,7 +25,9 @@ const ProductPricing = ({ price, watch }: Props) => {
   const { data: user, isLoading } = useMe();
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(watch?._id || "");
   const handleAddToFavorite = () => {
+    if (!user?.data) return showError("Please login to add product to favorites");
     addProductToFavorite(undefined, {
+
       onSuccess: () => {
 
         showSuccess(

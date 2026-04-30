@@ -10,8 +10,9 @@ import { QASkeleton } from '@/components/skeleton'
 import Answers from '@/app/(main)/fixed-price/[id]/_components/answers'
 import { useGetQuestions } from '@/features/product-qa/hook'
 import { useAddProductToFavorite } from '@/features/fav-product/hook'
-import { showSuccess } from '@/lib/toast'
+import { showError, showSuccess } from '@/lib/toast'
 import { useGetProductBids } from '@/features/bidding/hooks'
+import { useMe } from '@/features/auth/hooks'
 
 
 type Props = {
@@ -21,7 +22,9 @@ type Props = {
 const OPTIONS: EmblaOptionsType = {}
 
 const ProductDetail = ({ product }: Props) => {
-    const { data: bidsData , isLoading:bidsLoading } = useGetProductBids(product?._id,1 , 10);
+  const { data: userData } = useMe()
+
+  const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(product?._id, 1, 10);
   const isAuthenticated = product?.authentication?.status === 'authenticated';
   const [page, setPage] = useState(1);
   const { data: productQAndA, isLoading } = useGetQuestions(product?._id, page)
@@ -29,7 +32,9 @@ const ProductDetail = ({ product }: Props) => {
 
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(product?._id || "");
   const handleAddToFavorite = () => {
+    if (!userData?.data) return showError("Please login to add product to favorites");
     addProductToFavorite(undefined, {
+
       onSuccess: () => {
         setIsFav((prev: boolean) => !prev);
         showSuccess(
