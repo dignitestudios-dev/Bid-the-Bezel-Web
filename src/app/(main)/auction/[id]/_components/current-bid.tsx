@@ -332,7 +332,6 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         </Suspense>
       </div>
 
-      {/* DIALOGS (UNCHANGED) */}
       <SubscriptionsDialog
         id={product._id}
         subsPopup={subsPopup}
