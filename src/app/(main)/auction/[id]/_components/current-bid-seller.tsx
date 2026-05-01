@@ -20,17 +20,17 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
   const [cancelListing, setCancelListing] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState(false);
   const [repostAuction, setRepostAuction] = useState(false);
- 
+
   const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
 
   const auction = product?.auction;
 
   const currentBidder = bidsData?.data?.[0]?.currentBidder;
 
-const now = useNow();
-const timeLeft = React.useMemo(() => {
-  return getTimeLeft(auction?.endsAt, now);
-}, [auction?.endsAt, now]);
+  const now = useNow();
+  const timeLeft = React.useMemo(() => {
+    return getTimeLeft(auction?.endsAt, now);
+  }, [auction?.endsAt, now]);
 
   const isEnded = timeLeft === "Ended";
   const hasBidder = !!auction?.currentBidder;
@@ -66,9 +66,9 @@ const timeLeft = React.useMemo(() => {
               />
               <div className="my-2">
                 <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-                 <h5 className="text-xs ">Bid {" "}
-                              {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
-                            </h5>
+                <h5 className="text-xs ">Bid {" "}
+                  {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                </h5>
               </div>
             </div>
             {product.status === "sold" &&
@@ -100,7 +100,7 @@ const timeLeft = React.useMemo(() => {
                 Your listing failed to atrract any buyers.
               </p>
 
-            
+
               <Button
                 onClick={() => setMoveToTakingOffer(true)}
                 className="text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
@@ -108,19 +108,19 @@ const timeLeft = React.useMemo(() => {
                 <Move />
                 Move to takings offers section
               </Button>
-<div className="flex items-center gap-2 w-full" >
-              <Button
-                onClick={() => setCancelListing(true)}
-                className="text-base bg-red-700 hover:bg-red-800 text-white w-[50%]"
-              >
-                Cancel Listing
-              </Button>
+              <div className="flex items-center gap-2 w-full" >
                 <Button
-                onClick={() => setRepostAuction(true)}
-                className="text-base bg-white border w-[50%] text-green-600 hover:bg-[#f8f3f3]  hover:text-green-700 flex justify-center gap-2"
-              >
-                Restart Auction
-              </Button>
+                  onClick={() => setCancelListing(true)}
+                  className="text-base bg-red-700 hover:bg-red-800 text-white w-[50%]"
+                >
+                  Cancel Listing
+                </Button>
+                <Button
+                  onClick={() => setRepostAuction(true)}
+                  className="text-base bg-white border w-[50%] text-green-600 hover:bg-[#f8f3f3]  hover:text-green-700 flex justify-center gap-2"
+                >
+                  Restart Auction
+                </Button>
               </div>
             </div>
           </>
@@ -152,7 +152,7 @@ const timeLeft = React.useMemo(() => {
         productId={product?._id}
       />
       <CancelListingDialog
-      id={product?._id}
+        id={product?._id}
         cancelListing={cancelListing}
         setCancelListing={setCancelListing}
         setCancelSuccess={setCancelSuccess}
@@ -162,7 +162,7 @@ const timeLeft = React.useMemo(() => {
         setCancelSuccess={setCancelSuccess}
       />
       <MoveToTakingDialog
-      id={product?._id}
+        id={product?._id}
         setMoveToTakingOffer={setMoveToTakingOffer}
         moveToTakingOffer={moveToTakingOffer}
       />

@@ -64,7 +64,7 @@ const MyOrdersItems = () => {
                 </div>
 
                 <div className="flex-1">
-                  <p className="text-lg font-semibold text-end">{item?.product?.price}</p>
+                  <p className="text-lg font-semibold text-end">${item?.product?.soldPrice}</p>
                   <p className="text-lg font-medium">{item?.product?.model}</p>
                 </div>
               </div>

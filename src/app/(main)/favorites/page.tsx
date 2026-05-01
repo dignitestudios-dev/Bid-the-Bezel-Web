@@ -130,7 +130,7 @@ const Favorites = () => {
                     </span>
                   </div>
 
-                  <p className="text-2xl font-bold">{it?.price}</p>
+                  <p className="text-2xl font-bold">${it?.price}</p>
                 </div>
               </div>
 

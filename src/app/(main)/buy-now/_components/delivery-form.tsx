@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useQueryClient } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
@@ -224,8 +225,18 @@ const DeliveryForm = ({ authenticate, productId,
                         maxLength={5}
                     />
                     <div className="mb-6 flex gap-2">
-                        <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
-                            🇺🇸 +1
+                        <div className="flex items-center border rounded-xl px-3 bg-gray-50 h-[52px]">
+
+                            <Image
+                                src="/images/usFlag.png"
+                                alt="country flag"
+                                width={20}
+                                height={14}
+                                className="mr-2"
+                            />
+
+
+                            <span className="text-sm font-medium mr-3">+1</span>
                         </div>
 
                         <div className="w-full">

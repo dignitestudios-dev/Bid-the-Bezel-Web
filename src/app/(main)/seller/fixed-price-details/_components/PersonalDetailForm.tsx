@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PersonalDetailPayload, personalDetailSchema } from "@/features/auth/Schema";
 import { useUpdateProfile } from "@/features/auth/hooks";
+import Image from "next/image";
 
 
 type Props = {
@@ -98,8 +99,18 @@ const PersonalDetailForm = ({ onNext, userData, personalEditMode, setPersonalEdi
                 </div>
 
                 <div className="mb-6 flex gap-2">
-                    <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
-                        🇺🇸 +1
+                    <div className="flex items-center border rounded-xl px-3 bg-gray-50 h-[52px]">
+
+                        <Image
+                            src="/images/usFlag.png"
+                            alt="country flag"
+                            width={20}
+                            height={14}
+                            className="mr-2"
+                        />
+
+
+                        <span className="text-sm font-medium mr-3">+1</span>
                     </div>
 
                     <div className="w-full">
