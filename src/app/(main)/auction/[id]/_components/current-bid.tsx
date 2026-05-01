@@ -27,6 +27,7 @@ import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successful
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { getTimeLeft, timeAgo } from "@/lib/helper";
+import { useNow } from "@/lib/use-now";
 
 type Props = {
   product: AuctionProduct;
@@ -82,11 +83,10 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
   const watchedAmount = watch("amount");
 
-
-
+const now = useNow();
 const timeLeft = React.useMemo(() => {
-  return getTimeLeft(auction?.endsAt);
-}, [auction?.endsAt]);
+  return getTimeLeft(auction?.endsAt, now);
+}, [auction?.endsAt, now]);
 
 
 

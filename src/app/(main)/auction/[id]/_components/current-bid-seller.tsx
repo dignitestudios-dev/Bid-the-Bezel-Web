@@ -9,6 +9,7 @@ import ConfirmCancel from "./confirm-cancel";
 import MoveToTakingDialog from "./move-taking-offer-dialog";
 import RepostAuctionDialog from "./repost-auction-dialog";
 import { getTimeLeft, timeAgo } from "@/lib/helper";
+import { useNow } from "@/lib/use-now";
 
 type Props = {
   product: AuctionProduct;
@@ -26,10 +27,10 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
 
   const currentBidder = bidsData?.data?.[0]?.currentBidder;
 
-
+const now = useNow();
 const timeLeft = React.useMemo(() => {
-  return getTimeLeft(auction?.endsAt);
-}, [auction?.endsAt]);
+  return getTimeLeft(auction?.endsAt, now);
+}, [auction?.endsAt, now]);
 
   const isEnded = timeLeft === "Ended";
   const hasBidder = !!auction?.currentBidder;
