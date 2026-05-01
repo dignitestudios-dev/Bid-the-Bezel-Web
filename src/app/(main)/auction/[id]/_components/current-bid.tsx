@@ -26,7 +26,7 @@ import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { timeAgo } from "@/lib/helper";
+import { getTimeLeft, timeAgo } from "@/lib/helper";
 
 type Props = {
   product: AuctionProduct;
@@ -83,15 +83,10 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const watchedAmount = watch("amount");
 
 
-  const timeLeft = useMemo(() => {
-    if (!auction?.endsAt) return "--";
-    const diff = new Date(auction.endsAt).getTime() - Date.now();
-    if (diff <= 0) return "Ended";
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    return `${d}D ${h}H ${m}M`;
-  }, [auction?.endsAt]);
+
+const timeLeft = React.useMemo(() => {
+  return getTimeLeft(auction?.endsAt);
+}, [auction?.endsAt]);
 
 
 
@@ -274,7 +269,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
           </>
         )
       ) :
-        isEnded && !cancelBid && (
+        isEnded && !cancelBid && currentBidder && (
           <>
             <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
               <Image
@@ -331,9 +326,6 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       )
       }
 
-
-
-      {/* AUTH SIDEBAR (UNCHANGED) */}
       <div className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}>
         <Suspense fallback={null}>
           <AuthSidebar hideTrigger={!!user || isLoading} loader={isLoading} />

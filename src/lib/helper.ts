@@ -66,6 +66,23 @@ export const timeAgo = (date: string | Date): string => {
   return d > 0 ? `${d}d ago` : h > 0 ? `${h}h ago` : m > 0 ? `${m}m ago` : 'Just now';
 };
 
+export const getTimeLeft = (endsAt?: string | Date): string => {
+  if (!endsAt) return "--";
+
+  const end = new Date(endsAt).getTime();
+  const now = Date.now();
+  const diff = end - now;
+
+  if (diff <= 0) return "Ended";
+
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+
+  return `${days}D ${hours}H ${minutes}M`;
+};
+
+
 export const generateReferenceId = () => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
