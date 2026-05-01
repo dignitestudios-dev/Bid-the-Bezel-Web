@@ -98,8 +98,8 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
                 className="rounded-lg object-cover"
               />
             </div>
-            <p className="flex-1 font-medium text-lg">
-              {productData?.data?.brandName}
+            <p className="flex-1 font-medium truncate text-lg">
+              {productData?.data?.brandName} {productData?.data?.model}
             </p>
             <div className=" font-medium">${basePrice}</div>
           </div>
@@ -117,7 +117,7 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
               </div>
             )}
 
-            {productData.data.type == "auction" || productData.data.type == "taking_offers" && (
+            {(productData.data.type == "auction" || productData.data.type == "taking_offers") && (
               <>
               <div className="flex justify-between ">
                 <span className="text-gray-600">10% with holding bid amount</span>
@@ -139,7 +139,7 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
                 {" "}
                 {productData.data.type == "auction" ?(
                   <span className=" mr-2">
-                    ${(basePrice - basePrice * 0.1).toFixed(2)}
+                    ${(total - total * 0.1).toFixed(2)}
                   </span>
                 ): <>
                 <span className="font-light">USD</span> <span>${total.toFixed(2)}</span></>}
