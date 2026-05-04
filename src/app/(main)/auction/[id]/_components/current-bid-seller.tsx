@@ -60,7 +60,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
               <Image
                 src={currentBidder.profilePicture.location}
                 alt="dp"
-                className="rounded-full"
+                className="rounded-full w-[70px] h-[70px]"
                 width={60}
                 height={60}
               />
@@ -131,7 +131,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
-              className="rounded-full"
+              className="rounded-full w-[70px] h-[70px] "
               width={60}
               height={60}
             />

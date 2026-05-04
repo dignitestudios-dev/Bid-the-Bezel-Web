@@ -1,5 +1,5 @@
 "use client";
-import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Facebook, Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -143,32 +143,35 @@ const Footer = () => {
             <div className="flex items-center justify-center md:justify-end gap-5 md:gap-6 text-gray-400 flex-wrap">
               <Link href="#" className="hover:text-white">
                 {/* Facebook */}
-                <svg width="11" height="19" viewBox="0 0 11 19" fill="none">
+                {/* <svg width="11" height="19" viewBox="0 0 11 19" fill="none">
                   <path
                     d="M7.31339 18.395V10.1844H10.2081L10.6415 6.98452H7.31331V4.94155C7.31331 4.01512 7.58348 3.38381 8.97893 3.38381L10.7586 3.38301V0.521091C10.4508 0.482165 9.39429 0.39502 8.16531 0.39502C5.59929 0.39502 3.84255 1.88619 3.84255 4.62474V6.98452H0.94043V10.1844H3.84255V18.3949H7.31339V18.395Z"
                     fill="white"
                   />
-                </svg>
+                </svg> */}
+                <Facebook/>
               </Link>
 
               <Link href="#" className="hover:text-white">
                 {/* Instagram */}
-                <svg width="19" height="19" viewBox="0 0 19 19" fill="none">
+                {/* <svg width="19" height="19" viewBox="0 0 19 19" fill="none">
                   <path
                     d="M9.84961 0.39502C13.4447 0.39502 15.2424 0.394824 16.5371 1.25146C17.1153 1.63402 17.6106 2.12936 17.9932 2.70752C18.8498 4.00225 18.8496 5.79995 18.8496 9.39502C18.8496 12.9901 18.8498 14.7878 17.9932 16.0825C17.6106 16.6607 17.1153 17.156 16.5371 17.5386C15.2424 18.3952 13.4447 18.395 9.84961 18.395C6.25454 18.395 4.45684 18.3952 3.16211 17.5386C2.58395 17.156 2.08861 16.6607 1.70605 16.0825C0.849414 14.7878 0.849609 12.9901 0.849609 9.39502C0.849609 5.79995 0.849414 4.00225 1.70605 2.70752C2.08861 2.12936 2.58395 1.63402 3.16211 1.25146C4.45684 0.394824 6.25454 0.39502 9.84961 0.39502Z"
                     fill="white"
                   />
-                </svg>
+                </svg> */}
+                <Instagram/>
               </Link>
 
               <Link href="#" className="hover:text-white">
                 {/* YouTube */}
-                <svg width="21" height="15" viewBox="0 0 21 15" fill="none">
+                {/* <svg width="21" height="15" viewBox="0 0 21 15" fill="none">
                   <path
                     d="M11.2882 14.3747L7.22605 14.2988C5.9108 14.2723 4.59228 14.3251 3.30282 14.051C1.34126 13.6415 1.20229 11.6336 1.05688 9.94939C0.856519 7.58155 0.934085 5.17074 1.31219 2.82266C1.52565 1.50514 2.36568 0.718973 3.66476 0.633423C8.05011 0.322948 12.4646 0.359743 16.8403 0.50459C17.3024 0.517869 17.7677 0.590445 18.2234 0.673056C20.4727 1.07597 20.5275 3.35137 20.6733 5.26683C20.8187 7.20205 20.7573 9.14721 20.4794 11.0693C20.2564 12.6607 19.8298 13.9952 18.0294 14.124C15.7737 14.2925 13.5697 14.4281 11.3076 14.3849C11.3077 14.3747 11.2947 14.3747 11.2882 14.3747Z"
                     fill="white"
                   />
-                </svg>
+                </svg> */}
+                <Youtube/>
               </Link>
             </div>
           </div>

@@ -39,6 +39,7 @@ export const useCancelBid = () =>
             "shipping-result",
             "get-my-listing",
             "get-listing-detail",
+            "product-bids"
         ],
         mutationOptions: {
             onError: (err) => {
