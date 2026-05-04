@@ -147,7 +147,7 @@ export default function TopBids({
             {totalPages > 1 && (
               <Dialog>
                 <DialogTrigger asChild>
-                  <button className="text-sm font-semibold text-primary">
+                  <button className="text-sm cursor-pointer font-semibold text-primary">
                     View All
                   </button>
                 </DialogTrigger>

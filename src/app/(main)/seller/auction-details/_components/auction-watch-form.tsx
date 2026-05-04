@@ -63,6 +63,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
             onSuccess: (response) => {
                 if (response?.data) {
                     setWatchId(response?.data?._id)
+                    localStorage.setItem("refId", referenceId);
                     onNext();
 
                 }

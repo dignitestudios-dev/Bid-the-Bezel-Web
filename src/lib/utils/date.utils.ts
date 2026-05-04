@@ -1,7 +1,7 @@
 export const formatTimeLeft = (endDate: string) => {
   const diff = new Date(endDate).getTime() - Date.now();
 
-  if (diff <= 0) return "Ended";
+  if (diff <= 0) return "0D 0H 0M";
 
   const d = Math.floor(diff / (1000 * 60 * 60 * 24));
   const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
