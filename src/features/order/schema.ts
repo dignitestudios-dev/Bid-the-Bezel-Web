@@ -20,7 +20,12 @@ export const orderSchema = z.object({
         .regex(/^[0-9]+$/, "Phone number must contain only digits")
         .length(10, "Phone number must be exactly 10 digits"),
 
-    postalCode: z.string().optional(),
+
+    postalCode: z
+        .string()
+        .regex(/^[0-9]{5,6}$/, "Postal code must be 5 or 6 digits")
+        .optional()
+        .or(z.literal("")), 
 });
 
 export type OrderShippingDetails = z.infer<typeof orderSchema>;

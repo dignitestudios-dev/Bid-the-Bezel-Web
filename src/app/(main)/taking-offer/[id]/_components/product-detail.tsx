@@ -52,7 +52,7 @@ const ProductDetail = ({ product }: Props) => {
       <div>
         <div className='flex justify-between'>
           <h1 className='flex gap-2 items-start text-xl md:text-3xl font-semibold'>
-            {product?.model}
+            {product?.brandName}   {product?.model}
             {isAuthenticated && (
               <Badge title='Authenticated' className='bg-linear-to-r text-background text-center from-[#0D1B2A] to-[#415A77]' />
             )}

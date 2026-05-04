@@ -223,6 +223,7 @@ const DeliveryForm = ({ authenticate, productId,
                         label="Postal  code (optional)"
                         id="postalCode"
                         maxLength={5}
+                        error={errors.postalCode?.message}
                     />
                     <div className="mb-6 flex gap-2">
                         <div className="flex items-center border rounded-xl px-3 bg-gray-50 h-[52px]">
