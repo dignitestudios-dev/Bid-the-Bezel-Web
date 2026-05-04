@@ -24,11 +24,12 @@ import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
 import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
+import PlaceBidDialog from "./place-bid-dialog";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { getTimeLeft, timeAgo } from "@/lib/helper";
-import { useNow } from "@/lib/use-now";
 
+import { useNow } from "@/lib/use-now";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -60,6 +61,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const placeBidMutation = usePlaceBid();
   const cancelBidMutation = useCancelBid();
   const [cancelBid, setCancelBid] = React.useState<boolean>(false);
+  const [confirmBid, setConfirmBid] = React.useState(false);
+  const [pendingAmount, setPendingAmount] = React.useState(0);
 
   const auction = product?.auction;
 
@@ -118,15 +121,23 @@ const timeLeft = React.useMemo(() => {
       setSubsPopup(true);
       return;
     }
+    setPendingAmount(data.amount);
+    setConfirmBid(true);
+  };
 
+  const handleConfirmBid = () => {
     placeBidMutation.mutate(
-      { id: product._id, amount: data.amount },
+      { id: product._id, amount: pendingAmount },
       {
         onSuccess: (res) => {
           showSuccess(res?.data?.message || "Bid placed successfully!");
+          setConfirmBid(false);
           reset();
         },
-        onError: (err) => console.error(err),
+        onError: (err) => {
+          console.error(err);
+          setConfirmBid(false);
+        },
       }
     );
   };
@@ -325,6 +336,15 @@ const timeLeft = React.useMemo(() => {
         </div>
       )
       }
+
+      <PlaceBidDialog
+        open={confirmBid}
+        setOpen={setConfirmBid}
+        amount={pendingAmount}
+        user={user?.data}
+        isPending={placeBidMutation.isPending}
+        onConfirm={handleConfirmBid}
+      />
 
       <div className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}>
         <Suspense fallback={null}>

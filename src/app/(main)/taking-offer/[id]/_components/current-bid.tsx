@@ -24,10 +24,11 @@ import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
 import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
+import PlaceOfferDialog from "./place-offer-dialog";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { timeAgo } from "@/lib/helper";
 
+import { timeAgo } from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -60,6 +61,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const placeBidMutation = usePlaceBid();
   const cancelBidMutation = useCancelBid();
   const [cancelBid, setCancelBid] = React.useState<boolean>(false);
+  const [confirmOffer, setConfirmOffer] = React.useState(false);
+  const [pendingAmount, setPendingAmount] = React.useState(0);
 
   const auction = product?.auction;
 
@@ -125,15 +128,23 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       setSubsPopup(true);
       return;
     }
+    setPendingAmount(data.amount);
+    setConfirmOffer(true);
+  };
 
+  const handleConfirmOffer = () => {
     placeBidMutation.mutate(
-      { id: product._id, amount: data.amount },
+      { id: product._id, amount: pendingAmount },
       {
         onSuccess: (res) => {
-          showSuccess(res?.data?.message || "Bid placed successfully!");
-          reset();
+          showSuccess(res?.data?.message || "Offer placed successfully!");
+          setConfirmOffer(false);
+          // reset({amount: 0});
         },
-        onError: (err) => console.error(err),
+        onError: (err) => {
+          console.error(err);
+          setConfirmOffer(false);
+        },
       }
     );
   };
@@ -278,6 +289,15 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
 
 
+
+      <PlaceOfferDialog
+        open={confirmOffer}
+        setOpen={setConfirmOffer}
+        amount={pendingAmount}
+        user={user?.data}
+        isPending={placeBidMutation.isPending}
+        onConfirm={handleConfirmOffer}
+      />
 
       {/* AUTH SIDEBAR (UNCHANGED) */}
       <div className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}>

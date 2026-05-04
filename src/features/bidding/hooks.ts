@@ -80,5 +80,13 @@ export const usePlaceBid = () => {
     }),
 
     invalidateKeys: ["product-bids" , "get-listing-detail"],
+    mutationOptions: {
+      onSuccess: () => {
+        // showSuccess("Bid placed successfully!");
+      },
+      onError: (err) => {
+        showError(err);
+      },
+    },
   });
 };
