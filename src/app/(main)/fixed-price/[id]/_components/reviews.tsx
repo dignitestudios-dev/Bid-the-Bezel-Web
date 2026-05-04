@@ -166,11 +166,11 @@ const ReviewSummary = ({ sellerId }: { sellerId: string }) => {
         {Object.entries(summary?.distribution || {}).map(([star, count]) => (
           <div key={star} className="flex items-center gap-3">
             <span className="w-4 text-sm">{star}</span>
-            <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="flex-1 h-2 bg-gray-200  rounded-full overflow-hidden">
               <div
                 className="h-full bg-yellow-400 rounded-full"
                 style={{
-                  width: `${(Number(count) / summary?.reviewsReceived) * 100}%`,
+                  width: `${Number(summary?.reviewsReceived) > 0 ? (Number(count) / summary?.reviewsReceived) * 100 : 0}%`,
                 }}
               />
             </div>

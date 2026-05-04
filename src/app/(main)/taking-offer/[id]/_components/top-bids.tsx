@@ -22,7 +22,7 @@ function BidsList({
 }) {
   return (
     <div className="space-y-3">
-      {isLoading&& (
+      {isLoading && (
         <div className="text-center py-10">
           <Loader2 className="animate-spin mx-auto" size={24} />
         </div>
@@ -144,63 +144,65 @@ export default function TopBids({
                 </div>
               )}
             </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="text-sm font-semibold text-primary">
-                  View All
-                </button>
-              </DialogTrigger>
-
-              <DialogContent className="max-w-md!">
-                <DialogHeader>
-                  <DialogTitle>All Offers</DialogTitle>
-                </DialogHeader>
-
-                <div className="grid grid-cols-[1fr_auto_auto] font-semibold items-center gap-4">
-                  <h1>User</h1>
-                  <h2>bids</h2>
-                </div>
-
-                {/* PAGINATED DATA */}
-                <BidsList
-                  bidsToShow={paginatedBids}
-                  time={false}
-                  topBidAmount={topBidAmount}
-                  isLoading={paginatedBidsLoading}
-                />
-                <div className="flex justify-center text-sm items-center mt-4 gap-3">
-                  <button
-                    className="px-3 py-1 border flex items-center rounded disabled:opacity-50"
-                    disabled={currentPage === 1}
-                    onClick={() => goToPage(currentPage - 1)}
-                  >
-                    <ChevronLeft size={14} /> Back
+            {totalPages > 1 && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="text-sm font-semibold text-primary">
+                    View All
                   </button>
+                </DialogTrigger>
 
-                  {[...Array(totalPages)].map((_, i) => (
+                <DialogContent className="max-w-md!">
+                  <DialogHeader>
+                    <DialogTitle>All Offers</DialogTitle>
+                  </DialogHeader>
+
+                  <div className="grid grid-cols-[1fr_auto_auto] font-semibold items-center gap-4">
+                    <h1>User</h1>
+                    <h2>bids</h2>
+                  </div>
+
+                  {/* PAGINATED DATA */}
+                  <BidsList
+                    bidsToShow={paginatedBids}
+                    time={false}
+                    topBidAmount={topBidAmount}
+                    isLoading={paginatedBidsLoading}
+                  />
+                  <div className="flex justify-center text-sm items-center mt-4 gap-3">
                     <button
-                      key={i}
-                      className={`px-3 py-1 border rounded ${
-                        currentPage === i + 1
-                          ? "bg-primary text-white"
-                          : "bg-white text-black"
-                      }`}
-                      onClick={() => goToPage(i + 1)}
+                      className="px-3 py-1 border flex items-center rounded disabled:opacity-50"
+                      disabled={currentPage === 1}
+                      onClick={() => goToPage(currentPage - 1)}
                     >
-                      {i + 1}
+                      <ChevronLeft size={14} /> Back
                     </button>
-                  ))}
 
-                  <button
-                    className="px-3 py-1 border flex items-center rounded disabled:opacity-50"
-                    disabled={currentPage === totalPages}
-                    onClick={() => goToPage(currentPage + 1)}
-                  >
-                    Next <ChevronRight size={14} />
-                  </button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                    {[...Array(totalPages)].map((_, i) => (
+                      <button
+                        key={i}
+                        className={`px-3 py-1 border rounded ${
+                          currentPage === i + 1
+                            ? "bg-primary text-white"
+                            : "bg-white text-black"
+                        }`}
+                        onClick={() => goToPage(i + 1)}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+
+                    <button
+                      className="px-3 py-1 border flex items-center rounded disabled:opacity-50"
+                      disabled={currentPage === totalPages}
+                      onClick={() => goToPage(currentPage + 1)}
+                    >
+                      Next <ChevronRight size={14} />
+                    </button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         </div>
       </div>
