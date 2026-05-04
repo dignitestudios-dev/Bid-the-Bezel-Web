@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PersonalDetailPayload, personalDetailSchema } from "@/features/auth/Schema";
 import { useUpdateProfile } from "@/features/auth/hooks";
+import Image from "next/image";
 
 
 type Props = {
@@ -97,11 +98,26 @@ const PersonalInfo = ({ onNext, userData, personalEditMode, setPersonalEditMode,
 
                 </div>
 
-                <div className="mb-6 flex gap-2">
-                    <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
-                        🇺🇸 +1
+                <div className="mb-6 flex gap-2 items-center">
+
+                    {/* SVG Icon */}
+
+                    {/* Country Code */}
+                    <div className="flex items-center border rounded-xl px-3 bg-gray-50 h-[52px]">
+
+                        <Image
+                            src="/images/usFlag.png"
+                            alt="country flag"
+                            width={20}
+                            height={14}
+                            className="mr-2"
+                        />
+
+
+                        <span className="text-sm font-medium mr-3">+1</span>
                     </div>
 
+                    {/* Input */}
                     <div className="w-full">
                         <FloatingInput
                             id="phoneNumber"
@@ -111,8 +127,8 @@ const PersonalInfo = ({ onNext, userData, personalEditMode, setPersonalEditMode,
                             maxLength={10}
                             error={errors.phone?.message}
                         />
-
                     </div>
+
                 </div>
 
                 <Button

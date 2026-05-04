@@ -58,6 +58,32 @@ export const getWatchById = (watchId: string): AuctionWatch | FixedPriceWatch | 
   return undefined;
 };
 
+export const timeAgo = (date: string | Date): string => {
+  const diff = Date.now() - new Date(date).getTime();
+  const m = Math.floor(diff / 60000);
+  const h = Math.floor(diff / 3600000);
+  const d = Math.floor(diff / 86400000);
+  return d > 0 ? `${d}d ago` : h > 0 ? `${h}h ago` : m > 0 ? `${m}m ago` : 'Just now';
+};
+
+// getTimeLeft — just add `now` param, rest is identical to yours
+export const getTimeLeft = (endsAt?: string | Date, now = Date.now()): string => {
+  if (!endsAt) return "--";
+
+  const diff = new Date(endsAt).getTime() - now;
+
+  if (diff <= 0) return "Ended";
+
+  const days    = Math.floor(diff / 86400000);
+  const hours   = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+
+  return days > 0
+    ? `${days}D ${hours}H ${minutes}M`
+    : `${hours}H ${minutes}M ${seconds}S`; // shows seconds when < 1 day
+};
+
 export const generateReferenceId = () => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

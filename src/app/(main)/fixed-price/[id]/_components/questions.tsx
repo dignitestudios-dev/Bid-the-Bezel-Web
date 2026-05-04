@@ -9,6 +9,7 @@ import { CircleQuestionMark, Loader2, SendHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import Pagination from "./pagination";
+import { Textarea } from "@/components/ui/text-area";
 
 
 type Props = {
@@ -53,20 +54,17 @@ const Questions = ({ id, productQAndA, page, setPage, pagination }: Props) => {
       <div className="p-4 ">
         {isLoggedIn ?
           <div className="bg-[#F7F7F7] p-2 rounded-lg  flex  flex-col items-end">
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full flex items-end ">
-              <div className="w-full">
-                <Input
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full relative flex items-end ">
+              <div className="w-[95%]">
+                <Textarea
                   disabled={createQuestionLoading}
                   {...register("question")}
                   maxLength={250}
+                  rows={3}
+                  
                   placeholder="Ask your question"
-                  className="!border-none !shadow-none outline-none focus:!outline-none focus:!ring-0 focus:!border-none"
+                  className="!border-none resize-none !shadow-none outline-none focus:!outline-none focus:!ring-0 focus:!border-none"
                 />
-
-                <span className="text-xs text-gray-500 ml-4">
-                  {remainingChars} characters remaining
-                </span>
-
                 {errors.question && (
                   <p className="text-red-500 text-xs ml-4">
                     {errors.question.message}
@@ -77,7 +75,7 @@ const Questions = ({ id, productQAndA, page, setPage, pagination }: Props) => {
                 disabled={createQuestionLoading}
                 type="submit"
                 size={"icon"}
-                className="bg-black mt-2 h-8 p-1 rounded-sm text-white ">
+                className="bg-black mt-2 absolute bottom-1 right-1 h-8 p-1 rounded-sm text-white ">
                 {createQuestionLoading ? <Loader2 className="animate-spin" size={50} /> : <SendHorizontal size={50} />}
               </Button>
             </form>

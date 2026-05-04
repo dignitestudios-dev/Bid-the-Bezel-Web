@@ -169,8 +169,8 @@ const ReviewSummary = ({ sellerId }: { sellerId: string }) => {
             <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-yellow-400 rounded-full"
-                style={{
-                  width: `${(Number(count) / summary?.reviewsReceived) * 100}%`,
+               style={{
+                  width: `${Number(summary?.reviewsReceived) > 0 ? (Number(count) / summary?.reviewsReceived) * 100 : 0}%`,
                 }}
               />
             </div>

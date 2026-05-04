@@ -32,10 +32,10 @@ const OrderCompletedBuyer = (props: Props) => {
         <div className="rounded-xl p-4 bg-[#F7F7F7] w-full max-w-xl">
           <h3 className="text-xl font-semibold  mb-3">Payment Info</h3>
 
-          <p className="text-xs text-gray-500 mb-4">
+          {/* <p className="text-xs text-gray-500 mb-4">
             Payment will arrive in your bank account once the buyer receives the
             watch.
-          </p>
+          </p> */}
 
           <div className="space-y-3 ">
             <div className="flex items-center justify-between">

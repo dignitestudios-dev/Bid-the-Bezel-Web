@@ -21,7 +21,7 @@ export const auctionWatchSchema = z.object({
         .optional(),
     price: z
         .coerce.number()
-        .min(5000, "Price must be at least 5000"),
+        .min(5000, "Minimum auction price is $5000"),
 
     contents: z
         .string()

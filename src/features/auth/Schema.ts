@@ -1,59 +1,59 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .max(255)
-    .email("Invalid email address"),
+    email: z
+        .string()
+        .min(1, "Email is required")
+        .max(255)
+        .email("Invalid email address"),
 
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .max(12, "Password must be at most 12 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
-      "Password must include uppercase, lowercase, number, and special character"
-    ),
+    password: z
+        .string()
+        .min(1, "Password is required")
+        .min(8, "Password must be at least 8 characters")
+        .max(12, "Password must be at most 12 characters")
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+            "Password must include uppercase, lowercase, number, and special character"
+        ),
 
-  method: z.literal("email"),
+    method: z.literal("email"),
 });
 export type CredPayload = LoginPayload | z.infer<typeof registerSchema>;
 export const emailSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .max(255, "Email must be at most 255 characters")
-    .email("Invalid email address"),
+    email: z
+        .string()
+        .min(1, "Email is required")
+        .max(255, "Email must be at most 255 characters")
+        .email("Invalid email address"),
 });
 
 export const registerSchema = z
-  .object({
-    email: z
-      .string()
-      .min(1, "Email is required")
-      .max(255)
-      .email("Invalid email address"),
+    .object({
+        email: z
+            .string()
+            .min(1, "Email is required")
+            .max(255)
+            .email("Invalid email address"),
 
-    password: z
-      .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be at least 8 characters")
-      .max(12, "Password must be at most 12 characters")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
-        "Password must include uppercase, lowercase, number, and special character"
-      ),
+        password: z
+            .string()
+            .min(1, "Password is required")
+            .min(8, "Password must be at least 8 characters")
+            .max(12, "Password must be at most 12 characters")
+            .regex(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+                "Password must include uppercase, lowercase, number, and special character"
+            ),
 
-    confirmPassword: z.string(),
+        confirmPassword: z.string(),
 
-    method: z.literal("email"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+        method: z.literal("email"),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords do not match",
+        path: ["confirmPassword"],
+    });
 export type LoginPayload = z.infer<typeof loginSchema>;
 
 export const otpSchema = z.object({
@@ -78,6 +78,7 @@ export const completeProfileSchema = z.object({
         .min(3, "Username must be at least 3 characters")
         .max(30, "Username must be at most 30 characters")
         .regex(/^[a-z0-9._]+$/, "Only letters, numbers, dots and underscores allowed")
+        .refine((val) => /[a-z]/.test(val), "Username must contain at least one letter")
         .refine((val) => !val.startsWith("."), "Username cannot start with a dot")
         .refine((val) => !val.endsWith("."), "Username cannot end with a dot")
         .refine((val) => !val.includes(".."), "Username cannot contain consecutive dots"),

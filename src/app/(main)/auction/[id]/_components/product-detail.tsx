@@ -10,8 +10,9 @@ import { QASkeleton } from '@/components/skeleton'
 import Answers from '@/app/(main)/fixed-price/[id]/_components/answers'
 import { useGetQuestions } from '@/features/product-qa/hook'
 import { useAddProductToFavorite } from '@/features/fav-product/hook'
-import { showSuccess } from '@/lib/toast'
+import { showError, showSuccess } from '@/lib/toast'
 import { useGetProductBids } from '@/features/bidding/hooks'
+import { useMe } from '@/features/auth/hooks'
 
 
 type Props = {
@@ -21,7 +22,9 @@ type Props = {
 const OPTIONS: EmblaOptionsType = {}
 
 const ProductDetail = ({ product }: Props) => {
-    const { data: bidsData , isLoading:bidsLoading } = useGetProductBids(product?._id,1 , 10);
+  const { data: userData } = useMe()
+
+  const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(product?._id, 1, 10);
   const isAuthenticated = product?.authentication?.status === 'authenticated';
   const [page, setPage] = useState(1);
   const { data: productQAndA, isLoading } = useGetQuestions(product?._id, page)
@@ -29,6 +32,8 @@ const ProductDetail = ({ product }: Props) => {
 
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(product?._id || "");
   const handleAddToFavorite = () => {
+    if (!userData?.data) return showError("Please login to add product to favorites");
+
     addProductToFavorite(undefined, {
       onSuccess: () => {
         setIsFav((prev: boolean) => !prev);
@@ -47,7 +52,7 @@ const ProductDetail = ({ product }: Props) => {
       <div>
         <div className='flex justify-between'>
           <h1 className='flex gap-2 items-start text-xl md:text-3xl font-semibold'>
-            {product?.model}
+            {product?.brandName} {product?.model}
             {isAuthenticated && (
               <Badge title='Authenticated' className='bg-linear-to-r text-background text-center from-[#0D1B2A] to-[#415A77]' />
             )}
@@ -64,7 +69,7 @@ const ProductDetail = ({ product }: Props) => {
         </div>
         <div className='flex items-center justify-between gap-4'>
           <h1 className='text-xl md:text-3xl'>${product?.price} <span className='text-base'>Starting Price</span></h1>
-          <h1 className='text-xl md:text-3xl'>${bidsData?.data?.[0]?.product?.effectivePrice} <span className='text-base'>Effective Price</span></h1>
+          {/* <h1 className='text-xl md:text-3xl'>${bidsData?.data?.[0]?.product?.effectivePrice} <span className='text-base'>Effective Price</span></h1> */}
         </div>
         <p className='text-sm text-gray-500 mt-1'>Ref: {product?.referenceId}</p>
       </div>

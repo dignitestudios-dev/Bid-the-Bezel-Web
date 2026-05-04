@@ -63,23 +63,23 @@ const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }
                   {i?.status?.replace("_", " ")}
                 </h4>
 
-                <p className="text-sm text-muted-foreground">
-                  {i?.status === "order_booked" ? (
-                    <p className="text-sm text-muted-foreground">
-                      Order tracking link:{" "}
-                      <a
-                        href={i?.trackingLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline cursor-pointer"
-                      >
-                        {i?.trackingLink}
-                      </a>
-                    </p>
-                  ) : i?.status === "authentication"
-                    ? "Your Watch will be authenticated by us"
-                    : "After authentication your watch will be delivered to you."}
-                </p>
+             <p className="text-sm text-muted-foreground">
+  {i?.status === "order_booked" ? (
+    <span className="inline">
+      Order tracking link:{" "}
+      <a
+        href={i?.trackingLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline cursor-pointer truncate inline-block max-w-[250px] align-middle"
+      >
+        {i?.trackingLink} 
+      </a>
+    </span>
+  ) : i?.status === "authentication"
+    ? "Your Watch will be authenticated by us"
+    : "After authentication your watch will be delivered to you."}
+</p>
               </div>
             ))}
           </div>

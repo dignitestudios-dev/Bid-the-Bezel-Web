@@ -27,7 +27,7 @@ const SubscriptionsDialog = ({ subsPopup, setSubsPopup , setCardPopup , id }: Pr
 
   const handleBuy = (planId: string) => {
     setLoadingPriceId(planId);
-    const cleanUrl = `${window.location.origin}/auction/${id}?plan=success`;
+    const cleanUrl = `${window.location.origin}/taking-offer/${id}?plan=success`;
     buySubscription(
       { planId, url: cleanUrl },
       {

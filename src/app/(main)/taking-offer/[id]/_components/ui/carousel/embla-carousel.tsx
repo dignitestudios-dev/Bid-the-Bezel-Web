@@ -4,6 +4,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { Thumb } from "./embla-carousel-thumbs-btn";
 import "./style.css";
 import Image from "next/image";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 type PropType = {
   slides: {location: string}[];
   options?: EmblaOptionsType;
@@ -41,7 +42,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 
   return (
     <div className="embla">
-      <div className="embla__viewport" ref={emblaMainRef}>
+      <div className="embla__viewport relative" ref={emblaMainRef}>
         <div className="embla__container">
           {slides.map((s,index) => (
             <div className="embla__slide" key={index}>
@@ -60,6 +61,22 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
             </div>
           ))}
         </div>
+             <button
+                          type="button"
+                          onClick={() => emblaMainApi?.scrollPrev()}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full w-10 h-10 flex items-center justify-center shadow"
+                        >
+                          <ArrowLeft size={16} />
+                        </button>
+                
+                        {/* RIGHT BUTTON */}
+                        <button
+                          type="button"
+                          onClick={() => emblaMainApi?.scrollNext()}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full w-10 h-10 flex items-center justify-center shadow"
+                        >
+                          <ArrowRight size={16} />
+                        </button>
       </div>
 
       <div className="embla-thumbs">

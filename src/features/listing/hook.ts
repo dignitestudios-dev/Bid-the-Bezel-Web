@@ -71,6 +71,7 @@ export const useGetListing = (
             });
             return res.data;
         },
+          refetchInterval: type === "auction" ? 10000 : false,
     });
 };
 

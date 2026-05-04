@@ -24,9 +24,11 @@ import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
 import VisaCardPopup from "@/app/(main)/_components/visa-card-dialog";
 import SubscribeSuccessfully from "@/app/(main)/_components/subscribe-successfully-dialog";
+import PlaceOfferDialog from "./place-offer-dialog";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
+import { timeAgo } from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -38,9 +40,16 @@ const bidSchema = (currentBid: number) =>
     amount: z
       .number({ message: "Enter valid amount" })
       .positive("Must be greater than 0")
-      .min(1, { message: "Must be greater than 0" })
-      .int("Must be a whole number")
-    ,
+      .multipleOf(0.01, {
+        message: "Max 2 decimal places allowed",
+      })
+      .refine((val) => {
+        const digits = val.toString().replace(".", "");
+        return digits.length <= 7;
+      }, {
+        message: "Bid amount is too high",
+      }),
+
   });
 
 type BidForm = {
@@ -52,6 +61,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const placeBidMutation = usePlaceBid();
   const cancelBidMutation = useCancelBid();
   const [cancelBid, setCancelBid] = React.useState<boolean>(false);
+  const [confirmOffer, setConfirmOffer] = React.useState(false);
+  const [pendingAmount, setPendingAmount] = React.useState(0);
 
   const auction = product?.auction;
 
@@ -60,7 +71,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   }, [bidsData]);
 
   const currentBidder = bidsData?.data?.[0]?.currentBidder;
-  const isWinner = product.auction.currentBidder === user?.data?._id;
+  const isAccepted = bidsData?.data?.[0]?.status === "accepted";
+  const isWinner = isAccepted && currentBidder && product.auction.currentBidder === user?.data?._id;
   const {
     register,
     handleSubmit,
@@ -76,8 +88,22 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const watchedAmount = watch("amount");
 
 
-  const isSold = product?.status === "sold";
-  // const isWinner = product?.auction?.currentBidder === user?.data?._id;
+  const timeLeft = useMemo(() => {
+    if (!auction?.endsAt) return "--";
+    const diff = new Date(auction.endsAt).getTime() - Date.now();
+    if (diff <= 0) return "Ended";
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    return `${d}D ${h}H ${m}M`;
+  }, [auction?.endsAt]);
+
+  const isSold = product.status === "sold";
+
+  const isEnded = timeLeft === "Ended";
+
+  const displayTime = isEnded ? "0D 0H 0M" : timeLeft;
+  const iconColor = isEnded ? "#FF0000" : "#14A752";
 
   /* ---------------- POPUPS ---------------- */
   const [subsPopup, setSubsPopup] = React.useState(false);
@@ -102,15 +128,23 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       setSubsPopup(true);
       return;
     }
+    setPendingAmount(data.amount);
+    setConfirmOffer(true);
+  };
 
+  const handleConfirmOffer = () => {
     placeBidMutation.mutate(
-      { id: product._id, amount: data.amount },
+      { id: product._id, amount: pendingAmount },
       {
         onSuccess: (res) => {
-          showSuccess(res?.data?.message || "Bid placed successfully!");
-          reset();
+          showSuccess(res?.data?.message || "Offer placed successfully!");
+          setConfirmOffer(false);
+          // reset({amount: 0});
         },
-        onError: (err) => console.error(err),
+        onError: (err) => {
+          console.error(err);
+          setConfirmOffer(false);
+        },
       }
     );
   };
@@ -124,9 +158,9 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
       <div className="p-6 border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
-          <h3 className="font-semibold">Current Bid</h3>
+          <h3 className="font-semibold">Highest Offer</h3>
           <h1 className="text-2xl font-semibold">
-            {currentBid > 0 ? `$${currentBid.toFixed(2)}` : "$00.00"}
+            {currentBid > 0 ? `$${bidsData?.data?.[0]?.product?.effectivePrice.toFixed(2)}` : "$00.00"}
           </h1>
         </div>
 
@@ -135,15 +169,17 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
-              className="rounded-full"
-              width={60}
-              height={60}
+              className="rounded-full w-[70px] h-[70px] "
+              width={50}
+              height={50}
+
             />
             <div className="my-2">
               <h1 className="font-semibold mb-1">
                 {currentBidder.userName}
               </h1>
-              <h5 className="text-xs">Current highest bidder</h5>
+              <h5 className="text-xs ">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              </h5>
             </div>
           </div>
         ) : (
@@ -154,61 +190,92 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       </div>
 
       {!isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
-        isSold ? (
+        isWinner ? (
           <div className="px-6 py-6 border-t text-center">
-            {isWinner ? (
-              <>
-                <h1 className="text-xl font-semibold text-green-600">You won the bid 🎉</h1>
-                <p className="text-sm text-gray-500 mt-1">Congratulations! You placed the highest offer.</p>
-                <div className="flex flex-col gap-4 w-full pt-4">
-                  <button onClick={() => setCancelBid(true)} className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg">cancel bid</button>
-                  <Link href={`/buy-now/${product._id}`} className="w-full">
-                    <Button className="text-base w-full">Fill out Shipping</Button>
-                  </Link>
-                </div>
-              </>
-            ) : currentBidder ? (
-              <>
-                <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
-                  <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
-                  <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
-                </div>
-                <h1 className="text-2xl font-bold mt-5">Offer Winner</h1>
-              </>
-            ) : null}
+            <h1 className="text-xl font-semibold text-green-600">You are the bid winner 🎉</h1>
+            <p className="text-sm text-gray-500 mt-1">Your offer has been accepted by the seller.</p>
+            <Link href={`/buy-now/${product._id}`} className="w-full block mt-4">
+              <Button className="text-base w-full">Fill out Shipping</Button>
+            </Link>
+          </div>
+        ) : isSold && currentBidder ? (
+          <div className="px-6 py-6 border-t text-center">
+            <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
+              <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
+              <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
+            </div>
+            <h1 className="text-2xl font-bold mt-5">Offer Winner</h1>
           </div>
         ) : (
           <>
             <div className="px-6 pt-6 border-t space-y-4">
               <h1 className="font-semibold flex items-center gap-2">
-                Place your offer
+                Place your bid
                 <Tooltip>
-                  <TooltipTrigger asChild><Info size={14} color="gray" /></TooltipTrigger>
-                  <TooltipContent className="bg-gray-100 w-[200px] text-gray-600">10% escrow fee applies</TooltipContent>
+                  <TooltipTrigger asChild>
+                    <Info size={14} color="gray" />
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-gray-100 w-[200px] text-gray-600">
+                    10% escrow fee applies
+                  </TooltipContent>
                 </Tooltip>
               </h1>
-              <div className="text-center">
-                <h1 className="text-2xl font-semibold">${watchedAmount || 0}.00</h1>
-                <h3 className="text-xs">Your Offer</h3>
+
+              <div>
+                <div className="text-center">
+                  <h1 className="text-2xl font-semibold">
+                    ${watchedAmount || 0}
+                  </h1>
+                  <h3 className="text-xs">Your Bid</h3>
+                </div>
               </div>
-              <Button onClick={handleIncrease} className="bg-[#415A77] w-full py-3">+200</Button>
+
+              <Button
+                onClick={handleIncrease}
+                className="bg-[#415A77] w-full py-3"
+              >
+                +200
+              </Button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex items-center px-6 p-4 gap-2">
+
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex items-center px-6 p-4 gap-2"
+            >
               <div className="w-full">
                 <Input
                   placeholder="Enter your amount"
                   className={cn("w-full", errors.amount && "border-red-500")}
                   type="number"
+                  step="0.01"
                   {...register("amount", { valueAsNumber: true })}
                 />
               </div>
-              <Button type="submit" className="text-sm md:px-20 py-3" disabled={!isValid || placeBidMutation.isPending}>
-                Place Offer
+
+              <Button
+                type="submit"
+                className="text-sm md:px-20 py-3"
+                disabled={!isValid || placeBidMutation.isPending}
+              >
+                Place Bid
               </Button>
             </form>
-            {errors.amount && <p className="text-red-500 text-xs px-6 -mt-2">{errors.amount.message}</p>}
+
+            {errors.amount && (
+              <p className="text-red-500 text-xs px-6 -mt-2">
+                {errors.amount.message}
+              </p>
+            )}
           </>
         )
+      ) : isWinner && !cancelBid ? (
+        <div className="px-6 py-6 border-t text-center">
+          <h1 className="text-xl font-semibold text-green-600">You are the bid winner 🎉</h1>
+          <p className="text-sm text-gray-500 mt-1">Your offer has been accepted by the seller.</p>
+          <Link href={`/buy-now/${product._id}`} className="w-full block mt-4">
+            <Button className="text-base w-full">Fill out Shipping</Button>
+          </Link>
+        </div>
       ) : isSold && !cancelBid && currentBidder && (
         <div className="px-6 py-6 border-t text-center">
           <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
@@ -219,42 +286,18 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         </div>
       )}
 
-      {isSold && cancelBid && (
-        <div className="w-full flex flex-col items-center justify-center text-center py-10">
-          <h1 className="text-2xl font-bold">Bidding Fees</h1>
-
-          <p className="text-gray-600 text-sm mt-3 max-w-md">
-            10% of your bid amount will be lost if you cancel your bid. Are you sure
-            you want to continue?
-          </p>
-
-          <div className="flex gap-4 mt-8 w-full max-w-md">
-            <button
-              onClick={() => setCancelBid(false)}
-              disabled={cancelBidMutation.isPending}
-              className="w-1/2 bg-gray-100 hover:bg-gray-200 text-black py-2 rounded-lg font-medium"
-            >
-              Back
-            </button>
-
-            <button
-              onClick={() => {
-                cancelBidMutation.mutate(
-                  { id: product._id },
-                  { onSuccess: () => setCancelBid(false) }
-                );
-              }}
-              disabled={cancelBidMutation.isPending}
-              className="w-1/2 bg-red-700 hover:bg-red-800 text-white py-3 rounded-lg font-medium"
-            >
-              {cancelBidMutation.isPending ? "Cancelling..." : "Cancel Bid"}
-            </button>
-          </div>
-        </div>
-      )
-      }
 
 
+
+
+      <PlaceOfferDialog
+        open={confirmOffer}
+        setOpen={setConfirmOffer}
+        amount={pendingAmount}
+        user={user?.data}
+        isPending={placeBidMutation.isPending}
+        onConfirm={handleConfirmOffer}
+      />
 
       {/* AUTH SIDEBAR (UNCHANGED) */}
       <div className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}>

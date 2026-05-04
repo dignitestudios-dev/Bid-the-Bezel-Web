@@ -8,6 +8,8 @@ import CancelListingDialog from "./cancel-listing-dialog";
 import ConfirmCancel from "./confirm-cancel";
 import MoveToTakingDialog from "./move-taking-offer-dialog";
 import RepostAuctionDialog from "./repost-auction-dialog";
+import { getTimeLeft, timeAgo } from "@/lib/helper";
+import { useNow } from "@/lib/use-now";
 
 type Props = {
   product: AuctionProduct;
@@ -18,21 +20,17 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
   const [cancelListing, setCancelListing] = useState(false);
   const [cancelSuccess, setCancelSuccess] = useState(false);
   const [repostAuction, setRepostAuction] = useState(false);
- 
+
   const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
 
   const auction = product?.auction;
 
   const currentBidder = bidsData?.data?.[0]?.currentBidder;
-    const timeLeft = React.useMemo(() => {
-    if (!auction?.endsAt) return "--";
-    const diff = new Date(auction.endsAt).getTime() - Date.now();
-    if (diff <= 0) return "Ended";
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    return `${d}D ${h}H ${m}M`;
-  }, [auction?.endsAt]);
+
+  const now = useNow();
+  const timeLeft = React.useMemo(() => {
+    return getTimeLeft(auction?.endsAt, now);
+  }, [auction?.endsAt, now]);
 
   const isEnded = timeLeft === "Ended";
   const hasBidder = !!auction?.currentBidder;
@@ -58,17 +56,19 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
       {isEnded && product.status !== "deleted" ? (
         hasBidder ? (
           <>
-            <div className="flex gap-2 items-start">
+            <div className="flex gap-2 px-4 pb-2 items-start">
               <Image
                 src={currentBidder.profilePicture.location}
                 alt="dp"
-                className="rounded-full"
+                className="rounded-full w-[70px] h-[70px]"
                 width={60}
                 height={60}
               />
               <div className="my-2">
                 <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-                <h5 className="text-xs">Current highest bidder</h5>
+                <h5 className="text-xs ">Bid {" "}
+                  {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                </h5>
               </div>
             </div>
             {product.status === "sold" &&
@@ -81,7 +81,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                       Chat with Buyer
                     </Button>
                   </Link>
-                  <Link href={"/seller/shipping-details"} className="w-full">
+                  <Link href={`/seller/shipping-details/${product?._id}`} className="w-full">
                     <Button className="text-base w-full">
                       Fill out Shipping
                     </Button>
@@ -100,7 +100,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 Your listing failed to atrract any buyers.
               </p>
 
-            
+
               <Button
                 onClick={() => setMoveToTakingOffer(true)}
                 className="text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
@@ -108,19 +108,19 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 <Move />
                 Move to takings offers section
               </Button>
-<div className="flex items-center gap-2 w-full" >
-              <Button
-                onClick={() => setCancelListing(true)}
-                className="text-base bg-red-700 hover:bg-red-800 text-white w-[50%]"
-              >
-                Cancel Listing
-              </Button>
+              <div className="flex items-center gap-2 w-full" >
                 <Button
-                onClick={() => setRepostAuction(true)}
-                className="text-base bg-white border w-[50%] text-green-600 hover:bg-[#f8f3f3]  hover:text-green-700 flex justify-center gap-2"
-              >
-                Restart Auction
-              </Button>
+                  onClick={() => setCancelListing(true)}
+                  className="text-base bg-red-700 hover:bg-red-800 text-white w-[50%]"
+                >
+                  Cancel Listing
+                </Button>
+                <Button
+                  onClick={() => setRepostAuction(true)}
+                  className="text-base bg-white border w-[50%] text-green-600 hover:bg-[#f8f3f3]  hover:text-green-700 flex justify-center gap-2"
+                >
+                  Restart Auction
+                </Button>
               </div>
             </div>
           </>
@@ -131,7 +131,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             <Image
               src={currentBidder.profilePicture.location}
               alt="dp"
-              className="rounded-full"
+              className="rounded-full w-[70px] h-[70px] "
               width={60}
               height={60}
             />
@@ -152,7 +152,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         productId={product?._id}
       />
       <CancelListingDialog
-      id={product?._id}
+        id={product?._id}
         cancelListing={cancelListing}
         setCancelListing={setCancelListing}
         setCancelSuccess={setCancelSuccess}
@@ -162,7 +162,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         setCancelSuccess={setCancelSuccess}
       />
       <MoveToTakingDialog
-      id={product?._id}
+        id={product?._id}
         setMoveToTakingOffer={setMoveToTakingOffer}
         moveToTakingOffer={moveToTakingOffer}
       />
