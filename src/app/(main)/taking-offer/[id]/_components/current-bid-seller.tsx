@@ -49,16 +49,20 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
       ) : (
         <>
           <div className="flex gap-2 items-start p-5">
-            <Image
-              src={currentBidder.profilePicture.location}
-              alt="dp"
-               className="rounded-full w-[70px] h-[70px] "
-              width={60}
-              height={60}
-            />
+            {currentBidder?.profilePicture?.location ? (
+              <Image
+                src={currentBidder.profilePicture.location}
+                alt="dp"
+                className="rounded-full w-[70px] h-[70px]"
+                width={60}
+                height={60}
+              />
+            ) : (
+              <div className="w-[70px] h-[70px] rounded-full bg-gray-200 shrink-0" />
+            )}
             <div className="my-2">
-              <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-              <h5 className="text-xs ">Bid {" "}
+              <h1 className="font-semibold mb-1">{currentBidder?.userName}</h1>
+              <h5 className="text-xs">Bid {" "}
                 {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
