@@ -9,6 +9,7 @@ import CurrentBidSeller from "./current-bid-seller";
 import UnAuthStatus from "./unauth-status";
 import { useGetProductBids } from "@/features/bidding/hooks";
 import BidSkeleton from "./ui/bid-skeleton";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   product: AuctionProduct;
@@ -16,15 +17,22 @@ type Props = {
 
 const BiddingDetail = ({ product }: Props) => {
   const user = useAppSelector((state) => state.auth.user);
-  const isSeller = user?.id === product?.seller?._id;
   const isAuthenticated = product?.authentication?.status === 'authenticated';
   const [currentPage, setCurrentPage] = useState(1);
+  const queryClient = useQueryClient();
+
   const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(product?._id, 1, 10);
-  const { data: paginatedBids, isLoading:
-    paginatedBidsLoading } = useGetProductBids(product?._id, currentPage, 10);
-  // bidsData?.data?.[0]?.currentBidder?.
+  const { data: paginatedBids, isLoading: paginatedBidsLoading } = useGetProductBids(product?._id, currentPage, 10);
+
+  const noBids = !bidsLoading && (bidsData?.data?.length ?? 0) === 0;
+
+  // When no bids, refetch listing detail once to get latest currentBidder from product API
+  if (noBids) {
+    queryClient.invalidateQueries({ queryKey: ["get-listing-detail", product?._id] });
+  }
+
   if (bidsLoading) {
-    return <BidSkeleton />
+    return <BidSkeleton />;
   }
   return (
     <div className="lg:w-[40%] space-y-7">

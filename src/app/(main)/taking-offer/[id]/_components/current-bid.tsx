@@ -166,19 +166,20 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
         {currentBidder ? (
           <div className="flex gap-2 items-start">
-            <Image
-              src={currentBidder.profilePicture.location}
-              alt="dp"
-              className="rounded-full w-[70px] h-[70px] "
-              width={50}
-              height={50}
-
-            />
+            {currentBidder?.profilePicture?.location ? (
+              <Image
+                src={currentBidder.profilePicture.location}
+                alt="dp"
+                className="rounded-full w-[70px] h-[70px]"
+                width={50}
+                height={50}
+              />
+            ) : (
+              <div className="w-[70px] h-[70px] rounded-full bg-gray-200 shrink-0" />
+            )}
             <div className="my-2">
-              <h1 className="font-semibold mb-1">
-                {currentBidder.userName}
-              </h1>
-              <h5 className="text-xs ">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
+              <h5 className="text-xs">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>
@@ -201,7 +202,11 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         ) : isSold && currentBidder ? (
           <div className="px-6 py-6 border-t text-center">
             <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
-              <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
+              {currentBidder?.profilePicture?.location ? (
+                <Image unoptimized width={50} height={50} src={currentBidder.profilePicture.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-gray-300" />
+              )}
               <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
             </div>
             <h1 className="text-2xl font-bold mt-5">Offer Winner</h1>
@@ -279,7 +284,11 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       ) : isSold && !cancelBid && currentBidder && (
         <div className="px-6 py-6 border-t text-center">
           <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
-            <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
+            {currentBidder?.profilePicture?.location ? (
+              <Image unoptimized width={50} height={50} src={currentBidder.profilePicture.location} alt="pic" className="w-6 h-6 object-cover rounded-full" />
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-gray-300" />
+            )}
             <h1 className="text-xl font-semibold">{currentBidder?.userName}</h1>
           </div>
           <h1 className="text-2xl text-center pb-4 font-bold mt-5">Offer Winner</h1>
