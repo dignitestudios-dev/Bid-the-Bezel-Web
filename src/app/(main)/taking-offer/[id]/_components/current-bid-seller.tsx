@@ -8,7 +8,7 @@ import ConfirmCancel from "./confirm-cancel";
 import RepostAuctionDialog from "./repost-auction-dialog";
 import ConfirmBidDialog from "./confirm-bid-dialog";
 import { Button } from "@/components/ui/button";
-
+import {formatPrice} from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -38,7 +38,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         </h3>
         <h1 className="text-2xl font-semibold">
           {product?.auction?.currentBidAmount > 0
-            ? `$${product?.auction?.currentBidAmount.toFixed(2)}`
+            ? `${formatPrice(product?.auction?.currentBidAmount)}`
             : "$00.0"}
         </h1>
       </div>

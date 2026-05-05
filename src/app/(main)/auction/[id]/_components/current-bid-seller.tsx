@@ -10,7 +10,7 @@ import MoveToTakingDialog from "./move-taking-offer-dialog";
 import RepostAuctionDialog from "./repost-auction-dialog";
 import { getTimeLeft, timeAgo } from "@/lib/helper";
 import { useNow } from "@/lib/use-now";
-
+import {formatPrice} from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -49,7 +49,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         </h3>
         <h1 className="text-2xl font-semibold">
           {auction?.currentBidAmount > 0
-            ? `$${auction.currentBidAmount.toFixed(2)}`
+            ? `${formatPrice(auction.currentBidAmount)}`
             : "$00.0"}
         </h1>
       </div>

@@ -18,7 +18,7 @@ import {
 import { useMe } from "@/features/auth/hooks";
 import { useCancelBid, usePlaceBid } from "@/features/bidding/hooks";
 import { showSuccess } from "@/lib/toast";
-
+import {formatPrice} from "@/lib/helper";
 import AuthSidebar from "@/components/auth-sidebar";
 import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
@@ -153,7 +153,7 @@ const timeLeft = React.useMemo(() => {
         <div className="flex justify-between mb-4 items-center">
           <h3 className="font-semibold">Highest Bid</h3>
           <h1 className="text-2xl font-semibold">
-            {bidsData?.data?.[0]?.product?.effectivePrice > 0 ? `$${bidsData?.data[0]?.product?.effectivePrice.toFixed(2)}` : "$00.00"}
+            {bidsData?.data?.[0]?.product?.effectivePrice > 0 ? `${formatPrice(bidsData?.data[0]?.product?.effectivePrice)}` : "$00.00"}
           </h1>
         </div>
 
@@ -234,7 +234,7 @@ const timeLeft = React.useMemo(() => {
               <div>
                 <div className="text-center">
                   <h1 className="text-2xl font-semibold">
-                    ${watchedAmount || 0}
+                    {formatPrice(watchedAmount || 0)}
                   </h1>
                   <h3 className="text-xs">Your Bid</h3>
                 </div>
@@ -254,11 +254,17 @@ const timeLeft = React.useMemo(() => {
             >
               <div className="w-full">
                 <Input
-
                   step={0.01}
                   placeholder="Enter your amount"
                   className={cn("w-full", errors.amount && "border-red-500")}
                   type="number"
+                  onKeyDown={(e) => {
+                    const val = e.currentTarget.value;
+                    const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", ".", "-"];
+                    if (allowed.includes(e.key)) return;
+                    const digits = val.replace(".", "").replace("-", "");
+                    if (digits.length >= 7) e.preventDefault();
+                  }}
                   {...register("amount", { valueAsNumber: true })}
                 />
               </div>

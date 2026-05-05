@@ -109,7 +109,7 @@ const Footer = () => {
                 <ul className="space-y-3 text-base text-white/80">
                   <li>About</li>
                   <li>FAQs</li>
-                  <li>Contact us</li>
+                  {/* <li>Contact us</li> */}
                   <li>Terms of Use</li>
                   <li>Privacy Policy</li>
                 </ul>

@@ -13,7 +13,7 @@ import { useAddProductToFavorite } from '@/features/fav-product/hook'
 import { showError, showSuccess } from '@/lib/toast'
 import { useGetProductBids } from '@/features/bidding/hooks'
 import { useMe } from '@/features/auth/hooks'
-
+import {formatPrice} from "@/lib/helper";
 
 type Props = {
   product: AuctionProduct;
@@ -68,7 +68,7 @@ const ProductDetail = ({ product }: Props) => {
           </button>
         </div>
         <div className='flex items-center justify-between gap-4'>
-          <h1 className='text-xl md:text-3xl'>${product?.price} <span className='text-base'>Starting Price</span></h1>
+          <h1 className='text-xl md:text-3xl'>{formatPrice(product?.price)} <span className='text-base'>Starting Price</span></h1>
           {/* <h1 className='text-xl md:text-3xl'>${bidsData?.data?.[0]?.product?.effectivePrice} <span className='text-base'>Effective Price</span></h1> */}
         </div>
         <p className='text-sm text-gray-500 mt-1'>Ref: {product?.referenceId}</p>

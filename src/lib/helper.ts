@@ -95,3 +95,11 @@ export const generateReferenceId = () => {
 
   return `${randomLetters}-${randomNumbers}`;
 };
+
+
+export const formatPrice = (value: number) => {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+};

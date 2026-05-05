@@ -45,7 +45,7 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
                     Authenticate this watch
                   </p>
                   <p className="text-xs  mt-1">
-                    An additional of $200 will be charged to authenticate this
+                    An additional of $250 will be charged to authenticate this
                     watch
                   </p>
                 </div>

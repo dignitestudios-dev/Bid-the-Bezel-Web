@@ -144,14 +144,14 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
                                     <SelectValue placeholder="Select watch brand" />
                                 </SelectTrigger>
 
-                                <SelectContent>
-                                    <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
-                                    <SelectItem value="richard_mille">Richard Mille</SelectItem>
-                                    <SelectItem value="bovet">Bovet</SelectItem>
-                                    <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
-                                    <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
-                                    <SelectItem value="louis_monne">Louis Monne</SelectItem>
-                                </SelectContent>
+                                      <SelectContent>
+                  <SelectItem value="Jacobs & Co">Jacobs & Co</SelectItem>
+                  <SelectItem value="Richard Mille">Richard Mille</SelectItem>
+                  <SelectItem value="bovet">Bovet</SelectItem>
+                  <SelectItem value="Greubel Forsey">Greubel Forsey</SelectItem>
+                  <SelectItem value="H Moses & Cie">H Moses & Cie</SelectItem>
+                  <SelectItem value="Louis Monne">Louis Monne</SelectItem>
+                </SelectContent>
                             </Select>
 
                             {errors.watchBrand?.message && (
@@ -194,32 +194,24 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
                     )}
                 </div>
 
-                <div className="relative w-full mb-6">
-                    <textarea
-                        id="contents"
-                        placeholder=" "
-                        className={`peer w-full rounded-xl border-2 bg-white px-4 pt-6 pb-2 text-[15px] text-black focus:outline-none transition-all min-h-[100px]
-      ${errors.contents ? "border-red-500" : "border-gray-200 focus:border-gray-700"}
-    `}
-                        maxLength={200}
-                        {...register("contents")}
-                    />
-
+                <div className="w-full mb-6">
                     <label
                         htmlFor="contents"
-                        className={`pointer-events-none absolute left-4 top-2 text-[14px] transition-all duration-200
-      peer-placeholder-shown:top-4 peer-placeholder-shown:text-[16px]
-      peer-focus:top-2 peer-focus:text-[14px]
-      ${errors.contents ? "text-red-500" : "text-gray-500 peer-focus:text-gray-700"}
-    `}
+                        className={`block text-sm font-medium mb-1 ${errors.contents ? "text-red-500" : "text-gray-700"}`}
                     >
                         Contents / Notes
                     </label>
-
+                    <textarea
+                        id="contents"
+                        placeholder="Enter contents or notes..."
+                        className={`w-full rounded-xl border-2 bg-white px-4 py-3 text-[15px] text-black focus:outline-none transition-all min-h-[100px] resize-none
+      ${errors.contents ? "border-red-500" : "border-gray-200 focus:border-gray-700"}
+    `}
+                        maxLength={1000}
+                        {...register("contents")}
+                    />
                     {errors.contents?.message && (
-                        <p className="mt-1 text-xs text-red-500">
-                            {errors.contents.message}
-                        </p>
+                        <p className="mt-1 text-xs text-red-500">{errors.contents.message}</p>
                     )}
                 </div>
 

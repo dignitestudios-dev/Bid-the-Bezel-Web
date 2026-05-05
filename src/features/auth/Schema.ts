@@ -82,9 +82,14 @@ export const completeProfileSchema = z.object({
         .refine((val) => !val.startsWith("."), "Username cannot start with a dot")
         .refine((val) => !val.endsWith("."), "Username cannot end with a dot")
         .refine((val) => !val.includes(".."), "Username cannot contain consecutive dots"),
-    profilePicture: z
-        .any()
-        .refine((file) => file instanceof File && file.size > 0, "Profile picture is required"),
+   profilePicture: z
+    .any()
+    .refine((file) => file instanceof File && file.size > 0, {
+      message: "Profile picture is required",
+    })
+    .refine((file) => file instanceof File && file.size <= 5 * 1024 * 1024, {
+      message: "File size must be less than or equal to 5MB",
+    }),
 });
 
 export type CompleteProfilePayload = z.infer<typeof completeProfileSchema>;
@@ -121,20 +126,32 @@ export const updatePasswordSchema = z
 export type updatePasswordPayload = z.infer<typeof updatePasswordSchema>;
 
 export const updateProfileSchema = z.object({
-    userName: z
-        .string()
+    userName:  z
+        .string({ message: "Username is required" })
+        .trim()
+        .toLowerCase()
+        .min(1, "Username is required")
         .min(3, "Username must be at least 3 characters")
-        .max(20, "Username must be at most 20 characters")
-        .optional(),
-    profilePicture: z
-        .any()
-        .refine(
-            (file) =>
-                file instanceof File &&
-                file.size > 0 &&
-                file.size <= 5 * 1024 * 1024,
-            "Profile picture must be less than 5MB"
-        ),
+        .max(30, "Username must be at most 30 characters")
+        .regex(/^[a-z0-9._]+$/, "Only letters, numbers, dots and underscores allowed")
+        .refine((val) => /[a-z]/.test(val), "Username must contain at least one letter")
+        .refine((val) => !val.startsWith("."), "Username cannot start with a dot")
+        .refine((val) => !val.endsWith("."), "Username cannot end with a dot")
+        .refine((val) => !val.includes(".."), "Username cannot contain consecutive dots"),
+ profilePicture: z
+  .any()
+  .optional()
+  .refine(
+    (file) =>
+      !file ||
+      typeof file === "string" ||
+      (file instanceof File &&
+        file.size > 0 &&
+        file.size <= 5 * 1024 * 1024),
+    {
+      message: "Profile picture must be less than 5MB",
+    }
+  ),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     phone: z.string().optional(),

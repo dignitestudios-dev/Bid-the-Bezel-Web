@@ -112,6 +112,7 @@ const Collections = (props: Props) => {
             <div className="flex items-center gap-2 sm:gap-4">
               <BrandFilterDialog />
               <PriceFilterDialog
+                type={apiType}
                 onApply={(min, max) => setPriceRange({ min, max })}
               />
               <AuthFilterDialog
