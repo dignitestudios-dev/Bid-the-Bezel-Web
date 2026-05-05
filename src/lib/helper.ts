@@ -74,8 +74,8 @@ export const getTimeLeft = (endsAt?: string | Date, now = Date.now()): string =>
 
   if (diff <= 0) return "Ended";
 
-  const days    = Math.floor(diff / 86400000);
-  const hours   = Math.floor((diff % 86400000) / 3600000);
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
   const minutes = Math.floor((diff % 3600000) / 60000);
   const seconds = Math.floor((diff % 60000) / 1000);
 
@@ -95,3 +95,14 @@ export const generateReferenceId = () => {
 
   return `${randomLetters}-${randomNumbers}`;
 };
+// export const timeAgo = (createdAt: string) => {
+//   const diff = new Date().getTime() - new Date(createdAt).getTime();
+
+//   const mins = Math.floor(diff / 60000);
+//   const hours = Math.floor(diff / 3600000);
+//   const days = Math.floor(diff / 86400000);
+
+//   if (days >= 1) return `${days} day${days > 1 ? "s" : ""}`;
+//   if (hours >= 1) return `${hours} hr${hours > 1 ? "s" : ""}`;
+//   return `${Math.max(1, mins)} min`;
+// };

@@ -32,7 +32,7 @@ export const useLogin = () =>
   useApiMutation<AuthResponse, LoginPayload>({
     endpoint: "/auth",
     method: "POST",
-    invalidateKeys: ["get-profile", "get-listing-detail" , "get-home-listing"],
+    invalidateKeys: ["get-profile", "get-listing-detail" , "get-home-listing","get-notifications"],
     mutationOptions: {
       onSuccess: (data) => {
         const token = data?.data?.token;

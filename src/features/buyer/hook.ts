@@ -9,7 +9,7 @@ export const useAddBuyerShippingDetails = (id: string) =>
         endpoint: `orders/product/${id}`,
         method: "PATCH",
         isMultiPart: true,
-        invalidateKeys: ["get-my-deleted-listing", "get-my-active-listing", "get-my-listing"],
+        invalidateKeys: ["get-my-deleted-listing", "get-my-active-listing", "get-my-listing", "get-notifications", "get-authenticate-detail"],
         toBody: (variables) => {
             const formData = new FormData();
             formData.append("courier", variables.courier);
@@ -33,12 +33,14 @@ export const useAddBuyerShippingDetails = (id: string) =>
 
 
 
-export const useGetAuthenticateDetail = (id: string) => {
+export const useGetAuthenticateDetail = (id: string, options?: { enabled?: boolean }
+) => {
     return useQuery<any>({
         queryKey: ["get-authenticate-detail", id],
         queryFn: async () => {
             const res = await apiClient.get(`/orders/product/${id}/shipment-info`);
             return res.data;
         },
+        enabled: options?.enabled ?? true,
     });
 };

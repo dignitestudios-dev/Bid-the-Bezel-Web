@@ -30,42 +30,44 @@ export const useGetProductBids = (
 };
 
 export const useCancelBid = () =>
-    useApiMutation<any, { id: string }>({
-        endpoint: ({ id }) => `/products/${id}/bid`,
-        method: "DELETE",
-        invalidateKeys: [
-            "get-profile",
-            "get-cards",
-            "shipping-result",
-            "get-my-listing",
-            "get-listing-detail",
-            "product-bids"
-        ],
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `/products/${id}/bid`,
+    method: "DELETE",
+    invalidateKeys: [
+      "get-profile",
+      "get-cards",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+      "product-bids",
+      "get-notifications"
+    ],
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 
 export const useConfirmBid = () =>
-    useApiMutation<any, { id: string }>({
-        endpoint: ({ id }) => `products/bids/${id}/accept`,
-        method: "POST",
-        invalidateKeys: [
-            "get-profile",
-            "get-cards",
-            "shipping-result",
-            "get-my-listing",
-            "get-listing-detail",
-            "product-bids",
-        ],
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `products/bids/${id}/accept`,
+    method: "POST",
+    invalidateKeys: [
+      "get-profile",
+      "get-cards",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+      "product-bids",
+      "get-notifications"
+    ],
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 
 export const usePlaceBid = () => {
   return useApiMutation<
@@ -79,7 +81,7 @@ export const usePlaceBid = () => {
       amount: variables.amount,
     }),
 
-    invalidateKeys: ["product-bids" , "get-listing-detail"],
+    invalidateKeys: ["product-bids", "get-listing-detail", "get-notifications"],
     mutationOptions: {
       onSuccess: () => {
         // showSuccess("Bid placed successfully!");

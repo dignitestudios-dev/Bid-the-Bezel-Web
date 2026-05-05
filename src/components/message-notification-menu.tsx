@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,25 +23,28 @@ import NotificationItem from "./icons/NotificationItem";
 import { useRouter } from "next/navigation";
 import NotificationTab from "./ui/notification-tab";
 import MessageTab from "./ui/message-tab";
+import { useGetNotifications } from "@/features/notifications/hooks";
+import { Skeleton } from "./ui/skeleton";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 const notifications = [
   {
     title: "You won a bid",
     description: "Review your bid and add shipping details",
     isShippingDetails: true,
-    isFav:false
+    isFav: false
   },
   {
     title: "Watch Authenticated",
     description: "Your watch authentication approved",
     isShippingDetails: false,
-     isFav:false
+    isFav: false
   },
   {
     title: "24 Hours remainig",
     description: "fav watch",
     isShippingDetails: false,
-     isFav:true
+    isFav: true
   },
 ];
 
@@ -56,13 +59,40 @@ const MessageNotificationMenu = () => {
     { title: "Notifications", label: "notifications", icon: <Bell /> },
   ];
   const [activeTab, setActiveTab] = useState<"messages" | "notifications">(
-    "notifications",
+    "messages",
   );
 
   const handleGoToChats = () => {
     router.push("/chats");
   };
 
+
+  const { data: notificationsData, isLoading: notiLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetNotifications();
+
+  const allNotifications =
+    notificationsData?.pages?.flatMap(
+      (p) => p?.data
+    ) ?? [];
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: allNotifications.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 120,
+    overscan: 5,
+  });
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+
+    const isNearBottom =
+      el.scrollTop + el.clientHeight >= el.scrollHeight - 100;
+
+    if (isNearBottom && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
@@ -72,18 +102,17 @@ const MessageNotificationMenu = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-[450px] max-w-full max-h-[400px] overflow-y-auto p-2 flex flex-col"
+          className="w-[450px] max-w-full p-2 flex flex-col"
           align="end"
         >
           <div className="grid grid-cols-2 gap-4 font-medium border-b">
             {tabs.map((tab) => (
               <div
                 key={tab.label}
-                className={`py-2 flex gap-1 items-center border-b-2 transition-all ${
-                  activeTab === tab.label
-                    ? "border-gray-900 text-black"
-                    : "text-gray-600 cursor-pointer border-transparent"
-                }`}
+                className={`py-2 flex gap-1 items-center border-b-2 transition-all ${activeTab === tab.label
+                  ? "border-gray-900 text-black"
+                  : "text-gray-600 cursor-pointer border-transparent"
+                  }`}
                 onClick={() =>
                   setActiveTab(tab.label as "messages" | "notifications")
                 }
@@ -97,7 +126,7 @@ const MessageNotificationMenu = () => {
             {activeTab === "messages" ? (
               <div className="w-full pt-3">
                 {dummyArray.map((msg, index) => (
-                 <MessageTab key={index} handleGoToChats={handleGoToChats}  />
+                  <MessageTab key={index} handleGoToChats={handleGoToChats} />
                 ))}
 
                 <div className="mt-2 bg-gray-200 w-full h-px" />
@@ -110,22 +139,64 @@ const MessageNotificationMenu = () => {
                 </DropdownMenuItem>
               </div>
             ) : (
-              <div className="w-full pt-3">
-                {notifications.map((msg, index) => (
-                  <NotificationTab
-                    key={index}
-                    title={msg.title}
-                    description={msg.description}
-                    isFav={msg.isFav}
-                    isShippingDetails={msg.isShippingDetails}
-                    handleGoToChats={handleGoToChats}
-                  />
-                ))}
+              <div
+                ref={parentRef}
+                onScroll={handleScroll}
+                className="h-[400px] overflow-y-auto relative"
+              >
+                {notiLoading ? (
+                  <div className="space-y-2 p-2">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Skeleton key={index} className="w-full h-20 rounded-lg" />
+                    ))}
+                  </div>
+                ) : !notiLoading && allNotifications.length === 0 ? (
+                  <div className="p-2 text-center">No Notification Found</div>
+                ) : (
+                  <div
+                    key={allNotifications.length}
+                    style={{
+                      height: `${virtualizer.getTotalSize()}px`,
+                      position: "relative",
+                    }}
+                  >
+                    {virtualizer.getVirtualItems().map((virtualItem) => {
+                      const msg = allNotifications[virtualItem.index];
+
+                      return (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            transform: `translateY(${virtualItem.start}px)`,
+                          }}
+                        >
+                          <NotificationTab
+                            msg={msg}
+                            title={msg.title}
+                            description={msg.description}
+                            isFav={msg?.isFav ?? false}
+                            createdAt={msg.createdAt}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
+            {isFetchingNextPage && (
+              <div className="p-2 text-center text-sm text-gray-500">
+                Loading more...
+              </div>
+            )}
+
+
           </div>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu >
 
       <LogoutDialog
         open={logoutOpen}
