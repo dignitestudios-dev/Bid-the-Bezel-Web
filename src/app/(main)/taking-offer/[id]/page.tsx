@@ -9,7 +9,7 @@ type Props = {
 
 const Page = ({ params }: Props) => {
   const { id } = use(params);
-    const { data, isLoading } = useGetMyListingDetail(id, 10000);
+    const { data, isLoading } = useGetMyListingDetail(id);
 
 
   return (
