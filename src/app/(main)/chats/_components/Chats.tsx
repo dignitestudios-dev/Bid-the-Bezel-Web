@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import File from "@/components/icons/File";
+import { useGetChatRooms } from "@/features/chat/hooks";
 
 type ChatItem = {
   id: number;
@@ -77,7 +78,8 @@ const Chats = () => {
   const [selectedId, setSelectedId] = useState<number>(1);
 
   const selected = chats.find((c) => c.id === selectedId) || chats[0];
-
+  const { data } = useGetChatRooms()
+  console.log("data", data)
   return (
     <div className="min-h-screen p-10 bg-white">
       <div className="w-full mx-auto">
@@ -118,11 +120,10 @@ const Chats = () => {
                       <div
                         key={c.id}
                         onClick={() => setSelectedId(c.id)}
-                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${
-                          selectedId === c.id
-                            ? "bg-[#0E2430] text-white"
-                            : "hover:bg-gray-50"
-                        }`}
+                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${selectedId === c.id
+                          ? "bg-[#0E2430] text-white"
+                          : "hover:bg-gray-50"
+                          }`}
                       >
                         <img
                           src={c.avatar}
@@ -131,30 +132,27 @@ const Chats = () => {
                         />
                         <div className="flex-1 text-sm">
                           <div
-                            className={`font-medium ${
-                              selectedId === c.id
-                                ? "text-white"
-                                : "text-gray-900"
-                            }`}
+                            className={`font-medium ${selectedId === c.id
+                              ? "text-white"
+                              : "text-gray-900"
+                              }`}
                           >
                             {c.name}
                           </div>
                           <div
-                            className={`${
-                              selectedId === c.id
-                                ? "text-gray-200"
-                                : "text-gray-500"
-                            } text-xs mt-1`}
+                            className={`${selectedId === c.id
+                              ? "text-gray-200"
+                              : "text-gray-500"
+                              } text-xs mt-1`}
                           >
                             {c.lastMessage}
                           </div>
                         </div>
                         <div
-                          className={`text-xs ${
-                            selectedId === c.id
-                              ? "text-gray-200"
-                              : "text-gray-500"
-                          }`}
+                          className={`text-xs ${selectedId === c.id
+                            ? "text-gray-200"
+                            : "text-gray-500"
+                            }`}
                         >
                           {c.time}
                         </div>
@@ -174,11 +172,10 @@ const Chats = () => {
                       <div
                         key={c.id}
                         onClick={() => setSelectedId(c.id)}
-                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${
-                          selectedId === c.id
-                            ? "bg-[#0E2430] text-white"
-                            : "hover:bg-gray-50"
-                        }`}
+                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${selectedId === c.id
+                          ? "bg-[#0E2430] text-white"
+                          : "hover:bg-gray-50"
+                          }`}
                       >
                         <img
                           src={c.avatar}
@@ -187,30 +184,27 @@ const Chats = () => {
                         />
                         <div className="flex-1 text-sm">
                           <div
-                            className={`font-medium ${
-                              selectedId === c.id
-                                ? "text-white"
-                                : "text-gray-900"
-                            }`}
+                            className={`font-medium ${selectedId === c.id
+                              ? "text-white"
+                              : "text-gray-900"
+                              }`}
                           >
                             {c.name}
                           </div>
                           <div
-                            className={`${
-                              selectedId === c.id
-                                ? "text-gray-200"
-                                : "text-gray-500"
-                            } text-xs mt-1`}
+                            className={`${selectedId === c.id
+                              ? "text-gray-200"
+                              : "text-gray-500"
+                              } text-xs mt-1`}
                           >
                             {c.lastMessage}
                           </div>
                         </div>
                         <div
-                          className={`text-xs ${
-                            selectedId === c.id
-                              ? "text-gray-200"
-                              : "text-gray-500"
-                          }`}
+                          className={`text-xs ${selectedId === c.id
+                            ? "text-gray-200"
+                            : "text-gray-500"
+                            }`}
                         >
                           {c.time}
                         </div>
