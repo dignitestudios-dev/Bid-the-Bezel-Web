@@ -103,7 +103,7 @@ const ProductCard = ({
 
           {/* Title + Badge */}
           <h1 className="flex items-center gap-2">
-            <span className="font-semibold text-lg">
+            <span className="font-semibold truncate text-lg">
               {product.title}
             </span>
 
