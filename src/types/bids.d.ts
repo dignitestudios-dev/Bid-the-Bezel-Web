@@ -1,7 +1,10 @@
 interface ProductBidsResponse {
   success: boolean;
   message: string;
-  data: Bid[];
+  data: {
+    auctionStatus: "upcoming" | "active" | "ended",
+    bids: Bid[]
+  };
   pagination: Pagination;
 }
 

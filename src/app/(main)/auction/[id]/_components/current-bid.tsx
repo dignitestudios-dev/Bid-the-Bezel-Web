@@ -67,10 +67,10 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const auction = product?.auction;
 
   const currentBid = useMemo(() => {
-    return bidsData?.data?.[0]?.amount ?? 0;
+    return bidsData?.data?.bids?.[0]?.amount ?? 0;
   }, [bidsData]);
 
-  const currentBidder = bidsData?.data?.[0]?.currentBidder;
+  const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
   const isWinner = product.auction.currentBidder === user?.data?._id;
   const {
     register,

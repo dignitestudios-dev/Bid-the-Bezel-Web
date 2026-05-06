@@ -23,7 +23,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
 
   const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
 
-  const currentBidder = bidsData?.data?.[0]?.currentBidder;
+  const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
   const isSold = product?.status === "sold";
   const hasBidder = !!currentBidder;
   return (
@@ -63,7 +63,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             <div className="my-2">
               <h1 className="font-semibold mb-1">{currentBidder?.userName}</h1>
               <h5 className="text-xs">Bid {" "}
-                {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>
@@ -82,7 +82,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 </Link>
               </div>
             )
-          ) : bidsData.data[0].status === "pending" && (
+          ) : bidsData.data.bids[0].status === "pending" && (
             <div className="flex flex-col gap-2 p-5 w-full border-t space-y-2">
             
               <div className="flex items-center gap-2">
@@ -107,9 +107,9 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
       <ConfirmBidDialog
         open={confirmBid}
         setOpen={setConfirmBid}
-        productId={bidsData?.data[0]?._id}
+        productId={bidsData?.data?.bids?.[0]?._id}
         bidder={currentBidder}
-        amount={bidsData?.data?.[0]?.amount ?? 0}
+        amount={bidsData?.data?.bids?.[0]?.amount ?? 0}
       />
       <RepostAuctionDialog
         open={repostAuction}
