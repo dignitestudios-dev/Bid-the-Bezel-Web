@@ -59,7 +59,7 @@ const MessageNotificationMenu = () => {
     { title: "Notifications", label: "notifications", icon: <Bell /> },
   ];
   const [activeTab, setActiveTab] = useState<"messages" | "notifications">(
-    "messages",
+    "notifications",
   );
 
   const handleGoToChats = () => {
@@ -81,18 +81,37 @@ const MessageNotificationMenu = () => {
     getScrollElement: () => parentRef.current,
     estimateSize: () => 120,
     overscan: 5,
+    observeElementRect: (instance, cb) => {
+      const el = instance.scrollElement;
+      if (!el) return () => { };
+      const ro = new ResizeObserver(() => {
+        cb({ height: el.clientHeight, width: el.clientWidth });
+      });
+      ro.observe(el);
+      cb({ height: el.clientHeight, width: el.clientWidth }); // initial call
+      return () => ro.disconnect();
+    },
   });
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
 
-    const isNearBottom =
-      el.scrollTop + el.clientHeight >= el.scrollHeight - 100;
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-    if (isNearBottom && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  };
+  const sentinelCallback = useCallback(
+    (el: HTMLDivElement | null) => {
+      if (observerRef.current) observerRef.current.disconnect();
+      if (!el) return;
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observerRef.current.observe(el);
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage]
+  );
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
@@ -141,7 +160,7 @@ const MessageNotificationMenu = () => {
             ) : (
               <div
                 ref={parentRef}
-                onScroll={handleScroll}
+                key={activeTab}
                 className="h-[400px] overflow-y-auto relative"
               >
                 {notiLoading ? (
@@ -185,11 +204,14 @@ const MessageNotificationMenu = () => {
                     })}
                   </div>
                 )}
-              </div>
-            )}
-            {isFetchingNextPage && (
-              <div className="p-2 text-center text-sm text-gray-500">
-                Loading more...
+                <div ref={sentinelCallback} className="h-4" />
+
+                {isFetchingNextPage && (
+                  <p className="py-2 text-center text-sm text-gray-400">Loading more...</p>
+                )}
+                {!hasNextPage && allNotifications.length > 0 && (
+                  <p className="py-2 text-center text-sm text-gray-400">No more notifications</p>
+                )}
               </div>
             )}
 

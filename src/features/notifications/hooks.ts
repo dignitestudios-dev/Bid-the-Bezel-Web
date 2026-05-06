@@ -7,9 +7,9 @@ export const useGetNotifications = () => {
         queryKey: ["get-notifications"],
         initialPageParam: 1,
 
-        queryFn: async ({ pageParam = 1 }) => {
+        queryFn: async ({ pageParam = 1, }) => {
             const res = await apiClient.get(
-                `/notification/me?page=${pageParam}`
+                `/notification/me?page=${pageParam}&limit=5`
             );
 
             return res.data;

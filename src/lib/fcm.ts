@@ -19,7 +19,7 @@ export const generateFCMToken = async () => {
       vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY!,
     });
 
-console.log(token , "===============>")
+
     return token;
   } catch (error) {
     console.error("FCM error:", error);

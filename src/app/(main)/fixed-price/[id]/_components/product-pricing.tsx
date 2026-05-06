@@ -82,7 +82,7 @@ const ProductPricing = ({ price, watch }: Props) => {
             className="bg-linear-to-r w-fit text-background text-center from-[#0D1B2A] to-[#415A77]"
           />
         )}
-        <h1 className="text-3xl pt-2">{formatPrice(price)}</h1>
+        <h1 className="text-3xl pt-2">{formatPrice(Number(price!))}</h1>
 
         {!isLoading && user && watch?.buyer && (
           <div className=" border  rounded-2xl mt-4">
@@ -96,7 +96,7 @@ const ProductPricing = ({ price, watch }: Props) => {
                 className="rounded-full w-[70px] h-[70px] object-cover"
                 width={60}
                 height={60}
-
+                
               />
               <div>
                 <h1 className="font-semibold mb-2">{watch?.buyer?.userName}</h1>
