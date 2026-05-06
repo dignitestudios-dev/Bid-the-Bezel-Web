@@ -67,9 +67,7 @@ function BidsList({
       ))}
       {!isLoading && bidsToShow.length === 0 && (
         
-          <div className="flex capitalize font-semibold justify-center py-4 items-center">
-            <h4>no offers yet</h4>
-          </div>)}
+         <p className="text-muted-foreground">No offers available.</p>)}
     </div>
   );
 }

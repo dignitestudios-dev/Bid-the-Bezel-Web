@@ -22,7 +22,10 @@ export const auctionWatchSchema = z.object({
     price: z
         .coerce.number()
         .min(5000, "Minimum auction price is $5000")
-        .max(10000000, "Maximum auction price is $10,000,000"),
+        .max(10000000, "Maximum auction price is $10,000,000")
+         .multipleOf(0.01, {
+        message: "Max 2 decimal places allowed",
+      }),
 
     contents: z
         .string()

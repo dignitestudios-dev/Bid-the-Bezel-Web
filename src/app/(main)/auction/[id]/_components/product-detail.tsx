@@ -80,7 +80,7 @@ const ProductDetail = ({ product }: Props) => {
 
       <div>
         <h1 className='font-semibold'>Description</h1>
-        <p>{product?.description}</p>
+        <p className="wrap-break-word">{product?.description}</p>
       </div>
 
       {isLoading ? (

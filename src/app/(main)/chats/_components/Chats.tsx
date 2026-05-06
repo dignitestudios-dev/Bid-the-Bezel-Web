@@ -11,7 +11,8 @@ import {
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import File from "@/components/icons/File";
-import { useGetChatRooms } from "@/features/chat/hooks";
+import { useGetChatRoomById, useGetChatRooms } from "@/features/chat/hooks";
+import { formatTime, formatTimeLeft } from "@/lib/utils/date.utils";
 
 type ChatItem = {
   id: number;
@@ -77,9 +78,13 @@ const Chats = () => {
   const [chats] = useState<ChatItem[]>(sampleChats);
   const [selectedId, setSelectedId] = useState<number>(1);
 
-  const selected = chats.find((c) => c.id === selectedId) || chats[0];
-  const { data } = useGetChatRooms()
-  console.log("data", data)
+
+  const { data: allChatRooms } = useGetChatRooms()
+  const selected = allChatRooms?.data?.find(
+    (c: any) => c._id === selectedId
+  );
+  const { data: chatRoomData } = useGetChatRoomById("69fb4ddfe9c289d63c0295ff")
+  console.log(allChatRooms, "allChatRooms")
   return (
     <div className="min-h-screen p-10 bg-white">
       <div className="w-full mx-auto">
@@ -114,50 +119,49 @@ const Chats = () => {
                   Active Chats
                 </h4>
                 <div className="mt-3">
-                  {chats
-                    .filter((c) => c.active)
-                    .map((c) => (
-                      <div
-                        key={c.id}
-                        onClick={() => setSelectedId(c.id)}
-                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${selectedId === c.id
-                          ? "bg-[#0E2430] text-white"
-                          : "hover:bg-gray-50"
-                          }`}
-                      >
-                        <img
-                          src={c.avatar}
-                          alt={c.name}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <div className="flex-1 text-sm">
+                  {allChatRooms?.data?.map((c: any) => (
+                    <div
+                      key={c._id}
+                      onClick={() => setSelectedId(c._id)}
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${selectedId === c._id
+                        ? "bg-[#0E2430] text-white"
+                        : "hover:bg-gray-50"
+                        }`}
+                    >
+                      {c?.participants?.map((item: any) => (
+                        <>
+                          <img
+                            src={`${item?.user?.profilePicture?.location}`}
+                            className="w-10 h-10 rounded-full"
+                          />
                           <div
-                            className={`font-medium ${selectedId === c.id
-                              ? "text-white"
-                              : "text-gray-900"
+                            className={`font-medium ${selectedId === c._id ? "text-white" : "text-gray-900"
                               }`}
                           >
-                            {c.name}
+                            {item?.user?.userName || "User"}
                           </div>
-                          <div
-                            className={`${selectedId === c.id
-                              ? "text-gray-200"
-                              : "text-gray-500"
-                              } text-xs mt-1`}
-                          >
-                            {c.lastMessage}
-                          </div>
-                        </div>
+                        </>
+
+                      ))}
+
+                      <div className="flex-1 text-sm">
+
                         <div
-                          className={`text-xs ${selectedId === c.id
-                            ? "text-gray-200"
-                            : "text-gray-500"
+                          className={`text-xs mt-1 ${selectedId === c._id ? "text-gray-200" : "text-gray-500"
                             }`}
                         >
-                          {c.time}
+                          {c.lastMessage?.text || "No messages yet"}
                         </div>
                       </div>
-                    ))}
+
+                      <div
+                        className={`text-xs ${selectedId === c._id ? "text-gray-200" : "text-gray-500"
+                          }`}
+                      >
+                        {formatTime(c.lastMessage?.sentAt)}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -218,11 +222,11 @@ const Chats = () => {
             <div className="w-full lg:flex-1 p-6 flex flex-col">
               <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
                 <img
-                  src={selected.avatar}
-                  alt={selected.name}
+                  src={selected?.avatar}
+                  alt={selected?.name}
                   className="w-10 h-10 rounded-full object-cover"
                 />
-                <div className="font-medium text-lg">{selected.name}</div>
+                <div className="font-medium text-lg">{selected?.name}</div>
               </div>
 
               <div className="flex-1 p-2 overflow-auto">
@@ -233,7 +237,7 @@ const Chats = () => {
 
                   <div className="flex items-end gap-3 mb-6">
                     <img
-                      src={chats[0].avatar}
+                      src={chats[0]?.avatar}
                       alt="sender"
                       className="w-8 h-8 rounded-full"
                     />
@@ -248,7 +252,7 @@ const Chats = () => {
                       Lectus neque eget ipsum mi tempus sed tempus sed.
                     </div>
                     <img
-                      src={selected.avatar}
+                      src={selected?.avatar}
                       alt="me"
                       className="w-8 h-8 rounded-full"
                     />
@@ -257,7 +261,7 @@ const Chats = () => {
               </div>
 
               <div className="pt-4">
-                {selected.active ? (
+                {selected?.active ? (
                   <div className="flex items-center p-3 border border-gray-200 rounded-xl">
                     <input type="file" id="attach-file" className="hidden" />
                     <label htmlFor="attach-file" className="cursor-pointer">

@@ -6,6 +6,7 @@ import {
   WatchDetailPayload,
   watchDetailSchema,
 } from "@/features/products/schema";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -15,6 +16,7 @@ import { generateReferenceId } from "@/lib/helper";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { isValid } from "zod/v3";
 
 type Props = {
   onNext: () => void;
@@ -32,8 +34,8 @@ const WatchDetailForm = ({ onNext }: Props) => {
     setValue,
     watch,
     getValues,
-    formState: { errors },
-  } = useForm<WatchDetailPayload>({
+    formState: { errors , isValid },
+  } = useForm<z.input<typeof watchDetailSchema>>({
     resolver: zodResolver(watchDetailSchema),
     mode: "onChange",
     defaultValues: {
@@ -59,7 +61,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
     setValue("photos", fileArray, { shouldValidate: true });
   };
 
-  const onSubmit = (data: WatchDetailPayload) => {
+  const onSubmit = (data: any) => {
     mutate(data, {
       onSuccess: (response) => {
         if (response?.data) {
@@ -142,8 +144,9 @@ const WatchDetailForm = ({ onNext }: Props) => {
           <FloatingInput
             id="price"
             label="Price"
+             step="0.01"
             type="number"
-            maxLength={5000}
+            // maxLength={5000}
             {...register("price")}
             error={errors.price?.message}
           />
@@ -231,7 +234,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
         <Button
           className="w-full bg-slate-900 hover:bg-slate-800"
           type="submit"
-          disabled={isPending}
+          disabled={isPending || !isValid}
         >
           {isPending ? "Submitting" : "Next"}
         </Button>

@@ -67,7 +67,7 @@ let pathname =
           </div>
 
           <div className="flex-1">
-            <p className="text-lg font-semibold text-end">${formatPrice(Number(price))}</p>
+            <p className="text-lg font-semibold text-end">{formatPrice(Number(price))}</p>
             <p className="text-lg font-medium">{model}</p>
           </div>
         </Link>
@@ -85,7 +85,7 @@ let pathname =
           </div>
 
           <div className="flex-1">
-            <p className="text-lg font-semibold text-end">${formatPrice(Number(price))}</p>
+            <p className="text-lg font-semibold text-end">{formatPrice(Number(price))}</p>
             <p className="text-lg font-medium">{model}</p>
           </div>
         </div>

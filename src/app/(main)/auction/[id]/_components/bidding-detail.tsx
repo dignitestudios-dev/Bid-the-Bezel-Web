@@ -26,7 +26,6 @@ const BiddingDetail = ({ product }: Props) => {
 
   const noBids = !bidsLoading && (bidsData?.data?.length ?? 0) === 0;
 
-  // When no bids, refetch listing detail once to get latest currentBidder from product API
   if (noBids) {
     queryClient.invalidateQueries({ queryKey: ["get-listing-detail", product?._id] });
   }

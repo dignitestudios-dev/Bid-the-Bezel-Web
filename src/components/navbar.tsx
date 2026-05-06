@@ -14,8 +14,8 @@ import { Skeleton } from "./ui/skeleton";
 import PlanSuccessDialog from "./ui/plan-success-dialog";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRequireProfileCompletion } from "@/hooks/api/use-require-profile-completion";
-import { useEffect } from "react";
-import { createSocket } from "@/sockets";
+import { useFcmNotification } from "@/hooks/api/use-fcm-notification";
+
 const Navbar = () => {
   const { data: user, isLoading } = useMe();
   const searchParams = useSearchParams();
@@ -27,11 +27,7 @@ const Navbar = () => {
     router.replace(url.pathname + url.search, { scroll: false });
   };
   useRequireProfileCompletion(user, isLoading);
-  useEffect(() => {
-    const { connect } = createSocket()
-    connect()
-    
-  }, [])
+  useFcmNotification();
   return (
     <div>
       <div className="flex justify-between w-[90%] py-4 max-w-screen-2xl mx-auto">
