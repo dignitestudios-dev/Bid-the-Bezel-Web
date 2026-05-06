@@ -17,12 +17,12 @@ export const watchDetailSchema = z.object({
         .optional(),
 
     price: z
-        .string()
+       .coerce.number()
         .min(1, "Price is required")
         .max(1000000, "Price must be at most 1,000,000")
-        .regex(/^\d+(\.\d{1,2})?$/, "Only valid numbers with up to 2 decimals allowed")
-        .refine((val) => Number(val) > 0, "Price must be greater than 0"),
-    //   .refine((val) => Number(val) <= 5000, "Price cannot be more than 5000"),
+          .multipleOf(0.01, {
+        message: "Max 2 decimal places allowed",
+      }),
 
     contents: z
         .string()

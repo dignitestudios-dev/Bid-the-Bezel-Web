@@ -23,9 +23,9 @@ import NotificationItem from "./icons/NotificationItem";
 import { useRouter } from "next/navigation";
 import NotificationTab from "./ui/notification-tab";
 import MessageTab from "./ui/message-tab";
-import { useGetNotifications } from "@/features/notifications/hooks";
-import { Skeleton } from "./ui/skeleton";
+import NotificationsPanel from "./ui/notifications-panel";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useGetNotifications } from "@/features/notifications/hooks";
 
 const notifications = [
   {
@@ -66,52 +66,6 @@ const MessageNotificationMenu = () => {
     router.push("/chats");
   };
 
-
-  const { data: notificationsData, isLoading: notiLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetNotifications();
-
-  const allNotifications =
-    notificationsData?.pages?.flatMap(
-      (p) => p?.data
-    ) ?? [];
-
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  const virtualizer = useVirtualizer({
-    count: allNotifications.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 120,
-    overscan: 5,
-    observeElementRect: (instance, cb) => {
-      const el = instance.scrollElement;
-      if (!el) return () => { };
-      const ro = new ResizeObserver(() => {
-        cb({ height: el.clientHeight, width: el.clientWidth });
-      });
-      ro.observe(el);
-      cb({ height: el.clientHeight, width: el.clientWidth }); // initial call
-      return () => ro.disconnect();
-    },
-  });
-
-
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  const sentinelCallback = useCallback(
-    (el: HTMLDivElement | null) => {
-      if (observerRef.current) observerRef.current.disconnect();
-      if (!el) return;
-      observerRef.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-          }
-        },
-        { threshold: 0.1 }
-      );
-      observerRef.current.observe(el);
-    },
-    [hasNextPage, isFetchingNextPage, fetchNextPage]
-  );
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
@@ -158,61 +112,7 @@ const MessageNotificationMenu = () => {
                 </DropdownMenuItem>
               </div>
             ) : (
-              <div
-                ref={parentRef}
-                key={activeTab}
-                className="h-[400px] overflow-y-auto relative"
-              >
-                {notiLoading ? (
-                  <div className="space-y-2 p-2">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <Skeleton key={index} className="w-full h-20 rounded-lg" />
-                    ))}
-                  </div>
-                ) : !notiLoading && allNotifications.length === 0 ? (
-                  <div className="p-2 text-center">No Notification Found</div>
-                ) : (
-                  <div
-                    key={allNotifications.length}
-                    style={{
-                      height: `${virtualizer.getTotalSize()}px`,
-                      position: "relative",
-                    }}
-                  >
-                    {virtualizer.getVirtualItems().map((virtualItem) => {
-                      const msg = allNotifications[virtualItem.index];
-
-                      return (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            transform: `translateY(${virtualItem.start}px)`,
-                          }}
-                        >
-                          <NotificationTab
-                            msg={msg}
-                            title={msg.title}
-                            description={msg.description}
-                            isFav={msg?.isFav ?? false}
-                            createdAt={msg.createdAt}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-                <div ref={sentinelCallback} className="h-4" />
-
-                {isFetchingNextPage && (
-                  <p className="py-2 text-center text-sm text-gray-400">Loading more...</p>
-                )}
-                {!hasNextPage && allNotifications.length > 0 && (
-                  <p className="py-2 text-center text-sm text-gray-400">No more notifications</p>
-                )}
-              </div>
+              <NotificationsPanel />
             )}
 
 

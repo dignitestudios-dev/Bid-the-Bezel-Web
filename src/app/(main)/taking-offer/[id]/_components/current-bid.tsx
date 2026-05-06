@@ -139,7 +139,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         onSuccess: (res) => {
           showSuccess(res?.data?.message || "Offer placed successfully!");
           setConfirmOffer(false);
-          // reset({amount: 0});
+          reset();
         },
         onError: (err) => {
           console.error(err);
@@ -237,7 +237,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
               <Button
                 onClick={handleIncrease}
-                disabled={!isValid || placeBidMutation.isPending}
+                disabled={placeBidMutation.isPending}
                 className="bg-[#415A77] w-full py-3"
               >
                 +200

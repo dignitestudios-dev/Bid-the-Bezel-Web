@@ -185,7 +185,7 @@ const timeLeft = React.useMemo(() => {
       {!isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
         isEnded ? (
           <div className={cn(currentBidder ? "px-6 py-6 border-t text-center" : "")}>
-            {isWinner ? (
+            {isWinner && currentBidder ? (
               <>
                 <h1 className="text-xl font-semibold text-green-600">
                   You won the bid 🎉

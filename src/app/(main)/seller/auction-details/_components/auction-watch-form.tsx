@@ -27,7 +27,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
         setValue,
         watch,
         getValues,
-        formState: { errors },
+        formState: { errors , isValid},
     } = useForm<z.input<typeof auctionWatchSchema>>({
         resolver: zodResolver(auctionWatchSchema),
         mode: "onChange",
@@ -176,6 +176,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
                         id="price"
                         label="Price"
                         type="number"
+                         step="0.01"
                         maxLength={5000}
                         {...register("price")}
                     // error={errors.price?.message}
@@ -276,7 +277,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
                 <Button
                     className="w-full bg-slate-900 hover:bg-slate-800"
                     type="submit"
-                    disabled={isPending}
+                    disabled={isPending || !isValid}
                 >
                     {isPending ? "Submitting" : "Next"}
                 </Button>

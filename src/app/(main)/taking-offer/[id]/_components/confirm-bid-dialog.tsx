@@ -62,7 +62,7 @@ const ConfirmBidDialog = ({ open, setOpen, productId, bidder, amount }: Props) =
           </div>
 
          <h1 className='text-xl font-bold pb-4'>Accept Bid</h1>
-
+<p>Are you sure you want to accept bid?</p>
           <div className="flex justify-center gap-4 w-full">
             <Button
         variant={"dangerous"}
