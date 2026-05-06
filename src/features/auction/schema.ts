@@ -21,12 +21,13 @@ export const auctionWatchSchema = z.object({
         .optional(),
     price: z
         .coerce.number()
-        .min(5000, "Minimum auction price is $5000"),
+        .min(5000, "Minimum auction price is $5000")
+        .max(10000000, "Maximum auction price is $10,000,000"),
 
     contents: z
         .string()
         .min(2, "Contents is required")
-        .max(200, "Contents must be at most 200 characters"),
+        .max(1000, "Contents must be at most 1000 characters"),
     photos: z
         .array(
             z.object({

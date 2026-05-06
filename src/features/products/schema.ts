@@ -19,6 +19,7 @@ export const watchDetailSchema = z.object({
     price: z
         .string()
         .min(1, "Price is required")
+        .max(1000000, "Price must be at most 1,000,000")
         .regex(/^\d+(\.\d{1,2})?$/, "Only valid numbers with up to 2 decimals allowed")
         .refine((val) => Number(val) > 0, "Price must be greater than 0"),
     //   .refine((val) => Number(val) <= 5000, "Price cannot be more than 5000"),
@@ -26,7 +27,7 @@ export const watchDetailSchema = z.object({
     contents: z
         .string()
         .min(2, "Contents is required")
-        .max(200, "Contents must be at most 200 characters"),
+        .max(1000, "Contents must be at most 1000 characters"),
     photos: z
         .array(
             z.object({

@@ -95,14 +95,11 @@ export const generateReferenceId = () => {
 
   return `${randomLetters}-${randomNumbers}`;
 };
-// export const timeAgo = (createdAt: string) => {
-//   const diff = new Date().getTime() - new Date(createdAt).getTime();
 
-//   const mins = Math.floor(diff / 60000);
-//   const hours = Math.floor(diff / 3600000);
-//   const days = Math.floor(diff / 86400000);
 
-//   if (days >= 1) return `${days} day${days > 1 ? "s" : ""}`;
-//   if (hours >= 1) return `${hours} hr${hours > 1 ? "s" : ""}`;
-//   return `${Math.max(1, mins)} min`;
-// };
+export const formatPrice = (value: number) => {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+};

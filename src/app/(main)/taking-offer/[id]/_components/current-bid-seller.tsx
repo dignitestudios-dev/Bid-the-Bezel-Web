@@ -8,7 +8,7 @@ import ConfirmCancel from "./confirm-cancel";
 import RepostAuctionDialog from "./repost-auction-dialog";
 import ConfirmBidDialog from "./confirm-bid-dialog";
 import { Button } from "@/components/ui/button";
-
+import {formatPrice} from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -38,7 +38,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         </h3>
         <h1 className="text-2xl font-semibold">
           {product?.auction?.currentBidAmount > 0
-            ? `$${product?.auction?.currentBidAmount.toFixed(2)}`
+            ? `${formatPrice(product?.auction?.currentBidAmount)}`
             : "$00.0"}
         </h1>
       </div>
@@ -49,16 +49,20 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
       ) : (
         <>
           <div className="flex gap-2 items-start p-5">
-            <Image
-              src={currentBidder.profilePicture.location}
-              alt="dp"
-               className="rounded-full w-[70px] h-[70px] "
-              width={60}
-              height={60}
-            />
+            {currentBidder?.profilePicture?.location ? (
+              <Image
+                src={currentBidder.profilePicture.location}
+                alt="dp"
+                className="rounded-full w-[70px] h-[70px]"
+                width={60}
+                height={60}
+              />
+            ) : (
+              <div className="w-[70px] h-[70px] rounded-full bg-gray-200 shrink-0" />
+            )}
             <div className="my-2">
-              <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-              <h5 className="text-xs ">Bid {" "}
+              <h1 className="font-semibold mb-1">{currentBidder?.userName}</h1>
+              <h5 className="text-xs">Bid {" "}
                 {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>

@@ -10,7 +10,7 @@ import MoveToTakingDialog from "./move-taking-offer-dialog";
 import RepostAuctionDialog from "./repost-auction-dialog";
 import { getTimeLeft, timeAgo } from "@/lib/helper";
 import { useNow } from "@/lib/use-now";
-
+import {formatPrice} from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -49,7 +49,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         </h3>
         <h1 className="text-2xl font-semibold">
           {auction?.currentBidAmount > 0
-            ? `$${auction.currentBidAmount.toFixed(2)}`
+            ? `${formatPrice(auction.currentBidAmount)}`
             : "$00.0"}
         </h1>
       </div>
@@ -57,16 +57,20 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         hasBidder ? (
           <>
             <div className="flex gap-2 px-4 pb-2 items-start">
-              <Image
-                src={currentBidder.profilePicture.location}
-                alt="dp"
-                className="rounded-full w-[70px] h-[70px]"
-                width={60}
-                height={60}
-              />
+              {currentBidder?.profilePicture?.location ? (
+                <Image
+                  src={currentBidder.profilePicture.location}
+                  alt="dp"
+                  className="rounded-full w-[70px] h-[70px]"
+                  width={60}
+                  height={60}
+                />
+              ) : (
+                <div className="w-[70px] h-[70px] rounded-full bg-gray-200 shrink-0" />
+              )}
               <div className="my-2">
-                <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-                <h5 className="text-xs ">Bid {" "}
+                <h1 className="font-semibold mb-1">{currentBidder?.userName}</h1>
+                <h5 className="text-xs">Bid {" "}
                   {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
                 </h5>
               </div>
@@ -128,15 +132,19 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
       ) : hasBidder ? (
         <div className="flex items-center px-5 pb-5 gap-3">
           <div className="flex gap-2 items-start">
-            <Image
-              src={currentBidder.profilePicture.location}
-              alt="dp"
-              className="rounded-full w-[70px] h-[70px] "
-              width={60}
-              height={60}
-            />
+            {currentBidder?.profilePicture?.location ? (
+              <Image
+                src={currentBidder.profilePicture.location}
+                alt="dp"
+                className="rounded-full w-[70px] h-[70px]"
+                width={60}
+                height={60}
+              />
+            ) : (
+              <div className="w-[70px] h-[70px] rounded-full bg-gray-200 shrink-0" />
+            )}
             <div className="my-2">
-              <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
+              <h1 className="font-semibold mb-1">{currentBidder?.userName}</h1>
               <h5 className="text-xs">Current highest bidder</h5>
             </div>
           </div>

@@ -8,7 +8,7 @@ import { AlertUnauthenticatedDialog } from "./alert-unauthenticated-dialog";
 import { AlertDeleteDialog } from "./alert-delete-dialog";
 import Link from "next/link";
 import { UpdateProductDialog } from "./update-product-dialog";
-
+import {formatPrice} from "@/lib/helper";
 type Props = {
   link?: string;
   image: string;
@@ -67,7 +67,7 @@ let pathname =
           </div>
 
           <div className="flex-1">
-            <p className="text-lg font-semibold text-end">${price}</p>
+            <p className="text-lg font-semibold text-end">${formatPrice(price)}</p>
             <p className="text-lg font-medium">{model}</p>
           </div>
         </Link>
@@ -85,7 +85,7 @@ let pathname =
           </div>
 
           <div className="flex-1">
-            <p className="text-lg font-semibold text-end">${price}</p>
+            <p className="text-lg font-semibold text-end">${formatPrice(price)}</p>
             <p className="text-lg font-medium">{model}</p>
           </div>
         </div>

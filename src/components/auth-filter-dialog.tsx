@@ -14,6 +14,8 @@ const AuthFilterDialog = (props: Props) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [unauthenticated, setUnauthenticated] = useState(false);
 
+  const authenticatedCount = props.productLength?.filter((p: any) => p.authentication?.status === "authenticated").length ?? 0;
+  const unauthenticatedCount = props.productLength?.filter((p: any) => p.authentication?.status !== "authenticated").length ?? 0;
 
   const handleApply = () => {
     let value: string | undefined;
@@ -41,7 +43,7 @@ const AuthFilterDialog = (props: Props) => {
         <div className="">
           <div className="p-4 bg-white rounded">
             <label className="flex items-center justify-between w-full">
-              <span>Authenticated <span className="text-sm text-muted-foreground">{props.productLength?.length}</span></span>
+              <span>Authenticated <span className="text-sm text-muted-foreground">({authenticatedCount})</span></span>
               <input
                 type="checkbox"
                 checked={authenticated}
@@ -56,7 +58,7 @@ const AuthFilterDialog = (props: Props) => {
 
           <div className="p-4 bg-white rounded">
             <label className="flex items-center justify-between w-full">
-              <span>Un-Authenticated <span className="text-sm text-muted-foreground">{props.productLength?.length}</span></span>
+              <span>Un-Authenticated <span className="text-sm text-muted-foreground">({unauthenticatedCount})</span></span>
               <input
                 type="checkbox"
                 checked={unauthenticated}

@@ -10,7 +10,7 @@ import { formatTimeLeft } from "@/lib/utils/date.utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import {formatPrice} from "@/lib/helper";
 
 const ProductCard = ({
   prod,
@@ -122,7 +122,7 @@ const ProductCard = ({
             <div className="w-1/3">
               <h2 className="font-thin">{product.isAuction ? "Starting Price" : ""}</h2>
               <h1 className={cn("font-semibold", product.isAuction ? "text-center" : "text-start")}>
-                ${product.price}
+                {formatPrice(product.price)}
               </h1>
             </div>
 
@@ -132,7 +132,7 @@ const ProductCard = ({
                 <div className="w-1/3">
                   <h2 className="font-thin">Current Bid</h2>
                   <h1 className="font-semibold">
-                    ${product.currentBid}
+                    {formatPrice(product.currentBid)}
                   </h1>
                 </div>
 

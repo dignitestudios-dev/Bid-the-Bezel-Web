@@ -14,15 +14,12 @@ export const useGetProductBids = (
 ) => {
   return useQuery<ProductBidsResponse>({
     queryKey: ["product-bids", id, page, limit],
-
     queryFn: async () => {
       const res = await apiClient.get(`/products/${id}/bids`, {
         params: { page, limit },
       });
-
       return res.data;
     },
-
     enabled: !!id,
     refetchInterval: 10000,
     refetchOnWindowFocus: true,
