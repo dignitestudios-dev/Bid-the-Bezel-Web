@@ -53,6 +53,15 @@ export const auctionWatchSchema = z.object({
                 }),
             "Each image must be 5MB or less"
         ),
+    isReserved: z.boolean().default(false),
+  reservePrice: z.coerce
+  .number()
+  .min(5000, "Minimum reserve price is $5000")
+  .max(10000000, "Maximum reserve price is $10,000,000")
+  .multipleOf(0.01, {
+    message: "Max 2 decimal places allowed",
+  })
+  .optional(),
 });
 
 export type AuctionWatchPayload = z.infer<typeof auctionWatchSchema>;

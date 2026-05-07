@@ -13,11 +13,14 @@ export const useAddAuctionProduct = () =>
             formData.append("auctionDays", String(data.auctionDays));
             formData.append("brandName", data.watchBrand);
             formData.append("model", data.modelReference);
-            formData.append("price", String(data.price));
+            formData.append("price","5000");
             formData.append("description", data.contents);
             formData.append("referenceId", String(data.referenceId));
             formData.append("type", 'auction');
             formData.append("status", 'draft');
+            formData.append("isReserved", String(data.isReserved));
+        if(data.isReserved)   formData.append("reservePrice", String(data.reservePrice));
+          
 
             data.photos?.forEach((photo) => {
                 if (photo.file) {

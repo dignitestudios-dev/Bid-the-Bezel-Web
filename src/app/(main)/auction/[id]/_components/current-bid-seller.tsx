@@ -47,6 +47,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         <Clock3 color={iconColor} />
         {displayTime} left
       </h1>
+      
       <div className="flex justify-between p-5">
         <h3 className="font-semibold">
           {hasBidder && isEnded ? "Bid Winner" : "Current Bid"}

@@ -22,10 +22,7 @@ export const useGetProductBids = (
       return res.data;
     },
     enabled: !!id,
-    refetchInterval: (query) => {
-      const status = query.state.data?.data?.auctionStatus;
-      return status === "ended" ? false : 10000;
-    },
+    refetchInterval: 10000,
     refetchOnWindowFocus: true,
   });
 };
