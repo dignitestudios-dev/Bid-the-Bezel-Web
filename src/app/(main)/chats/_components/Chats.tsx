@@ -504,7 +504,7 @@ const Chats = () => {
                                 src={item?.sender?.profilePicture?.location ?? "/default-avatar.png"}
                                 className="w-8 h-8 rounded-full object-cover"
                               />
-                              <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md breakal">
+                              <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md break-all">
                                 <p>{item?.text}</p>
                                 <span className="text-[10px] text-gray-500 block mt-1">
                                   {formatTime(item.createdAt)}
