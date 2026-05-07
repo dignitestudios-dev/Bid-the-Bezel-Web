@@ -4,7 +4,7 @@ import { getToken } from "@/lib/cookies";
 
 const DEFAULT_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export function createSocket({ url = DEFAULT_URL, token } = {}) {
+export function createSocket({ url = DEFAULT_URL } = {}) {
     const authToken = getToken();
 
     const socket = io(url, {
