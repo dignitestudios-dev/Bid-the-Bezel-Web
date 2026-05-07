@@ -40,7 +40,7 @@ export function createSocket({ url = DEFAULT_URL } = {}) {
     const disconnect = () => socket.disconnect();
 
     // Safe emit wrapper
-    const emit = (event, ...args) => {
+    const emit = (event: any, ...args: any) => {
         if (socket && socket.connected) socket.emit(event, ...args);
     };
 
