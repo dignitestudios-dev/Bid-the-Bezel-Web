@@ -5,13 +5,14 @@ import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[
 import { BillingPaylod } from "../billing/schema";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
-
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useGetProductBids = (
   id: string,
   page: number = 1,
   limit: number = 10
 ) => {
+  const queryClient = useQueryClient();
   return useQuery<ProductBidsResponse>({
     queryKey: ["product-bids", id, page, limit],
     queryFn: async () => {
@@ -21,7 +22,10 @@ export const useGetProductBids = (
       return res.data;
     },
     enabled: !!id,
-    refetchInterval: 10000,
+    refetchInterval: (query) => {
+      const status = query.state.data?.data?.auctionStatus;
+      return status === "ended" ? false : 10000;
+    },
     refetchOnWindowFocus: true,
   });
 };

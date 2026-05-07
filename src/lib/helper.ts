@@ -72,7 +72,7 @@ export const getTimeLeft = (endsAt?: string | Date, now = Date.now()): string =>
 
   const diff = new Date(endsAt).getTime() - now;
 
-  if (diff <= 0) return "Ended";
+  if (diff <= 0) return "0D 0H 0M";
 
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
@@ -81,7 +81,7 @@ export const getTimeLeft = (endsAt?: string | Date, now = Date.now()): string =>
 
   return days > 0
     ? `${days}D ${hours}H ${minutes}M`
-    : `${hours}H ${minutes}M ${seconds}S`; // shows seconds when < 1 day
+    : `${hours}H ${minutes}M ${seconds}S`;
 };
 
 export const generateReferenceId = () => {

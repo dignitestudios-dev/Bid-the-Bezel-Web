@@ -9,14 +9,15 @@ import TakingOffers from "./_components/taking-offers";
 import WatchTosell from "./_components/watch-to-sell";
 
 export default function Home() {
-  const { data } = useGetAllListing()
+  const { data , isLoading } = useGetAllListing()
 
   return (
     <div>
       <Hero />
-      <Aunctions auctionWatches={data?.data.auction || []} />
-      <FixedPrice fixedPrice={data?.data?.fixed_price || []} />
-      <TakingOffers takingOffers={data?.data?.taking_offers || []} />
+      
+      <Aunctions auctionWatches={data?.data.auction || []} loading={isLoading} />
+      <FixedPrice fixedPrice={data?.data?.fixed_price || []} loading={isLoading} />
+      <TakingOffers takingOffers={data?.data?.taking_offers || []} loading={isLoading} />
       <BrowseByCategories />
       <WatchTosell />
       <Plans />

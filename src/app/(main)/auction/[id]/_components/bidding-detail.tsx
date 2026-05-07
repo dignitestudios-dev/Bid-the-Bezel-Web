@@ -24,7 +24,7 @@ const BiddingDetail = ({ product }: Props) => {
   const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(product?._id, 1, 10);
   const { data: paginatedBids, isLoading: paginatedBidsLoading } = useGetProductBids(product?._id, currentPage, 10);
 
-  const noBids = !bidsLoading && (bidsData?.data?.length ?? 0) === 0;
+  const noBids = !bidsLoading && (bidsData?.data?.bids.length ?? 0) === 0;
 
   if (noBids) {
     queryClient.invalidateQueries({ queryKey: ["get-listing-detail", product?._id] });
@@ -41,8 +41,8 @@ const BiddingDetail = ({ product }: Props) => {
         <CurrentBid product={product} bidsData={bidsData!} />
       )}
       <TopBids
-        topBids={bidsData?.data ?? []}
-        paginatedBids={paginatedBids?.data ?? []}
+        topBids={bidsData?.data?.bids ?? []}
+        paginatedBids={paginatedBids?.data?.bids ?? []}
         pagination={paginatedBids?.pagination}
         currentPage={currentPage}
         paginatedBidsLoading={paginatedBidsLoading}

@@ -67,11 +67,11 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const auction = product?.auction;
 
   const currentBid = useMemo(() => {
-    return bidsData?.data?.[0]?.amount ?? 0;
+    return bidsData?.data?.bids?.[0]?.amount ?? 0;
   }, [bidsData]);
 
-  const currentBidder = bidsData?.data?.[0]?.currentBidder;
-  const isAccepted = bidsData?.data?.[0]?.status === "accepted";
+  const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
+  const isAccepted = bidsData?.data?.bids?.[0]?.status === "accepted";
   const isWinner = isAccepted && currentBidder && product.auction.currentBidder === user?.data?._id;
   const {
     register,
@@ -160,7 +160,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         <div className="flex justify-between mb-4 items-center">
           <h3 className="font-semibold">Highest Offer</h3>
           <h1 className="text-2xl font-semibold">
-            {currentBid > 0 ? `${formatPrice(bidsData?.data?.[0]?.product?.effectivePrice)}` : "$00.00"}
+            {currentBid > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
           </h1>
         </div>
 
@@ -179,7 +179,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             )}
             <div className="my-2">
               <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-              <h5 className="text-xs">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              <h5 className="text-xs">Bid {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>

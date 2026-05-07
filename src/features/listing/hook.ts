@@ -43,7 +43,8 @@ export const useGetMyListingDetail = (id: string) => {
             return res.data;
         },
         enabled: !!id,
-        refetchOnWindowFocus: false,
+        // refetchInterval: 10000,
+        refetchOnWindowFocus: true,
     });
 };
 
@@ -87,5 +88,6 @@ export const useGetAllListing = () => {
             const res = await apiClient.get(`/products/homepage`);
             return res.data;
         },
+        refetchInterval: 10000, // 10 seconds polling
     });
 };
