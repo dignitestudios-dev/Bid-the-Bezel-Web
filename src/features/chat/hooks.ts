@@ -31,7 +31,7 @@ export const useSendMessages = (roomId: string) =>
     useApiMutation<any, { text: string, tempId: string }>({
         endpoint: `/chat/messages/${roomId}`,
         method: "POST",
-        invalidateKeys: ["get-chat-messages"],
+        invalidateKeys: ["get-chat-messages", "get-chat-rooms"],
         mutationOptions: {
             onError: (err) => {
                 showError(err);

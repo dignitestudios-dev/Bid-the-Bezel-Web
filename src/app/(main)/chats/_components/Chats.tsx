@@ -97,7 +97,6 @@ const Chats = () => {
   const [chats] = useState<ChatItem[]>(sampleChats);
   const [selectedChat, setSelectedChat] = useState<any>()
   const [message, setMessage] = useState("")
-  const [tempMessages, setTempMessages] = useState<TempMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { data: userData } = useMe()
 
@@ -109,10 +108,19 @@ const Chats = () => {
 
   const { mutateAsync: sendMessage } = useSendMessages(selectedChat?._id)
   const { socket, connect } = createSocket()
+  const [chatRooms, setChatRooms] = useState<any[]>([]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatRoomMessages, tempMessages]);
+    if (allChatRooms?.data) {
+      setChatRooms(allChatRooms.data);
+    }
+  }, [allChatRooms]);
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop =
+        messagesEndRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (allChatRooms?.data?.length > 0 && !selectedChat) {
@@ -124,21 +132,71 @@ const Chats = () => {
 
   useEffect(() => {
     connect();
+
     if (!selectedChat) return;
-    socket.on("new_message", (incomingMsg: any) => {
-      setMessages((prev: any) => [...prev, incomingMsg])
-    })
+
+    const handleNewMessage = (incomingMsg: any) => {
+
+      setMessages((prev: any[]) => {
+        const tempMessageExists = prev.find(
+          (msg) => msg.tempId === incomingMsg.tempId
+        );
+
+        if (tempMessageExists) {
+          return prev.map((msg) =>
+            msg.tempId === incomingMsg.tempId
+              ? {
+                ...incomingMsg,
+                status: "sent",
+              }
+              : msg
+          );
+        }
+
+        const alreadyExists = prev.some(
+          (msg) => msg._id === incomingMsg._id
+        );
+
+        if (alreadyExists) return prev;
+
+        return [...prev, incomingMsg];
+      });
+
+      setChatRooms((prevRooms: any[]) => {
+
+        const updatedRooms = prevRooms.map((room) => {
+          if (room._id === incomingMsg.room) {
+            return {
+              ...room,
+              lastMessage: {
+                text: incomingMsg.text,
+                sentAt: incomingMsg.createdAt,
+              },
+            };
+          }
+
+          return room;
+        });
+
+
+        updatedRooms.sort((a, b) => {
+          return (
+            new Date(b.lastMessage?.sentAt || 0).getTime() -
+            new Date(a.lastMessage?.sentAt || 0).getTime()
+          );
+        });
+
+        return updatedRooms;
+      });
+    };
+
+    socket.on("new_message", handleNewMessage);
+
     return () => {
-      socket.off("new_message");
+      socket.off("new_message", handleNewMessage);
     };
   }, [selectedChat]);
 
-
-
-  useEffect(() => {
-    setTempMessages([]);
-    setMessages(chatRoomMessages?.data)
-  }, [selectedChat?._id]);
 
 
 
@@ -146,26 +204,32 @@ const Chats = () => {
     if (!message.trim()) return
 
     const tempId = `temp_${Date.now()}`
-    const optimisticMsg: TempMessage = {
+    const optimisticMsg = {
       _id: tempId,
+      tempId,
       text: message,
       createdAt: new Date().toISOString(),
-      isMineMessage: true,
       status: "sending",
-      sender: { profilePicture: { location: userData?.data?.profilePicture?.location || "" } },
-    }
+      sender: {
+        _id: userId,
+        profilePicture: {
+          location:
+            userData?.data?.profilePicture?.location || "",
+        },
+      },
+    };
 
-    setTempMessages((prev) => [...prev, optimisticMsg])
-    setMessages((prev: any) => [...prev, { ...optimisticMsg, sender: { _id: userId, profilePicture: { location: userData?.data?.profilePicture?.location || "" } } }])
+    setMessages((prev: any) => [...prev, {
+      ...optimisticMsg,
+      sender: { _id: userId, profilePicture: { location: userData?.data?.profilePicture?.location || "" } }
+    }])
     setMessage("")
 
     try {
       await sendMessage({ text: message, tempId: tempId })
 
     } catch {
-      setTempMessages((prev) =>
-        prev.map((m) => m._id === tempId ? { ...m, status: "failed" } : m)
-      )
+
       setMessages((prev: any) =>
         prev.map((m: any) => m._id === tempId ? { ...m, status: "failed" } : m)
       )
@@ -229,34 +293,45 @@ const Chats = () => {
                       ))}
                     </div>
                   ) : (
-                    allChatRooms?.data?.map((c: any) => (
+                    chatRooms?.map((c: any) => (
                       <div
                         key={c._id}
                         onClick={() => {
                           setSelectedChat(c);
                         }}
-                        className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer ${selectedChat?._id === c._id
+                        className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer overflow-hidden transition-all ${selectedChat?._id === c._id
                           ? "bg-[#0E2430] text-white"
                           : "hover:bg-gray-50"
                           }`}
                       >
-                        {c?.participants?.map((item: any) => (
-                          <React.Fragment key={item?._id}>
-                            <img
-                              src={item?.user?.profilePicture?.location}
-                              className="w-10 h-10 rounded-full"
-                            />
+                        {c?.participants
+                          ?.filter((item: any) => item?.user?._id !== userId)
+                          ?.map((item: any) => (
+                            <React.Fragment key={item?._id}>
 
-                            <div
-                              className={`font-medium ${selectedChat?._id === c._id
-                                ? "text-white"
-                                : "text-gray-900"
-                                }`}
-                            >
-                              {item?.user?.userName || "User"}
-                              <div className="flex-1 text-sm">
+                              <img
+                                src={
+                                  item?.user?.profilePicture?.location ||
+                                  "/default-avatar.png"
+                                }
+                                className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                              />
+
+
+                              <div className="flex-1 min-w-0">
+
                                 <div
-                                  className={`text-xs mt-1 ${selectedChat?._id === c._id
+                                  className={`font-medium truncate ${selectedChat?._id === c._id
+                                    ? "text-white"
+                                    : "text-gray-900"
+                                    }`}
+                                >
+                                  {item?.user?.userName || "User"}
+                                </div>
+
+
+                                <div
+                                  className={`text-xs mt-1 line-clamp-2 break-words ${selectedChat?._id === c._id
                                     ? "text-gray-200"
                                     : "text-gray-500"
                                     }`}
@@ -264,19 +339,18 @@ const Chats = () => {
                                   {c.lastMessage?.text || "No messages yet"}
                                 </div>
                               </div>
-                            </div>
-                          </React.Fragment>
-                        ))}
+                            </React.Fragment>
+                          ))}
+
+
                         <div
-                          className={`text-xs flex  ms-auto  ${selectedChat?._id === c._id
+                          className={`text-xs whitespace-nowrap flex-shrink-0 ${selectedChat?._id === c._id
                             ? "text-gray-200"
                             : "text-gray-500"
                             }`}
                         >
                           {formatTime(c.lastMessage?.sentAt)}
                         </div>
-
-
                       </div>
                     ))
                   )}
@@ -336,7 +410,7 @@ const Chats = () => {
                 </div> */}
             </div>
 
-            {/* Right: chat panel */}
+
             <div className="w-full lg:flex-1 p-6 flex flex-col">
               {selectedChat?.participants?.map((item: any) => (
                 <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
@@ -350,8 +424,10 @@ const Chats = () => {
 
               ))}
 
-              <div className="flex-1 p-2 overflow-y-scroll h">
-                {chatRoomMessages?.data?.length === 0 ? (
+              <div
+                ref={messagesEndRef}
+                className="flex-1 p-2 overflow-y-scroll h">
+                {messages?.length === 0 ? (
                   <div className="text-center text-sm text-gray-500 my-10">
                     No messages yet
                   </div>
@@ -362,7 +438,7 @@ const Chats = () => {
                 )}
 
                 {messagesLoading ? (
-                  <div className="space-y-6">
+                  <div className="space-y-3">
                     {[...Array(6)].map((_, i) => (
                       <div
                         key={i}
@@ -385,7 +461,7 @@ const Chats = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="h-[]">
+                  <div className="h-[400px]">
 
                     {messages?.map((item: any) => {
 
@@ -395,7 +471,7 @@ const Chats = () => {
                         <div key={item._id} className="mb-4">
                           {isMine ? (
                             <div className="flex items-end justify-end gap-3">
-                              <div className="bg-[#3A556B] text-white px-5 py-3 rounded-xl rounded-br-none max-w-md">
+                              <div className="bg-[#3A556B] text-white px-5 py-3 rounded-xl rounded-br-none max-w-md break-all">
                                 <p>{item.text}</p>
                                 <span className="text-[10px] text-gray-300 block mt-1 text-right flex items-center justify-end gap-1">
                                   {item.status === "sending" && (
@@ -428,8 +504,8 @@ const Chats = () => {
                                 src={item?.sender?.profilePicture?.location ?? "/default-avatar.png"}
                                 className="w-8 h-8 rounded-full object-cover"
                               />
-                              <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md">
-                                <p>{item.text}</p>
+                              <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md breakal">
+                                <p>{item?.text}</p>
                                 <span className="text-[10px] text-gray-500 block mt-1">
                                   {formatTime(item.createdAt)}
                                 </span>
@@ -458,10 +534,23 @@ const Chats = () => {
 
 
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && message.trim()) {
+                        handleSend();
+                      }
+                    }}
                     className="flex-1 px-4 py-3 rounded-md text-sm placeholder-gray-500 outline-none"
                   />
 
-                  <button onClick={handleSend} className="ml-3 w-10 h-10 bg-[#0E2430] text-white rounded-md flex items-center justify-center flex-shrink-0">
+                  <button
+                    onClick={handleSend}
+                    disabled={!message.trim()}
+                    className={`ml-3 w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 transition-all
+  ${message.trim()
+                        ? "bg-[#0E2430] text-white hover:opacity-90"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-4 h-4"

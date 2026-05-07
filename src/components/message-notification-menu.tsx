@@ -26,6 +26,7 @@ import MessageTab from "./ui/message-tab";
 import NotificationsPanel from "./ui/notifications-panel";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useGetNotifications } from "@/features/notifications/hooks";
+import { useGetChatRooms } from "@/features/chat/hooks";
 
 const notifications = [
   {
@@ -53,6 +54,8 @@ const MessageNotificationMenu = () => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const { data: allChatRooms, isLoading: roomsLoading } = useGetChatRooms()
+
   const dummyArray = [1, 2];
   const tabs = [
     { title: "Message", label: "messages", icon: <Message /> },
@@ -98,9 +101,13 @@ const MessageNotificationMenu = () => {
           <div className="overflow-y-auto">
             {activeTab === "messages" ? (
               <div className="w-full pt-3">
-                {dummyArray.map((msg, index) => (
-                  <MessageTab key={index} handleGoToChats={handleGoToChats} />
-                ))}
+                {roomsLoading ? (
+                  <div>Loading...</div>
+                ) : (
+                  allChatRooms?.data?.map((c: any, index: number) => (
+                    <MessageTab key={index} handleGoToChats={handleGoToChats} chat={c} />
+                  ))
+                )}
 
                 <div className="mt-2 bg-gray-200 w-full h-px" />
 

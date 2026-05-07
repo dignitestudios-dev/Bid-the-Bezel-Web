@@ -144,7 +144,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
           <FloatingInput
             id="price"
             label="Price"
-             step="0.01"
+            step="0.01"
             type="number"
             // maxLength={5000}
             {...register("price")}
