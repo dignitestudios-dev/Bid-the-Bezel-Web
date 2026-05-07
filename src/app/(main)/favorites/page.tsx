@@ -15,6 +15,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { useAddProductToFavorite, useGetFavoriteProducts } from "@/features/fav-product/hook";
 import { showSuccess } from "@/lib/toast";
 import { FavSkeleton } from "@/components/skeleton";
+import Pagination from "../fixed-price/[id]/_components/pagination";
 
 type Fav = {
   id: string;
@@ -43,8 +44,10 @@ const initial: Fav[] = [
 
 const Favorites = () => {
   const [selectedId, setSelectedId] = useState<string>("");
+  const [page, setPage] = useState(1);
+
   const [loadingId, setLoadingId] = useState<string | null>(null);
-  const { data, isLoading } = useGetFavoriteProducts();
+  const { data, isLoading } = useGetFavoriteProducts(page);
   const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(selectedId);
 
   const handleRemove = (id: string) => {
@@ -60,7 +63,7 @@ const Favorites = () => {
       }
     });
   };
-
+  const pagination = data?.pagination;
 
 
   return (
@@ -144,6 +147,15 @@ const Favorites = () => {
             </div>
           ))}
         </div>
+      )}
+
+
+      {!isLoading && data?.length !== 0 && (
+        <Pagination
+          page={page}
+          pagination={pagination}
+          setPage={setPage}
+        />
       )}
     </div>
   );

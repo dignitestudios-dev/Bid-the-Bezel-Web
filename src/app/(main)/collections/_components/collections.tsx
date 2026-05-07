@@ -16,6 +16,7 @@ import {
 } from "@/lib/constants";
 import { useGetListing } from "@/features/listing/hook";
 import { ListingSkeleton } from "@/components/skeleton";
+import Pagination from "../../fixed-price/[id]/_components/pagination";
 
 type WatchCategory = "all" | "auction" | "fixed" | "offer";
 type Props = {};
@@ -39,6 +40,8 @@ const trendOptions = [
 
 const Collections = (props: Props) => {
   const router = useRouter();
+  const [page, setPage] = useState(1);
+
   const [authFilter, setAuthFilter] = useState<string | undefined>();
   const [priceRange, setPriceRange] = useState<{
     min?: number;
@@ -69,6 +72,7 @@ const Collections = (props: Props) => {
     params.set("category", category);
     router.push(`/collections?${params.toString()}`);
     setFilter(category);
+    setPage(1)
   };
 
   useEffect(() => {
@@ -101,7 +105,9 @@ const Collections = (props: Props) => {
     apiType,
     authFilter,
     priceRange.min,
-    priceRange.max)
+    priceRange.max,
+    page)
+  const pagination = ProductData?.pagination
 
   return (
     <div className="max-w-screen-2xl mx-auto py-16 w-[90%]">
@@ -135,7 +141,7 @@ const Collections = (props: Props) => {
               <ListingSkeleton />
               <ListingSkeleton />
               <ListingSkeleton />
-              </>
+            </>
           )
             : ProductData?.data?.length === 0 ? (
               <div className="col-span-full flex items-center justify-center text-center py-10">
@@ -145,6 +151,14 @@ const Collections = (props: Props) => {
               <CollectionCard key={idx} watch={watch} />
             ))}
         </div>
+        {!isLoading && ProductData?.data?.length !== 0 && (
+
+          <Pagination
+            page={page}
+            pagination={pagination}
+            setPage={setPage}
+          />
+        )}
       </div>
     </div>
   );

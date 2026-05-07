@@ -15,11 +15,11 @@ export const useAddProductToFavorite = (id: string) =>
         },
     });
 
-export const useGetFavoriteProducts = () => {
+export const useGetFavoriteProducts = (page: number) => {
     return useQuery<any>({
-        queryKey: ["fav-list"],
+        queryKey: ["fav-list", page],
         queryFn: async () => {
-            const res = await apiClient.get(`/favorites`);
+            const res = await apiClient.get(`/favorites?page=${page}`);
             return res.data;
         },
     });
