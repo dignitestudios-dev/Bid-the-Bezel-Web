@@ -7,9 +7,13 @@ export const watchDetailSchema = z.object({
         .max(50, "Watch brand must be at most 50 characters"),
 
     modelReference: z
-        .string()
-        .min(2, "Model reference is required")
-        .max(50, "Model reference must be at most 50 characters"),
+       .string()
+  .min(2, "Model reference is required")
+  .max(50, "Model reference must be at most 50 characters")
+  .regex(
+    /^[a-zA-Z0-9\s-]+$/,
+    "Model reference must not contain special characters"
+  ),
 
     referenceId: z
         .string()

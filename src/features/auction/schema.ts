@@ -13,7 +13,11 @@ export const auctionWatchSchema = z.object({
     modelReference: z
         .string()
         .min(2, "Model reference is required")
-        .max(50, "Model reference must be at most 50 characters"),
+        .max(50, "Model reference must be at most 50 characters")
+        .regex(
+            /^[a-zA-Z0-9\s-]+$/,
+            "Model reference must not contain special characters"
+        ),
 
     referenceId: z
         .string()
@@ -23,9 +27,9 @@ export const auctionWatchSchema = z.object({
         .coerce.number()
         .min(5000, "Minimum auction price is $5000")
         .max(10000000, "Maximum auction price is $10,000,000")
-         .multipleOf(0.01, {
-        message: "Max 2 decimal places allowed",
-      }),
+        .multipleOf(0.01, {
+            message: "Max 2 decimal places allowed",
+        }),
 
     contents: z
         .string()

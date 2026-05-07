@@ -86,17 +86,17 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
   const watchedAmount = watch("amount");
 
-const now = useNow();
-const timeLeft = React.useMemo(() => {
-  return getTimeLeft(auction?.endsAt, now);
-}, [auction?.endsAt, now]);
+  const now = useNow();
+  const timeLeft = React.useMemo(() => {
+    return getTimeLeft(auction?.endsAt, now);
+  }, [auction?.endsAt, now]);
 
+  const isEnded = bidsData.data.auctionStatus === "ended";
+  const timeEnded = timeLeft === "0D 0H 0M";
+  const isPending = timeEnded && !isEnded;
 
-
-  const isEnded = timeLeft === "Ended";
-
-  const displayTime = isEnded ? "0D 0H 0M" : timeLeft;
-  const iconColor = isEnded ? "#FF0000" : "#14A752";
+  const displayTime = isEnded || isPending ? "0D 0H 0M" : timeLeft;
+  const iconColor = isEnded ? "#FF0000" : isPending ? "#F59E0B" : "#14A752";
 
   /* ---------------- POPUPS ---------------- */
   const [subsPopup, setSubsPopup] = React.useState(false);
@@ -153,7 +153,7 @@ const timeLeft = React.useMemo(() => {
         <div className="flex justify-between mb-4 items-center">
           <h3 className="font-semibold">Highest Bid</h3>
           <h1 className="text-2xl font-semibold">
-            {bidsData?.data?.[0]?.product?.effectivePrice > 0 ? `${formatPrice(bidsData?.data[0]?.product?.effectivePrice)}` : "$00.00"}
+            {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
           </h1>
         </div>
 
@@ -171,7 +171,7 @@ const timeLeft = React.useMemo(() => {
                 {currentBidder.userName}
               </h1>
               <h5 className="text-xs ">Bid {" "}
-                {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>
@@ -182,7 +182,17 @@ const timeLeft = React.useMemo(() => {
         )}
       </div>
 
-      {!isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
+      {isPending ? (
+        <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
+          <div className="flex items-center gap-2 text-amber-500">
+            <Clock3 size={20} color="#F59E0B" />
+            <h4 className="font-semibold text-base">Decision Pending</h4>
+          </div>
+          <p className="text-sm text-center text-muted-foreground">
+            The auction has ended. Final results are being processed, please check back shortly.
+          </p>
+        </div>
+      ) : !isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
         isEnded ? (
           <div className={cn(currentBidder ? "px-6 py-6 border-t text-center" : "")}>
             {isWinner && currentBidder ? (

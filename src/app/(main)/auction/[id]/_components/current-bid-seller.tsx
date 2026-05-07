@@ -25,18 +25,22 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
 
   const auction = product?.auction;
 
-  const currentBidder = bidsData?.data?.[0]?.currentBidder;
+  const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
 
   const now = useNow();
   const timeLeft = React.useMemo(() => {
     return getTimeLeft(auction?.endsAt, now);
   }, [auction?.endsAt, now]);
 
-  const isEnded = timeLeft === "Ended";
-  const hasBidder = !!auction?.currentBidder;
+  const isEnded = bidsData.data.auctionStatus === "ended";
+  const timeEnded = timeLeft === "0D 0H 0M";
+  const isPending = timeEnded && !isEnded;
+  const hasBidder = bidsData?.data?.bids?.length > 0;
 
-  const displayTime = isEnded ? "0D 0H 0M" : timeLeft;
-  const iconColor = isEnded ? "#FF0000" : "#14A752";
+  const displayTime = isEnded || isPending ? "0D 0H 0M" : timeLeft;
+  const iconColor = isEnded ? "#FF0000" : isPending ? "#F59E0B" : "#14A752";
+
+
   return (
     <div className=" border  rounded-2xl mt-4">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
@@ -53,13 +57,24 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             : "$00.0"}
         </h1>
       </div>
-      {isEnded && product.status !== "deleted" ? (
+
+      {isPending ? (
+        <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
+          <div className="flex items-center gap-2 text-amber-500">
+            <Clock3 size={20} color="#F59E0B" />
+            <h4 className="font-semibold text-base">Decision Pending</h4>
+          </div>
+          <p className="text-sm text-center text-muted-foreground">
+            The auction has ended. Final results are being processed, please check back shortly.
+          </p>
+        </div>
+      ) : isEnded && product.status !== "deleted" ? (
         hasBidder ? (
           <>
             <div className="flex gap-2 px-4 pb-2 items-start">
-              {currentBidder?.profilePicture?.location ? (
+              {bidsData?.data?.bids?.[0]?.currentBidder?.profilePicture?.location ? (
                 <Image
-                  src={currentBidder.profilePicture.location}
+                  src={bidsData.data.bids?.[0].currentBidder.profilePicture.location}
                   alt="dp"
                   className="rounded-full w-[70px] h-[70px]"
                   width={60}
@@ -69,9 +84,9 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 <div className="w-[70px] h-[70px] rounded-full bg-gray-200 shrink-0" />
               )}
               <div className="my-2">
-                <h1 className="font-semibold mb-1">{currentBidder?.userName}</h1>
+                <h1 className="font-semibold mb-1">{bidsData?.data?.bids?.[0]?.currentBidder?.userName}</h1>
                 <h5 className="text-xs">Bid {" "}
-                  {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                  {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
                 </h5>
               </div>
             </div>

@@ -13,8 +13,8 @@ import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import BankDetailForm from "./BankDetailForm";
-import PersonalDetailForm from "./PersonalDetailForm";
+import BankDetailForm from "./bank-detail-form";
+import PersonalDetailForm from "./personal-detail-form";
 import { useMe } from "@/features/auth/hooks";
 import { useGetCard } from "@/features/billing/hook";
 import { loadStripe } from "@stripe/stripe-js";

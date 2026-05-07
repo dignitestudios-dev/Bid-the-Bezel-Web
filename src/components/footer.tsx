@@ -1,4 +1,5 @@
 "use client";
+import { useMe } from "@/features/auth/hooks";
 import { ArrowRight, Facebook, Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,7 +8,7 @@ import React from "react";
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const copyright = `Copyright © ${currentYear} Bidthebezel | All Rights Reserved`;
-
+const { data: user, isLoading } = useMe();
   return (
     <footer className="bg-(--primary) text-white">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 lg:p-14">
@@ -32,8 +33,9 @@ const Footer = () => {
             <h1 className="text-[#0D1B2A] text-3xl sm:text-5xl lg:text-6xl font-bold text-center">
               Ready to Sell <br /> your watch?
             </h1>
+{!isLoading && (
 
-            <Link href={"/seller/plans"} className="cursor-pointer relative z-50">
+       <Link href={user ? "/seller/plans" : "?authstep=login"} className="cursor-pointer! relative z-50">
               <button className="flex items-center gap-2 bg-[#0D1B2A0D] border border-gray-300 rounded-full px-1 pl-2 py-1 hover:shadow-md transition">
                 <span className="text-gray-700 font-medium">
                   Start Selling
@@ -43,6 +45,8 @@ const Footer = () => {
                 </span>
               </button>
             </Link>
+)}
+       
           </div>
 
           {/* MAIN FOOTER CONTENT */}

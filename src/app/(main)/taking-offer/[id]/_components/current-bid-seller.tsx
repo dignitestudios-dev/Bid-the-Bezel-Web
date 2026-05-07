@@ -21,7 +21,6 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
  
   const [confirmBid, setConfirmBid] = useState(false);
 
-  const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
 
   const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
   const isSold = product?.status === "sold";

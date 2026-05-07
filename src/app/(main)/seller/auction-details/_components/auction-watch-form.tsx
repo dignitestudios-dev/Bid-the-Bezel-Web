@@ -36,7 +36,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
             watchBrand: "",
             modelReference: "",
             referenceId: referenceId,
-            price: "",
+            price: 5000,
             contents: "",
             photos: [],
         },
