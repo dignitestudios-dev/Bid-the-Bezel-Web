@@ -26,6 +26,7 @@ const BiddingDetail = ({ product }: Props) => {
 
   const noBids = !bidsLoading && (bidsData?.data?.bids?.length ?? 0) === 0;
 
+  
   if (noBids) {
     queryClient.invalidateQueries({ queryKey: ["get-listing-detail", product?._id] });
   }
