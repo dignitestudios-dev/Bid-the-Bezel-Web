@@ -16,14 +16,14 @@ export function createSocket({ url = DEFAULT_URL, token } = {}) {
         reconnectionDelayMax: 5000,
         timeout: 20000,
         // Provide token in several places to maximize compatibility with different server setups
-        auth: { token: `Bearer ${authToken}` },
-        query: { token: `Bearer ${authToken}` },
+        auth: { token: `${authToken}` },
+        query: { token: `${authToken}` },
         transportOptions: {
             polling: {
                 extraHeaders: authToken
                     ? {
-                        token: `Bearer ${authToken}`,
-                        authorization: `Bearer ${authToken}`,
+                        token: ` ${authToken}`,
+                        authorization: ` ${authToken}`,
                     }
                     : {},
             },
@@ -36,6 +36,7 @@ export function createSocket({ url = DEFAULT_URL, token } = {}) {
         console.log("Socket connecting");
         socket.connect()
     };
+
     const disconnect = () => socket.disconnect();
 
     // Safe emit wrapper

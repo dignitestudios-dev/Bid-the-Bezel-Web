@@ -45,7 +45,7 @@ export const useFcmNotification = () => {
         });
 
         if (token) {
-          console.log("FCM Token:", token);
+          ;
           // Send token to backend
           updateFcmToken(token as any);
         }
