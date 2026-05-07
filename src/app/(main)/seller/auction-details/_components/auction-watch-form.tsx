@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AuctionWatchPayload, auctionWatchSchema } from "@/features/auction/schema";
 import { useAddAuctionProduct } from "@/features/auction/hook";
 import z from "zod";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 type Props = {
     onNext: () => void;
@@ -39,10 +41,13 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
             price: 5000,
             contents: "",
             photos: [],
+            isReserved: false,
+            reservePrice: undefined,
         },
     });
 
     const selectedDays = watch("auctionDays");
+    const isReserved = watch("isReserved");
 
     const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -171,27 +176,28 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
                     </div>
                 </div>
 
-                <div className="mb-4">
-                    <FloatingInput
-                        id="price"
-                        label="Price"
-                        type="number"
-                         step="0.01"
-                        maxLength={5000}
-                        {...register("price")}
-                    // error={errors.price?.message}
-                    />
-                    {errors.price?.message ? (
-                        <p className="mt-1 text-sm text-red-500">
-                            {errors.price.message}
-                        </p>
-                    ) : (
-                        <p className="mt-1 text-sm text-[#0D0D0D] flex gap-2 items-center">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.3335 11.333H8.66683V7.33301H7.3335V11.333ZM8.00016 5.99967C8.18905 5.99967 8.3475 5.93567 8.4755 5.80767C8.6035 5.67967 8.66727 5.52145 8.66683 5.33301C8.66639 5.14456 8.60239 4.98634 8.47483 4.85834C8.34727 4.73034 8.18905 4.66634 8.00016 4.66634C7.81127 4.66634 7.65305 4.73034 7.5255 4.85834C7.39794 4.98634 7.33394 5.14456 7.3335 5.33301C7.33305 5.52145 7.39705 5.6799 7.5255 5.80834C7.65394 5.93679 7.81216 6.00056 8.00016 5.99967ZM8.00016 14.6663C7.07794 14.6663 6.21128 14.4912 5.40016 14.141C4.58905 13.7908 3.8835 13.3159 3.2835 12.7163C2.6835 12.1168 2.20861 11.4112 1.85883 10.5997C1.50905 9.78812 1.33394 8.92145 1.3335 7.99967C1.33305 7.0779 1.50816 6.21123 1.85883 5.39967C2.2095 4.58812 2.68439 3.88256 3.2835 3.28301C3.88261 2.68345 4.58816 2.20856 5.40016 1.85834C6.21216 1.50812 7.07883 1.33301 8.00016 1.33301C8.9215 1.33301 9.78816 1.50812 10.6002 1.85834C11.4122 2.20856 12.1177 2.68345 12.7168 3.28301C13.3159 3.88256 13.7911 4.58812 14.1422 5.39967C14.4933 6.21123 14.6682 7.0779 14.6668 7.99967C14.6655 8.92145 14.4904 9.78812 14.1415 10.5997C13.7926 11.4112 13.3177 12.1168 12.7168 12.7163C12.1159 13.3159 11.4104 13.791 10.6002 14.1417C9.78994 14.4923 8.92327 14.6672 8.00016 14.6663ZM8.00016 13.333C9.48905 13.333 10.7502 12.8163 11.7835 11.783C12.8168 10.7497 13.3335 9.48856 13.3335 7.99967C13.3335 6.51079 12.8168 5.24967 11.7835 4.21634C10.7502 3.18301 9.48905 2.66634 8.00016 2.66634C6.51127 2.66634 5.25016 3.18301 4.21683 4.21634C3.1835 5.24967 2.66683 6.51079 2.66683 7.99967C2.66683 9.48856 3.1835 10.7497 4.21683 11.783C5.25016 12.8163 6.51127 13.333 8.00016 13.333Z" fill="#0D0D0D" />
-                            </svg>
-                            Minimum auction price is $5000
-                        </p>
+                {/* Reserve Price Section */}
+                <div className="mb-4 space-y-3">
+                    <div className="flex items-center space-x-2">
+                        <Checkbox 
+                            id="isReserved" 
+                            checked={isReserved}
+                            onCheckedChange={(checked) => setValue("isReserved", checked as boolean, { shouldValidate: true })}
+                        />
+                        <Label htmlFor="isReserved" className="text-sm font-medium cursor-pointer">
+                            Set Reserve Price
+                        </Label>
+                    </div>
+
+                    {isReserved && (
+                        <FloatingInput
+                            id="reservePrice"
+                            label="Reserve Price ($)"
+                            type="number"
+                            step="0.01"
+                            {...register("reservePrice")}
+                            error={errors.reservePrice?.message}
+                        />
                     )}
                 </div>
 

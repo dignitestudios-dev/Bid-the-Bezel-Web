@@ -1,11 +1,11 @@
 import { io } from "socket.io-client";
-import Cookies from "js-cookie";
+import { getToken } from "@/lib/cookies";
 
 
 const DEFAULT_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export function createSocket({ url = DEFAULT_URL, token } = {}) {
-    const authToken = Cookies.get("token");
+    const authToken = getToken();
 
     const socket = io(url, {
         autoConnect: false,

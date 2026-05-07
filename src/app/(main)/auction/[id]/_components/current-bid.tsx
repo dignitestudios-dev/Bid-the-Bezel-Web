@@ -149,6 +149,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         {displayTime} left
       </h1>
 
+
       <div className="p-6 border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
           <h3 className="font-semibold">Highest Bid</h3>
@@ -175,7 +176,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               </h5>
             </div>
           </div>
-        ) : (
+      ) : (
           <div className="p-8 flex items-center justify-center capitalize font-semibold">
             <h4>no bid yet</h4>
           </div>
