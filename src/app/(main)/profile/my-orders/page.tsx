@@ -1,14 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import MyOrdersItems from "../_components/my-orders-items";
 import MyActiveListing from "../_components/my-active-listing";
 import MyDraftListing from "../_components/my-draft-listing";
 import MyDeletedListing from "../_components/my-deleted-listing";
+import { useSearchParams } from "next/navigation";
 
 
-const MyOrders = () => {
-  const [selectedTab, setSelectedTab] = useState<"orders" | "listings" | "draft" | "rejected" | "deleted">(
-    "orders"
+function MyOrdersContent() {
+
+  const searchParams = useSearchParams();
+
+  const tabParam = searchParams.get("tab");
+  const draftParam = searchParams.get("isDraft");
+
+
+  const [selectedTab, setSelectedTab] = useState<
+    "orders" | "listings" | "draft" | "deleted"
+  >(
+    tabParam === "listings" || tabParam === "sold"
+      ? "listings"
+      : draftParam === "true"
+        ? "draft"
+        : "orders"
   );
   const [isFulfilled, setIsFulfilled] = useState(true);
 
@@ -66,10 +80,12 @@ const MyOrders = () => {
 
       <div className="w-full pt-6">
         {selectedTab === "draft" && (
-          <MyDraftListing selectedTab={selectedTab} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
+          <MyDraftListing draftParam={draftParam} selectedTab={selectedTab} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
         )}
         {selectedTab === "listings" && (
-          <MyActiveListing selectedTab={selectedTab} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
+          <MyActiveListing
+            fulfilledParam={tabParam === "sold" ? "false" : undefined}
+            selectedTab={selectedTab} isFulfilled={isFulfilled} setIsFulfilled={setIsFulfilled} />
         )}
         {selectedTab === "deleted" && (
           <MyDeletedListing
@@ -83,6 +99,14 @@ const MyOrders = () => {
         )}
       </div>
     </div>
+  );
+}
+
+const MyOrders = () => {
+  return (
+    <Suspense fallback={<div className="card p-6">Loading...</div>}>
+      <MyOrdersContent />
+    </Suspense>
   );
 };
 

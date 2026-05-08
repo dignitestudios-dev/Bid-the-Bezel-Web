@@ -1,44 +1,67 @@
-import React from 'react'
-import { DropdownMenuItem } from './dropdown-menu'
-import Image from 'next/image'
+import React from "react";
+import { DropdownMenuItem } from "./dropdown-menu";
+import Image from "next/image";
+import { formatTime } from "@/lib/utils/date.utils";
 
 type Props = {
-    handleGoToChats: () => void;
-}
+  handleGoToChats: () => void;
+  chat: any;
+};
 
-const MessageTab = ({handleGoToChats}: Props) => {
+const MessageTab = ({ handleGoToChats, chat }: Props) => {
+  const participants = chat?.participants || [];
+
   return (
-   <DropdownMenuItem
-                  
-                    className="cursor-pointer flex gap-2 p-4 rounded-lg group hover:bg-primary! transition-all"
-                    onClick={handleGoToChats}
-                  >
-                    <div className="h-9 w-9 rounded-full relative overflow-hidden">
-                      <Image
-                        src="/images/user.jpg"
-                        alt="User"
-                        width={36}
-                        height={36}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+    <DropdownMenuItem
+      className="cursor-pointer flex items-center gap-3 p-3 rounded-lg transition-all group"
+      onClick={handleGoToChats}
+    >
 
-                    <div className="flex-1">
-                      <p className="group-hover:text-white font-semibold">
-                        Iamactive & Admin
-                      </p>
-                      <div className="mt-1 flex items-center justify-between gap-5">
-                        <p className="group-hover:text-gray-100 flex-1 text-gray-700 text-sm truncate">
-                          Lectus neque eget ipsum mi tempus sed.
-                        </p>
+      <div className="flex -space-x-2 flex-shrink-0">
+        {participants.slice(0, 3).map((item: any) => (
+          <div
+            key={item?._id}
+            className="h-10 w-10 rounded-full overflow-hidden border-2 border-white"
+          >
+            <Image
+              src={
+                item?.user?.profilePicture?.location ||
+                "/default-avatar.png"
+              }
+              alt="User"
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
 
-                        <p className="group-hover:text-white text-black font-medium text-sm">
-                          1 min
-                        </p>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-  )
-}
 
-export default MessageTab
+      <div className="flex-1 min-w-0">
+
+        <p className="font-semibold text-gray-900 truncate">
+          {participants.length > 2
+            ? `${participants[0]?.user?.userName}, ${participants[1]?.user?.userName} +${participants.length - 2}`
+            : participants
+              .map((p: any) => p?.user?.userName)
+              .join(", ")}
+        </p>
+
+
+        <p className="text-sm text-gray-600 truncate">
+          {chat?.lastMessage?.text || "No messages yet"}
+        </p>
+      </div>
+
+
+      <div className="text-xs text-gray-500 whitespace-nowrap">
+        {chat?.lastMessage?.sentAt
+          ? formatTime(chat.lastMessage.sentAt)
+          : ""}
+      </div>
+    </DropdownMenuItem>
+  );
+};
+
+export default MessageTab;

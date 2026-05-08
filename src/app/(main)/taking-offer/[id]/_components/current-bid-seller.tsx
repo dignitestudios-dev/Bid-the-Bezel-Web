@@ -8,7 +8,7 @@ import ConfirmCancel from "./confirm-cancel";
 import RepostAuctionDialog from "./repost-auction-dialog";
 import ConfirmBidDialog from "./confirm-bid-dialog";
 import { Button } from "@/components/ui/button";
-
+import {formatPrice} from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -21,9 +21,8 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
  
   const [confirmBid, setConfirmBid] = useState(false);
 
-  const [moveToTakingOffer, setMoveToTakingOffer] = useState(false);
 
-  const currentBidder = bidsData?.data?.[0]?.currentBidder;
+  const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
   const isSold = product?.status === "sold";
   const hasBidder = !!currentBidder;
   return (
@@ -38,7 +37,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         </h3>
         <h1 className="text-2xl font-semibold">
           {product?.auction?.currentBidAmount > 0
-            ? `$${product?.auction?.currentBidAmount.toFixed(2)}`
+            ? `${formatPrice(product?.auction?.currentBidAmount)}`
             : "$00.0"}
         </h1>
       </div>
@@ -63,7 +62,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             <div className="my-2">
               <h1 className="font-semibold mb-1">{currentBidder?.userName}</h1>
               <h5 className="text-xs">Bid {" "}
-                {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>
@@ -82,7 +81,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 </Link>
               </div>
             )
-          ) : bidsData.data[0].status === "pending" && (
+          ) : bidsData.data.bids[0].status === "pending" && (
             <div className="flex flex-col gap-2 p-5 w-full border-t space-y-2">
             
               <div className="flex items-center gap-2">
@@ -107,9 +106,9 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
       <ConfirmBidDialog
         open={confirmBid}
         setOpen={setConfirmBid}
-        productId={bidsData?.data[0]?._id}
+        productId={bidsData?.data?.bids?.[0]?._id}
         bidder={currentBidder}
-        amount={bidsData?.data?.[0]?.amount ?? 0}
+        amount={bidsData?.data?.bids?.[0]?.amount ?? 0}
       />
       <RepostAuctionDialog
         open={repostAuction}

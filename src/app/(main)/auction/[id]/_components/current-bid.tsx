@@ -18,7 +18,7 @@ import {
 import { useMe } from "@/features/auth/hooks";
 import { useCancelBid, usePlaceBid } from "@/features/bidding/hooks";
 import { showSuccess } from "@/lib/toast";
-
+import {formatPrice} from "@/lib/helper";
 import AuthSidebar from "@/components/auth-sidebar";
 import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
@@ -67,10 +67,10 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const auction = product?.auction;
 
   const currentBid = useMemo(() => {
-    return bidsData?.data?.[0]?.amount ?? 0;
+    return bidsData?.data?.bids?.[0]?.amount ?? 0;
   }, [bidsData]);
 
-  const currentBidder = bidsData?.data?.[0]?.currentBidder;
+  const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
   const isWinner = product.auction.currentBidder === user?.data?._id;
   const {
     register,
@@ -86,17 +86,17 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
   const watchedAmount = watch("amount");
 
-const now = useNow();
-const timeLeft = React.useMemo(() => {
-  return getTimeLeft(auction?.endsAt, now);
-}, [auction?.endsAt, now]);
+  const now = useNow();
+  const timeLeft = React.useMemo(() => {
+    return getTimeLeft(auction?.endsAt, now);
+  }, [auction?.endsAt, now]);
 
+  const isEnded = bidsData.data.auctionStatus === "ended";
+  const timeEnded = timeLeft === "0D 0H 0M";
+  const isPending = timeEnded && !isEnded;
 
-
-  const isEnded = timeLeft === "Ended";
-
-  const displayTime = isEnded ? "0D 0H 0M" : timeLeft;
-  const iconColor = isEnded ? "#FF0000" : "#14A752";
+  const displayTime = isEnded || isPending ? "0D 0H 0M" : timeLeft;
+  const iconColor = isEnded ? "#FF0000" : isPending ? "#F59E0B" : "#14A752";
 
   /* ---------------- POPUPS ---------------- */
   const [subsPopup, setSubsPopup] = React.useState(false);
@@ -149,11 +149,12 @@ const timeLeft = React.useMemo(() => {
         {displayTime} left
       </h1>
 
+
       <div className="p-6 border-[#E3E3E3]">
         <div className="flex justify-between mb-4 items-center">
           <h3 className="font-semibold">Highest Bid</h3>
           <h1 className="text-2xl font-semibold">
-            {bidsData?.data?.[0]?.product?.effectivePrice > 0 ? `$${bidsData?.data[0]?.product?.effectivePrice.toFixed(2)}` : "$00.00"}
+            {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
           </h1>
         </div>
 
@@ -171,21 +172,31 @@ const timeLeft = React.useMemo(() => {
                 {currentBidder.userName}
               </h1>
               <h5 className="text-xs ">Bid {" "}
-                {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+                {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>
-        ) : (
+      ) : (
           <div className="p-8 flex items-center justify-center capitalize font-semibold">
             <h4>no bid yet</h4>
           </div>
         )}
       </div>
 
-      {!isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
+      {isPending ? (
+        <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
+          <div className="flex items-center gap-2 text-amber-500">
+            <Clock3 size={20} color="#F59E0B" />
+            <h4 className="font-semibold text-base">Decision Pending</h4>
+          </div>
+          <p className="text-sm text-center text-muted-foreground">
+            The auction has ended. Final results are being processed, please check back shortly.
+          </p>
+        </div>
+      ) : !isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
         isEnded ? (
           <div className={cn(currentBidder ? "px-6 py-6 border-t text-center" : "")}>
-            {isWinner ? (
+            {isWinner && currentBidder ? (
               <>
                 <h1 className="text-xl font-semibold text-green-600">
                   You won the bid 🎉
@@ -234,7 +245,7 @@ const timeLeft = React.useMemo(() => {
               <div>
                 <div className="text-center">
                   <h1 className="text-2xl font-semibold">
-                    ${watchedAmount || 0}
+                    {formatPrice(watchedAmount || 0)}
                   </h1>
                   <h3 className="text-xs">Your Bid</h3>
                 </div>
@@ -254,11 +265,17 @@ const timeLeft = React.useMemo(() => {
             >
               <div className="w-full">
                 <Input
-
                   step={0.01}
                   placeholder="Enter your amount"
                   className={cn("w-full", errors.amount && "border-red-500")}
                   type="number"
+                  onKeyDown={(e) => {
+                    const val = e.currentTarget.value;
+                    const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", ".", "-"];
+                    if (allowed.includes(e.key)) return;
+                    const digits = val.replace(".", "").replace("-", "");
+                    if (digits.length >= 7) e.preventDefault();
+                  }}
                   {...register("amount", { valueAsNumber: true })}
                 />
               </div>

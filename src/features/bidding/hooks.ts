@@ -5,13 +5,14 @@ import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[
 import { BillingPaylod } from "../billing/schema";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
-
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useGetProductBids = (
   id: string,
   page: number = 1,
   limit: number = 10
 ) => {
+  const queryClient = useQueryClient();
   return useQuery<ProductBidsResponse>({
     queryKey: ["product-bids", id, page, limit],
     queryFn: async () => {
@@ -27,42 +28,44 @@ export const useGetProductBids = (
 };
 
 export const useCancelBid = () =>
-    useApiMutation<any, { id: string }>({
-        endpoint: ({ id }) => `/products/${id}/bid`,
-        method: "DELETE",
-        invalidateKeys: [
-            "get-profile",
-            "get-cards",
-            "shipping-result",
-            "get-my-listing",
-            "get-listing-detail",
-            "product-bids"
-        ],
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `/products/${id}/bid`,
+    method: "DELETE",
+    invalidateKeys: [
+      "get-profile",
+      "get-cards",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+      "product-bids",
+      "get-notifications"
+    ],
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 
 export const useConfirmBid = () =>
-    useApiMutation<any, { id: string }>({
-        endpoint: ({ id }) => `products/bids/${id}/accept`,
-        method: "POST",
-        invalidateKeys: [
-            "get-profile",
-            "get-cards",
-            "shipping-result",
-            "get-my-listing",
-            "get-listing-detail",
-            "product-bids",
-        ],
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `products/bids/${id}/accept`,
+    method: "POST",
+    invalidateKeys: [
+      "get-profile",
+      "get-cards",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+      "product-bids",
+      "get-notifications"
+    ],
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 
 export const usePlaceBid = () => {
   return useApiMutation<
@@ -76,7 +79,7 @@ export const usePlaceBid = () => {
       amount: variables.amount,
     }),
 
-    invalidateKeys: ["product-bids" , "get-listing-detail"],
+    invalidateKeys: ["product-bids", "get-listing-detail", "get-notifications"],
     mutationOptions: {
       onSuccess: () => {
         // showSuccess("Bid placed successfully!");

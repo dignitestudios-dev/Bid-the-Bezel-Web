@@ -74,9 +74,10 @@ const Profile = () => {
     setValue,
     watch,
     reset,
-    formState: { errors },
+    formState: { errors , isValid },
   } = useForm<UpdateProfilePayload>({
     resolver: zodResolver(updateProfileSchema),
+      mode: "onChange",
     defaultValues: {
       userName: "",
       profilePicture: null,
@@ -301,7 +302,7 @@ const Profile = () => {
                   error={errors.userName?.message}
                 />
 
-                {userName &&
+                {userName && isValid &&
                   userName.length >= 3 &&
                   userName !== userData?.data?.userName && (
                     <div className="pt-1">

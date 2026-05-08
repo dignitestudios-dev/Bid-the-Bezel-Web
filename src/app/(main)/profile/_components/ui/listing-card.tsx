@@ -8,7 +8,7 @@ import { AlertUnauthenticatedDialog } from "./alert-unauthenticated-dialog";
 import { AlertDeleteDialog } from "./alert-delete-dialog";
 import Link from "next/link";
 import { UpdateProductDialog } from "./update-product-dialog";
-
+import {formatPrice} from "@/lib/helper";
 type Props = {
   link?: string;
   image: string;
@@ -53,7 +53,7 @@ let pathname =
 
   return (
     <div className="card p-0 relative overflow-hidden">
-      {status == "pending" || status === "active" || status === "sold" ? (
+     
         <Link href={pathname} className="p-3 w-full flex items-start gap-3">
           <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
             <Image
@@ -67,30 +67,10 @@ let pathname =
           </div>
 
           <div className="flex-1">
-            <p className="text-lg font-semibold text-end">${price}</p>
+            <p className="text-lg font-semibold text-end">{formatPrice(Number(price))}</p>
             <p className="text-lg font-medium">{model}</p>
           </div>
         </Link>
-      ) : (
-        <div className="p-3 w-full flex items-start gap-3">
-          <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
-            <Image
-              src={image}
-              alt={title}
-              width={96}
-              height={96}
-              unoptimized
-              className="object-contain w-full h-full"
-            />
-          </div>
-
-          <div className="flex-1">
-            <p className="text-lg font-semibold text-end">${price}</p>
-            <p className="text-lg font-medium">{model}</p>
-          </div>
-        </div>
-      )}
-
       {status === "draft" && (
         <div className="p-4 border-t border-dashed  flex flex-col sm:flex-row gap-3">
           <Button

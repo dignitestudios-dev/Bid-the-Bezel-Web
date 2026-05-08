@@ -35,13 +35,15 @@ export const updateProductSchema = z.object({
     .trim()
     .min(1, "Description is required")
     .min(10, "Description must be at least 10 characters")
-    .max(200, "Description must be at most 200 characters"),
+    .max(1000, "Description must be at most 1000 characters"),
   model: z
-    .string()
-    .trim()
-    .min(1, "Model is required")
-    .min(6, "Model must be at least 6 characters")
-    .max(50, "Model must be at most 50 characters"),
+      .string()
+        .min(2, "Model reference is required")
+        .max(50, "Model reference must be at most 50 characters")
+        .regex(
+            /^[a-zA-Z0-9\s-]+$/,
+            "Model reference must not contain special characters"
+        ),
 });
 
 export type UpdateProductFormValues = z.infer<typeof updateProductSchema>;
@@ -128,12 +130,12 @@ export function UpdateProductDialog({
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="jacobs_and_co">Jacobs & Co</SelectItem>
-                <SelectItem value="richard_mille">Richard Mille</SelectItem>
-                <SelectItem value="bovet">Bovet</SelectItem>
-                <SelectItem value="greubel_forsey">Greubel Forsey</SelectItem>
-                <SelectItem value="h_moses_cie">H Moses & Cie</SelectItem>
-                <SelectItem value="louis_monne">Louis Monne</SelectItem>
+                <SelectItem value="Jacobs & Co">Jacobs & Co</SelectItem>
+                <SelectItem value="Richard Mille">Richard Mille</SelectItem>
+                <SelectItem value="Bovet">Bovet</SelectItem>
+                <SelectItem value="Greubel Forsey">Greubel Forsey</SelectItem>
+                <SelectItem value="H Moses & Cie">H Moses & Cie</SelectItem>
+                <SelectItem value="Louis Monne">Louis Monne</SelectItem>
               </SelectContent>
             </Select>
             {errors.brandName && (
@@ -155,7 +157,7 @@ export function UpdateProductDialog({
               placeholder="Enter description"
               {...register("description")}
               rows={7}
-              maxLength={200}
+              maxLength={1000}
               className="w-full break-all whitespace-pre-wrap"
             />
             {errors.description && (

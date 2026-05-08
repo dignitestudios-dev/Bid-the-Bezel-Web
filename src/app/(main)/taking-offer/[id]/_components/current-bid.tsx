@@ -18,7 +18,7 @@ import {
 import { useMe } from "@/features/auth/hooks";
 import { useCancelBid, usePlaceBid } from "@/features/bidding/hooks";
 import { showSuccess } from "@/lib/toast";
-
+import {formatPrice} from "@/lib/helper";
 import AuthSidebar from "@/components/auth-sidebar";
 import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
@@ -67,11 +67,11 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const auction = product?.auction;
 
   const currentBid = useMemo(() => {
-    return bidsData?.data?.[0]?.amount ?? 0;
+    return bidsData?.data?.bids?.[0]?.amount ?? 0;
   }, [bidsData]);
 
-  const currentBidder = bidsData?.data?.[0]?.currentBidder;
-  const isAccepted = bidsData?.data?.[0]?.status === "accepted";
+  const currentBidder = bidsData?.data?.bids?.[0]?.currentBidder;
+  const isAccepted = bidsData?.data?.bids?.[0]?.status === "accepted";
   const isWinner = isAccepted && currentBidder && product.auction.currentBidder === user?.data?._id;
   const {
     register,
@@ -139,7 +139,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         onSuccess: (res) => {
           showSuccess(res?.data?.message || "Offer placed successfully!");
           setConfirmOffer(false);
-          // reset({amount: 0});
+          reset();
         },
         onError: (err) => {
           console.error(err);
@@ -160,7 +160,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         <div className="flex justify-between mb-4 items-center">
           <h3 className="font-semibold">Highest Offer</h3>
           <h1 className="text-2xl font-semibold">
-            {currentBid > 0 ? `$${bidsData?.data?.[0]?.product?.effectivePrice.toFixed(2)}` : "$00.00"}
+            {currentBid > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
           </h1>
         </div>
 
@@ -179,13 +179,13 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             )}
             <div className="my-2">
               <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
-              <h5 className="text-xs">Bid {bidsData?.data?.[0]?.bidPlacedAt ? timeAgo(bidsData.data[0].bidPlacedAt) : 'Top offer'}
+              <h5 className="text-xs">Bid {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
               </h5>
             </div>
           </div>
         ) : (
           <div className="p-8 flex items-center justify-center capitalize font-semibold">
-            <h4>no bid yet</h4>
+            <h4>no offer yet</h4>
           </div>
         )}
       </div>
@@ -237,6 +237,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
               <Button
                 onClick={handleIncrease}
+                disabled={placeBidMutation.isPending}
                 className="bg-[#415A77] w-full py-3"
               >
                 +200
@@ -250,6 +251,13 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               <div className="w-full">
                 <Input
                   placeholder="Enter your amount"
+                      onKeyDown={(e) => {
+                    const val = e.currentTarget.value;
+                    const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", ".", "-"];
+                    if (allowed.includes(e.key)) return;
+                    const digits = val.replace(".", "").replace("-", "");
+                    if (digits.length >= 7) e.preventDefault();
+                  }}
                   className={cn("w-full", errors.amount && "border-red-500")}
                   type="number"
                   step="0.01"

@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ListingCard from "./ui/listing-card";
 
 type ListingType = "fixed" | "auction" | "taking-offers";
@@ -18,12 +18,30 @@ type Fav = {
   image: string;
   type: ListingType;
   isReceived: boolean;
+
 };
 
 
-const MyActiveListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulfilled: boolean, setIsFulfilled: (value: boolean) => void, selectedTab: string }) => {
+const MyActiveListing = ({
+  isFulfilled,
+  fulfilledParam,
+  setIsFulfilled,
+  selectedTab,
+}: {
+  fulfilledParam?: string;
+  isFulfilled: boolean;
+  setIsFulfilled: (value: boolean) => void;
+  selectedTab: string;
+}) => {
+  
   const [status, setStatus] = useState<"active" | "sold" | "unfulfilled">("active")
   const { data, isLoading } = useGetMyListing(status);
+  useEffect(() => {
+    if (fulfilledParam === "false") {
+      setStatus("sold");
+    }
+  }, [fulfilledParam]);
+
   return (
     <div>
       <div className="bg-[#F7F7F7] p-2 rounded-xl space-x-2 w-fit">

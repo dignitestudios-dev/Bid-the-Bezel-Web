@@ -43,7 +43,8 @@ export const useGetMyListingDetail = (id: string) => {
             return res.data;
         },
         enabled: !!id,
-        refetchOnWindowFocus: false,
+        // refetchInterval: 10000,
+        refetchOnWindowFocus: true,
     });
 };
 
@@ -52,9 +53,10 @@ export const useGetListing = (
     type?: string,
     authentication?: string,
     priceStartAt?: number,
-    priceEndAt?: number) => {
+    priceEndAt?: number,
+    page?: number) => {
     return useQuery({
-        queryKey: ["get-listing", type, authentication, priceStartAt, priceEndAt],
+        queryKey: ["get-listing", type, authentication, priceStartAt, priceEndAt, page],
 
 
         queryFn: async () => {
@@ -65,6 +67,8 @@ export const useGetListing = (
             }
             if (priceStartAt !== undefined) params.priceStartAt = priceStartAt;
             if (priceEndAt !== undefined) params.priceEndAt = priceEndAt;
+            if (page !== undefined) params.page = page;
+            params.limit = 8
 
 
             const res = await apiClient.get(`/products`, {
@@ -72,7 +76,7 @@ export const useGetListing = (
             });
             return res.data;
         },
-          refetchInterval: type === "auction" ? 10000 : false,
+        refetchInterval: type === "auction" ? 10000 : false,
     });
 };
 
@@ -84,5 +88,6 @@ export const useGetAllListing = () => {
             const res = await apiClient.get(`/products/homepage`);
             return res.data;
         },
+        refetchInterval: 10000, // 10 seconds polling
     });
 };

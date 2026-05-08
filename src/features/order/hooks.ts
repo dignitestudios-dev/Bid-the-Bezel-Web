@@ -11,7 +11,7 @@ export const useCreateOrder = () =>
     useApiMutation<any, OrderPayload>({
         endpoint: `/orders`,
         method: "POST",
-        invalidateKeys: ["get-home-listing", "get-listing-detail"],
+        invalidateKeys: ["get-home-listing", "get-listing-detail", "get-notifications"],
         mutationOptions: {
             onError: (error: any) => {
                 showError(error?.response.data.message);
@@ -38,7 +38,7 @@ export const useMarkAsReceived = (id: string) =>
     useApiMutation<any, { orderId: string }>({
         endpoint: `/orders/${id}/buyer`,
         method: "PATCH",
-        invalidateKeys: ["get-orders"],
+        invalidateKeys: ["get-orders", "get-notifications"],
         mutationOptions: {
             onError: (error: any) => {
                 showError(error?.response.data.message);

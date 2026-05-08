@@ -72,16 +72,16 @@ export const getTimeLeft = (endsAt?: string | Date, now = Date.now()): string =>
 
   const diff = new Date(endsAt).getTime() - now;
 
-  if (diff <= 0) return "Ended";
+  if (diff <= 0) return "0D 0H 0M";
 
-  const days    = Math.floor(diff / 86400000);
-  const hours   = Math.floor((diff % 86400000) / 3600000);
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
   const minutes = Math.floor((diff % 3600000) / 60000);
   const seconds = Math.floor((diff % 60000) / 1000);
 
   return days > 0
     ? `${days}D ${hours}H ${minutes}M`
-    : `${hours}H ${minutes}M ${seconds}S`; // shows seconds when < 1 day
+    : `${hours}H ${minutes}M ${seconds}S`;
 };
 
 export const generateReferenceId = () => {
@@ -94,4 +94,12 @@ export const generateReferenceId = () => {
   const randomNumbers = Math.floor(1000 + Math.random() * 9000);
 
   return `${randomLetters}-${randomNumbers}`;
+};
+
+
+export const formatPrice = (value: number) => {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
 };

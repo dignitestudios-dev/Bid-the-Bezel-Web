@@ -137,6 +137,7 @@ const AddOtherCard = ({
                                     <input
                                         placeholder="Zip Code"
                                         value={zipCode}
+                                        maxLength={10}
                                         onChange={(e) => setZipCode(e.target.value)}
                                         className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
                                     />

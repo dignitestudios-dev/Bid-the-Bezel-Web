@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,25 +23,29 @@ import NotificationItem from "./icons/NotificationItem";
 import { useRouter } from "next/navigation";
 import NotificationTab from "./ui/notification-tab";
 import MessageTab from "./ui/message-tab";
+import NotificationsPanel from "./ui/notifications-panel";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useGetNotifications } from "@/features/notifications/hooks";
+import { useGetChatRooms } from "@/features/chat/hooks";
 
 const notifications = [
   {
     title: "You won a bid",
     description: "Review your bid and add shipping details",
     isShippingDetails: true,
-    isFav:false
+    isFav: false
   },
   {
     title: "Watch Authenticated",
     description: "Your watch authentication approved",
     isShippingDetails: false,
-     isFav:false
+    isFav: false
   },
   {
     title: "24 Hours remainig",
     description: "fav watch",
     isShippingDetails: false,
-     isFav:true
+    isFav: true
   },
 ];
 
@@ -50,6 +54,8 @@ const MessageNotificationMenu = () => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const { data: allChatRooms, isLoading: roomsLoading } = useGetChatRooms()
+
   const dummyArray = [1, 2];
   const tabs = [
     { title: "Message", label: "messages", icon: <Message /> },
@@ -72,18 +78,17 @@ const MessageNotificationMenu = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-[450px] max-w-full max-h-[400px] overflow-y-auto p-2 flex flex-col"
+          className="w-[450px] max-w-full p-2 flex flex-col"
           align="end"
         >
           <div className="grid grid-cols-2 gap-4 font-medium border-b">
             {tabs.map((tab) => (
               <div
                 key={tab.label}
-                className={`py-2 flex gap-1 items-center border-b-2 transition-all ${
-                  activeTab === tab.label
-                    ? "border-gray-900 text-black"
-                    : "text-gray-600 cursor-pointer border-transparent"
-                }`}
+                className={`py-2 flex gap-1 items-center border-b-2 transition-all ${activeTab === tab.label
+                  ? "border-gray-900 text-black"
+                  : "text-gray-600 cursor-pointer border-transparent"
+                  }`}
                 onClick={() =>
                   setActiveTab(tab.label as "messages" | "notifications")
                 }
@@ -96,9 +101,13 @@ const MessageNotificationMenu = () => {
           <div className="overflow-y-auto">
             {activeTab === "messages" ? (
               <div className="w-full pt-3">
-                {dummyArray.map((msg, index) => (
-                 <MessageTab key={index} handleGoToChats={handleGoToChats}  />
-                ))}
+                {roomsLoading ? (
+                  <div>Loading...</div>
+                ) : (
+                  allChatRooms?.data?.map((c: any, index: number) => (
+                    <MessageTab key={index} handleGoToChats={handleGoToChats} chat={c} />
+                  ))
+                )}
 
                 <div className="mt-2 bg-gray-200 w-full h-px" />
 
@@ -110,22 +119,13 @@ const MessageNotificationMenu = () => {
                 </DropdownMenuItem>
               </div>
             ) : (
-              <div className="w-full pt-3">
-                {notifications.map((msg, index) => (
-                  <NotificationTab
-                    key={index}
-                    title={msg.title}
-                    description={msg.description}
-                    isFav={msg.isFav}
-                    isShippingDetails={msg.isShippingDetails}
-                    handleGoToChats={handleGoToChats}
-                  />
-                ))}
-              </div>
+              <NotificationsPanel />
             )}
+
+
           </div>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu >
 
       <LogoutDialog
         open={logoutOpen}

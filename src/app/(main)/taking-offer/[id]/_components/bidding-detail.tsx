@@ -34,8 +34,8 @@ const BiddingDetail = ({ product }: Props) => {
         <CurrentBid product={product} bidsData={bidsData!} />
       )}
       <TopBids
-        topBids={bidsData?.data ?? []}
-        paginatedBids={paginatedBids?.data ?? []}
+        topBids={bidsData?.data?.bids ?? []}
+        paginatedBids={paginatedBids?.data?.bids ?? []}
         pagination={paginatedBids?.pagination}
         currentPage={currentPage}
         paginatedBidsLoading={paginatedBidsLoading}

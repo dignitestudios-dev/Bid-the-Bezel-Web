@@ -44,7 +44,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors  , isValid},
   } = useForm<CompleteProfilePayload>({
     resolver: zodResolver(completeProfileSchema),
     mode: "onChange",
@@ -188,7 +188,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
 
         <Button
           type="submit"
-          disabled={isSubmitting || isChecking}
+          disabled={isSubmitting || isChecking || !isValid}
           className="w-full rounded-full"
         >
           {isSubmitting ? "Updating Profile..." : "Next"}

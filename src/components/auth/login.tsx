@@ -28,7 +28,7 @@ const Login = ({
 }) => {
   const { mutate: loginMutate, isPending: loginPending } = useLogin();
   const { mutate: checkEmail, isPending: checkPending } = useCheckEmail();
-  const { mutate: updateFcmToken } = useUpdateFcmToken();
+  const { mutate: updateFcmToken , isPending:fcmPending  } = useUpdateFcmToken();
   const [step, setLocalStep] = useState<"email" | "login" | "register">("email");
   const [checkedEmail, setCheckedEmail] = useState("");
 
@@ -151,7 +151,7 @@ const Login = ({
             error={emailForm.formState.errors.email?.message}
             maxLength={256}
           />
-          <Button type="submit" disabled={checkPending} className="w-full rounded-full hover:bg-[#0b1d2a]">
+          <Button type="submit" disabled={checkPending || fcmPending} className="w-full rounded-full hover:bg-[#0b1d2a]">
             {checkPending ? "Checking..." : "Continue"}
           </Button>
         </form>
@@ -212,7 +212,7 @@ const Login = ({
           <button type="button" onClick={() => setLocalStep("email")} className="text-sm font-medium cursor-pointer text-gray-500">
             ← Change email
           </button>
-          <Button type="submit" disabled={loginPending} className="w-full rounded-full hover:bg-[#0b1d2a]">
+          <Button type="submit" disabled={loginPending || fcmPending} className="w-full rounded-full hover:bg-[#0b1d2a]">
             {loginPending ? "Creating Account..." : "Create Account"}
           </Button>
         </form>

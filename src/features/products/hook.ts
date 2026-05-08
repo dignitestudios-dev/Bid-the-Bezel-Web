@@ -26,7 +26,7 @@ export const useAddProduct = () =>
             });
             return formData;
         },
-        invalidateKeys: ["get-profile", "get-my-listing"],
+        invalidateKeys: ["get-profile", "get-my-listing", "get-notifications"],
         mutationOptions: {
             onSuccess: (data) => {
                 showSuccess(data?.message)
@@ -43,7 +43,7 @@ export const useUnAuthenticate = () =>
     useApiMutation<any, { id: string }>({
         endpoint: ({ id }) => `/products/${id}/unauthenticate/seller`,
         method: "POST",
-        invalidateKeys: ["get-profile", "get-cards", "shipping-result", "get-my-listing"],
+        invalidateKeys: ["get-profile", "get-cards", "shipping-result", "get-my-listing", "get-notifications"],
         mutationOptions: {
             onError: (err) => {
                 showError(err);
@@ -52,38 +52,40 @@ export const useUnAuthenticate = () =>
     });
 
 export const useMoveToTakingOffers = () =>
-  useApiMutation<any, { id: string }>({
-    endpoint: ({ id }) => `/products/${id}/taking-offers`,
-    method: "PUT",
-    invalidateKeys: [
-      "get-profile",
-      "shipping-result",
-      "get-my-listing",
-      "get-listing-detail",
-    ],
-    
-    mutationOptions: {
-        onSuccess: (data) => {
-        showSuccess(data?.message);
-      },
-      onError: (err) => {
-        showError(err);
-      },
-    },
-  });
+    useApiMutation<any, { id: string }>({
+        endpoint: ({ id }) => `/products/${id}/taking-offers`,
+        method: "PUT",
+        invalidateKeys: [
+            "get-profile",
+            "shipping-result",
+            "get-my-listing",
+            "get-listing-detail",
+            "get-notifications"
+        ],
 
- export const useRelistAuction = () =>
+        mutationOptions: {
+            onSuccess: (data) => {
+                showSuccess(data?.message);
+            },
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
+
+export const useRelistAuction = () =>
     useApiMutation<any, { id: string; days: number }>({
         endpoint: ({ id }) => `/products/${id}/relist-auction`,
         method: "POST",
         toBody: ({ days }) => ({
-          auctionDays:days,
+            auctionDays: days,
         }),
         invalidateKeys: [
             "get-profile",
             "shipping-result",
             "get-my-listing",
             "get-listing-detail",
+            "get-notifications"
         ],
         mutationOptions: {
             onError: (err) => {
@@ -115,10 +117,10 @@ export const useUpdateProduct = () =>
 
 
 export const deleteProduct = () =>
-    useApiMutation<{message: string , success:boolean}, { id: string }>({
+    useApiMutation<{ message: string, success: boolean }, { id: string }>({
         endpoint: ({ id }) => `/products/${id}`,
         method: "DELETE",
-        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing" , "get-my-deleted-listing" ,"get-listing-detail"],
+        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing", "get-my-deleted-listing", "get-listing-detail"],
         mutationOptions: {
             onSuccess: (data) => {
                 showSuccess(data?.message);
@@ -136,7 +138,7 @@ export const useAuthenticate = () =>
         endpoint: ({ id }) => `/products/${id}/authenticate/seller`,
         method: "POST",
         isMultiPart: true,
-        invalidateKeys: ["get-profile", "get-cards"],
+        invalidateKeys: ["get-profile", "get-cards", "get-notifications"],
         toBody: (variables) => {
             const formData = new FormData();
             formData.append("courier", variables.courier);
@@ -161,7 +163,7 @@ export const useAuthenticatePayment = () =>
     useApiMutation<any, any>({
         endpoint: ({ id }) => `/products/${id}/authenticate/seller/payment`,
         method: "POST",
-        invalidateKeys: ["get-profile", "get-cards"],
+        invalidateKeys: ["get-profile", "get-cards", "get-notifications"],
         mutationOptions: {
             onError: (err) => {
                 showError(err);

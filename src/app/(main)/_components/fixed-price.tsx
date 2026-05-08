@@ -1,17 +1,20 @@
+"use client"
 import React from "react";
 import ViewAll from "./ui/view-all-btn";
 import EmblaCarousel from "./ui/carousel/embla-carousel";
 import { EmblaOptionsType } from "embla-carousel";
 import Link from "next/link";
 import { fixedPriceWatches } from "@/lib/constants";
+import { WatchCardSkeleton } from "./ui/watch-skeleton";
 
 type Props = {
   fixedPrice: FixedPriceProduct[]
+  loading: boolean
 };
 const OPTIONS: EmblaOptionsType = { dragFree: true };
 const SLIDE_COUNT = 16;
 const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
-const FixedPrice = ({ fixedPrice }: Props) => {
+const FixedPrice = ({ fixedPrice , loading }: Props) => {
   
 
 
@@ -40,12 +43,20 @@ const FixedPrice = ({ fixedPrice }: Props) => {
               </svg>
             </Link>
           </div>
-          <EmblaCarousel
-            FColor="16, 31, 47"
-            // @ts-ignore
-            slides={fixedPrice}
-            options={OPTIONS}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <WatchCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <EmblaCarousel
+              FColor="16, 31, 47"
+              // @ts-ignore
+              slides={fixedPrice}
+              options={OPTIONS}
           />
+          )}
         </div>
       </div>
     </div>

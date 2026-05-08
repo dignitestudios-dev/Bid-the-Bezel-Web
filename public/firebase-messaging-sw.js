@@ -10,11 +10,13 @@ firebase.initializeApp({
 });
 const messaging = firebase.messaging();
 
-// optional background handler
-messaging.onBackgroundMessage((payload) => {
+
+
+messaging.onBackgroundMessage(function (payload) {
   console.log("Background message:", payload);
 
   self.registration.showNotification(payload.notification.title, {
     body: payload.notification.body,
+    icon: "/logo.png",
   });
 });

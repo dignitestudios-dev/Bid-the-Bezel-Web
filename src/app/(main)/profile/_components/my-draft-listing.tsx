@@ -24,13 +24,15 @@ const MyDraftListing = ({
   isFulfilled,
   setIsFulfilled,
   selectedTab,
+  draftParam
 }: {
   isFulfilled: boolean;
   setIsFulfilled: (value: boolean) => void;
   selectedTab: string;
+  draftParam: string | null;
 }) => {
-  const [status, setStatus] = useState<"draft" | "pending" | "rejected" >(
-    "pending",
+  const [status, setStatus] = useState<"draft" | "pending" | "rejected">(
+    draftParam === "true" ? "draft" : "pending",
   );
   const { data, isLoading, isPending } = useGetMyListing(status);
   return (
@@ -47,8 +49,8 @@ const MyDraftListing = ({
         </Button>
         <Button
           className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "pending"
-              ? "bg-white text-black shadow"
-              : "bg-transparent text-gray-500"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-gray-500"
             }`}
           onClick={() => setStatus("pending")}
         >
@@ -56,8 +58,8 @@ const MyDraftListing = ({
         </Button>
         <Button
           className={`font-semibold w-[130px] max-w-full rounded-lg transition ${status === "rejected"
-              ? "bg-white text-black shadow"
-              : "bg-transparent text-gray-500"
+            ? "bg-white text-black shadow"
+            : "bg-transparent text-gray-500"
             }`}
           onClick={() => setStatus("rejected")}
         >
