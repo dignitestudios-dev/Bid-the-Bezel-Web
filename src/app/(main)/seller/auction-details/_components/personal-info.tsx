@@ -106,7 +106,7 @@ const PersonalInfo = ({ onNext, userData, personalEditMode, setPersonalEditMode,
                     <div className="flex items-center border rounded-xl px-3 bg-gray-50 h-[52px]">
 
                         <Image
-                            src="/images/usFlag.png"
+                            src="/images/usFLag.png"
                             alt="country flag"
                             width={20}
                             height={14}
