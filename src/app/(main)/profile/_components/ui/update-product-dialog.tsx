@@ -70,6 +70,7 @@ export function UpdateProductDialog({
     reset,
     getValues,
     setValue,
+    watch,
     formState: { errors, isValid },
   } = useForm<UpdateProductFormValues>({
     resolver: zodResolver(updateProductSchema),
@@ -80,6 +81,8 @@ export function UpdateProductDialog({
       model: model,
     },
   });
+
+  const selectedBrand = watch("brandName");
 
 
 
@@ -113,8 +116,7 @@ export function UpdateProductDialog({
           {/* Title */}
           <div>
             <Select
-              value={initialTitle}
-
+              value={selectedBrand}
               onValueChange={(value) => {
                 setValue("brandName", value, {
                   shouldValidate: true,
