@@ -171,7 +171,7 @@ const { data: user, isLoading } = useMe();
               </div>
 
               {/* CONTACT */}
-              <div>
+              {/* <div>
                 <h3 className="font-semibold mb-4">Contacts us</h3>
                 <ul className="space-y-3 text-base text-white/80">
                   <li className="flex items-center gap-2">
@@ -187,7 +187,7 @@ const { data: user, isLoading } = useMe();
                     Los Angeles
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
           </div>
 
