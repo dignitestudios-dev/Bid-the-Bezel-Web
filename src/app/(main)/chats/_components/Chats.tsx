@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import createSocket from "@/sockets/index"
 
 import { useMe } from "@/features/auth/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 type ChatItem = {
   id: number;
   name: string;
@@ -93,7 +94,7 @@ type TempMessage = {
 };
 
 const Chats = () => {
-
+  const queryClient = useQueryClient()
   const [chats] = useState<ChatItem[]>(sampleChats);
   const [selectedChat, setSelectedChat] = useState<any>()
   const [message, setMessage] = useState("")
@@ -158,6 +159,14 @@ const Chats = () => {
     if (!selectedChat) return;
 
     const handleNewMessage = (incomingMsg: any) => {
+      
+      queryClient.invalidateQueries({
+        queryKey: ["get-chat-rooms"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["get-chat-messages"],
+      });
 
       setMessages((prev: any[]) => {
         const tempMessageExists = prev.find(
