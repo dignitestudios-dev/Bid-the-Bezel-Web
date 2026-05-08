@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import MyOrdersItems from "../_components/my-orders-items";
 import MyActiveListing from "../_components/my-active-listing";
 import MyDraftListing from "../_components/my-draft-listing";
@@ -7,7 +7,7 @@ import MyDeletedListing from "../_components/my-deleted-listing";
 import { useSearchParams } from "next/navigation";
 
 
-const MyOrders = () => {
+function MyOrdersContent() {
 
   const searchParams = useSearchParams();
 
@@ -99,6 +99,14 @@ const MyOrders = () => {
         )}
       </div>
     </div>
+  );
+}
+
+const MyOrders = () => {
+  return (
+    <Suspense fallback={<div className="card p-6">Loading...</div>}>
+      <MyOrdersContent />
+    </Suspense>
   );
 };
 
