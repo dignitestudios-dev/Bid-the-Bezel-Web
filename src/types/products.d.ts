@@ -92,7 +92,7 @@ interface AuctionProduct {
   soldPrice: number;
   description: string | null;
   referenceId: string;
-
+reservePrice:number;
   type: "auction";
   status: "active" | "inactive" | "sold" | "deleted"; // adjust if more statuses exist
   currentHolder: "seller" | "buyer";
@@ -115,7 +115,7 @@ interface AuctionProduct {
   isFavorite: boolean;
   isMyProduct: boolean;
   isDraftPageShown: boolean;
-
+isReserved:boolean;
   createdAt: string;
   updatedAt: string;
 }
