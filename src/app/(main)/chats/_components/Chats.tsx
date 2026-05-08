@@ -9,9 +9,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
-import { ArrowLeft, Clock, X } from "lucide-react";
+import { ArrowLeft, Clock, FileText, X } from "lucide-react";
 import File from "@/components/icons/File";
-import { useGetChatMessages, useGetChatRooms, useSendMessages } from "@/features/chat/hooks";
+import { useGetChatMessages, useGetChatRooms, useSendMessages, useSendMessagesMedia } from "@/features/chat/hooks";
 import { formatDate, formatTime, formatTimeLeft } from "@/lib/utils/date.utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import createSocket from "@/sockets/index"
@@ -97,6 +97,7 @@ const Chats = () => {
   const [chats] = useState<ChatItem[]>(sampleChats);
   const [selectedChat, setSelectedChat] = useState<any>()
   const [message, setMessage] = useState("")
+  const [files, setFiles] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { data: userData } = useMe()
 
@@ -107,6 +108,26 @@ const Chats = () => {
   const [messages, setMessages] = useState<any>(chatRoomMessages?.data)
 
   const { mutateAsync: sendMessage } = useSendMessages(selectedChat?._id)
+  const { mutateAsync: sendMedia } = useSendMessagesMedia(selectedChat?._id)
+  console.log(files)
+
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFiles = Array.from(
+      event.target.files || []
+    );
+
+    console.log("selectedFiles", selectedFiles);
+
+    if (selectedFiles.length > 0) {
+      setFiles((prev) => [...prev, ...selectedFiles]);
+    }
+
+    // reset input
+    event.target.value = "";
+  };
+
   const { socket, connect } = createSocket()
   const [chatRooms, setChatRooms] = useState<any[]>([]);
 
@@ -115,6 +136,7 @@ const Chats = () => {
       setChatRooms(allChatRooms.data);
     }
   }, [allChatRooms]);
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop =
@@ -201,40 +223,70 @@ const Chats = () => {
 
 
   const handleSend = async () => {
-    if (!message.trim()) return
+    if (!message.trim() && files.length === 0) return;
 
-    const tempId = `temp_${Date.now()}`
+    const tempId = `temp_${Date.now()}`;
+
+    const currentMessage = message;
+    const currentFiles = files;
+
+    setMessage("");
+    setFiles([]);
+
     const optimisticMsg = {
       _id: tempId,
       tempId,
-      text: message,
+      text: currentMessage,
+      attachments: currentFiles.map((f: any) => ({
+        name: f.name,
+        type: f.type,
+        url: URL.createObjectURL(f),
+      })),
+
       createdAt: new Date().toISOString(),
       status: "sending",
       sender: {
         _id: userId,
         profilePicture: {
-          location:
-            userData?.data?.profilePicture?.location || "",
+          location: userData?.data?.profilePicture?.location || "",
         },
       },
     };
 
-    setMessages((prev: any) => [...prev, {
-      ...optimisticMsg,
-      sender: { _id: userId, profilePicture: { location: userData?.data?.profilePicture?.location || "" } }
-    }])
-    setMessage("")
+    setMessages((prev: any) => [...prev, optimisticMsg]);
 
     try {
-      await sendMessage({ text: message, tempId: tempId })
+
+      if (currentFiles.length > 0) {
+        const formData = new FormData();
+
+        currentFiles.forEach((file) => {
+          formData.append("files", file);
+        });
+
+        if (currentMessage.trim()) {
+          formData.append("text", currentMessage);
+        }
+
+        formData.append("tempId", tempId);
+
+        await sendMedia(formData);
+        return;
+      }
+
+      await sendMessage({
+        text: currentMessage,
+        tempId,
+      });
 
     } catch {
-
       setMessages((prev: any) =>
-        prev.map((m: any) => m._id === tempId ? { ...m, status: "failed" } : m)
-      )
+        prev.map((m: any) =>
+          m._id === tempId ? { ...m, status: "failed" } : m
+        )
+      );
     }
-  }
+  };
 
   useEffect(() => {
     setMessages(chatRoomMessages?.data)
@@ -291,6 +343,10 @@ const Chats = () => {
                           <Skeleton className="h-3 w-10" />
                         </div>
                       ))}
+                    </div>
+                  ) : chatRooms?.length === 0 ? (
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-500">No active chats</p>
                     </div>
                   ) : (
                     chatRooms?.map((c: any) => (
@@ -427,7 +483,7 @@ const Chats = () => {
               <div
                 ref={messagesEndRef}
                 className="flex-1 p-2 overflow-y-scroll h">
-                {messages?.length === 0 ? (
+                {chatRooms?.length === 0 ? (
                   <div className="text-center text-sm text-gray-500 my-10">
                     No messages yet
                   </div>
@@ -466,6 +522,7 @@ const Chats = () => {
                     {messages?.map((item: any) => {
 
                       const isMine = item?.sender?._id === userId;
+                      const media = item.attachments || item.files || [];
 
                       return (
                         <div key={item._id} className="mb-4">
@@ -473,6 +530,59 @@ const Chats = () => {
                             <div className="flex items-end justify-end gap-3">
                               <div className="bg-[#3A556B] text-white px-5 py-3 rounded-xl rounded-br-none max-w-md break-all">
                                 <p>{item.text}</p>
+                                {media?.length > 0 && (
+                                  <div className="mt-2 space-y-2">
+                                    {media.map((file: any, index: number) => {
+
+                                      const url = file.url || file.location;
+
+                                      const mime =
+                                        file.mimeType ||
+                                        file.type ||
+                                        "";
+
+                                      const isImage = mime.startsWith("image/");
+                                      const isVideo = mime.startsWith("video/");
+                                      const isAudio = mime.startsWith("audio/");
+                                      const isDoc = !isImage && !isVideo && !isAudio;
+
+                                      return (
+                                        <div key={index}>
+
+                                          {isImage && (
+                                            <img
+                                              src={url}
+                                              alt="media"
+                                              className="max-w-[220px] rounded-lg border"
+                                            />
+                                          )}
+
+                                          {isVideo && (
+                                            <video
+                                              src={url}
+                                              controls
+                                              className="max-w-[220px] rounded-lg border"
+                                            />
+                                          )}
+
+                                          {isDoc && (
+                                            <a
+                                              href={url}
+                                              target="_blank"
+                                              className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
+                                            >
+                                              <FileText className="w-5 h-5 text-red-500" />
+                                              <span className="text-sm  text-black font-medium">
+                                                {file.name || "PDF File"}
+                                              </span>
+                                            </a>
+                                          )}
+
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
                                 <span className="text-[10px] text-gray-300 block mt-1 text-right flex items-center justify-end gap-1">
                                   {item.status === "sending" && (
                                     <>
@@ -486,7 +596,7 @@ const Chats = () => {
                                       <span className="text-red-400">Failed</span>
                                     </>
                                   )}
-                                  {/* sent OR server messages (no status field) */}
+
                                   {(!item.status || item.status === "sent") && (
                                     formatTime(item.createdAt)
                                   )}
@@ -498,7 +608,6 @@ const Chats = () => {
                               />
                             </div>
                           ) : (
-                            // ── Other user's message ─────────────────────────────────
                             <div className="flex items-end gap-3">
                               <img
                                 src={item?.sender?.profilePicture?.location ?? "/default-avatar.png"}
@@ -506,6 +615,61 @@ const Chats = () => {
                               />
                               <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md break-all">
                                 <p>{item?.text}</p>
+                                {media?.length > 0 && (
+                                  <div className="mt-2 space-y-2">
+                                    {media.map((file: any, index: number) => {
+
+                                      const url = file.url || file.location;
+
+                                      const mime =
+                                        file.mimeType ||
+                                        file.type ||
+                                        "";
+
+                                      const isImage = mime.startsWith("image/");
+                                      const isVideo = mime.startsWith("video/");
+                                      const isAudio = mime.startsWith("audio/");
+                                      const isDoc = !isImage && !isVideo && !isAudio;
+
+                                      return (
+                                        <div key={index}>
+
+
+                                          {isImage && (
+                                            <img
+                                              src={url}
+                                              alt="media"
+                                              className="max-w-[220px] rounded-lg border"
+                                            />
+                                          )}
+
+
+                                          {isVideo && (
+                                            <video
+                                              src={url}
+                                              controls
+                                              className="max-w-[220px] rounded-lg border"
+                                            />
+                                          )}
+
+                                          {isDoc && (
+                                            <a
+                                              href={url}
+                                              target="_blank"
+                                              className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
+                                            >
+                                              <FileText className="w-5 h-5 text-red-500" />
+                                              <span className="text-sm  text-black font-medium">
+                                                {file.name || "PDF File"}
+                                              </span>
+                                            </a>
+                                          )}
+
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
                                 <span className="text-[10px] text-gray-500 block mt-1">
                                   {formatTime(item.createdAt)}
                                 </span>
@@ -519,9 +683,82 @@ const Chats = () => {
                 )}
               </div>
               <div className="pt-4">
+                {files?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {files?.map((file: File, index) => {
+
+                      const url = URL.createObjectURL(file);
+                      const type = file.type;
+
+                      const isImage = type.startsWith("image/");
+                      const isVideo = type.startsWith("video/");
+                      const isAudio = type.startsWith("audio/");
+                      const isDoc =
+                        !isImage && !isVideo && !isAudio;
+
+                      return (
+                        <div
+                          key={index}
+                          className="relative p-2 bg-gray-100 rounded-lg flex items-center gap-2"
+                        >
+
+                          {/* IMAGE */}
+                          {isImage && (
+                            <img
+                              src={url}
+                              className="w-[200px] h-[150px] rounded object-cover border"
+                            />
+                          )}
+
+                          {/* VIDEO */}
+                          {isVideo && (
+                            <video
+                              src={url}
+                              className="w-[200px] h-[150px] rounded border"
+                              controls
+                            />
+                          )}
+
+                          {isDoc && (
+                            <div className="px-2 py-1 rounded flex items-center text-xs bg-gray-200 rounded">
+                              <a
+                                href={url}
+                                target="_blank"
+                                className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
+                              >
+                                <FileText className="w-5 h-5 text-red-500" />
+                                <span className="text-sm font-medium">
+                                  {file.name || "PDF File"}
+                                </span>
+                              </a>
+                            </div>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              setFiles((prev) =>
+                                prev.filter((_, i) => i !== index)
+                              );
+                            }}
+                            className="absolute -top-2 -right-2 bg-white rounded-full shadow p-1"
+                          >
+                            <X className="w-4 h-4 text-red-500" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 {/* {true ? ( */}
                 <div className="flex items-center p-3 border border-gray-200 rounded-xl">
-                  <input type="file" id="attach-file" className="hidden" />
+                  <input
+                    type="file"
+                    id="attach-file"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    multiple
+                    accept="*/*"
+                  />
                   <label htmlFor="attach-file" className="cursor-pointer">
                     <File />
                   </label>
@@ -544,9 +781,10 @@ const Chats = () => {
 
                   <button
                     onClick={handleSend}
-                    disabled={!message.trim()}
+                    disabled={!message.trim() && files.length === 0}
                     className={`ml-3 w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 transition-all
-  ${message.trim()
+  ${message.trim() || files.length > 0
+
                         ? "bg-[#0E2430] text-white hover:opacity-90"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                       }`}

@@ -38,3 +38,15 @@ export const useSendMessages = (roomId: string) =>
             },
         },
     });
+export const useSendMessagesMedia = (roomId: string) =>
+    useApiMutation<any, FormData>({
+        endpoint: `/chat/messages/${roomId}/media`,
+        method: "POST",
+        isMultiPart: true,
+        invalidateKeys: ["get-chat-messages", "get-chat-rooms"],
+        mutationOptions: {
+            onError: (err) => {
+                showError(err);
+            },
+        },
+    });
