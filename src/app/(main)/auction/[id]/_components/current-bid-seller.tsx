@@ -53,9 +53,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
           {hasBidder && isEnded ? "Bid Winner" : "Current Bid"}
         </h3>
         <h1 className="text-2xl font-semibold">
-          {auction?.currentBidAmount > 0
-            ? `${formatPrice(auction.currentBidAmount)}`
-            : "$00.0"}
+          {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
         </h1>
       </div>
 
