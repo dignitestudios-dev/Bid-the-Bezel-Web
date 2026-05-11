@@ -122,6 +122,7 @@ const Collections = (props: Props) => {
                 onApply={(min, max) => setPriceRange({ min, max })}
               />
               <AuthFilterDialog
+              type={apiType || ""}
                 onApply={setAuthFilter}
                 productLength={ProductData?.data || []} />
             </div>

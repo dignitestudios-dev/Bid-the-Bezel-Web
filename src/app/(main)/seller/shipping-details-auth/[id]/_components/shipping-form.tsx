@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useGetMyListingDetail } from "@/features/listing/hook";
 import { useAuthenticate, useUnAuthenticate } from "@/features/products/hook";
 import { ShippingPayload, shippingSchema } from "@/features/products/schema";
@@ -33,6 +34,7 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
         handleSubmit,
         setValue,
         watch,
+        getValues,
         formState: { errors },
     } = useForm<ShippingPayload>({
         resolver: zodResolver(shippingSchema),
@@ -137,7 +139,7 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
                         <label className="text-sm font-medium mb-2 block">
                             Select Courier
                         </label>
-                        <select
+                        {/* <Select
                             id="courier"
                             {...register("courier")}
                             className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
@@ -149,12 +151,36 @@ const ShippingForm = ({ setStep, defaultValues, setShippingData, id }: ShippingF
                                 paddingRight: "2.5rem",
                             }}
                         >
-                            <option value="">Select</option>
-                            <option value="fedex">FedEx</option>
-                            <option value="ups">UPS</option>
-                            <option value="usps">USPS</option>
-                            <option value="dhl">DHL</option>
-                        </select>
+                            <SelectItem value="">Select</SelectItem>
+                            <SelectItem value="fedex">FedEx</SelectItem>
+                            <SelectItem value="ups">UPS</SelectItem>
+                            <SelectItem value="usps">USPS</SelectItem>
+                            <SelectItem value="dhl">DHL</SelectItem>
+                        </Select> */}
+                           <Select
+                                value={getValues("courier")}
+
+                                onValueChange={(value) => {
+                                    setValue("courier", value, {
+                                        shouldValidate: true,
+                                        shouldDirty: true,
+                                    });
+                                }}
+                            >
+                                <SelectTrigger className={`peer w-full rounded-lg border-2 bg-white px-4 py-5  text-[15px] text-black focus:outline-none transition-all ${errors.courier
+                                    ? "border-red-500"
+                                    : "border-gray-200 focus:border-gray-700"
+                                    }`} >
+                                    <SelectValue placeholder="Select courier" />
+                                </SelectTrigger>
+
+                                      <SelectContent>
+                  <SelectItem value="fedex">FedEx</SelectItem>
+                            <SelectItem value="ups">UPS</SelectItem>
+                            <SelectItem value="usps">USPS</SelectItem>
+                            <SelectItem value="dhl">DHL</SelectItem>
+                </SelectContent>
+                            </Select>
                         {errors.courier?.message && (
                             <p className="text-red-500 pt-2 text-[12px]">
                                 {errors.courier.message}

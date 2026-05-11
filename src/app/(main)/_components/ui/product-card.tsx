@@ -57,7 +57,6 @@ const ProductCard = ({
       }
     });
   };
-
   return (
     <Link href={product.route}>
       <div
@@ -152,7 +151,7 @@ const ProductCard = ({
               </h1>
             </div>
 
-            {product.isAuction && (
+            {product.isAuction  && (
               <>
                 <div className="h-10 w-px bg-white/50" />
 

@@ -25,7 +25,7 @@ const Plans = (props: Props) => {
     const cleanUrl = `${window.location.origin}?plan=success`;
 
     buySubscription(
-      { planId, url: cleanUrl },
+      { planId, url: cleanUrl , cancelUrl:window.location.origin },
       {
         onSuccess: () => {
           refetch();

@@ -6,6 +6,7 @@ import { BillingPaylod } from "../billing/schema";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 
 export const useGetProductBids = (
   id: string,
@@ -13,18 +14,40 @@ export const useGetProductBids = (
   limit: number = 10
 ) => {
   const queryClient = useQueryClient();
-  return useQuery<ProductBidsResponse>({
+
+  const previousCountRef = useRef(0);
+
+  const query = useQuery<ProductBidsResponse>({
     queryKey: ["product-bids", id, page, limit],
+
     queryFn: async () => {
       const res = await apiClient.get(`/products/${id}/bids`, {
         params: { page, limit },
       });
+
       return res.data;
     },
+
     enabled: !!id,
+
     refetchInterval: 10000,
+
     refetchOnWindowFocus: true,
   });
+
+  useEffect(() => {
+    const newCount = query.data?.data.bids.length ?? 0;
+
+    if (newCount > previousCountRef.current) {
+      queryClient.invalidateQueries({
+        queryKey: ["get-listing-detail", id],
+      });
+    }
+
+    previousCountRef.current = newCount;
+  }, [query.data, id, queryClient]);
+
+  return query;
 };
 
 export const useCancelBid = () =>

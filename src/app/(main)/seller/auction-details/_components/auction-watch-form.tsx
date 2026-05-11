@@ -43,7 +43,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
             contents: "",
             photos: [],
             isReserved: false,
-            reservePrice: undefined,
+            reservePrice: 5000,
         },
     });
 

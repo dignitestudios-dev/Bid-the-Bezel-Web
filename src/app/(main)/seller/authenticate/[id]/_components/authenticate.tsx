@@ -36,7 +36,7 @@ const Authenticate = ({ id }: Props) => {
           />
           <h1 className=" font-semibold text-lg">Authenticate your watch</h1>
           <p className="text-sm text-center">
-            Send your watch to us so we can authenticate for you. A $200 fees
+            Send your watch to us so we can authenticate for you. A $250 fees
             will be charged to authenticate your watch
           </p>
         </div>
