@@ -30,8 +30,9 @@ const ProductPricing = ({ price, watch }: Props) => {
   // ✅ LOCAL FAVORITE STATE (ONLY CHANGE)
   const [isFav, setIsFav] = useState(watch?.isFavorite);
 
-  const { mutate: addProductToFavorite, isPending } =
-    useAddProductToFavorite(watch?._id || "");
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(
+    watch?._id || "",
+  );
 
   const handleAddToFavorite = () => {
     if (!user?.data)
@@ -47,14 +48,14 @@ const ProductPricing = ({ price, watch }: Props) => {
         showSuccess(
           previous
             ? "Product removed from favorites"
-            : "Product added to favorites"
+            : "Product added to favorites",
         );
       },
       onError: () => {
         // rollback
         setIsFav(previous);
         showError("Something went wrong");
-      }
+      },
     });
   };
 
@@ -104,6 +105,10 @@ const ProductPricing = ({ price, watch }: Props) => {
         )}
 
         <h1 className="text-3xl pt-2">{formatPrice(Number(price!))}</h1>
+        <p className="font-light">
+          {" "}
+          <span>Ref ID:</span> {watch?.referenceId}
+        </p>
 
         {!isLoading && user && watch?.buyer && (
           <div className="border rounded-2xl mt-4">
@@ -113,9 +118,7 @@ const ProductPricing = ({ price, watch }: Props) => {
 
             <div className="flex border-b items-center p-5 gap-3">
               <Image
-                src={
-                  watch?.buyer?.profilePicture?.location || "/images/dp.png"
-                }
+                src={watch?.buyer?.profilePicture?.location || "/images/dp.png"}
                 alt="al"
                 className="rounded-full w-[70px] h-[70px] object-cover"
                 width={60}
@@ -123,20 +126,19 @@ const ProductPricing = ({ price, watch }: Props) => {
               />
 
               <div>
-                <h1 className="font-semibold mb-2">
-                  {watch?.buyer?.userName}
-                </h1>
+                <h1 className="font-semibold mb-2">{watch?.buyer?.userName}</h1>
               </div>
             </div>
-
-            <div className="flex flex-col gap-2 p-5 w-full">
-              <Link href={"/chats"} className="w-full">
-                <Button className="py-2 w-full h-12 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
-                  <MessageCircleMore size={25} />
-                  Chat with Buyer
-                </Button>
-              </Link>
-            </div>
+            {watch.deliveryFlow !== "delivered_to_buyer" && (
+              <div className="flex flex-col gap-2 p-5 w-full">
+                <Link href={"/chats"} className="w-full">
+                  <Button className="py-2 w-full h-12 text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2">
+                    <MessageCircleMore size={25} />
+                    Chat with Buyer
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </div>

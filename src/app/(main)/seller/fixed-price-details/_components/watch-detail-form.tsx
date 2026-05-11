@@ -17,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { isValid } from "zod/v3";
+import { Upload } from "lucide-react";
 
 type Props = {
   onNext: () => void;
@@ -52,13 +53,17 @@ const WatchDetailForm = ({ onNext }: Props) => {
 
     if (!files) return;
 
+    const currentPhotos = watch("photos") || [];
+
     const fileArray = Array.from(files).map((file) => ({
       file,
       name: file.name,
       url: URL.createObjectURL(file),
     }));
 
-    setValue("photos", fileArray, { shouldValidate: true });
+    setValue("photos", [...currentPhotos, ...fileArray], { shouldValidate: true });
+    
+    e.target.value = '';
   };
 
   const onSubmit = (data: any) => {
@@ -190,7 +195,7 @@ const WatchDetailForm = ({ onNext }: Props) => {
             className="border-2 border-dashed rounded-lg p-8 text-center bg-gray-50 block cursor-pointer"
           >
             <div className="flex flex-col items-center">
-              <div className="mb-2">📤</div>
+              <div className="mb-2"><Upload /></div>
               <p className="text-sm font-medium mb-1">Click to upload</p>
               <p className="text-xs text-gray-500">
                 Only JPG, PNG files (upto 5MB)

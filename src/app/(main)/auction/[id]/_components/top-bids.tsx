@@ -116,7 +116,7 @@ export default function TopBids({
           time={true}
           topBidAmount={topBidAmount}
         />
-        {totalPages > 0 && (
+        {totalPages > 1 && (
           <div className="mt-4 pt-3 border-t">
             <h1 className="text-xl font-semibold mb-3">All Bidders</h1>
 

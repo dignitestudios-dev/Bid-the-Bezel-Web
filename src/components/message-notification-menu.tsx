@@ -1,4 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
+"use client"
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,25 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
-import ProfileUser from "./icons/ProfileUser";
-import User from "./icons/User";
-import Heart from "./icons/Heart";
-import Logout from "./icons/Logout";
 import { useAppDispatch } from "@/lib/hooks";
 import { logout } from "@/lib/slices/authSlice";
 import LogoutDialog from "./auth/LogoutDialog";
 import MessageNotification from "./icons/MessageNotification";
 import Message from "./icons/Message";
 import Bell from "./icons/Bell";
-import Image from "next/image";
-import NotificationItem from "./icons/NotificationItem";
 import { useRouter } from "next/navigation";
-import NotificationTab from "./ui/notification-tab";
 import MessageTab from "./ui/message-tab";
 import NotificationsPanel from "./ui/notifications-panel";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { useGetNotifications } from "@/features/notifications/hooks";
 import { useGetChatRooms } from "@/features/chat/hooks";
+import { Skeleton } from "./ui/skeleton";
+import { useQueryClient } from "@tanstack/react-query";
+import { createSocket } from "@/sockets";
 
 const notifications = [
   {
@@ -54,6 +49,8 @@ const MessageNotificationMenu = () => {
   const dispatch = useAppDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const { socket, connect } = createSocket();
+  const queryClient = useQueryClient();
   const { data: allChatRooms, isLoading: roomsLoading } = useGetChatRooms()
 
   const dummyArray = [1, 2];
@@ -69,6 +66,30 @@ const MessageNotificationMenu = () => {
     router.push("/chats");
   };
 
+
+
+  useEffect(() => {
+    connect();
+
+    const handleNewMessage = (incomingMsg: any) => {
+
+      // React Query invalidate
+      queryClient.invalidateQueries({
+        queryKey: ["get-chat-rooms"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["get-chat-messages"],
+      });
+    };
+
+    socket.on("new_message", handleNewMessage);
+
+    return () => {
+      socket.off("new_message", handleNewMessage);
+    };
+  }, []);
+  
   return (
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
@@ -102,7 +123,12 @@ const MessageNotificationMenu = () => {
             {activeTab === "messages" ? (
               <div className="w-full pt-3">
                 {roomsLoading ? (
-                  <div>Loading...</div>
+                  <div>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Skeleton key={i} className="w-full h-20 rounded-lg" />
+                    ))}</div>
+                ) : allChatRooms?.length === 0 ? (
+                  <div className="text-center text-sm text-gray-500 my-10">No active chats</div>
                 ) : (
                   allChatRooms?.data?.map((c: any, index: number) => (
                     <MessageTab key={index} handleGoToChats={handleGoToChats} chat={c} />

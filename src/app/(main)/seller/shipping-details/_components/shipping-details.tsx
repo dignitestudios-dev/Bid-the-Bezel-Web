@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAddBuyerShippingDetails, useGetAuthenticateDetail } from "@/features/buyer/hook";
 import { ShippingPayload, shippingSchema } from "@/features/products/schema";
 import { showError, showSuccess } from "@/lib/toast";
@@ -23,6 +24,7 @@ const ShippingDetail = () => {
     handleSubmit,
     setValue,
     watch,
+    getValues,
     formState: { errors },
   } = useForm<ShippingPayload>({
     resolver: zodResolver(shippingSchema),
@@ -76,12 +78,12 @@ const ShippingDetail = () => {
                 Shipping Address
               </p>
               <p className="text-sm">
-                {data?.data?.authCenterShippingDetails?.address}
+                { data?.data?.isAuthRequested ? data?.data?.authCenterShippingDetails?.address : data?.data?.buyerShippingDetails.address}
               </p>
             </div>
             <div>
               <p className="text-xs text-gray-600 mb-1">Email</p>
-              <p className="text-sm">{data?.data?.authCenterShippingDetails?.email}</p>
+              <p className="text-sm">{data?.data?.isAuthRequested ? data?.data?.authCenterShippingDetails?.email : data?.data?.buyerShippingDetails.email}</p>
             </div>
           </div>
         </div>
@@ -92,24 +94,30 @@ const ShippingDetail = () => {
             <label className="text-sm font-medium mb-2 block">
               Select Courier
             </label>
-            <select
-              id="courier"
-              {...register("courier")}
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "right 0.75rem center",
-                backgroundSize: "1.25rem",
-                paddingRight: "2.5rem",
-              }}
-            >
-              <option value="">Select</option>
-              <option value="fedex">FedEx</option>
-              <option value="ups">UPS</option>
-              <option value="usps">USPS</option>
-              <option value="dhl">DHL</option>
-            </select>
+            <Select
+                                value={getValues("courier")}
+
+                                onValueChange={(value) => {
+                                    setValue("courier", value, {
+                                        shouldValidate: true,
+                                        shouldDirty: true,
+                                    });
+                                }}
+                            >
+                                <SelectTrigger className={`peer w-full rounded-lg border-2 bg-white px-4 py-5  text-[15px] text-black focus:outline-none transition-all ${errors.courier
+                                    ? "border-red-500"
+                                    : "border-gray-200 focus:border-gray-700"
+                                    }`} >
+                                    <SelectValue placeholder="Select courier" />
+                                </SelectTrigger>
+
+                                      <SelectContent>
+                  <SelectItem value="fedex">FedEx</SelectItem>
+                            <SelectItem value="ups">UPS</SelectItem>
+                            <SelectItem value="usps">USPS</SelectItem>
+                            <SelectItem value="dhl">DHL</SelectItem>
+                </SelectContent>
+                            </Select>
             {errors.courier?.message && (
               <p className="text-red-500 pt-2 text-[12px]">
                 {errors.courier.message}

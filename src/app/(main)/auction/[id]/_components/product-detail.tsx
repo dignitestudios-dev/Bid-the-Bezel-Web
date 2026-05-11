@@ -105,6 +105,13 @@ const ProductDetail = ({ product }: Props) => {
             {formatPrice(product?.price)}{" "}
             <span className="text-base">Starting Price</span>
           </h1>
+          {product.isReserved && product.isMyProduct &&(
+            <h1 className="text-xl md:text-3xl">
+            {formatPrice(product?.reservePrice)}{" "}
+            <span className="text-base">Reserved Price</span>
+          </h1>
+          ) }
+          
         </div>
 
         <p className="text-sm text-gray-500 mt-1">

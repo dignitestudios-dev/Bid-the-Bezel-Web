@@ -157,12 +157,13 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       </h1>
 
       <div className="p-6 border-[#E3E3E3]">
-        <div className="flex justify-between mb-4 items-center">
+        {currentBidder &&   <div className="flex justify-between mb-4 items-center">
           <h3 className="font-semibold">Highest Offer</h3>
           <h1 className="text-2xl font-semibold">
             {currentBid > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
           </h1>
-        </div>
+        </div>}
+      
 
         {currentBidder ? (
           <div className="flex gap-2 items-start">

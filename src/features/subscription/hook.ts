@@ -16,14 +16,15 @@ export const useSubscription = () => {
 
 
 export const useBuySubscription = () =>
-    useApiMutation<SubscriptionResponse, { planId: string, url: string }>({
+    useApiMutation<SubscriptionResponse, { planId: string, url: string ,cancelUrl :string }>({
         endpoint: "/billing/subscription-purchase",
         method: "POST",
         invalidateKeys: ["subscription-purchase", 'get-profile'],
         mutationOptions: {
             onSuccess: (data) => {
-                window.location.href = data?.data;
-
+                if (data?.data) {
+                    window.location.href = data?.data;
+                }
             },
             onError: (err) => {
                 showError(err)

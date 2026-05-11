@@ -12,6 +12,7 @@ import { useAddAuctionProduct } from "@/features/auction/hook";
 import z from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Upload } from "lucide-react";
 
 type Props = {
     onNext: () => void;
@@ -42,7 +43,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
             contents: "",
             photos: [],
             isReserved: false,
-            reservePrice: undefined,
+            reservePrice: 5000,
         },
     });
 
@@ -54,13 +55,17 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
 
         if (!files) return;
 
+        const currentPhotos = watch("photos") || [];
+
         const fileArray = Array.from(files).map((file) => ({
             file,
             name: file.name,
             url: URL.createObjectURL(file),
         }));
 
-        setValue("photos", fileArray, { shouldValidate: true });
+        setValue("photos", [...currentPhotos, ...fileArray], { shouldValidate: true });
+        
+        e.target.value = '';
     };
 
     const onSubmit = (data: z.input<typeof auctionWatchSchema>) => {
@@ -239,7 +244,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
                         className="border-2 border-dashed rounded-lg p-8 text-center bg-gray-50 block cursor-pointer"
                     >
                         <div className="flex flex-col items-center">
-                            <div className="mb-2">📤</div>
+                            <div className="mb-2"><Upload /></div>
                             <p className="text-sm font-medium mb-1">Click to upload</p>
                             <p className="text-xs text-gray-500">
                                 Only JPG, PNG files (upto 5MB)

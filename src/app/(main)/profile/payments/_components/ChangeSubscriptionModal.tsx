@@ -32,7 +32,7 @@ export function ChangeSubscriptionModal({
     const handleBuy = (planId: string) => {
         setLoadingPriceId(planId);
         buySubscription(
-            { planId, url: window.location.href },
+            { planId, url: window.location.href, cancelUrl: window.location.href },
             {
                 onSettled: () => {
                     setLoadingPriceId(null);

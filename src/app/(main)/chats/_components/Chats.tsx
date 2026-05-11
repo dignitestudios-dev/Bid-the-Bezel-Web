@@ -9,14 +9,15 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
-import { ArrowLeft, Clock, FileText, X } from "lucide-react";
+import { ArrowLeft, Clock, FileText, X, ZoomIn, ZoomOut } from "lucide-react";
 import File from "@/components/icons/File";
 import { useGetChatMessages, useGetChatRooms, useSendMessages, useSendMessagesMedia } from "@/features/chat/hooks";
 import { formatDate, formatTime, formatTimeLeft } from "@/lib/utils/date.utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import createSocket from "@/sockets/index"
-
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useMe } from "@/features/auth/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 type ChatItem = {
   id: number;
   name: string;
@@ -93,13 +94,15 @@ type TempMessage = {
 };
 
 const Chats = () => {
-
+  const queryClient = useQueryClient()
   const [chats] = useState<ChatItem[]>(sampleChats);
   const [selectedChat, setSelectedChat] = useState<any>()
   const [message, setMessage] = useState("")
   const [files, setFiles] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { data: userData } = useMe()
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const userId = userData?.data?._id;
 
@@ -158,6 +161,14 @@ const Chats = () => {
     if (!selectedChat) return;
 
     const handleNewMessage = (incomingMsg: any) => {
+      
+      queryClient.invalidateQueries({
+        queryKey: ["get-chat-rooms"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["get-chat-messages"],
+      });
 
       setMessages((prev: any[]) => {
         const tempMessageExists = prev.find(
@@ -292,6 +303,24 @@ const Chats = () => {
     setMessages(chatRoomMessages?.data)
   }, [chatRoomMessages]);
 
+  const handleImageClick = (url: string) => {
+    setZoomedImage(url);
+    setZoomLevel(1);
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 0.5, 3));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 0.5, 0.5));
+  };
+
+  const handleCloseZoom = () => {
+    setZoomedImage(null);
+    setZoomLevel(1);
+  };
+
   return (
     <div className="min-h-screen p-10 bg-white">
       <div className="w-full mx-auto">
@@ -387,7 +416,7 @@ const Chats = () => {
 
 
                                 <div
-                                  className={`text-xs mt-1 line-clamp-2 break-words ${selectedChat?._id === c._id
+                                  className={`text-xs mt-1 line-clamp-1 break-words ${selectedChat?._id === c._id
                                     ? "text-gray-200"
                                     : "text-gray-500"
                                     }`}
@@ -553,7 +582,8 @@ const Chats = () => {
                                             <img
                                               src={url}
                                               alt="media"
-                                              className="max-w-[220px] rounded-lg border"
+                                              onClick={() => handleImageClick(url)}
+                                              className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
                                             />
                                           )}
 
@@ -639,7 +669,8 @@ const Chats = () => {
                                             <img
                                               src={url}
                                               alt="media"
-                                              className="max-w-[220px] rounded-lg border"
+                                              onClick={() => handleImageClick(url)}
+                                              className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
                                             />
                                           )}
 
@@ -820,6 +851,43 @@ const Chats = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={!!zoomedImage} onOpenChange={handleCloseZoom}>
+        <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden bg-black/95">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="absolute top-4 right-4 z-50 flex gap-2">
+              <button
+                onClick={handleZoomOut}
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-colors"
+              >
+                <ZoomOut className="w-5 h-5 text-white" />
+              </button>
+              <button
+                onClick={handleZoomIn}
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-colors"
+              >
+                <ZoomIn className="w-5 h-5 text-white" />
+              </button>
+              <button
+                onClick={handleCloseZoom}
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-colors"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+            <div className="overflow-auto max-w-full max-h-full p-8">
+              {zoomedImage && (
+                <img
+                  src={zoomedImage}
+                  alt="Zoomed"
+                  style={{ transform: `scale(${zoomLevel})` }}
+                  className="transition-transform duration-200 max-w-none"
+                />
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

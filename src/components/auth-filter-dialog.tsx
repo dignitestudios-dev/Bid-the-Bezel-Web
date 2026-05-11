@@ -3,19 +3,29 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { useGetListing } from "@/features/listing/hook";
 
 type Props = {
   onApply?: (value?: string) => void;
   productLength: any
+  type: string
 };
 
 const AuthFilterDialog = (props: Props) => {
   const [open, setOpen] = useState(false);
+  const { data: AuthData } = useGetListing(
+    props.type,
+    "true",
+   )
+  const { data: UnAuthData } = useGetListing(
+    props.type,
+    "false",
+  )
   const [authenticated, setAuthenticated] = useState(false);
   const [unauthenticated, setUnauthenticated] = useState(false);
 
-  const authenticatedCount = props.productLength?.filter((p: any) => p.authentication?.status === "authenticated").length ?? 0;
-  const unauthenticatedCount = props.productLength?.filter((p: any) => p.authentication?.status !== "authenticated").length ?? 0;
+  const authenticatedCount = AuthData?.pagination?.totalItems
+  const unauthenticatedCount = UnAuthData?.pagination?.totalItems
 
   const handleApply = () => {
     let value: string | undefined;

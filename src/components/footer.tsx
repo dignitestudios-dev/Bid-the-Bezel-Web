@@ -108,7 +108,7 @@ const { data: user, isLoading } = useMe();
               </div>
 
               <div className="flex gap-32">
-                <div>
+                {/* <div>
                   <h3 className="font-semibold mb-4">Navigation</h3>
                   <ul className="space-y-3 text-base text-white/80">
                     <ul className="space-y-3 text-base text-white/80">
@@ -132,7 +132,7 @@ const { data: user, isLoading } = useMe();
                       </li>
                     </ul>
                   </ul>
-                </div>
+                </div> */}
 
                 <div>
                   <h3 className="font-semibold mb-4">Company</h3>
