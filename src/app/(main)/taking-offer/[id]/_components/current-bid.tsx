@@ -117,7 +117,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
 
     const base = Number.isFinite(current) ? current : 0;
 
-    setValue("amount", base + 200, {
+    setValue("amount", base + 100, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -241,7 +241,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                 disabled={placeBidMutation.isPending}
                 className="bg-[#415A77] w-full py-3"
               >
-                +200
+                +100
               </Button>
             </div>
 
