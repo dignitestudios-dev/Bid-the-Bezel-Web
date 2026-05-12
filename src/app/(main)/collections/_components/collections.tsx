@@ -17,6 +17,7 @@ import {
 import { useGetListing } from "@/features/listing/hook";
 import { ListingSkeleton } from "@/components/skeleton";
 import Pagination from "../../fixed-price/[id]/_components/pagination";
+import { Button } from "@/components/ui/button";
 
 type WatchCategory = "all" | "auction" | "fixed" | "offer";
 type Props = {};
@@ -47,6 +48,7 @@ const Collections = (props: Props) => {
     min?: number;
     max?: number;
   }>({});
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const searchParams = useSearchParams();
   const watchCategory = searchParams.get("category") as WatchCategory;
 
@@ -66,6 +68,15 @@ const Collections = (props: Props) => {
     label: string;
     value: string | number;
   }>();
+
+  const hasActiveFilters = selectedBrands.length > 0 || authFilter || priceRange.min !== undefined || priceRange.max !== undefined;
+
+  const handleClearAllFilters = () => {
+    setSelectedBrands([]);
+    setAuthFilter(undefined);
+    setPriceRange({});
+    setPage(1);
+  };
 
   const handleSetFilter = (category: WatchCategory) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -106,7 +117,8 @@ const Collections = (props: Props) => {
     authFilter,
     priceRange.min,
     priceRange.max,
-    page)
+    page,
+    selectedBrands)
   const pagination = ProductData?.pagination
 
   return (
@@ -116,7 +128,10 @@ const Collections = (props: Props) => {
           <div className="flex items-center gap-3 sm:gap-5 lg:gap-8 flex-wrap">
             <Tabs filter={filter} setFilter={handleSetFilter} />
             <div className="flex items-center gap-2 sm:gap-4">
-              <BrandFilterDialog />
+              <BrandFilterDialog onApply={(brands) => {
+                setSelectedBrands(brands);
+                setPage(1);
+              }} />
               <PriceFilterDialog
                 type={apiType}
                 onApply={(min, max) => setPriceRange({ min, max })}
@@ -125,6 +140,15 @@ const Collections = (props: Props) => {
               type={apiType || ""}
                 onApply={setAuthFilter}
                 productLength={ProductData?.data || []} />
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  onClick={handleClearAllFilters}
+                  className="border-2 py-2 rounded-xl text-sm"
+                >
+                  Clear All
+                </Button>
+              )}
             </div>
           </div>
           <Dropdown
