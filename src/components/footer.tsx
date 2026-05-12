@@ -59,6 +59,7 @@ const { data: user, isLoading } = useMe();
                 alt="Bidthebezel Logo"
                 width={50}
                 height={50}
+                unoptimized
                 className="h-12 w-auto"
               />
               <p className="text-base leading-relaxed text-white/80 max-w-xs">
