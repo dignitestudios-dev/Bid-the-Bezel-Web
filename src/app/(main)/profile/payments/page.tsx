@@ -122,6 +122,7 @@ const Payments = () => {
                         </Button>
                       </Link>{" "}
                     </div>  
+                    <div className="h-[200px] overflow-y-auto">
             {cardLoading ?
               (
                 <CardSkeleton />
@@ -131,6 +132,7 @@ const Payments = () => {
                 <Card key={index} card={card} openInvoice={openInvoice}  />
                 )
               })}
+              </div>
 </div>
             {/* Bank Account Card */}
             {cardLoading ? (
@@ -171,7 +173,7 @@ const Payments = () => {
                       </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                       <div className=" font-medium mb-3">Payment History</div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-left  border-collapse">
@@ -222,7 +224,7 @@ const Payments = () => {
                           </tbody>
                         </table>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 )
               })

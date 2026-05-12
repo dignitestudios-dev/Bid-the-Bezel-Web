@@ -132,12 +132,61 @@ export function UpdateProductDialog({
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="Jacobs & Co">Jacobs & Co</SelectItem>
-                <SelectItem value="Richard Mille">Richard Mille</SelectItem>
+                <SelectItem value="Ultra Luxury" disabled className="font-semibold text-xs">Ultra Luxury</SelectItem>
+                <SelectItem value="Jacob & Co">Jacob & Co</SelectItem>
                 <SelectItem value="Bovet">Bovet</SelectItem>
+                <SelectItem value="F.P. Journe">F.P. Journe</SelectItem>
                 <SelectItem value="Greubel Forsey">Greubel Forsey</SelectItem>
-                <SelectItem value="H Moses & Cie">H Moses & Cie</SelectItem>
-                <SelectItem value="Louis Monne">Louis Monne</SelectItem>
+                <SelectItem value="Richard Mille">Richard Mille</SelectItem>
+                <SelectItem value="H. Moser & Cie">H. Moser & Cie</SelectItem>
+                <SelectItem value="Louis Moinet">Louis Moinet</SelectItem>
+                
+                <SelectItem value="High-End Luxury" disabled className="font-semibold text-xs mt-2">High-End Luxury</SelectItem>
+                <SelectItem value="Urwerk">Urwerk</SelectItem>
+                <SelectItem value="A. Lange & Söhne">A. Lange & Söhne</SelectItem>
+                <SelectItem value="Patek Philippe">Patek Philippe</SelectItem>
+                <SelectItem value="Audemars Piguet">Audemars Piguet</SelectItem>
+                <SelectItem value="Vanguart">Vanguart</SelectItem>
+                <SelectItem value="Vacheron Constantin">Vacheron Constantin</SelectItem>
+                <SelectItem value="Blancpain">Blancpain</SelectItem>
+                <SelectItem value="Breguet">Breguet</SelectItem>
+                <SelectItem value="Jaeger-LeCoultre">Jaeger-LeCoultre</SelectItem>
+                <SelectItem value="Piaget">Piaget</SelectItem>
+                <SelectItem value="Ulysse Nardin">Ulysse Nardin</SelectItem>
+                
+                <SelectItem value="Luxury" disabled className="font-semibold text-xs mt-2">Luxury</SelectItem>
+                <SelectItem value="De Bethune">De Bethune</SelectItem>
+                <SelectItem value="Rolex">Rolex</SelectItem>
+                <SelectItem value="Omega">Omega</SelectItem>
+                <SelectItem value="IWC Schaffhausen">IWC Schaffhausen</SelectItem>
+                <SelectItem value="Grand Seiko">Grand Seiko</SelectItem>
+                <SelectItem value="Zenith">Zenith</SelectItem>
+                <SelectItem value="Glashütte Original">Glashütte Original</SelectItem>
+                <SelectItem value="Breitling">Breitling</SelectItem>
+                <SelectItem value="Cartier">Cartier</SelectItem>
+                <SelectItem value="Bvlgari">Bvlgari</SelectItem>
+                <SelectItem value="Panerai">Panerai</SelectItem>
+                <SelectItem value="Chopard">Chopard</SelectItem>
+                <SelectItem value="Corum">Corum</SelectItem>
+                <SelectItem value="Hublot">Hublot</SelectItem>
+                
+                <SelectItem value="Basic Luxury" disabled className="font-semibold text-xs mt-2">Basic Luxury</SelectItem>
+                <SelectItem value="Tudor">Tudor</SelectItem>
+                <SelectItem value="TAG Heuer">TAG Heuer</SelectItem>
+                <SelectItem value="Longines">Longines</SelectItem>
+                <SelectItem value="Oris">Oris</SelectItem>
+                <SelectItem value="Rado">Rado</SelectItem>
+                <SelectItem value="Baume & Mercier">Baume & Mercier</SelectItem>
+                <SelectItem value="Maurice Lacroix">Maurice Lacroix</SelectItem>
+                <SelectItem value="Sinn">Sinn</SelectItem>
+                <SelectItem value="Frédérique Constant">Frédérique Constant</SelectItem>
+                <SelectItem value="Alpina">Alpina</SelectItem>
+                <SelectItem value="Junghans">Junghans</SelectItem>
+                <SelectItem value="Fortis">Fortis</SelectItem>
+                <SelectItem value="Ball Watch">Ball Watch</SelectItem>
+                <SelectItem value="Nomos Glashütte">Nomos Glashütte</SelectItem>
+                <SelectItem value="Bell & Ross">Bell & Ross</SelectItem>
+                <SelectItem value="Eterna">Eterna</SelectItem>
               </SelectContent>
             </Select>
             {errors.brandName && (

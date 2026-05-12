@@ -19,7 +19,7 @@ const Card = ({card, openInvoice}: Props) => {
 <>
                   
 
-                    <div className="flex items-center justify-between py-2 border-b mb-4">
+                    <div className="flex items-center justify-between py-2 border-b mb-4 ">
                       <div className="flex items-center gap-3">
                         <div>
                           <Wallet />
@@ -36,7 +36,7 @@ const Card = ({card, openInvoice}: Props) => {
                       <Button variant="outline" size="sm" onClick={() => setOpenDeleteModal(true)} >Delete </Button>
                     </div>
 
-                    <div>
+                    {/* <div>
                       <div className=" font-medium mb-3">Invoices</div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-left  border-collapse">
@@ -87,7 +87,7 @@ const Card = ({card, openInvoice}: Props) => {
                           </tbody>
                         </table>
                       </div>
-                    </div>
+                    </div> */}
                     <DeleteCardModal open={openDeleteModal} onClose={() => setOpenDeleteModal(false)} onBack={() => setOpenDeleteModal(false)}  cardId={card._id} />
               </>
   )

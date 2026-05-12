@@ -5,6 +5,9 @@ import { getToken, removeToken } from "./cookies";
 // Create instance
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  paramsSerializer: {
+    indexes: null,
+  },
 });
 
 let fpPromise: Promise<string> | null = null;
