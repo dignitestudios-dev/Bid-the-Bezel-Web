@@ -61,7 +61,7 @@ function BidsList({
           )}
 
           <p className="text-xs md:text-sm font-semibold text-right">
-            ${bid.amount}+
+            ${bid.amount}
           </p>
         </div>
       ))}
