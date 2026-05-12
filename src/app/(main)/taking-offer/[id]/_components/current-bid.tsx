@@ -115,7 +115,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const handleIncrease = () => {
     const current = Number(watchedAmount);
 
-    const base = Number.isFinite(current) ? current : 0;
+    const base = product.effectivePrice>0 ? product.effectivePrice : product.price;
 
     setValue("amount", base + 100, {
       shouldValidate: true,
