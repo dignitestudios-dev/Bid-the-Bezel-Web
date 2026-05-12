@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function WatchCardSkeleton() {
   return (
-    <div className="w-full rounded-3xl border  bg-white/10 p-4">
+    <div className="w-full rounded-3xl border my-5  bg-white/10 p-4">
       {/* Image */}
       <div className="relative">
         <Skeleton className="h-[280px] w-full rounded-2xl" />

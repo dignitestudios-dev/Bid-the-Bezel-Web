@@ -6,6 +6,7 @@ import OrderStatusTrackingDialogNoAuth from "./order-status-tracking-dialog-no-a
 import { useGetOrders } from "@/features/order/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
 import LeaveAReviewModal from "../../review/_components/LeaveAReview";
+import { formatPrice } from "@/lib/helper";
 
 // Dummy data for illustration purposes
 type ListingType = "fixed" | "auction" | "taking-offers";
@@ -64,8 +65,8 @@ const MyOrdersItems = () => {
                 </div>
 
                 <div className="flex-1">
-                  <p className="text-lg font-semibold text-end">${item?.product?.soldPrice}</p>
-                  <p className="text-lg font-medium">{item?.product?.model}</p>
+                  <p className="text-lg font-semibold text-end">{formatPrice( item?.product?.soldPrice)}</p>
+                  <p className="text-lg font-medium truncate">{item.product.brandName} {item?.product?.model}</p>
                 </div>
               </div>
 

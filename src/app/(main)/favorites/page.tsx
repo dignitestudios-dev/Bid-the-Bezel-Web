@@ -16,6 +16,7 @@ import { useAddProductToFavorite, useGetFavoriteProducts } from "@/features/fav-
 import { showSuccess } from "@/lib/toast";
 import { FavSkeleton } from "@/components/skeleton";
 import Pagination from "../fixed-price/[id]/_components/pagination";
+import { formatPrice } from "@/lib/helper";
 
 type Fav = {
   id: string;
@@ -117,7 +118,7 @@ const Favorites = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">{it?.title}</h3>
+                  <h3 className="text-lg font-semibold truncate">{it?.title} {it?.model}</h3>
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2881E8] text-white text-xs flex items-center justify-center">
                       <Image
@@ -133,7 +134,7 @@ const Favorites = () => {
                     </span>
                   </div>
 
-                  <p className="text-2xl font-bold">${it?.price}</p>
+                  <p className="text-2xl font-bold">{formatPrice(it?.price)}</p>
                 </div>
               </div>
 
