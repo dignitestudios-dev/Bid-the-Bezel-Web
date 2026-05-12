@@ -171,7 +171,23 @@ const { data: user, isLoading } = useMe();
               </div>
 
               {/* CONTACT */}
-             
+              {/* <div>
+                <h3 className="font-semibold mb-4">Contacts us</h3>
+                <ul className="space-y-3 text-base text-white/80">
+                  <li className="flex items-center gap-2">
+                    <Mail />
+                    support@Bidthebezel.com
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Phone />
+                    +1 (310) 925-3575
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <MapPin />
+                    Los Angeles
+                  </li>
+                </ul>
+              </div> */}
             </div>
           </div>
 
