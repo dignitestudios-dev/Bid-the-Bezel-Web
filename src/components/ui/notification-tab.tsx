@@ -33,6 +33,8 @@ const NotificationTab = ({
       router.push(`/seller/shipping-details/${msg.metadata?._id}`);
     } else if (msg.metadata?.type === "fixed_price") {
       router.push(`/fixed-price/${msg.metadata?._id}`);
+    } else if (msg.metadata?.type === "taking_offers") {
+      router.push(`/taking-offer/${msg.metadata?._id}`);
     } else if (msg.metadata?.type === "auction") {
       router.push(`/auction/${msg.metadata?._id}`);
     } else if (msg.metadata?.cta === "PRODUCT_TAKING_OFFER") {
