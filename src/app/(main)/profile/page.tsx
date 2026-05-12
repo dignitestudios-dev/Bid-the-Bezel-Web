@@ -74,7 +74,7 @@ const Profile = () => {
     setValue,
     watch,
     reset,
-    formState: { errors , isValid },
+    formState: { errors , isValid, isDirty },
   } = useForm<UpdateProfilePayload>({
     resolver: zodResolver(updateProfileSchema),
       mode: "onChange",
@@ -112,7 +112,7 @@ const Profile = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setValue("profilePicture", file, { shouldValidate: true });
+      setValue("profilePicture", file, { shouldValidate: true, shouldDirty: true });
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
@@ -330,7 +330,7 @@ const Profile = () => {
                   )}
               </div>
               <div className="col-span-full flex justify-end">
-                <Button size={"lg"} type="submit" disabled={isUpdating}>
+                <Button size={"lg"} type="submit" disabled={isUpdating || !isDirty}>
                   {isUpdating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

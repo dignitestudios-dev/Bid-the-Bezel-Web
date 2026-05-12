@@ -30,7 +30,8 @@ export const mapProductToUI = (
       ...base,
       type: "taking_offers",
       route: `/taking-offer/${prod._id}`,
-      isAuction: false,
+        currentBid: prod.auction?.currentBidAmount ?? 0,
+      isAuction: true,
     };
   }
 

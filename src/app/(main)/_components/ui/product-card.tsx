@@ -11,10 +11,11 @@ import { formatTimeLeft } from "@/lib/utils/date.utils";
 import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/helper";
+import { processRoute } from "next/dist/build/webpack/plugins/build-manifest-plugin-utils";
 
 const ProductCard = ({
   prod,
-  id
+  id,
 }: {
   prod: AuctionProduct | FixedPriceProduct | TakingOfferProduct;
   id: string;
@@ -27,8 +28,9 @@ const ProductCard = ({
 
   const [isFavorite, setIsFavorite] = useState(prod.isFavorite);
 
-  const { mutate: addProductToFavorite, isPending } =
-    useAddProductToFavorite(id || "");
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(
+    id || "",
+  );
 
   const handleAddToFavorite = () => {
     if (!userData?.data) {
@@ -45,7 +47,7 @@ const ProductCard = ({
         showSuccess(
           previousValue
             ? "Product removed from favorites"
-            : "Product added to favorites"
+            : "Product added to favorites",
         );
       },
 
@@ -54,7 +56,7 @@ const ProductCard = ({
         setIsFavorite(previousValue);
 
         showError("Something went wrong");
-      }
+      },
     });
   };
   return (
@@ -62,9 +64,7 @@ const ProductCard = ({
       <div
         className={cn(
           "flex flex-col h-full text-xs md:text-base p-4 rounded-xl hover:shadow-lg transition-all",
-          product.isAuction
-            ? "border bg-gray-300/10"
-            : "bg-gray-700/10"
+          product.isAuction ? "border bg-gray-300/10" : "bg-gray-700/10",
         )}
       >
         <div className="relative">
@@ -76,7 +76,7 @@ const ProductCard = ({
             }}
             className={cn(
               "absolute top-3 right-3 z-10 w-10 h-10 rounded-lg flex items-center justify-center",
-              "bg-gray-300/20 backdrop-blur-md shadow-md transition-all duration-300"
+              "bg-gray-300/20 backdrop-blur-md shadow-md transition-all duration-300",
             )}
           >
             <div className="relative flex items-center justify-center">
@@ -89,7 +89,7 @@ const ProductCard = ({
                 fill={isFavorite ? "red" : "none"}
                 className={cn(
                   "w-7 h-7 transition-all duration-300",
-                  isFavorite && "scale-110"
+                  isFavorite && "scale-110",
                 )}
               >
                 <path
@@ -144,35 +144,43 @@ const ProductCard = ({
               <h1
                 className={cn(
                   "font-semibold",
-                  product.isAuction ? "text-center" : "text-start"
+                  product.isAuction ? "text-center" : "text-start",
                 )}
               >
                 {formatPrice(product.price)}
               </h1>
             </div>
 
-            {product.isAuction  && (
+            {product.isAuction && (
               <>
-                <div className="h-10 w-px bg-white/50" />
+                <div className="h-10 w-px bg-black/20" />
 
                 <div className="w-1/3">
-                  <h2 className="font-thin">Current Bid</h2>
+                  <h2 className="font-thin">
+                    {product.type == "auction"
+                      ? "Current Bid"
+                      : "Current Offer"}{" "}
+                  </h2>
 
                   <h1 className="font-semibold">
                     {formatPrice(product.currentBid)}
                   </h1>
                 </div>
 
-                <div className="h-10 w-px bg-white/50" />
 
                 {/* Ends In */}
-                <div className="w-1/3">
-                  <h2 className="font-thin">Ends In</h2>
+                {product.type == "auction" && (
+                  <>
+                <div className="h-10 w-px bg-black/20" />
+                  <div className="w-1/3">
+                    <h2 className="font-thin">Ends In</h2>
 
-                  <h1 className="font-semibold">
-                    {formatTimeLeft(product.endsAt)}
-                  </h1>
-                </div>
+                    <h1 className="font-semibold">
+                      {formatTimeLeft(product.endsAt)}
+                    </h1>
+                  </div>
+                  </>
+                )}
               </>
             )}
           </div>

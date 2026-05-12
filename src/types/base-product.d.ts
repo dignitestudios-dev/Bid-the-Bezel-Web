@@ -20,7 +20,8 @@ type FixedProductUI = BaseProductUI & {
 };
 type TakingOfferUI = BaseProductUI & {
   type: "taking_offers";
-  isAuction: false;
+  isAuction: true;
+    currentBid: number;
 };
 
  type ProductUI = AuctionProductUI | FixedProductUI | TakingOfferUI ;

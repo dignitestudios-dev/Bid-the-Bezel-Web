@@ -66,10 +66,15 @@ let pathname =
             />
           </div>
 
-          <div className="flex-1">
-            <p className="text-lg font-semibold text-end">{formatPrice(Number(price))}</p>
-            <p className="text-lg font-medium">{model}</p>
-          </div>
+         <div className="flex-1 flex items-center py-8 justify-between gap-2 min-w-0">
+  <p className="text-lg font-medium truncate min-w-0">
+    {brandName} {model}
+  </p>
+
+  <p className="text-lg font-semibold shrink-0">
+    {formatPrice(Number(price))}
+  </p>
+</div>
         </Link>
       {status === "draft" && (
         <div className="p-4 border-t border-dashed  flex flex-col sm:flex-row gap-3">
