@@ -159,7 +159,7 @@ const Chats = () => {
     if (!selectedChat) return;
 
     const handleNewMessage = (incomingMsg: any) => {
-      
+
       queryClient.invalidateQueries({
         queryKey: ["get-chat-rooms"],
       });
@@ -526,7 +526,7 @@ const Chats = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="h-[400px]">
+                  <div className="h-[400px] ">
 
                     {messages?.map((item: any) => {
 

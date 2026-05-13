@@ -28,7 +28,7 @@ const Login = ({
 }) => {
   const { mutate: loginMutate, isPending: loginPending } = useLogin();
   const { mutate: checkEmail, isPending: checkPending } = useCheckEmail();
-  const { mutate: updateFcmToken , isPending:fcmPending  } = useUpdateFcmToken();
+  const { mutate: updateFcmToken, isPending: fcmPending } = useUpdateFcmToken();
   const [step, setLocalStep] = useState<"email" | "login" | "register">("email");
   const [checkedEmail, setCheckedEmail] = useState("");
 
@@ -69,16 +69,16 @@ const Login = ({
 
   const handleLogin = (body: LoginForm) => {
     loginMutate(body, {
-      onSuccess: async(data) => {
+      onSuccess: async (data) => {
         const user = data?.data?.user;
-          try {
-        const token = await generateFCMToken();
-        if (token) {
-          updateFcmToken(token);
+        try {
+          const token = await generateFCMToken();
+          if (token) {
+            updateFcmToken(token);
+          }
+        } catch (e) {
+          console.error("FCM token error:", e);
         }
-      } catch (e) {
-        console.error("FCM token error:", e);
-      }
         if (!user?.isEmailVerified) { setStep?.("otp-register"); return; }
         if (!user?.isProfileCompleted) { setStep?.("username"); return; }
         showSuccess("Logged in successfully");
@@ -92,14 +92,14 @@ const Login = ({
     loginMutate({ email: body.email, password: body.password, method: "email" }, {
       onSuccess: async (data) => {
         const user = data?.data?.user;
-             try {
-        const token = await generateFCMToken();
-        if (token) {
-          updateFcmToken(token);
+        try {
+          const token = await generateFCMToken();
+          if (token) {
+            updateFcmToken(token);
+          }
+        } catch (e) {
+          console.error("FCM token error:", e);
         }
-      } catch (e) {
-        console.error("FCM token error:", e);
-      }
         showSuccess("Account created successfully!");
         if (!user?.isEmailVerified) { setStep?.("otp-register"); return; }
         if (!user?.isProfileCompleted) { setStep?.("username"); return; }
@@ -114,17 +114,17 @@ const Login = ({
     try {
       const { token } = await signInWithGoogle();
       loginMutate({ method: "google", idToken: token } as any, {
-        onSuccess: async(data) => {
+        onSuccess: async (data) => {
           const user = data?.data?.user;
-                try {
-        const fcmToken = await generateFCMToken();
-        console.log(fcmToken)
-        if (fcmToken) {
-          updateFcmToken(fcmToken);
-        }
-      } catch (e) {
-        console.error("FCM token error:", e);
-      }
+          try {
+            const fcmToken = await generateFCMToken();
+            console.log(fcmToken)
+            if (fcmToken) {
+              updateFcmToken(fcmToken);
+            }
+          } catch (e) {
+            console.error("FCM token error:", e);
+          }
           if (!user?.isEmailVerified) { setStep?.("otp-register"); return; }
           if (!user?.isProfileCompleted) { setStep?.("username"); return; }
           showSuccess("Logged in successfully");
