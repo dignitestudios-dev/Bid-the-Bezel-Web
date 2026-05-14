@@ -64,7 +64,7 @@ const CollectionCard = (props: Props) => {
 
           {watch.type === "auction" && (
             <div className="rounded-tl-sm z-20 absolute bottom-0 right-0 p-3 text-center text-white bg-black/10 px-3 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-br-xl">
-              <h2>Ends In</h2>
+              <h2>{ getTimeLeft(watch?.auction?.endsAt) == "Ended" ? "Status": "Ends In"}</h2>
               <h1 className="font-semibold">{getTimeLeft(watch?.auction?.endsAt)}</h1>
             </div>
           )}
@@ -91,7 +91,7 @@ const CollectionCard = (props: Props) => {
                 {watch?.type === "fixed_price" ? "Price" : "Starting Price"}
               </h2>
 
-              <h1 className="font-semibold text-lg">${watch?.price}</h1>
+              <h1 className="font-semibold text-lg">{formatPrice( watch?.price)}</h1>
             </div>
 
             {watch.type === "auction"  && (

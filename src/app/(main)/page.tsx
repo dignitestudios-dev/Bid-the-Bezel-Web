@@ -7,6 +7,8 @@ import Hero from "./_components/hero";
 import Plans from "./_components/plans";
 import TakingOffers from "./_components/taking-offers";
 import WatchTosell from "./_components/watch-to-sell";
+import AboutUsSection from "./_components/about-us-section";
+import FAQSection from "./_components/faq-section";
 
 export default function Home() {
   const { data , isLoading } = useGetAllListing()
@@ -19,8 +21,10 @@ export default function Home() {
       <FixedPrice fixedPrice={data?.data?.fixed_price || []} loading={isLoading} />
       <TakingOffers takingOffers={data?.data?.taking_offers || []} loading={isLoading} />
       <BrowseByCategories />
+      <AboutUsSection />
       <WatchTosell />
       <Plans />
+      <FAQSection />
     </div>
   );
 }

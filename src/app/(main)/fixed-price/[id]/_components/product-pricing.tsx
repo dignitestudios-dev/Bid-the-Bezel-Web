@@ -79,7 +79,7 @@ const ProductPricing = ({ price, watch }: Props) => {
 
       <div>
         <div className="flex justify-between">
-          <h1 className="flex gap-2 text-3xl font-semibold">
+          <h1 className="flex gap-2 text-3xl wrap-break-word font-semibold">
             {watch?.brandName} {watch?.model}
           </h1>
 

@@ -16,9 +16,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useRequireProfileCompletion } from "@/hooks/api/use-require-profile-completion";
 import { useFcmNotification } from "@/hooks/api/use-fcm-notification";
 import { useEffect, useState } from "react";
+import { getToken } from "@/lib/cookies";
 
 const Navbar = () => {
   const { data: user, isLoading, refetch } = useMe();
+  const token = getToken()
   const searchParams = useSearchParams();
   const router = useRouter();
   const isPlanParam = searchParams.get("plan") === "success";

@@ -18,6 +18,7 @@ import createSocket from "@/sockets/index"
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useMe } from "@/features/auth/hooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { useVirtualizer } from "@tanstack/react-virtual";
 type ChatItem = {
   id: number;
   name: string;
@@ -107,8 +108,14 @@ const Chats = () => {
   const userId = userData?.data?._id;
 
   const { data: allChatRooms, isLoading: roomsLoading } = useGetChatRooms()
-  const { data: chatRoomMessages, isLoading: messagesLoading } = useGetChatMessages(selectedChat?._id)
-  const [messages, setMessages] = useState<any>(chatRoomMessages?.data)
+  const { data: chatRoomMessages, isLoading: messagesLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetChatMessages(selectedChat?._id)
+  
+  const allMessages = chatRoomMessages?.pages?.slice().reverse().flatMap(page => page?.data) || [];
+  const [messages, setMessages] = useState<any[]>(allMessages)
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const previousMessageCountRef = useRef(0);
+  const previousScrollHeightRef = useRef(0);
+  const isInitialLoadRef = useRef(true);
 
   const { mutateAsync: sendMessage } = useSendMessages(selectedChat?._id)
   const { mutateAsync: sendMedia } = useSendMessagesMedia(selectedChat?._id)
@@ -141,9 +148,18 @@ const Chats = () => {
   }, [allChatRooms]);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop =
-        messagesEndRef.current.scrollHeight;
+    if (messagesEndRef.current && shouldScrollToBottom) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+      setShouldScrollToBottom(false);
+    }
+  }, [messages, shouldScrollToBottom]);
+
+  useEffect(() => {
+    if (messagesEndRef.current && !shouldScrollToBottom && previousScrollHeightRef.current > 0) {
+      const newScrollHeight = messagesEndRef.current.scrollHeight;
+      const scrollDiff = newScrollHeight - previousScrollHeightRef.current;
+      messagesEndRef.current.scrollTop = scrollDiff;
+      previousScrollHeightRef.current = 0;
     }
   }, [messages]);
 
@@ -151,8 +167,12 @@ const Chats = () => {
     if (allChatRooms?.data?.length > 0 && !selectedChat) {
       setSelectedChat(allChatRooms.data[0]);
     }
-
-  }, [allChatRooms, selectedChat]);
+    if (selectedChat) {
+      previousMessageCountRef.current = 0;
+      isInitialLoadRef.current = true;
+      setShouldScrollToBottom(true);
+    }
+  }, [selectedChat]);
 
 
   useEffect(() => {
@@ -265,6 +285,7 @@ const Chats = () => {
     };
 
     setMessages((prev: any) => [...prev, optimisticMsg]);
+    setShouldScrollToBottom(true);
 
     try {
 
@@ -300,7 +321,26 @@ const Chats = () => {
   };
 
   useEffect(() => {
-    setMessages(chatRoomMessages?.data)
+    const allMsgs = chatRoomMessages?.pages?.slice().reverse().flatMap(page => page?.data) || [];
+    const lastMessageId = allMsgs[allMsgs.length - 1]?._id;
+    const previousLastMessageId = messages[messages.length - 1]?._id;
+    const isNewMessage = lastMessageId && lastMessageId !== previousLastMessageId && previousMessageCountRef.current > 0;
+    const isPagination = allMsgs.length > previousMessageCountRef.current && previousMessageCountRef.current > 0 && !isNewMessage;
+    
+    if (isPagination && messagesEndRef.current) {
+      previousScrollHeightRef.current = messagesEndRef.current.scrollHeight;
+    }
+    
+    setMessages(allMsgs);
+    
+    if (isInitialLoadRef.current && allMsgs.length > 0) {
+      setShouldScrollToBottom(true);
+      isInitialLoadRef.current = false;
+    } else if (isNewMessage) {
+      setShouldScrollToBottom(true);
+    }
+    
+    previousMessageCountRef.current = allMsgs.length;
   }, [chatRoomMessages]);
 
   const handleImageClick = (url: string) => {
@@ -539,14 +579,18 @@ const Chats = () => {
 
               <div
                 ref={messagesEndRef}
-                className="flex-1 p-2 overflow-y-scroll h">
-                {chatRooms?.length === 0 ? (
-                  <div className="text-center text-sm text-gray-500 my-10">
-                    No messages yet
-                  </div>
-                ) : (
-                  <div className="text-center text-sm text-gray-500 mb-6">
-                    {formatDate(selectedChat?.createdAt)}
+                onScroll={(e) => {
+                  const target = e.currentTarget;
+                  if (target.scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
+                    fetchNextPage();
+                  }
+                }}
+                className="flex-1 p-2 overflow-y-auto min-h-[400px] max-h-[500px]">
+
+                <div className="min-h-full flex flex-col justify-end">
+                {isFetchingNextPage && (
+                  <div className="text-center py-2">
+                    <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
                   </div>
                 )}
 
@@ -574,8 +618,7 @@ const Chats = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="h-[400px]">
-
+                  <div>
                     {messages?.map((item: any) => {
 
                       const isMine = item?.sender?._id === userId;
@@ -752,6 +795,7 @@ const Chats = () => {
                     })}
                   </div>
                 )}
+                </div>
               </div>
               <div className="pt-4">
                 {files?.length > 0 && (

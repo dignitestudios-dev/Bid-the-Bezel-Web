@@ -173,7 +173,7 @@ const ProductCard = ({
                   <>
                 <div className="h-10 w-px bg-black/20" />
                   <div className="w-1/3">
-                    <h2 className="font-thin">Ends In</h2>
+                    <h2 className="font-thin">{formatTimeLeft(product.endsAt) == "Ended" ? "Status" :  "Ends In"}</h2>
 
                     <h1 className="font-semibold">
                       {formatTimeLeft(product.endsAt)}

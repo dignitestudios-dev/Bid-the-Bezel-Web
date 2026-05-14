@@ -23,7 +23,7 @@ const OtpRegister = ({
   useEffect(() => {
     setEmail(localStorage.getItem("email"));
   }, []);
-  const [timer, setTimer] = useState(120);
+  const [timer, setTimer] = useState(90);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -114,7 +114,7 @@ const OtpRegister = ({
         { email },
         {
           onSuccess: () => {
-            setTimer(120);
+            setTimer(90);
             showSuccess("OTP sent successfully!");
           },
           onError: (err: any) => {

@@ -138,11 +138,26 @@ const { data: user, isLoading } = useMe();
                 <div>
                   <h3 className="font-semibold mb-4">Company</h3>
                   <ul className="space-y-3 text-base text-white/80">
-                    <li>About</li>
-                    <li>FAQs</li>
-                    <li>Contact us</li>
-                    <li>Terms of Use</li>
-                    <li>Privacy Policy</li>
+                    <li>
+                      <Link href="/about" className="hover:text-white">
+                        About
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#faqs" className="hover:text-white">
+                        FAQs
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/terms-and-conditions" className="hover:text-white">
+                        Terms of Use
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/privacy-policy" className="hover:text-white">
+                        Privacy Policy
+                      </Link>
+                    </li>
                   </ul>
                 </div>
 
@@ -153,13 +168,17 @@ const { data: user, isLoading } = useMe();
                       <span>
                         <Mail />
                       </span>
-                      zack@bidthebezel.com
+                      <a href="mailto:zack@bidthebezel.com" className="hover:text-white">
+                        zack@bidthebezel.com
+                      </a>
                     </li>
                     <li className="flex items-center gap-2">
                       <span>
                         <Phone />
                       </span>
-                     438-238-1122
+                      <a href="tel:+14382381122" className="hover:text-white">
+                        438-238-1122
+                      </a>
                     </li>
                     <li className="flex items-center gap-2">
                       <span>
