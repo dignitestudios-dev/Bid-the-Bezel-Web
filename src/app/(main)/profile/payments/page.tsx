@@ -16,26 +16,34 @@ import { SubscriptionCancelledModal } from "./_components/SubscriptionCancelledM
 import { useAddBankAccount, useGetCard } from "@/features/billing/hook";
 import { useRouter } from "next/navigation";
 import Card from "./_components/ui/card";
+import { useGetTransactionsCredit , useGetTransactionsDebit } from "@/features/transaction/hooks";
 
 const Payments = () => {
   const router = useRouter()
   const [open, setOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelSubscriptionModal, setCancelSubscriptionModal] = useState(false);
   const [subCancelledModal, setSubCancelledModal] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string>("");
   const [currentPlan, setCurrentPlan] = useState(null)
+  const [creditPage, setCreditPage] = useState(1);
+  const [debitPage, setDebitPage] = useState(1);
   const { data, isLoading } = useSubscription()
   const { mutate: addBankAccount, isPending: addBankAccountLoading } = useAddBankAccount()
   const { data: userData, isLoading: userLoading } = useMe()
   const { data: cardData, isLoading: cardLoading, refetch } = useGetCard()
+  const { data: transactionDataCredit, isLoading: transactionLoading } = useGetTransactionsCredit(creditPage)
+  const { data: transactionDataDebit, isLoading: transactionLoadingDebit } = useGetTransactionsDebit(debitPage)
 
-  function openInvoice() {
+  function openInvoice(transaction: any) {
+    setSelectedTransaction(transaction);
     setOpen(true);
   }
 
   function closeInvoice() {
     setOpen(false);
+    setSelectedTransaction(null);
   }
 
   function closeCancelS() {
@@ -173,58 +181,149 @@ const Payments = () => {
                       </div>
                     </div>
 
-                    {/* <div>
-                      <div className=" font-medium mb-3">Payment History</div>
+                    <div>
+                      <div className=" font-medium mb-3">Payment History (Credit)</div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-left  border-collapse">
                           <thead>
                             <tr className="text-xs text-muted-foreground">
                               <th className="py-2">Date</th>
-                              <th className="py-2">Total</th>
+                              <th className="py-2">Product</th>
+                              <th className="py-2">Purpose</th>
+                              <th className="py-2">Net Amount</th>
                               <th className="py-2">Status</th>
                               <th className="py-2">Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr className="border-t">
-                              <td className="py-3">Oct 20 2025</td>
-                              <td className="py-3">$1600</td>
-                              <td className="py-3">
-                                <Badge color="bg-yellow-100 text-yellow-800">
-                                  On Hold
-                                </Badge>
-                              </td>
-                              <td className="py-3">
-                                <button
-                                  onClick={openInvoice}
-                                  className="px-3 py-1 border rounded-md "
-                                >
-                                  View
-                                </button>
-                              </td>
-                            </tr>
-
-                            <tr className="border-t">
-                              <td className="py-3">Oct 20 2025</td>
-                              <td className="py-3">$3200</td>
-                              <td className="py-3">
-                                <Badge color="bg-emerald-100 text-emerald-800">
-                                  Released
-                                </Badge>
-                              </td>
-                              <td className="py-3">
-                                <button
-                                  onClick={openInvoice}
-                                  className="px-3 py-1 border rounded-md "
-                                >
-                                  View
-                                </button>
-                              </td>
-                            </tr>
+                            {transactionLoading ? (
+                              <tr>
+                                <td colSpan={6} className="py-3 text-center">Loading...</td>
+                              </tr>
+                            ) : transactionDataCredit?.data?.transactions?.length === 0 ? (
+                              <tr>
+                                <td colSpan={6} className="py-3 text-center text-gray-500">No transactions found</td>
+                              </tr>
+                            ) : (
+                              transactionDataCredit?.data?.transactions?.map((transaction: any) => (
+                                <tr key={transaction._id} className="border-t">
+                                  <td className="py-3">{new Date(transaction.createdAt).toLocaleDateString()}</td>
+                                  <td className="py-3">{transaction.product?.brandName} {transaction.product?.model}</td>
+                                  <td className="py-3 capitalize">{transaction.purpose?.replace(/_/g, ' ')}</td>
+                                  <td className="py-3">${transaction.netAmount?.toFixed(2)}</td>
+                                  <td className="py-3">
+                                    <Badge color={transaction.status === "initiated" ? "bg-yellow-100 text-yellow-800" : "bg-emerald-100 text-emerald-800"}>
+                                      {transaction.status}
+                                    </Badge>
+                                  </td>
+                                  <td className="py-3">
+                                    <button
+                                      onClick={() => openInvoice(transaction)}
+                                      className="px-3 py-1 border rounded-md "
+                                    >
+                                      View
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
                           </tbody>
                         </table>
+                        {transactionDataCredit?.data?.pagination?.totalPages > 1 && (
+                          <div className="flex justify-center gap-2 mt-4">
+                            <button
+                              onClick={() => setCreditPage(prev => Math.max(1, prev - 1))}
+                              disabled={creditPage === 1}
+                              className="px-3 py-1 border rounded-md disabled:opacity-50"
+                            >
+                              Previous
+                            </button>
+                            <span className="px-3 py-1">
+                              Page {creditPage} of {transactionDataCredit?.data?.pagination?.totalPages}
+                            </span>
+                            <button
+                              onClick={() => setCreditPage(prev => prev + 1)}
+                              disabled={creditPage === transactionDataCredit?.data?.pagination?.totalPages}
+                              className="px-3 py-1 border rounded-md disabled:opacity-50"
+                            >
+                              Next
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    </div> */}
+                    </div>
+
+                    <div className="mt-6">
+                      <div className=" font-medium mb-3">Payment History (Debit)</div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left  border-collapse">
+                          <thead>
+                            <tr className="text-xs text-muted-foreground">
+                              <th className="py-2">Date</th>
+                              <th className="py-2">Product</th>
+                              <th className="py-2">Purpose</th>
+                              <th className="py-2">Amount</th>
+                              <th className="py-2">Status</th>
+                              <th className="py-2">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {transactionLoadingDebit ? (
+                              <tr>
+                                <td colSpan={6} className="py-3 text-center">Loading...</td>
+                              </tr>
+                            ) : transactionDataDebit?.data?.transactions?.length === 0 ? (
+                              <tr>
+                                <td colSpan={6} className="py-3 text-center text-gray-500">No transactions found</td>
+                              </tr>
+                            ) : (
+                              transactionDataDebit?.data?.transactions?.map((transaction: any) => (
+                                <tr key={transaction._id} className="border-t">
+                                  <td className="py-3">{new Date(transaction.createdAt).toLocaleDateString()}</td>
+                                  <td className="py-3">{transaction.product?.brandName} {transaction.product?.model}</td>
+                                  <td className="py-3 capitalize">{transaction.purpose?.replace(/_/g, ' ')}</td>
+                                  <td className="py-3">${transaction.amount?.toFixed(2)}</td>
+                                  <td className="py-3">
+                                    <Badge color={transaction.status === "initiated" ? "bg-yellow-100 text-yellow-800" : "bg-emerald-100 text-emerald-800"}>
+                                      {transaction.status}
+                                    </Badge>
+                                  </td>
+                                  <td className="py-3">
+                                    <button
+                                      onClick={() => openInvoice(transaction)}
+                                      className="px-3 py-1 border rounded-md "
+                                    >
+                                      View
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                        {transactionDataDebit?.data?.pagination?.totalPages > 1 && (
+                          <div className="flex justify-center gap-2 mt-4">
+                            <button
+                              onClick={() => setDebitPage(prev => Math.max(1, prev - 1))}
+                              disabled={debitPage === 1}
+                              className="px-3 py-1 border rounded-md disabled:opacity-50"
+                            >
+                              Previous
+                            </button>
+                            <span className="px-3 py-1">
+                              Page {debitPage} of {transactionDataDebit?.data?.pagination?.totalPages}
+                            </span>
+                            <button
+                              onClick={() => setDebitPage(prev => prev + 1)}
+                              disabled={debitPage === transactionDataDebit?.data?.pagination?.totalPages}
+                              className="px-3 py-1 border rounded-md disabled:opacity-50"
+                            >
+                              Next
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 )
               })
@@ -248,7 +347,7 @@ const Payments = () => {
         </div>
       </div>
 
-      <PaymentDetailsDialog open={open} onClose={closeInvoice} />
+      <PaymentDetailsDialog open={open} onClose={closeInvoice} transaction={selectedTransaction} />
       <ChangeSubscriptionModal loading={isLoading} onCancelSubscription={handleCancelSubscription} currentPlan={currentPlan} plans={data?.data} open={cancelOpen} onClose={closeCancelS} />
       <CancelSubscriptionModal planId={selectedPlanId} onSuccessAction={handleCancelSuccess} onBack={() => { setCancelOpen(true); setCancelSubscriptionModal(false); }} open={cancelSubscriptionModal} onClose={() => setCancelSubscriptionModal(false)} />
       <SubscriptionCancelledModal open={subCancelledModal} onClose={() => setSubCancelledModal(false)} />

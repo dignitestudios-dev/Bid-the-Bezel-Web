@@ -188,7 +188,18 @@ const CurrentBid = ({ product, bidsData }: Props) => {
           </div>
         )}
       </div>
-
+{currentBidder && product.shouldAdminIntervene && 
+     <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
+          <div className="flex items-center gap-2 text-amber-500">
+            <Clock3 size={20} color="#F59E0B" />
+            <h4 className="font-semibold text-base">Decision Pending</h4>
+          </div>
+          <p className="text-sm text-center text-muted-foreground">
+            The auction has ended. Final results are being processed, please
+            check back shortly.
+          </p>
+        </div>
+}
       {isPending ? (
         <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
           <div className="flex items-center gap-2 text-amber-500">
@@ -204,10 +215,10 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         isEnded ? (
           <div
             className={cn(
-              currentBidder ? "px-6 py-6 border-t text-center" : "",
+              (currentBidder  && !product.shouldAdminIntervene) ? "px-6 py-6 border-t text-center" : "",
             )}
           >
-            {isWinner && currentBidder ? (
+            {isWinner && currentBidder && !product.shouldAdminIntervene ? (
               <>
                 <h1 className="text-xl font-semibold text-green-600">
                   You won the bid 🎉
@@ -230,7 +241,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                 </div>
               </>
             ) : (
-              currentBidder && (
+              currentBidder &&  !product.shouldAdminIntervene && (
                 <>
                   <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
                     <Image

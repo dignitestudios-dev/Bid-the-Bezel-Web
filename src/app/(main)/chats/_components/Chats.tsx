@@ -378,7 +378,11 @@ const Chats = () => {
                       <p className="text-gray-500">No active chats</p>
                     </div>
                   ) : (
-                    chatRooms?.map((c: any) => (
+                    chatRooms?.map((c: any) => {
+                      const otherParticipants = c?.participants?.filter((item: any) => item?.user?._id !== userId);
+                      const isGroupChat = otherParticipants?.length > 1;
+                      
+                      return (
                       <div
                         key={c._id}
                         onClick={() => {
@@ -389,44 +393,61 @@ const Chats = () => {
                           : "hover:bg-gray-50"
                           }`}
                       >
-                        {c?.participants
-                          ?.filter((item: any) => item?.user?._id !== userId)
-                          ?.map((item: any) => (
+                        {isGroupChat ? (
+                          <div className="flex -space-x-2 flex-shrink-0">
+                            {otherParticipants?.slice(0, 2).map((item: any, idx: number) => (
+                              <React.Fragment key={item?._id}>
+                                {item?.user?.profilePicture?.location ? (
+                                  <img
+                                    src={item?.user?.profilePicture?.location}
+                                    className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold border-2 border-white">
+                                    AD
+                                  </div>
+                                )}
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        ) : (
+                          otherParticipants?.map((item: any) => (
                             <React.Fragment key={item?._id}>
-
-                              <img
-                                src={
-                                  item?.user?.profilePicture?.location ||
-                                  "/default-avatar.png"
-                                }
-                                className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                              />
-
-
-                              <div className="flex-1 min-w-0">
-
-                                <div
-                                  className={`font-medium truncate ${selectedChat?._id === c._id
-                                    ? "text-white"
-                                    : "text-gray-900"
-                                    }`}
-                                >
-                                  {item?.user?.userName || "User"}
+                              {item?.user?.profilePicture?.location ? (
+                                <img
+                                  src={item?.user?.profilePicture?.location}
+                                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                                  AD
                                 </div>
-
-
-                                <div
-                                  className={`text-xs mt-1 line-clamp-1 break-words ${selectedChat?._id === c._id
-                                    ? "text-gray-200"
-                                    : "text-gray-500"
-                                    }`}
-                                >
-                                  {c.lastMessage?.text || "No messages yet"}
-                                </div>
-                              </div>
+                              )}
                             </React.Fragment>
-                          ))}
+                          ))
+                        )}
 
+                        <div className="flex-1 min-w-0">
+                          <div
+                            className={`font-medium truncate ${selectedChat?._id === c._id
+                              ? "text-white"
+                              : "text-gray-900"
+                              }`}
+                          >
+                            {isGroupChat 
+                              ? otherParticipants.map((p: any) => p?.user?.userName || "Admin").join(", ")
+                              : otherParticipants?.[0]?.user?.userName || "Admin"}
+                          </div>
+
+                          <div
+                            className={`text-xs mt-1 line-clamp-1 break-words ${selectedChat?._id === c._id
+                              ? "text-gray-200"
+                              : "text-gray-500"
+                              }`}
+                          >
+                            {c.lastMessage?.text || "No messages yet"}
+                          </div>
+                        </div>
 
                         <div
                           className={`text-xs whitespace-nowrap flex-shrink-0 ${selectedChat?._id === c._id
@@ -437,7 +458,7 @@ const Chats = () => {
                           {formatTime(c.lastMessage?.sentAt)}
                         </div>
                       </div>
-                    ))
+                    )})
                   )}
                 </div>
               </div>
@@ -497,17 +518,24 @@ const Chats = () => {
 
 
             <div className="w-full lg:flex-1 p-6 flex flex-col">
-              {selectedChat?.participants?.map((item: any) => (
-                <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
-                  <img
-                    src={item?.user?.profilePicture?.location}
-                    alt={item?.user?.userName}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="font-medium text-lg">{item?.user?.userName}</div>
-                </div>
-
-              ))}
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-100 flex-wrap">
+                {selectedChat?.participants?.map((item: any) => (
+                  <div key={item?._id} className="flex items-center gap-2">
+                    {item?.user?.profilePicture?.location ? (
+                      <img
+                        src={item?.user?.profilePicture?.location}
+                        alt={item?.user?.userName}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                        AD
+                      </div>
+                    )}
+                    <div className="font-medium text-sm">{item?.user?.userName || "Admin"}</div>
+                  </div>
+                ))}
+              </div>
 
               <div
                 ref={messagesEndRef}
@@ -632,17 +660,29 @@ const Chats = () => {
                                   )}
                                 </span>
                               </div>
-                              <img
-                                src={item?.sender?.profilePicture?.location ?? "/default-avatar.png"}
-                                className="w-8 h-8 rounded-full object-cover"
-                              />
+                              {item?.sender?.profilePicture?.location ? (
+                                <img
+                                  src={item?.sender?.profilePicture?.location}
+                                  className="w-8 h-8 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                                  AD
+                                </div>
+                              )}
                             </div>
                           ) : (
                             <div className="flex items-end gap-3">
-                              <img
-                                src={item?.sender?.profilePicture?.location ?? "/default-avatar.png"}
-                                className="w-8 h-8 rounded-full object-cover"
-                              />
+                              {item?.sender?.profilePicture?.location ? (
+                                <img
+                                  src={item?.sender?.profilePicture?.location}
+                                  className="w-8 h-8 rounded-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                                  AD
+                                </div>
+                              )}
                               <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md break-all">
                                 <p>{item?.text}</p>
                                 {media?.length > 0 && (

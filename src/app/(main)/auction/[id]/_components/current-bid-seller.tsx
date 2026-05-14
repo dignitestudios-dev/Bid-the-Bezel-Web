@@ -46,10 +46,12 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         <Clock3 color={iconColor} />
         {displayTime}
       </h1>
+
+    
       {currentBidder && (
         <div className="flex justify-between p-5">
           <h3 className="font-semibold">
-            {hasBidder && isEnded ? "Bid Winner" : "Current Bid"}
+            {hasBidder && isEnded && !product.shouldAdminIntervene ? "Bid Winner" : "Current Bid"}
           </h3>
           <h1 className="text-2xl font-semibold">
             {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0
@@ -182,6 +184,19 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
           <h4>no bid yet</h4>
         </div>
       )}
+        {!isPending && product.shouldAdminIntervene && 
+        <div>
+          <div className="p-5 border-t flex flex-col gap-3">
+            <h1 className="font-semibold text-center">
+              Admin Intervention Required
+            </h1>
+            <p className="text-sm text-center text-muted-foreground">
+              This auction requires admin attention becuase 90% of threshold reached of your reserved price. Please contact support for
+              more information.
+            </p>
+        </div>
+        </div>
+      }
       <RepostAuctionDialog
         open={repostAuction}
         setOpen={setRepostAuction}

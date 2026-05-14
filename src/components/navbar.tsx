@@ -81,7 +81,7 @@ const Navbar = () => {
       </div>
       <div className="bg-(--primary) text-white text-center py-3">
         <div className="max-w-screen-2xl mx-auto">
-          <b>Disclaimer:</b> Nebula Time is not liable for any inaccuracies or
+          <b>Disclaimer:</b> Bid the Bezel is not liable for any inaccuracies or
           failures resulting from use.
         </div>
       </div>

@@ -153,19 +153,19 @@ const { data: user, isLoading } = useMe();
                       <span>
                         <Mail />
                       </span>
-                      support@Bidthebezel.com
+                      zack@bidthebezel.com
                     </li>
                     <li className="flex items-center gap-2">
                       <span>
                         <Phone />
                       </span>
-                      +1 (310) 925-3575
+                     438-238-1122
                     </li>
                     <li className="flex items-center gap-2">
                       <span>
                         <MapPin />
                       </span>
-                      Los Angeles
+                      Inlet Beach, Florida.
                     </li>
                   </ul>
                 </div>
