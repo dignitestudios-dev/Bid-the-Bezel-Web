@@ -9,7 +9,7 @@ import { DeleteCardModal} from './delete-card-alert'
 
 type Props = {
   card: Card;
-  openInvoice: () => void;
+  openInvoice: (transaction: any) => void;
 }
 
 const Card = ({card, openInvoice}: Props) => {

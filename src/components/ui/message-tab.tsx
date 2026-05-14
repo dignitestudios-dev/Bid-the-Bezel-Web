@@ -10,7 +10,7 @@ type Props = {
 
 const MessageTab = ({ handleGoToChats, chat }: Props) => {
   const participants = chat?.participants || [];
-
+console.log(participants)
   return (
     <DropdownMenuItem
       className="cursor-pointer flex items-center gap-3 p-3 rounded-lg transition-all group"
@@ -23,7 +23,7 @@ const MessageTab = ({ handleGoToChats, chat }: Props) => {
             key={item?._id}
             className="h-10 w-10 rounded-full overflow-hidden border-2 border-white"
           >
-            <Image
+            {item?.user?.profilePicture ?     <Image
               src={
                 item?.user?.profilePicture?.location ||
                 "/default-avatar.png"
@@ -32,7 +32,10 @@ const MessageTab = ({ handleGoToChats, chat }: Props) => {
               width={40}
               height={40}
               className="w-full h-full object-cover"
-            />
+            />:      
+            <div className="bg-blue-200 rounded-full w-10 h-10 flex justify-center items-center font-bold" >AD</div>
+            }
+       
           </div>
         ))}
       </div>

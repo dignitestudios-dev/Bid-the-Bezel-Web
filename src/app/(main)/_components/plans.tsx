@@ -45,7 +45,7 @@ const Plans = (props: Props) => {
         </h1>
 
         <p className="text-sm text-center text-gray-600">
-          Browse our three subscription tiers to find the
+          Browse our subscription tiers to find the
           perfect plan for selling your timepieces.
         </p>
 

@@ -34,8 +34,8 @@ export const useAddAuctionProduct = () =>
             onSuccess: (data) => {
                 showSuccess(data?.message)
             },
-            onError: (err) => {
-                showError(err?.message)
+            onError: (err: any) => {
+                showError(err?.response?.data?.message || err?.message || "An error occurred")
             }
         },
     });
