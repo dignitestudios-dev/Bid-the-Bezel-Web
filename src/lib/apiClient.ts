@@ -2,6 +2,12 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { getToken, removeToken } from "./cookies";
 
+let queryClient: any = null;
+
+export const setQueryClient = (client: any) => {
+  queryClient = client;
+};
+
 // Create instance
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -52,7 +58,10 @@ apiClient.interceptors.response.use(
 
       if (typeof window !== "undefined") {
         removeToken();
-        // window.location.href = "/";
+        if (queryClient) {
+          queryClient.invalidateQueries({ queryKey: ["get-profile"] });
+        }
+        window.location.href = "/?authStep=login";
       }
     }
 

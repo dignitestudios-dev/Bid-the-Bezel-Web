@@ -10,7 +10,7 @@ import {
   completeProfileSchema,
   CompleteProfilePayload,
 } from "@/features/auth/Schema";
-import { showSuccess } from "@/lib/toast";
+import { showSuccess, showError } from "@/lib/toast";
 import { useCompleteProfile, useCheckUsername } from "@/features/auth/hooks";
 import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
@@ -68,6 +68,21 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!validTypes.includes(file.type)) {
+        showError('Please upload a valid image file (JPEG, PNG, GIF, or WebP)');
+        e.target.value = '';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        showError('File size must be less than 5MB');
+        e.target.value = '';
+        return;
+      }
+
       setValue("profilePicture", file, { shouldValidate: true });
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
@@ -130,7 +145,7 @@ const Username = ({ setStep }: { setStep?: (step: AuthStep) => void }) => {
             type="file"
             ref={fileInputRef}
             className="hidden"
-            accept="image/*"
+            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
             onChange={handleImageChange}
           />
           {errors.profilePicture && (

@@ -33,7 +33,7 @@ const Otp = ({
   useEffect(() => {
     setEmail(localStorage.getItem('email'));
   }, []);
-  const [timer, setTimer] = useState(120);
+  const [timer, setTimer] = useState(90);
 
 
   useEffect(() => {
@@ -128,7 +128,7 @@ const Otp = ({
         { email },
         {
           onSuccess: () => {
-            setTimer(120);
+            setTimer(90);
             showSuccess("OTP resent successfully!");
           },
           onError: (err: any) => {
