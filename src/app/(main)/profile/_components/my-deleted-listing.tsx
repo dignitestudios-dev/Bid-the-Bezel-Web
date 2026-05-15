@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetMyActiveListing, useGetMyDeletedActiveListing, useGetMyListing } from "@/features/listing/hook";
+import { formatPrice } from "@/lib/helper";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,8 +55,8 @@ const MyDeletedListing = ({ isFulfilled, setIsFulfilled, selectedTab }: { isFulf
                             </div>
 
                             <div className="flex-1">
-                                <p className="text-lg font-semibold text-end">${product?.price}</p>
-                                <p className="text-lg font-medium">{product?.brandName}</p>
+                                <p className="text-lg font-semibold text-end">{formatPrice( product?.price)}</p>
+                                <p className="text-lg truncate font-medium">{product?.brandName} {product?.model}</p>
                             </div>
                         </div>
 

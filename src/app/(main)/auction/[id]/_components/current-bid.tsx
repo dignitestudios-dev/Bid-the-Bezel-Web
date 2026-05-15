@@ -18,7 +18,7 @@ import {
 import { useMe } from "@/features/auth/hooks";
 import { useCancelBid, usePlaceBid } from "@/features/bidding/hooks";
 import { showSuccess } from "@/lib/toast";
-import {formatPrice} from "@/lib/helper";
+import { formatPrice } from "@/lib/helper";
 import AuthSidebar from "@/components/auth-sidebar";
 import SubscriptionsDialog from "@/app/(main)/_components/subscription-dialog";
 import NoCardAdded from "@/app/(main)/_components/no-card-added-dialog";
@@ -35,7 +35,6 @@ type Props = {
   bidsData: ProductBidsResponse;
 };
 
-
 const bidSchema = (currentBid: number) =>
   z.object({
     amount: z
@@ -44,13 +43,16 @@ const bidSchema = (currentBid: number) =>
       .multipleOf(0.01, {
         message: "Max 2 decimal places allowed",
       })
-      .refine((val) => {
-        const digits = val.toString().replace(".", "");
-        return digits.length <= 7;
-      }, {
-        message: "Bid amount is too high",
-      }),
-  })
+      .refine(
+        (val) => {
+          const digits = val.toString().replace(".", "");
+          return digits.length <= 7;
+        },
+        {
+          message: "Bid amount is too high",
+        },
+      ),
+  });
 
 type BidForm = {
   amount: number;
@@ -92,10 +94,10 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   }, [auction?.endsAt, now]);
 
   const isEnded = bidsData.data.auctionStatus === "ended";
-  const timeEnded = timeLeft === "0D 0H 0M";
+  const timeEnded = timeLeft === "Ended";
   const isPending = timeEnded && !isEnded;
 
-  const displayTime = isEnded || isPending ? "0D 0H 0M" : timeLeft;
+  const displayTime = isEnded || isPending ? "Ended" : timeLeft;
   const iconColor = isEnded ? "#FF0000" : isPending ? "#F59E0B" : "#14A752";
 
   /* ---------------- POPUPS ---------------- */
@@ -138,7 +140,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
           console.error(err);
           setConfirmBid(false);
         },
-      }
+      },
     );
   };
 
@@ -146,17 +148,20 @@ const CurrentBid = ({ product, bidsData }: Props) => {
     <div className="rounded-xl w-full border border-[#E3E3E3]">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
         <Clock3 color={iconColor} />
-        {displayTime} left
+        {displayTime}
       </h1>
 
-
       <div className="p-6 border-[#E3E3E3]">
-        <div className="flex justify-between mb-4 items-center">
-          <h3 className="font-semibold">Highest Bid</h3>
-          <h1 className="text-2xl font-semibold">
-            {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
-          </h1>
-        </div>
+        {currentBidder && (
+          <div className="flex justify-between mb-4 items-center">
+            <h3 className="font-semibold">Highest Bid</h3>
+            <h1 className="text-2xl font-semibold">
+              {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0
+                ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}`
+                : "$00.00"}
+            </h1>
+          </div>
+        )}
 
         {currentBidder ? (
           <div className="flex gap-2 items-start">
@@ -168,21 +173,33 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               height={50}
             />
             <div className="my-2">
-              <h1 className="font-semibold mb-1">
-                {currentBidder.userName}
-              </h1>
-              <h5 className="text-xs ">Bid {" "}
-                {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
+              <h1 className="font-semibold mb-1">{currentBidder.userName}</h1>
+              <h5 className="text-xs ">
+                Bid{" "}
+                {bidsData?.data?.bids?.[0]?.bidPlacedAt
+                  ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt)
+                  : "Top offer"}
               </h5>
             </div>
           </div>
-      ) : (
+        ) : (
           <div className="p-8 flex items-center justify-center capitalize font-semibold">
             <h4>no bid yet</h4>
           </div>
         )}
       </div>
-
+{currentBidder && product.shouldAdminIntervene && 
+     <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
+          <div className="flex items-center gap-2 text-amber-500">
+            <Clock3 size={20} color="#F59E0B" />
+            <h4 className="font-semibold text-base">Decision Pending</h4>
+          </div>
+          <p className="text-sm text-center text-muted-foreground">
+            The auction has ended. Final results are being processed, please
+            check back shortly.
+          </p>
+        </div>
+}
       {isPending ? (
         <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
           <div className="flex items-center gap-2 text-amber-500">
@@ -190,13 +207,18 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             <h4 className="font-semibold text-base">Decision Pending</h4>
           </div>
           <p className="text-sm text-center text-muted-foreground">
-            The auction has ended. Final results are being processed, please check back shortly.
+            The auction has ended. Final results are being processed, please
+            check back shortly.
           </p>
         </div>
       ) : !isLoading && !cancelBidMutation.isPending && user && !cancelBid ? (
         isEnded ? (
-          <div className={cn(currentBidder ? "px-6 py-6 border-t text-center" : "")}>
-            {isWinner && currentBidder ? (
+          <div
+            className={cn(
+              (currentBidder  && !product.shouldAdminIntervene) ? "px-6 py-6 border-t text-center" : "",
+            )}
+          >
+            {isWinner && currentBidder && !product.shouldAdminIntervene ? (
               <>
                 <h1 className="text-xl font-semibold text-green-600">
                   You won the bid 🎉
@@ -204,8 +226,13 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                 <p className="text-sm text-gray-500 mt-1">
                   Congratulations! You placed the highest bid.
                 </p>
-                <div className="flex flex-col gap-4 w-full pt-4" >
-                  <button onClick={() => setCancelBid(true)} className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg">cancel bid</button>
+                <div className="flex flex-col gap-4 w-full pt-4">
+                  <button
+                    onClick={() => setCancelBid(true)}
+                    className="bg-red-700 text-white cursor-pointer capitalize p-3 rounded-lg"
+                  >
+                    cancel bid
+                  </button>
                   <Link href={`/buy-now/${product._id}`} className="w-full">
                     <Button className="text-base w-full">
                       Fill out Shipping
@@ -213,18 +240,25 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                   </Link>
                 </div>
               </>
-            ) : currentBidder && (
-              <>
-                <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg" >
-                  <Image unoptimized width={50} height={50} src={currentBidder?.profilePicture?.location} alt="pic" className="w-6 h-6 bg-contain rounded-full" />
-                  <h1 className="text-xl font-semibold">
-                    {currentBidder?.userName}
-                  </h1>
-                </div>
-                <h1 className="text-2xl font-bold mt-5">
-                  Bid winner
-                </h1>
-              </>
+            ) : (
+              currentBidder &&  !product.shouldAdminIntervene && (
+                <>
+                  <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
+                    <Image
+                      unoptimized
+                      width={50}
+                      height={50}
+                      src={currentBidder?.profilePicture?.location}
+                      alt="pic"
+                      className="w-6 h-6 bg-contain rounded-full"
+                    />
+                    <h1 className="text-xl font-semibold">
+                      {currentBidder?.userName}
+                    </h1>
+                  </div>
+                  <h1 className="text-2xl font-bold mt-5">Bid winner</h1>
+                </>
+              )
             )}
           </div>
         ) : (
@@ -271,7 +305,15 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                   type="number"
                   onKeyDown={(e) => {
                     const val = e.currentTarget.value;
-                    const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", ".", "-"];
+                    const allowed = [
+                      "Backspace",
+                      "Delete",
+                      "ArrowLeft",
+                      "ArrowRight",
+                      "Tab",
+                      ".",
+                      "-",
+                    ];
                     if (allowed.includes(e.key)) return;
                     const digits = val.replace(".", "").replace("-", "");
                     if (digits.length >= 7) e.preventDefault();
@@ -296,8 +338,10 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             )}
           </>
         )
-      ) :
-        isEnded && !cancelBid && currentBidder && (
+      ) : (
+        isEnded &&
+        !cancelBid &&
+        currentBidder && (
           <>
             <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
               <Image
@@ -317,15 +361,16 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               Bid winner
             </h1>
           </>
-        )}
+        )
+      )}
 
       {isEnded && cancelBid && (
         <div className="w-full flex flex-col items-center justify-center text-center py-10">
           <h1 className="text-2xl font-bold">Bidding Fees</h1>
 
           <p className="text-gray-600 text-sm mt-3 max-w-md">
-            10% of your bid amount will be lost if you cancel your bid. Are you sure
-            you want to continue?
+            10% of your bid amount will be lost if you cancel your bid. Are you
+            sure you want to continue?
           </p>
 
           <div className="flex gap-4 mt-8 w-full max-w-md">
@@ -341,7 +386,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
               onClick={() => {
                 cancelBidMutation.mutate(
                   { id: product._id },
-                  { onSuccess: () => setCancelBid(false) }
+                  { onSuccess: () => setCancelBid(false) },
                 );
               }}
               disabled={cancelBidMutation.isPending}
@@ -351,8 +396,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             </button>
           </div>
         </div>
-      )
-      }
+      )}
 
       <PlaceBidDialog
         open={confirmBid}
@@ -363,7 +407,11 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         onConfirm={handleConfirmBid}
       />
 
-      <div className={!isLoading && user ? "w-full flex py-4 justify-center" : "hidden"}>
+      <div
+        className={
+          !isLoading && user ? "w-full flex py-4 justify-center" : "hidden"
+        }
+      >
         <Suspense fallback={null}>
           <AuthSidebar hideTrigger={!!user || isLoading} loader={isLoading} />
         </Suspense>
@@ -391,7 +439,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       <SubscribeSuccessfully
         successPopup={successPopup}
         setSuccessPopup={setSuccessPopup}
-        onClose={() => { }}
+        onClose={() => {}}
       />
     </div>
   );

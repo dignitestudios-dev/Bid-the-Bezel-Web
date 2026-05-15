@@ -33,7 +33,7 @@ const PurchasePlan = ({
 
     const cleanUrl = `${window.location.origin}${window.location.pathname}?plan=success`;
     buySubscription(
-      { planId, url: cleanUrl },
+      { planId, url: cleanUrl , cancelUrl: window.location.origin },
       {
         onSettled: () => setLoadingPriceId(null),
       }

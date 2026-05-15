@@ -10,7 +10,7 @@ import MoveToTakingDialog from "./move-taking-offer-dialog";
 import RepostAuctionDialog from "./repost-auction-dialog";
 import { getTimeLeft, timeAgo } from "@/lib/helper";
 import { useNow } from "@/lib/use-now";
-import {formatPrice} from "@/lib/helper";
+import { formatPrice } from "@/lib/helper";
 type Props = {
   product: AuctionProduct;
   bidsData: ProductBidsResponse;
@@ -33,29 +33,33 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
   }, [auction?.endsAt, now]);
 
   const isEnded = bidsData.data.auctionStatus === "ended";
-  const timeEnded = timeLeft === "0D 0H 0M";
+  const timeEnded = timeLeft === "Ended";
   const isPending = timeEnded && !isEnded;
   const hasBidder = bidsData?.data?.bids?.length > 0;
 
-  const displayTime = isEnded || isPending ? "0D 0H 0M" : timeLeft;
+  const displayTime = isEnded || isPending ? "Ended" : timeLeft;
   const iconColor = isEnded ? "#FF0000" : isPending ? "#F59E0B" : "#14A752";
-
 
   return (
     <div className=" border  rounded-2xl mt-4">
       <h1 className="bg-[#F7F7F7] rounded-t-xl flex font-semibold justify-center gap-2 border-b border-[#E3E3E3] py-4">
         <Clock3 color={iconColor} />
-        {displayTime} left
+        {displayTime}
       </h1>
-      
-      <div className="flex justify-between p-5">
-        <h3 className="font-semibold">
-          {hasBidder && isEnded ? "Bid Winner" : "Current Bid"}
-        </h3>
-        <h1 className="text-2xl font-semibold">
-          {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}` : "$00.00"}
-        </h1>
-      </div>
+
+    
+      {currentBidder && (
+        <div className="flex justify-between p-5">
+          <h3 className="font-semibold">
+            {hasBidder && isEnded && !product.shouldAdminIntervene ? "Bid Winner" : "Current Bid"}
+          </h3>
+          <h1 className="text-2xl font-semibold">
+            {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0
+              ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}`
+              : "$00.00"}
+          </h1>
+        </div>
+      )}
 
       {isPending ? (
         <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
@@ -64,16 +68,21 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
             <h4 className="font-semibold text-base">Decision Pending</h4>
           </div>
           <p className="text-sm text-center text-muted-foreground">
-            The auction has ended. Final results are being processed, please check back shortly.
+            The auction has ended. Final results are being processed, please
+            check back shortly.
           </p>
         </div>
       ) : isEnded && product.status !== "deleted" ? (
         hasBidder ? (
           <>
             <div className="flex gap-2 px-4 pb-2 items-start">
-              {bidsData?.data?.bids?.[0]?.currentBidder?.profilePicture?.location ? (
+              {bidsData?.data?.bids?.[0]?.currentBidder?.profilePicture
+                ?.location ? (
                 <Image
-                  src={bidsData.data.bids?.[0].currentBidder.profilePicture.location}
+                  src={
+                    bidsData.data.bids?.[0].currentBidder.profilePicture
+                      .location
+                  }
                   alt="dp"
                   className="rounded-full w-[70px] h-[70px]"
                   width={60}
@@ -83,9 +92,14 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 <div className="w-[70px] h-[70px] rounded-full bg-gray-200 shrink-0" />
               )}
               <div className="my-2">
-                <h1 className="font-semibold mb-1">{bidsData?.data?.bids?.[0]?.currentBidder?.userName}</h1>
-                <h5 className="text-xs">Bid {" "}
-                  {bidsData?.data?.bids?.[0]?.bidPlacedAt ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt) : 'Top offer'}
+                <h1 className="font-semibold mb-1">
+                  {bidsData?.data?.bids?.[0]?.currentBidder?.userName}
+                </h1>
+                <h5 className="text-xs">
+                  Bid{" "}
+                  {bidsData?.data?.bids?.[0]?.bidPlacedAt
+                    ? timeAgo(bidsData.data.bids?.[0].bidPlacedAt)
+                    : "Top offer"}
                 </h5>
               </div>
             </div>
@@ -99,7 +113,10 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                       Chat with Buyer
                     </Button>
                   </Link>
-                  <Link href={`/seller/shipping-details/${product?._id}`} className="w-full">
+                  <Link
+                    href={`/seller/shipping-details/${product?._id}`}
+                    className="w-full"
+                  >
                     <Button className="text-base w-full">
                       Fill out Shipping
                     </Button>
@@ -118,7 +135,6 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 Your listing failed to atrract any buyers.
               </p>
 
-
               <Button
                 onClick={() => setMoveToTakingOffer(true)}
                 className="text-base bg-[#F7F7F7] hover:bg-[#f8f3f3] text-primary hover:text-primary flex justify-center gap-2"
@@ -126,7 +142,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
                 <Move />
                 Move to takings offers section
               </Button>
-              <div className="flex items-center gap-2 w-full" >
+              <div className="flex items-center gap-2 w-full">
                 <Button
                   onClick={() => setCancelListing(true)}
                   className="text-base bg-red-700 hover:bg-red-800 text-white w-[50%]"
@@ -168,6 +184,19 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
           <h4>no bid yet</h4>
         </div>
       )}
+        {!isPending && product.shouldAdminIntervene && 
+        <div>
+          <div className="p-5 border-t flex flex-col gap-3">
+            <h1 className="font-semibold text-center">
+              Admin Intervention Required
+            </h1>
+            <p className="text-sm text-center text-muted-foreground">
+              This auction requires admin attention becuase 90% of threshold reached of your reserved price. Please contact support for
+              more information.
+            </p>
+        </div>
+        </div>
+      }
       <RepostAuctionDialog
         open={repostAuction}
         setOpen={setRepostAuction}
@@ -188,7 +217,6 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
         setMoveToTakingOffer={setMoveToTakingOffer}
         moveToTakingOffer={moveToTakingOffer}
       />
-
     </div>
   );
 };

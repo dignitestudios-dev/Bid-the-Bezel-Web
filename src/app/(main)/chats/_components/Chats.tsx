@@ -9,15 +9,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
-import { ArrowLeft, Clock, FileText, X } from "lucide-react";
+import { ArrowLeft, Clock, FileText, X, ZoomIn, ZoomOut } from "lucide-react";
 import File from "@/components/icons/File";
 import { useGetChatMessages, useGetChatRooms, useSendMessages, useSendMessagesMedia } from "@/features/chat/hooks";
 import { formatDate, formatTime, formatTimeLeft } from "@/lib/utils/date.utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import createSocket from "@/sockets/index"
-
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useMe } from "@/features/auth/hooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { useVirtualizer } from "@tanstack/react-virtual";
 type ChatItem = {
   id: number;
   name: string;
@@ -101,12 +102,20 @@ const Chats = () => {
   const [files, setFiles] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { data: userData } = useMe()
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const userId = userData?.data?._id;
 
   const { data: allChatRooms, isLoading: roomsLoading } = useGetChatRooms()
-  const { data: chatRoomMessages, isLoading: messagesLoading } = useGetChatMessages(selectedChat?._id)
-  const [messages, setMessages] = useState<any>(chatRoomMessages?.data)
+  const { data: chatRoomMessages, isLoading: messagesLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetChatMessages(selectedChat?._id)
+
+  const allMessages = chatRoomMessages?.pages?.slice().reverse().flatMap(page => page?.data) || [];
+  const [messages, setMessages] = useState<any[]>(allMessages)
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const previousMessageCountRef = useRef(0);
+  const previousScrollHeightRef = useRef(0);
+  const isInitialLoadRef = useRef(true);
 
   const { mutateAsync: sendMessage } = useSendMessages(selectedChat?._id)
   const { mutateAsync: sendMedia } = useSendMessagesMedia(selectedChat?._id)
@@ -139,9 +148,18 @@ const Chats = () => {
   }, [allChatRooms]);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop =
-        messagesEndRef.current.scrollHeight;
+    if (messagesEndRef.current && shouldScrollToBottom) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+      setShouldScrollToBottom(false);
+    }
+  }, [messages, shouldScrollToBottom]);
+
+  useEffect(() => {
+    if (messagesEndRef.current && !shouldScrollToBottom && previousScrollHeightRef.current > 0) {
+      const newScrollHeight = messagesEndRef.current.scrollHeight;
+      const scrollDiff = newScrollHeight - previousScrollHeightRef.current;
+      messagesEndRef.current.scrollTop = scrollDiff;
+      previousScrollHeightRef.current = 0;
     }
   }, [messages]);
 
@@ -149,8 +167,12 @@ const Chats = () => {
     if (allChatRooms?.data?.length > 0 && !selectedChat) {
       setSelectedChat(allChatRooms.data[0]);
     }
-
-  }, [allChatRooms, selectedChat]);
+    if (selectedChat) {
+      previousMessageCountRef.current = 0;
+      isInitialLoadRef.current = true;
+      setShouldScrollToBottom(true);
+    }
+  }, [selectedChat]);
 
 
   useEffect(() => {
@@ -263,6 +285,7 @@ const Chats = () => {
     };
 
     setMessages((prev: any) => [...prev, optimisticMsg]);
+    setShouldScrollToBottom(true);
 
     try {
 
@@ -298,8 +321,45 @@ const Chats = () => {
   };
 
   useEffect(() => {
-    setMessages(chatRoomMessages?.data)
+    const allMsgs = chatRoomMessages?.pages?.slice().reverse().flatMap(page => page?.data) || [];
+    const lastMessageId = allMsgs[allMsgs.length - 1]?._id;
+    const previousLastMessageId = messages[messages.length - 1]?._id;
+    const isNewMessage = lastMessageId && lastMessageId !== previousLastMessageId && previousMessageCountRef.current > 0;
+    const isPagination = allMsgs.length > previousMessageCountRef.current && previousMessageCountRef.current > 0 && !isNewMessage;
+
+    if (isPagination && messagesEndRef.current) {
+      previousScrollHeightRef.current = messagesEndRef.current.scrollHeight;
+    }
+
+    setMessages(allMsgs);
+
+    if (isInitialLoadRef.current && allMsgs.length > 0) {
+      setShouldScrollToBottom(true);
+      isInitialLoadRef.current = false;
+    } else if (isNewMessage) {
+      setShouldScrollToBottom(true);
+    }
+
+    previousMessageCountRef.current = allMsgs.length;
   }, [chatRoomMessages]);
+
+  const handleImageClick = (url: string) => {
+    setZoomedImage(url);
+    setZoomLevel(1);
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 0.5, 3));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 0.5, 0.5));
+  };
+
+  const handleCloseZoom = () => {
+    setZoomedImage(null);
+    setZoomLevel(1);
+  };
 
   return (
     <div className="min-h-screen p-10 bg-white">
@@ -358,66 +418,88 @@ const Chats = () => {
                       <p className="text-gray-500">No active chats</p>
                     </div>
                   ) : (
-                    chatRooms?.map((c: any) => (
-                      <div
-                        key={c._id}
-                        onClick={() => {
-                          setSelectedChat(c);
-                        }}
-                        className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer overflow-hidden transition-all ${selectedChat?._id === c._id
-                          ? "bg-[#0E2430] text-white"
-                          : "hover:bg-gray-50"
-                          }`}
-                      >
-                        {c?.participants
-                          ?.filter((item: any) => item?.user?._id !== userId)
-                          ?.map((item: any) => (
-                            <React.Fragment key={item?._id}>
+                    chatRooms?.map((c: any) => {
+                      const otherParticipants = c?.participants?.filter((item: any) => item?.user?._id !== userId);
+                      const isGroupChat = otherParticipants?.length > 1;
 
-                              <img
-                                src={
-                                  item?.user?.profilePicture?.location ||
-                                  "/default-avatar.png"
-                                }
-                                className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                              />
-
-
-                              <div className="flex-1 min-w-0">
-
-                                <div
-                                  className={`font-medium truncate ${selectedChat?._id === c._id
-                                    ? "text-white"
-                                    : "text-gray-900"
-                                    }`}
-                                >
-                                  {item?.user?.userName || "User"}
-                                </div>
-
-
-                                <div
-                                  className={`text-xs mt-1 line-clamp-2 break-words ${selectedChat?._id === c._id
-                                    ? "text-gray-200"
-                                    : "text-gray-500"
-                                    }`}
-                                >
-                                  {c.lastMessage?.text || "No messages yet"}
-                                </div>
-                              </div>
-                            </React.Fragment>
-                          ))}
-
-
+                      return (
                         <div
-                          className={`text-xs whitespace-nowrap flex-shrink-0 ${selectedChat?._id === c._id
-                            ? "text-gray-200"
-                            : "text-gray-500"
+                          key={c._id}
+                          onClick={() => {
+                            setSelectedChat(c);
+                          }}
+                          className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer overflow-hidden transition-all ${selectedChat?._id === c._id
+                            ? "bg-[#0E2430] text-white"
+                            : "hover:bg-gray-50"
                             }`}
                         >
-                          {formatTime(c.lastMessage?.sentAt)}
+                          {isGroupChat ? (
+                            <div className="flex -space-x-2 flex-shrink-0">
+                              {otherParticipants?.slice(0, 2).map((item: any, idx: number) => (
+                                <React.Fragment key={item?._id}>
+                                  {item?.user?.profilePicture?.location ? (
+                                    <img
+                                      src={item?.user?.profilePicture?.location}
+                                      className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold border-2 border-white">
+                                      AD
+                                    </div>
+                                  )}
+                                </React.Fragment>
+                              ))}
+                            </div>
+                          ) : (
+                            otherParticipants?.map((item: any) => (
+                              <React.Fragment key={item?._id}>
+                                {item?.user?.profilePicture?.location ? (
+                                  <img
+                                    src={item?.user?.profilePicture?.location}
+                                    className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                                    AD
+                                  </div>
+                                )}
+                              </React.Fragment>
+                            ))
+                          )}
+
+                          <div className="flex-1 min-w-0">
+                            <div
+                              className={`font-medium truncate ${selectedChat?._id === c._id
+                                ? "text-white"
+                                : "text-gray-900"
+                                }`}
+                            >
+                              {isGroupChat
+                                ? otherParticipants.map((p: any) => p?.user?.userName || "Admin").join(", ")
+                                : otherParticipants?.[0]?.user?.userName || "Admin"}
+                            </div>
+
+                            <div
+                              className={`text-xs mt-1 line-clamp-1 break-words ${selectedChat?._id === c._id
+                                ? "text-gray-200"
+                                : "text-gray-500"
+                                }`}
+                            >
+                              {c.lastMessage?.text || "No messages yet"}
+                            </div>
+                          </div>
+
+                          <div
+                            className={`text-xs whitespace-nowrap flex-shrink-0 ${selectedChat?._id === c._id
+                              ? "text-gray-200"
+                              : "text-gray-500"
+                              }`}
+                          >
+                            {formatTime(c.lastMessage?.sentAt)}
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      )
+                    })
                   )}
                 </div>
               </div>
@@ -477,219 +559,244 @@ const Chats = () => {
 
 
             <div className="w-full lg:flex-1 p-6 flex flex-col">
-              {selectedChat?.participants?.map((item: any) => (
-                <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
-                  <img
-                    src={item?.user?.profilePicture?.location}
-                    alt={item?.user?.userName}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="font-medium text-lg">{item?.user?.userName}</div>
-                </div>
-
-              ))}
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-100 flex-wrap">
+                {selectedChat?.participants?.map((item: any) => (
+                  <div key={item?._id} className="flex items-center gap-2">
+                    {item?.user?.profilePicture?.location ? (
+                      <img
+                        src={item?.user?.profilePicture?.location}
+                        alt={item?.user?.userName}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                        AD
+                      </div>
+                    )}
+                    <div className="font-medium text-sm">{item?.user?.userName || "Admin"}</div>
+                  </div>
+                ))}
+              </div>
 
               <div
                 ref={messagesEndRef}
-                className="flex-1 p-2 overflow-y-scroll h">
-                {chatRooms?.length === 0 ? (
-                  <div className="text-center text-sm text-gray-500 my-10">
-                    No messages yet
-                  </div>
-                ) : (
-                  <div className="text-center text-sm text-gray-500 mb-6">
-                    {formatDate(selectedChat?.createdAt)}
-                  </div>
-                )}
+                onScroll={(e) => {
+                  const target = e.currentTarget;
+                  if (target.scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
+                    fetchNextPage();
+                  }
+                }}
+                className="flex-1 p-2 overflow-y-auto min-h-[400px] max-h-[500px]">
 
-                {messagesLoading ? (
-                  <div className="space-y-3">
-                    {[...Array(6)].map((_, i) => (
-                      <div
-                        key={i}
-                        className={`flex items-end gap-3 ${i % 2 === 0 ? "justify-end" : ""
-                          }`}
-                      >
-                        {i % 2 !== 0 && (
-                          <Skeleton className="w-8 h-8 rounded-full" />
-                        )}
+                <div className="min-h-full flex flex-col justify-end">
+                  {isFetchingNextPage && (
+                    <div className="text-center py-2">
+                      <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+                    </div>
+                  )}
 
-                        <Skeleton
-                          className={`h-14 rounded-2xl ${i % 2 === 0 ? "w-52" : "w-64"
+                  {messagesLoading ? (
+                    <div className="space-y-3">
+                      {[...Array(6)].map((_, i) => (
+                        <div
+                          key={i}
+                          className={`flex items-end gap-3 ${i % 2 === 0 ? "justify-end" : ""
                             }`}
-                        />
+                        >
+                          {i % 2 !== 0 && (
+                            <Skeleton className="w-8 h-8 rounded-full" />
+                          )}
 
-                        {i % 2 === 0 && (
-                          <Skeleton className="w-8 h-8 rounded-full" />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="h-[400px] ">
+                          <Skeleton
+                            className={`h-14 rounded-2xl ${i % 2 === 0 ? "w-52" : "w-64"
+                              }`}
+                          />
 
-                    {messages?.map((item: any) => {
-
-                      const isMine = item?.sender?._id === userId;
-                      const media = item.attachments || item.files || [];
-
-                      return (
-                        <div key={item._id} className="mb-4">
-                          {isMine ? (
-                            <div className="flex items-end justify-end gap-3">
-                              <div className="bg-[#3A556B] text-white px-5 py-3 rounded-xl rounded-br-none max-w-md break-all">
-                                <p>{item.text}</p>
-                                {media?.length > 0 && (
-                                  <div className="mt-2 space-y-2">
-                                    {media.map((file: any, index: number) => {
-
-                                      const url = file.url || file.location;
-
-                                      const mime =
-                                        file.mimeType ||
-                                        file.type ||
-                                        "";
-
-                                      const isImage = mime.startsWith("image/");
-                                      const isVideo = mime.startsWith("video/");
-                                      const isAudio = mime.startsWith("audio/");
-                                      const isDoc = !isImage && !isVideo && !isAudio;
-
-                                      return (
-                                        <div key={index}>
-
-                                          {isImage && (
-                                            <img
-                                              src={url}
-                                              alt="media"
-                                              className="max-w-[220px] rounded-lg border"
-                                            />
-                                          )}
-
-                                          {isVideo && (
-                                            <video
-                                              src={url}
-                                              controls
-                                              className="max-w-[220px] rounded-lg border"
-                                            />
-                                          )}
-
-                                          {isDoc && (
-                                            <a
-                                              href={url}
-                                              target="_blank"
-                                              className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
-                                            >
-                                              <FileText className="w-5 h-5 text-red-500" />
-                                              <span className="text-sm  text-black font-medium">
-                                                {file.name || "PDF File"}
-                                              </span>
-                                            </a>
-                                          )}
-
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                                <span className="text-[10px] text-gray-300 block mt-1 text-right flex items-center justify-end gap-1">
-                                  {item.status === "sending" && (
-                                    <>
-                                      <Clock className="w-3 h-3 animate-pulse" />
-                                      <span>Sending...</span>
-                                    </>
-                                  )}
-                                  {item.status === "failed" && (
-                                    <>
-                                      <X className="w-3 h-3 text-red-400" />
-                                      <span className="text-red-400">Failed</span>
-                                    </>
-                                  )}
-
-                                  {(!item.status || item.status === "sent") && (
-                                    formatTime(item.createdAt)
-                                  )}
-                                </span>
-                              </div>
-                              <img
-                                src={item?.sender?.profilePicture?.location ?? "/default-avatar.png"}
-                                className="w-8 h-8 rounded-full object-cover"
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex items-end gap-3">
-                              <img
-                                src={item?.sender?.profilePicture?.location ?? "/default-avatar.png"}
-                                className="w-8 h-8 rounded-full object-cover"
-                              />
-                              <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md break-all">
-                                <p>{item?.text}</p>
-                                {media?.length > 0 && (
-                                  <div className="mt-2 space-y-2">
-                                    {media.map((file: any, index: number) => {
-
-                                      const url = file.url || file.location;
-
-                                      const mime =
-                                        file.mimeType ||
-                                        file.type ||
-                                        "";
-
-                                      const isImage = mime.startsWith("image/");
-                                      const isVideo = mime.startsWith("video/");
-                                      const isAudio = mime.startsWith("audio/");
-                                      const isDoc = !isImage && !isVideo && !isAudio;
-
-                                      return (
-                                        <div key={index}>
-
-
-                                          {isImage && (
-                                            <img
-                                              src={url}
-                                              alt="media"
-                                              className="max-w-[220px] rounded-lg border"
-                                            />
-                                          )}
-
-
-                                          {isVideo && (
-                                            <video
-                                              src={url}
-                                              controls
-                                              className="max-w-[220px] rounded-lg border"
-                                            />
-                                          )}
-
-                                          {isDoc && (
-                                            <a
-                                              href={url}
-                                              target="_blank"
-                                              className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
-                                            >
-                                              <FileText className="w-5 h-5 text-red-500" />
-                                              <span className="text-sm  text-black font-medium">
-                                                {file.name || "PDF File"}
-                                              </span>
-                                            </a>
-                                          )}
-
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                                <span className="text-[10px] text-gray-500 block mt-1">
-                                  {formatTime(item.createdAt)}
-                                </span>
-                              </div>
-                            </div>
+                          {i % 2 === 0 && (
+                            <Skeleton className="w-8 h-8 rounded-full" />
                           )}
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      {messages?.map((item: any) => {
+
+                        const isMine = item?.sender?._id === userId;
+                        const media = item.attachments || item.files || [];
+
+                        return (
+                          <div key={item._id} className="mb-4">
+                            {isMine ? (
+                              <div className="flex items-end justify-end gap-3">
+                                <div className="bg-[#3A556B] text-white px-5 py-3 rounded-xl rounded-br-none max-w-md break-all">
+                                  <p>{item.text}</p>
+                                  {media?.length > 0 && (
+                                    <div className="mt-2 space-y-2">
+                                      {media.map((file: any, index: number) => {
+
+                                        const url = file.url || file.location;
+
+                                        const mime =
+                                          file.mimeType ||
+                                          file.type ||
+                                          "";
+
+                                        const isImage = mime.startsWith("image/");
+                                        const isVideo = mime.startsWith("video/");
+                                        const isAudio = mime.startsWith("audio/");
+                                        const isDoc = !isImage && !isVideo && !isAudio;
+
+                                        return (
+                                          <div key={index}>
+
+                                            {isImage && (
+                                              <img
+                                                src={url}
+                                                alt="media"
+                                                onClick={() => handleImageClick(url)}
+                                                className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
+                                              />
+                                            )}
+
+                                            {isVideo && (
+                                              <video
+                                                src={url}
+                                                controls
+                                                className="max-w-[220px] rounded-lg border"
+                                              />
+                                            )}
+
+                                            {isDoc && (
+                                              <a
+                                                href={url}
+                                                target="_blank"
+                                                className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
+                                              >
+                                                <FileText className="w-5 h-5 text-red-500" />
+                                                <span className="text-sm  text-black font-medium">
+                                                  {file.name || "PDF File"}
+                                                </span>
+                                              </a>
+                                            )}
+
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                  <span className="text-[10px] text-gray-300 block mt-1 text-right flex items-center justify-end gap-1">
+                                    {item.status === "sending" && (
+                                      <>
+                                        <Clock className="w-3 h-3 animate-pulse" />
+                                        <span>Sending...</span>
+                                      </>
+                                    )}
+                                    {item.status === "failed" && (
+                                      <>
+                                        <X className="w-3 h-3 text-red-400" />
+                                        <span className="text-red-400">Failed</span>
+                                      </>
+                                    )}
+
+                                    {(!item.status || item.status === "sent") && (
+                                      formatTime(item.createdAt)
+                                    )}
+                                  </span>
+                                </div>
+                                {item?.sender?.profilePicture?.location ? (
+                                  <img
+                                    src={item?.sender?.profilePicture?.location}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                                    AD
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex items-end gap-3">
+                                {item?.sender?.profilePicture?.location ? (
+                                  <img
+                                    src={item?.sender?.profilePicture?.location}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                                    AD
+                                  </div>
+                                )}
+                                <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md break-all">
+                                  <p>{item?.text}</p>
+                                  {media?.length > 0 && (
+                                    <div className="mt-2 space-y-2">
+                                      {media.map((file: any, index: number) => {
+
+                                        const url = file.url || file.location;
+
+                                        const mime =
+                                          file.mimeType ||
+                                          file.type ||
+                                          "";
+
+                                        const isImage = mime.startsWith("image/");
+                                        const isVideo = mime.startsWith("video/");
+                                        const isAudio = mime.startsWith("audio/");
+                                        const isDoc = !isImage && !isVideo && !isAudio;
+
+                                        return (
+                                          <div key={index}>
+
+
+                                            {isImage && (
+                                              <img
+                                                src={url}
+                                                alt="media"
+                                                onClick={() => handleImageClick(url)}
+                                                className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
+                                              />
+                                            )}
+
+
+                                            {isVideo && (
+                                              <video
+                                                src={url}
+                                                controls
+                                                className="max-w-[220px] rounded-lg border"
+                                              />
+                                            )}
+
+                                            {isDoc && (
+                                              <a
+                                                href={url}
+                                                target="_blank"
+                                                className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
+                                              >
+                                                <FileText className="w-5 h-5 text-red-500" />
+                                                <span className="text-sm  text-black font-medium">
+                                                  {file.name || "PDF File"}
+                                                </span>
+                                              </a>
+                                            )}
+
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                  <span className="text-[10px] text-gray-500 block mt-1">
+                                    {formatTime(item.createdAt)}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="pt-4">
                 {files?.length > 0 && (
@@ -759,66 +866,70 @@ const Chats = () => {
                   </div>
                 )}
                 {/* {true ? ( */}
-                <div className="flex items-center p-3 border border-gray-200 rounded-xl">
-                  <input
-                    type="file"
-                    id="attach-file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    multiple
-                    accept="*/*"
-                  />
-                  <label htmlFor="attach-file" className="cursor-pointer">
-                    <File />
-                  </label>
+                {chatRooms?.length === 0 ? (
 
-                  <input
-                    placeholder="Send a message"
-                    value={message}
-                    onChange={(e) => {
-                      setMessage(e.target.value);
+                  <div className="flex items-center p-3 border border-gray-200 rounded-xl">
+                    <input
+                      type="file"
+                      id="attach-file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      multiple
+                      accept="*/*"
+                    />
+                    <label htmlFor="attach-file" className="cursor-pointer">
+                      <File />
+                    </label>
+
+                    <input
+                      placeholder="Send a message"
+                      value={message}
+                      onChange={(e) => {
+                        setMessage(e.target.value);
 
 
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && message.trim()) {
-                        handleSend();
-                      }
-                    }}
-                    className="flex-1 px-4 py-3 rounded-md text-sm placeholder-gray-500 outline-none"
-                  />
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && message.trim()) {
+                          handleSend();
+                        }
+                      }}
+                      className="flex-1 px-4 py-3 rounded-md text-sm placeholder-gray-500 outline-none"
+                    />
 
-                  <button
-                    onClick={handleSend}
-                    disabled={!message.trim() && files.length === 0}
-                    className={`ml-3 w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 transition-all
+                    <button
+                      onClick={handleSend}
+                      disabled={!message.trim() && files.length === 0}
+                      className={`ml-3 w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 transition-all
   ${message.trim() || files.length > 0
 
-                        ? "bg-[#0E2430] text-white hover:opacity-90"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      }`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
+                          ? "bg-[#0E2430] text-white hover:opacity-90"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
                     >
-                      <path
-                        d="M22 2L11 13"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M22 2L15 22l-4-9-9-4 19-7z"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <path
+                          d="M22 2L11 13"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M22 2L15 22l-4-9-9-4 19-7z"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ) : ""}
+
                 {/* ) : ( */}
                 {/* <div className="text-center text-gray-500 py-8">
                       You can no longer chat with this user
@@ -829,6 +940,46 @@ const Chats = () => {
           </div>
         </div>
       </div>
+
+      <Dialog open={!!zoomedImage} onOpenChange={handleCloseZoom}>
+        <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden bg-black/95">
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="absolute top-4 right-4 z-50 flex gap-2">
+              <button
+                onClick={handleZoomOut}
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-colors"
+              >
+                <ZoomOut className="w-5 h-5 text-white" />
+              </button>
+              <button
+                onClick={handleZoomIn}
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-colors"
+              >
+                <ZoomIn className="w-5 h-5 text-white" />
+              </button>
+              <button
+                onClick={handleCloseZoom}
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-sm transition-colors"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+            <div className="overflow-auto max-w-full max-h-full p-8">
+              {zoomedImage && (
+                <img
+                  src={zoomedImage}
+                  alt="Zoomed"
+                  className="max-w-full max-h-[80vh] w-auto h-auto object-contain transition-transform duration-200"
+                  style={{
+                    transform: `scale(${zoomLevel})`,
+                    transformOrigin: "center center",
+                  }}
+                />
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

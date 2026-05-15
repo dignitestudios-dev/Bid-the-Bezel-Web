@@ -1,11 +1,12 @@
 "use client";
 import { useMe } from "@/features/auth/hooks";
 import { useAddProductToFavorite } from "@/features/fav-product/hook";
+import { formatPrice } from "@/lib/helper";
 import { showError, showSuccess } from "@/lib/toast";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-
+import {getTimeLeft} from "@/lib/helper"
 type Props = any;
 
 const typeRouteMap: Record<string, string> = {
@@ -62,9 +63,9 @@ const CollectionCard = (props: Props) => {
           )}
 
           {watch.type === "auction" && (
-            <div className="rounded-tl-sm absolute bottom-0 right-0 p-3 text-center text-white bg-black/10 px-3 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-br-xl">
-              <h2>Ends In</h2>
-              <h1 className="font-semibold">2D 5H 42M</h1>
+            <div className="rounded-tl-sm z-20 absolute bottom-0 right-0 p-3 text-center text-white bg-black/10 px-3 text-sm bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-br-xl">
+              <h2>{ getTimeLeft(watch?.auction?.endsAt) == "Ended" ? "Status": "Ends In"}</h2>
+              <h1 className="font-semibold">{getTimeLeft(watch?.auction?.endsAt)}</h1>
             </div>
           )}
 
@@ -90,17 +91,29 @@ const CollectionCard = (props: Props) => {
                 {watch?.type === "fixed_price" ? "Price" : "Starting Price"}
               </h2>
 
-              <h1 className="font-semibold text-lg">${watch?.price}</h1>
+              <h1 className="font-semibold text-lg">{formatPrice( watch?.price)}</h1>
             </div>
 
-            {watch.type === "auction" && (
+            {watch.type === "auction"  && (
               <>
                 <div className="w-px bg-gray-400 " />
                 <div>
                   <h2 className="text-sm">Current Bid</h2>
 
                   <h1 className="font-semibold text-lg">
-                    ${watch?.auction.currentBidAmount || "0"}
+                    {formatPrice( watch?.auction.currentBidAmount )|| "0"}
+                  </h1>
+                </div>
+              </>
+            )}
+            {( watch.type == "taking_offers") && (
+              <>
+                <div className="w-px bg-gray-400 " />
+                <div>
+                  <h2 className="text-sm">Current Offer</h2>
+
+                  <h1 className="font-semibold text-lg">
+                    {formatPrice( watch?.auction.currentBidAmount )|| "0"}
                   </h1>
                 </div>
               </>

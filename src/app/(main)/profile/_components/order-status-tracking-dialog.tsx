@@ -17,7 +17,7 @@ interface Props {
 
 const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }) => {
   const { mutate: markAsReceived, isPending } = useMarkAsReceived(item?.orderItem?._id)
-
+console.log(item)
   return (
     <Dialog open={open} onOpenChange={(v) => onOpenChange(v)}>
       <DialogContent className="w-[700px] max-w-fit p-5">

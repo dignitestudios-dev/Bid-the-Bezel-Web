@@ -23,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FloatingInput } from "@/components/ui/floating-input";
 import { usCitiesStates } from "@/constant/country-data";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
@@ -140,7 +141,7 @@ const PaymentDetail = () => {
                 ) : data?.data?.cards?.length === 0 ? (
                   <div>No Card Added</div>
                 ) : (
-                  <div className="border rounded-lg ">
+                  <div className="border h-[200px] overflow-y-auto rounded-lg ">
                     {data?.data?.cards?.map((card: any, index: number) => (
                       <button
                         onClick={() => {setDefaultCard({ cardId: card._id })}}
@@ -314,7 +315,7 @@ const PaymentDetail = () => {
                       />
                       <div className="mb-6 flex gap-2">
                         <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
-                          🇺🇸 +1
+                          <Image src="/images/usFlag.png" alt="flag" width={20} height={20} /> +1
                         </div>
 
                         <div className="w-full">
@@ -373,7 +374,7 @@ const PaymentDetail = () => {
 
                 <div className="flex justify-between items-center mt-4 pt-2">
                   <span className="font-semibold">TOTAL</span>
-                  <span className="text-xl font-bold">USD $250</span>
+                  <span className="text-xl font-bold">USD $250.00</span>
                 </div>
               </div>
             </div>

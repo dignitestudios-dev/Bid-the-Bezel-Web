@@ -22,6 +22,7 @@ import { useGetChatRooms } from "@/features/chat/hooks";
 import { Skeleton } from "./ui/skeleton";
 import { useQueryClient } from "@tanstack/react-query";
 import { createSocket } from "@/sockets";
+import { useGetNotifications, useMarkAllRead } from "@/features/notifications/hooks";
 
 const notifications = [
   {
@@ -52,6 +53,12 @@ const MessageNotificationMenu = () => {
   const { socket, connect } = createSocket();
   const queryClient = useQueryClient();
   const { data: allChatRooms, isLoading: roomsLoading } = useGetChatRooms()
+  const { data: notificationsData } = useGetNotifications();
+  const { mutate: markAllRead } = useMarkAllRead();
+
+  const unreadCount = notificationsData?.pages?.reduce((count: number, page: any) => {
+    return count + (page?.data?.filter((notification: any) => !notification.isRead).length || 0);
+  }, 0) || 0;
 
   const dummyArray = [1, 2];
   const tabs = [
@@ -61,6 +68,13 @@ const MessageNotificationMenu = () => {
   const [activeTab, setActiveTab] = useState<"messages" | "notifications">(
     "notifications",
   );
+
+  const handleTabChange = (tab: "messages" | "notifications") => {
+    setActiveTab(tab);
+    if (tab === "notifications" && unreadCount > 0) {
+      markAllRead();
+    }
+  };
 
   const handleGoToChats = () => {
     router.push("/chats");
@@ -94,8 +108,13 @@ const MessageNotificationMenu = () => {
     <>
       <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
-          <Button className="border-none ring-0 bg-[#F7F7F7] hover:bg-[#ededed] rounded-full h-14 w-14">
+          <Button className="border-none ring-0 bg-[#F7F7F7] hover:bg-[#ededed] rounded-full h-14 w-14 relative">
             <MessageNotification />
+            {unreadCount > 0 && (
+              <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-red-500 rounded-full flex items-center justify-center text-white text-[10px] font-semibold px-1">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -110,9 +129,7 @@ const MessageNotificationMenu = () => {
                   ? "border-gray-900 text-black"
                   : "text-gray-600 cursor-pointer border-transparent"
                   }`}
-                onClick={() =>
-                  setActiveTab(tab.label as "messages" | "notifications")
-                }
+                onClick={() => handleTabChange(tab.label as "messages" | "notifications")}
               >
                 {tab.icon}&nbsp;&nbsp;{tab.title}
               </div>

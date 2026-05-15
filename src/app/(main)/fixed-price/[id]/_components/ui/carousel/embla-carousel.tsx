@@ -62,7 +62,7 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
                   src={item?.location}
                   alt="slide"
                   fill
-                  className="object-cover rounded-lg"
+                  className="object-contain rounded-lg"
                   sizes="100vw"
                   unoptimized
                 />

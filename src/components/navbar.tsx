@@ -15,13 +15,33 @@ import PlanSuccessDialog from "./ui/plan-success-dialog";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRequireProfileCompletion } from "@/hooks/api/use-require-profile-completion";
 import { useFcmNotification } from "@/hooks/api/use-fcm-notification";
+import { useEffect, useState } from "react";
+import { getToken } from "@/lib/cookies";
 
 const Navbar = () => {
-  const { data: user, isLoading } = useMe();
+  const { data: user, isLoading, refetch } = useMe();
+  const token = getToken()
   const searchParams = useSearchParams();
   const router = useRouter();
-  const isPlanSuccess = searchParams.get("plan") === "success";
+  const isPlanParam = searchParams.get("plan") === "success";
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  
+  useEffect(() => {
+    if (isPlanParam && !isLoading) {
+      refetch().then((result) => {
+        if (result.data?.data?.isSellerPlanPurchased) {
+          setShowSuccessDialog(true);
+        } else {
+          const url = new URL(window.location.href);
+          url.searchParams.delete("plan");
+          router.replace(url.pathname + url.search, { scroll: false });
+        }
+      });
+    }
+  }, [isPlanParam, isLoading]);
+  
   const handleClose = () => {
+    setShowSuccessDialog(false);
     const url = new URL(window.location.href);
     url.searchParams.delete("plan");
     router.replace(url.pathname + url.search, { scroll: false });
@@ -63,11 +83,11 @@ const Navbar = () => {
       </div>
       <div className="bg-(--primary) text-white text-center py-3">
         <div className="max-w-screen-2xl mx-auto">
-          <b>Disclaimer:</b> Nebula Time is not liable for any inaccuracies or
+          <b>Disclaimer:</b> Bid the Bezel is not liable for any inaccuracies or
           failures resulting from use.
         </div>
       </div>
-      <PlanSuccessDialog open={isPlanSuccess} onOpenChange={handleClose} />
+      <PlanSuccessDialog open={showSuccessDialog} onOpenChange={handleClose} />
     </div>
   );
 };

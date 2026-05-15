@@ -1,5 +1,6 @@
 "use client"
 import { QueryClient } from "@tanstack/react-query";
+import { setQueryClient } from "./apiClient";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,3 +12,5 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+setQueryClient(queryClient);

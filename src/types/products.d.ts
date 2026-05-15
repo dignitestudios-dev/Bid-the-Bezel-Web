@@ -116,6 +116,7 @@ reservePrice:number;
   isMyProduct: boolean;
   isDraftPageShown: boolean;
 isReserved:boolean;
+shouldAdminIntervene:boolean;
   createdAt: string;
   updatedAt: string;
 }

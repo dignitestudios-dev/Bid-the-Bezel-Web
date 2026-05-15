@@ -3,7 +3,7 @@ import { useCreateAnswer } from "@/features/product-qa/hook";
 import { answerSchema } from "@/features/product-qa/schema";
 import { formatDate } from "@/lib/utils/date.utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleQuestionMark, Loader2 } from "lucide-react";
+import { CircleQuestionMark, Loader2, SendHorizontal } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -54,7 +54,8 @@ const Answers = ({ productQAndA, page, setPage, pagination }: Props) => {
     return (
         <div className="rounded-xl border border-[#E3E3E3]">
             <div className="bg-[#F7F7F7] rounded-t-xl font-semibold text-xl flex gap-2 items-center px-6 py-4 border-b">
-                <CircleQuestionMark /> <h1>Questions about the product</h1>
+                <CircleQuestionMark />
+                 <h1>Questions about the product</h1>
             </div>
             <div className="p-4 ">
                 {!isLoggedIn &&
@@ -176,9 +177,9 @@ const Answers = ({ productQAndA, page, setPage, pagination }: Props) => {
                                             disabled={createAnswerLoading}
                                             className="bg-black text-white cursor-pointer p-2 rounded-md disabled:opacity-50"
                                         >
-                                            {createAnswerLoading ? <Loader2 className="animate-spin" /> : "Send"}
+                                            {createAnswerLoading ? <Loader2 className="animate-spin" /> : <SendHorizontal size={50} />}
                                         </button>
-                                    </div>
+                                    </div> 
                                 </form>
                             )}
                         </div>

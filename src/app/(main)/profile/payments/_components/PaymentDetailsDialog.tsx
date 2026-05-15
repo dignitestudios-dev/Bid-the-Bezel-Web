@@ -12,15 +12,19 @@ import { Button } from "@/components/ui/button";
 const PaymentDetailsDialog = ({
   open,
   onClose,
+  transaction,
 }: {
   open: boolean;
   onClose: any;
+  transaction?: any;
 }) => {
+  if (!transaction) return null;
+
   return (
     <Dialog open={open} onOpenChange={(v) => onClose(v)}>
       <DialogContent className="w-[700px] max-w-full p-10">
         <DialogHeader>
-          <DialogTitle />
+          <DialogTitle>Payment Details</DialogTitle>
         </DialogHeader>
 
         <div>
@@ -31,31 +35,42 @@ const PaymentDetailsDialog = ({
               className="w-16 h-16 rounded-md object-cover"
             />
             <div className="flex-1">
-              <div className="font-medium">Audemars Piguet Royal Oak</div>
-              <div className=" text-muted-foreground flex items-center gap-2 mt-1">
-                <div className="w-6 h-6 rounded-full overflow-hidden">
-                  <img
-                    src="/images/user2.jpg"
-                    alt="user"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                Arandomuser
+              <div className="font-medium">{transaction.product?.brandName} {transaction.product?.model}</div>
+              <div className=" text-muted-foreground mt-1">
+                Ref: {transaction.product?.referenceId}
               </div>
             </div>
-            <div className="font-semibold text-lg">$765.76</div>
+            <div className="font-semibold text-lg">${transaction.type === 'credit' ? transaction.netAmount?.toFixed(2) : transaction.amount?.toFixed(2)}</div>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className=" text-[#0D0D0D]">Payment Amount</div>
-            <div className=" font-medium text-right">$18</div>
+            <div className=" font-medium text-right">${transaction.amount?.toFixed(2)}</div>
+
+            {transaction.type === 'credit' && (
+              <>
+                <div className=" text-[#0D0D0D]">Platform Fee</div>
+                <div className=" font-medium text-right">${transaction.platformFee?.toFixed(2)}</div>
+
+                <div className=" text-[#0D0D0D]">Payment Fee</div>
+                <div className=" font-medium text-right">${transaction.paymentFee?.toFixed(2)}</div>
+
+                <div className=" text-[#0D0D0D]">Net Amount</div>
+                <div className=" font-medium text-right">${transaction.netAmount?.toFixed(2)}</div>
+              </>
+            )}
+
+            <div className=" text-[#0D0D0D]">Purpose</div>
+            <div className=" font-medium text-right capitalize">{transaction.purpose?.replace(/_/g, ' ')}</div>
 
             <div className=" text-[#0D0D0D]">Date</div>
-            <div className=" font-medium text-right">12 Jan 2024, 12:31pm</div>
+            <div className=" font-medium text-right">{new Date(transaction.createdAt).toLocaleString()}</div>
 
             <div className=" text-[#0D0D0D]">Status</div>
             <div className="text-right">
-              <Badge color="bg-yellow-100 text-yellow-800">On Hold</Badge>
+              <Badge color={transaction.status === "initiated" ? "bg-yellow-100 text-yellow-800" : "bg-emerald-100 text-emerald-800"}>
+                {transaction.status}
+              </Badge>
             </div>
           </div>
 

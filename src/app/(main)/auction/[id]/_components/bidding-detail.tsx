@@ -17,7 +17,7 @@ type Props = {
 
 const BiddingDetail = ({ product }: Props) => {
   const user = useAppSelector((state) => state.auth.user);
-  const isAuthenticated = product?.authentication?.status === 'authenticated';
+  const isAuthenticated = product?.authentication?.status === 'approved';
   const [currentPage, setCurrentPage] = useState(1);
   const queryClient = useQueryClient();
 

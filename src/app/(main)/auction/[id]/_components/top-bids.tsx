@@ -46,7 +46,7 @@ function BidsList({
                 <div className="w-5 h-5 md:w-8 md:h-8 rounded-full bg-gray-200" />
               )}
               <div className="flex items-center gap-1">
-                {bid.amount === topBidAmount && (
+                {idx === 0 && bid.amount == topBidAmount && (
                   <Crown className="h-3 w-3 md:w-4 md:h-4 text-yellow-500" />
                 )}
                 <p className="md:text-base text-sm font-medium">
@@ -116,7 +116,7 @@ export default function TopBids({
           time={true}
           topBidAmount={topBidAmount}
         />
-        {totalPages > 0 && (
+        {totalPages > 1 && (
           <div className="mt-4 pt-3 border-t">
             <h1 className="text-xl font-semibold mb-3">All Bidders</h1>
 

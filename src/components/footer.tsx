@@ -59,6 +59,7 @@ const { data: user, isLoading } = useMe();
                 alt="Bidthebezel Logo"
                 width={50}
                 height={50}
+                unoptimized
                 className="h-12 w-auto"
               />
               <p className="text-base leading-relaxed text-white/80 max-w-xs">
@@ -108,7 +109,7 @@ const { data: user, isLoading } = useMe();
               </div>
 
               <div className="flex gap-32">
-                <div>
+                {/* <div>
                   <h3 className="font-semibold mb-4">Navigation</h3>
                   <ul className="space-y-3 text-base text-white/80">
                     <ul className="space-y-3 text-base text-white/80">
@@ -132,16 +133,31 @@ const { data: user, isLoading } = useMe();
                       </li>
                     </ul>
                   </ul>
-                </div>
+                </div> */}
 
                 <div>
                   <h3 className="font-semibold mb-4">Company</h3>
                   <ul className="space-y-3 text-base text-white/80">
-                    <li>About</li>
-                    <li>FAQs</li>
-                    <li>Contact us</li>
-                    <li>Terms of Use</li>
-                    <li>Privacy Policy</li>
+                    <li>
+                      <Link href="/about" className="hover:text-white">
+                        About
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/#faqs" className="hover:text-white">
+                        FAQs
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/terms-and-conditions" className="hover:text-white">
+                        Terms of Use
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/privacy-policy" className="hover:text-white">
+                        Privacy Policy
+                      </Link>
+                    </li>
                   </ul>
                 </div>
 
@@ -152,26 +168,30 @@ const { data: user, isLoading } = useMe();
                       <span>
                         <Mail />
                       </span>
-                      support@Bidthebezel.com
+                      <a href="mailto:zack@bidthebezel.com" className="hover:text-white">
+                        zack@bidthebezel.com
+                      </a>
                     </li>
                     <li className="flex items-center gap-2">
                       <span>
                         <Phone />
                       </span>
-                      +1 (310) 925-3575
+                      <a href="tel:+14382381122" className="hover:text-white">
+                        438-238-1122
+                      </a>
                     </li>
                     <li className="flex items-center gap-2">
                       <span>
                         <MapPin />
                       </span>
-                      Los Angeles
+                      Inlet Beach, Florida.
                     </li>
                   </ul>
                 </div>
               </div>
 
               {/* CONTACT */}
-              <div>
+              {/* <div>
                 <h3 className="font-semibold mb-4">Contacts us</h3>
                 <ul className="space-y-3 text-base text-white/80">
                   <li className="flex items-center gap-2">
@@ -187,7 +207,7 @@ const { data: user, isLoading } = useMe();
                     Los Angeles
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
           </div>
 

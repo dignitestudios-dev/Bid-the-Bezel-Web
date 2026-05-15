@@ -74,7 +74,7 @@ const Profile = () => {
     setValue,
     watch,
     reset,
-    formState: { errors , isValid },
+    formState: { errors , isValid, isDirty },
   } = useForm<UpdateProfilePayload>({
     resolver: zodResolver(updateProfileSchema),
       mode: "onChange",
@@ -112,7 +112,22 @@ const Profile = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setValue("profilePicture", file, { shouldValidate: true });
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!validTypes.includes(file.type)) {
+        showError('Please upload a valid image file (JPEG, PNG, GIF, or WebP)');
+        e.target.value = '';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        showError('File size must be less than 5MB');
+        e.target.value = '';
+        return;
+      }
+
+      setValue("profilePicture", file, { shouldValidate: true, shouldDirty: true });
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
@@ -272,7 +287,7 @@ const Profile = () => {
                 type="file"
                 ref={fileInputRef}
                 className="hidden"
-                accept="image/*"
+                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                 onChange={handleImageChange}
               />
               {errors.profilePicture && (
@@ -330,7 +345,7 @@ const Profile = () => {
                   )}
               </div>
               <div className="col-span-full flex justify-end">
-                <Button size={"lg"} type="submit" disabled={isUpdating}>
+                <Button size={"lg"} type="submit" disabled={isUpdating || !isDirty}>
                   {isUpdating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -2,7 +2,7 @@
 import { useApiMutation } from "@/hooks/api/use-api-mutation";
 import { apiClient } from "@/lib/apiClient";
 import { showError } from "@/lib/toast";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export const useGetChatRooms = () => {
     return useQuery<any>({
@@ -13,16 +13,23 @@ export const useGetChatRooms = () => {
         },
     });
 };
+
 export const useGetChatMessages = (roomId: string) => {
-    return useQuery<any>({
+    return useInfiniteQuery<any>({
         queryKey: ["get-chat-messages", roomId],
-        queryFn: async () => {
-            const res = await apiClient.get(`/chat/messages/${roomId}`);
+        initialPageParam: 1,
+        queryFn: async ({ pageParam = 1 }) => {
+            const res = await apiClient.get(`/chat/messages/${roomId}`, {
+                params: { page: pageParam, limit: 15 }
+            });
             return res.data;
         },
+        getNextPageParam: (lastPage) => {
+            const pagination = lastPage?.pagination;
+            if (!pagination) return undefined;
+            return pagination.page < pagination.pages ? pagination.page + 1 : undefined;
+        },
         enabled: !!roomId,
-
-
     });
 };
 

@@ -72,7 +72,7 @@ export const getTimeLeft = (endsAt?: string | Date, now = Date.now()): string =>
 
   const diff = new Date(endsAt).getTime() - now;
 
-  if (diff <= 0) return "0D 0H 0M";
+  if (diff <= 0) return "Ended";
 
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);

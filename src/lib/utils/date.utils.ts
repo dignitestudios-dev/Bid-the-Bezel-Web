@@ -1,7 +1,7 @@
 export const formatTimeLeft = (endDate: string) => {
   const diff = new Date(endDate).getTime() - Date.now();
 
-  if (diff <= 0) return "0D 0H 0M";
+  if (diff <= 0) return "Ended";
 
   const d = Math.floor(diff / (1000 * 60 * 60 * 24));
   const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -10,7 +10,7 @@ export const formatTimeLeft = (endDate: string) => {
   return `${d}D ${h}H ${m}M`;
 };
 export const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString("en-GB", {
+  return new Date(dateString).toLocaleString("en-US", {
     day: "2-digit",
     month: "short",
     year: "numeric",

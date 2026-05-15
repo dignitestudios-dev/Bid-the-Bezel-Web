@@ -8,7 +8,7 @@ import { AlertUnauthenticatedDialog } from "./alert-unauthenticated-dialog";
 import { AlertDeleteDialog } from "./alert-delete-dialog";
 import Link from "next/link";
 import { UpdateProductDialog } from "./update-product-dialog";
-import {formatPrice} from "@/lib/helper";
+import { formatPrice } from "@/lib/helper";
 type Props = {
   link?: string;
   image: string;
@@ -42,35 +42,40 @@ const ListingCard = ({
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [updateDialog, setUpdateDialog] = useState(false);
 
-let pathname =
-  type === "auction"
-    ? `/auction/${id}`
-    : type === "fixed_price"
-    ? `/fixed-price/${id}`
-    : type === "taking_offers"
-    ? `/taking-offer/${id}`
-    : `/fixed-price/${id}`;
+  let pathname =
+    type === "auction"
+      ? `/auction/${id}`
+      : type === "fixed_price"
+        ? `/fixed-price/${id}`
+        : type === "taking_offers"
+          ? `/taking-offer/${id}`
+          : `/fixed-price/${id}`;
 
   return (
     <div className="card p-0 relative overflow-hidden">
-     
-        <Link href={pathname} className="p-3 w-full flex items-start gap-3">
-          <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
-            <Image
-              src={image}
-              alt={title}
-              width={96}
-              height={96}
-              unoptimized
-              className="object-contain w-full h-full"
-            />
-          </div>
 
-          <div className="flex-1">
-            <p className="text-lg font-semibold text-end">{formatPrice(Number(price))}</p>
-            <p className="text-lg font-medium">{model}</p>
-          </div>
-        </Link>
+      <Link href={pathname} className="p-3 w-full flex items-start gap-3">
+        <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
+          <Image
+            src={image}
+            alt={title}
+            width={96}
+            height={96}
+            unoptimized
+            className="object-contain w-full h-full"
+          />
+        </div>
+
+        <div className="flex-1 flex items-center py-8 justify-between gap-2 min-w-0">
+          <p className="text-lg font-medium truncate min-w-0">
+            {brandName} {model}
+          </p>
+
+          <p className="text-lg font-semibold shrink-0">
+            {formatPrice(Number(price))}
+          </p>
+        </div>
+      </Link>
       {status === "draft" && (
         <div className="p-4 border-t border-dashed  flex flex-col sm:flex-row gap-3">
           <Button

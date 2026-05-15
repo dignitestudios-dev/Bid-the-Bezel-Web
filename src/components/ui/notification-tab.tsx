@@ -14,7 +14,8 @@ type Props = {
   description: string;
   isFav: boolean;
   createdAt: string;
-  msg: any,
+  msg: any;
+  isRead: boolean;
 };
 
 const NotificationTab = ({
@@ -23,6 +24,7 @@ const NotificationTab = ({
   isFav,
   createdAt,
   msg,
+  isRead,
 }: Props) => {
   const router = useRouter()
   const hasButtonShowSeller = msg.metadata?.type === "SHIPPING_DETAIL_SELLER"
@@ -33,6 +35,8 @@ const NotificationTab = ({
       router.push(`/seller/shipping-details/${msg.metadata?._id}`);
     } else if (msg.metadata?.type === "fixed_price") {
       router.push(`/fixed-price/${msg.metadata?._id}`);
+    } else if (msg.metadata?.type === "taking_offers") {
+      router.push(`/taking-offer/${msg.metadata?._id}`);
     } else if (msg.metadata?.type === "auction") {
       router.push(`/auction/${msg.metadata?._id}`);
     } else if (msg.metadata?.cta === "PRODUCT_TAKING_OFFER") {
@@ -61,7 +65,10 @@ const NotificationTab = ({
   const isShippingDisabled = hasButtonShowSeller && (isDetailFilled || isLoading);
 
   return (
-    <DropdownMenuItem className="cursor-pointer items-start flex gap-2 p-2 rounded-lg group  transition-all">
+    <DropdownMenuItem className={cn(
+      "cursor-pointer items-start flex gap-2 p-2 rounded-lg group transition-all",
+      !isRead && "bg-blue-50 hover:bg-blue-100"
+    )}>
       <div className="w-9 h-9 rounded-full flex justify-center items-center bg-gray-100 group-hover:bg-gray-800">
         {isFav ? <Heart size={80} color="red" fill="red" /> : <NotificationItem />}
       </div>
