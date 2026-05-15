@@ -148,20 +148,29 @@ const Chats = () => {
   }, [allChatRooms]);
 
   useEffect(() => {
-    if (messagesEndRef.current && shouldScrollToBottom) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-      setShouldScrollToBottom(false);
+    const scrollToBottom = () => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+      }
+    };
+
+    if (shouldScrollToBottom) {
+      requestAnimationFrame(() => {
+        scrollToBottom();
+        setShouldScrollToBottom(false);
+      });
     }
   }, [messages, shouldScrollToBottom]);
 
   useEffect(() => {
     if (messagesEndRef.current && !shouldScrollToBottom && previousScrollHeightRef.current > 0) {
-      const newScrollHeight = messagesEndRef.current.scrollHeight;
+      const scrollContainer = messagesEndRef.current;
+      const newScrollHeight = scrollContainer.scrollHeight;
       const scrollDiff = newScrollHeight - previousScrollHeightRef.current;
-      messagesEndRef.current.scrollTop = scrollDiff;
+      scrollContainer.scrollTop = scrollDiff;
       previousScrollHeightRef.current = 0;
     }
-  }, [messages]);
+  }, [messages, shouldScrollToBottom]);
 
   useEffect(() => {
     if (allChatRooms?.data?.length > 0 && !selectedChat) {
@@ -559,7 +568,14 @@ const Chats = () => {
 
 
             <div className="w-full lg:flex-1 p-6 flex flex-col">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-100 flex-wrap">
+              {!selectedChat && (
+                <div className="text-center text-gray-500 text-lg py-8">
+                  Select a chat to start messaging
+                </div>
+              )}
+              {selectedChat && (
+                <>
+                  <div className="flex items-center gap-3 pb-4 border-b border-gray-100 flex-wrap">
                 {selectedChat?.participants?.map((item: any) => (
                   <div key={item?._id} className="flex items-center gap-2">
                     {item?.user?.profilePicture?.location ? (
@@ -582,7 +598,7 @@ const Chats = () => {
                 ref={messagesEndRef}
                 onScroll={(e) => {
                   const target = e.currentTarget;
-                  if (target.scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
+                  if (target.scrollTop <= 50 && hasNextPage && !isFetchingNextPage) {
                     fetchNextPage();
                   }
                 }}
@@ -871,7 +887,6 @@ const Chats = () => {
                     No active chats
                   </div>
                 ) : (
-
                   <div className="flex items-center p-3 border border-gray-200 rounded-xl">
                     <input
                       type="file"
@@ -934,6 +949,8 @@ const Chats = () => {
                   </div>
                 )}
               </div>
+              </>
+              )}
             </div>
           </div>
         </div>
