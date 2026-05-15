@@ -18,11 +18,18 @@ import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { isValid } from "zod/v3";
 import { Upload } from "lucide-react";
+import { showError } from "@/lib/toast";
 
 type Props = {
   onNext: () => void;
 };
-
+const ALLOWED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+];
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const WatchDetailForm = ({ onNext }: Props) => {
   const dispatch = useAppDispatch();
   const referenceId = useMemo(() => generateReferenceId(), []);
@@ -48,23 +55,41 @@ const WatchDetailForm = ({ onNext }: Props) => {
       photos: [],
     },
   });
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
 
     if (!files) return;
 
     const currentPhotos = watch("photos") || [];
 
-    const fileArray = Array.from(files).map((file) => ({
-      file,
-      name: file.name,
-      url: URL.createObjectURL(file),
-    }));
+    const validFiles = Array.from(files)
+        .filter((file) => {
+            // validate image type
+            if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+                showError(`${file.name} is not a supported image`);
+                return false;
+            }
 
-    setValue("photos", [...currentPhotos, ...fileArray], { shouldValidate: true });
-    
-    e.target.value = '';
-  };
+            // validate file size
+            if (file.size > MAX_FILE_SIZE) {
+               showError(`${file.name} must be 5MB or less`);
+                return false;
+            }
+
+            return true;
+        })
+        .map((file) => ({
+            file,
+            name: file.name,
+            url: URL.createObjectURL(file),
+        }));
+
+    setValue("photos", [...currentPhotos, ...validFiles], {
+        shouldValidate: true,
+    });
+
+    e.target.value = "";
+};
 
   const onSubmit = (data: any) => {
     mutate(data, {

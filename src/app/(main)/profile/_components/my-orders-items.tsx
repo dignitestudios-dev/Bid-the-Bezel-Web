@@ -11,9 +11,9 @@ import { formatPrice } from "@/lib/helper";
 // Dummy data for illustration purposes
 type ListingType = "fixed" | "auction" | "taking-offers";
 
-
 const MyOrdersItems = () => {
-  const { data: orders, isLoading } = useGetOrders()
+  const { data: orders, isLoading } = useGetOrders();
+
   const [open, setOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
@@ -33,19 +33,21 @@ const MyOrdersItems = () => {
   //   setSelected(item);
   //   setOpenNoAuth(true);
   // }
+
   if (isLoading) {
-    return <Skeleton className="w-full h-24" />
+    return <Skeleton className="w-full h-24" />;
   }
+
   return (
     <>
       <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto">
-        {!isLoading && orders?.data?.length === 0 ?
+        {!isLoading && orders?.data?.length === 0 ? (
           <div className="col-span-2 text-center">No Orders Yet</div>
-          :
+        ) : (
           orders?.data?.map((item: Order, index: number) => (
             <div
               key={`${item._id}-${index}`}
-              className="card p-0 relative overflow-hidden"
+              className="card p-0 relative overflow-hidden flex flex-col min-h-[240px]"
             >
               {/* {item?.isReceived && (
                 <div className="absolute top-5 -left-[52px] -rotate-45 w-[180px] text-center py-1 bg-[#14A752] border-b-2 font-medium text-white border-[#E3E3E3]">
@@ -65,43 +67,62 @@ const MyOrdersItems = () => {
                 </div>
 
                 <div className="flex-1">
-                  <p className="text-lg font-semibold text-end">{formatPrice( item?.product?.soldPrice)}</p>
-                  <p className="text-lg font-medium truncate">{item.product.brandName} {item?.product?.model}</p>
+                  <p className="text-lg font-semibold text-end">
+                    {formatPrice(item?.product?.soldPrice)}
+                  </p>
+
+                  <p className="text-lg font-medium truncate">
+                    {item.product.brandName} {item?.product?.model}
+                  </p>
                 </div>
               </div>
 
-              <div className="p-3 flex justify-end gap-3">
-                {item?.status === "delivered" && !item?.isReviewSubmitted &&
-                  (
-                    <Button className="w-[200px]" variant={'secondary'} onClick={() => openReviewDialog(item)}>
+              <div className="p-3 flex justify-end gap-3 min-h-[60px]">
+                {item?.status === "delivered" &&
+                  !item?.isReviewSubmitted && (
+                    <Button
+                      className="w-[200px]"
+                      variant={"secondary"}
+                      onClick={() => openReviewDialog(item)}
+                    >
                       Leave A Review
                     </Button>
-
                   )}
-                <Button className="w-[200px]" onClick={() => openDialog({
-                  orderItem: item,
-                  trackingHistory: item?.trackingHistory,
-                })}>
-                  Track
-                </Button>
+
+                {(item?.status === "shipped" ||
+                  item?.status === "pending") && (
+                  <Button
+                    className="w-[200px]"
+                    onClick={() =>
+                      openDialog({
+                        orderItem: item,
+                        trackingHistory: item?.trackingHistory,
+                      })
+                    }
+                  >
+                    Track
+                  </Button>
+                )}
               </div>
 
               <div
-                className={`p-3 text-white font-medium text-center  ${item?.product?.type === "auction"
-                  ? "bg-[#415A77]"
-                  : item?.product?.type === "fixed_price"
+                className={`mt-auto p-3 text-white font-medium text-center ${
+                  item?.product?.type === "auction"
+                    ? "bg-[#415A77]"
+                    : item?.product?.type === "fixed_price"
                     ? "bg-[#778DA9]"
                     : "bg-[#D9B918]"
-                  }`}
+                }`}
               >
                 {item?.product?.type === "auction"
                   ? "Auction"
                   : item?.product?.type === "fixed_price"
-                    ? "Marketplace"
-                    : "Taking Offers"}
+                  ? "Marketplace"
+                  : "Taking Offers"}
               </div>
             </div>
-          ))}
+          ))
+        )}
       </div>
 
       <OrderStatusTrackingDialog
@@ -112,7 +133,12 @@ const MyOrdersItems = () => {
           setOpen(v);
         }}
       />
-      <LeaveAReviewModal selectedReview={selectedReview} open={reviewOpen} onOpenChange={setReviewOpen} />
+
+      <LeaveAReviewModal
+        selectedReview={selectedReview}
+        open={reviewOpen}
+        onOpenChange={setReviewOpen}
+      />
 
       {/* <OrderStatusTrackingDialogNoAuth
         open={openNoAuth}

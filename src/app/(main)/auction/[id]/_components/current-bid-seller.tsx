@@ -33,7 +33,7 @@ const CurrentBidSeller = ({ product, bidsData }: Props) => {
   }, [auction?.endsAt, now]);
 
   const isEnded = bidsData.data.auctionStatus === "ended";
-  const timeEnded = timeLeft === "0D 0H 0M";
+  const timeEnded = timeLeft === "Ended";
   const isPending = timeEnded && !isEnded;
   const hasBidder = bidsData?.data?.bids?.length > 0;
 

@@ -85,7 +85,9 @@ export const useRelistAuction = () =>
             "shipping-result",
             "get-my-listing",
             "get-listing-detail",
-            "get-notifications"
+            "get-notifications",
+            "product-bids",
+           
         ],
         mutationOptions: {
             onError: (err) => {

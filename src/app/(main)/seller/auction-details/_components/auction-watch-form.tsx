@@ -13,7 +13,14 @@ import z from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Upload } from "lucide-react";
-
+import { showError } from "@/lib/toast";
+const ALLOWED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+];
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 type Props = {
     onNext: () => void;
     setWatchId: React.Dispatch<React.SetStateAction<string | null>>;
@@ -50,24 +57,41 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
     const selectedDays = watch("auctionDays");
     const isReserved = watch("isReserved");
 
-    const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
+   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
 
-        if (!files) return;
+    if (!files) return;
 
-        const currentPhotos = watch("photos") || [];
+    const currentPhotos = watch("photos") || [];
 
-        const fileArray = Array.from(files).map((file) => ({
+    const validFiles = Array.from(files)
+        .filter((file) => {
+            // validate image type
+            if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+                showError(`${file.name} is not a supported image`);
+                return false;
+            }
+
+            // validate file size
+            if (file.size > MAX_FILE_SIZE) {
+               showError(`${file.name} must be 5MB or less`);
+                return false;
+            }
+
+            return true;
+        })
+        .map((file) => ({
             file,
             name: file.name,
             url: URL.createObjectURL(file),
         }));
 
-        setValue("photos", [...currentPhotos, ...fileArray], { shouldValidate: true });
-        
-        e.target.value = '';
-    };
+    setValue("photos", [...currentPhotos, ...validFiles], {
+        shouldValidate: true,
+    });
 
+    e.target.value = "";
+};
     const onSubmit = (data: z.input<typeof auctionWatchSchema>) => {
         mutate(data as AuctionWatchPayload, {
             onSuccess: (response) => {

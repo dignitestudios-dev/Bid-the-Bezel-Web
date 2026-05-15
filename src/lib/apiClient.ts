@@ -61,7 +61,7 @@ apiClient.interceptors.response.use(
         if (queryClient) {
           queryClient.invalidateQueries({ queryKey: ["get-profile"] });
         }
-        window.location.href = "/?authStep=login";
+        window.location.href = "/?authstep=login";
       }
     }
 

@@ -55,6 +55,7 @@ const NotificationsPanel = () => {
               description={msg.description}
               isFav={msg?.isFav ?? false}
               createdAt={msg.createdAt}
+              isRead={msg.isRead}
             />
           ))}
           {isFetchingNextPage && (
