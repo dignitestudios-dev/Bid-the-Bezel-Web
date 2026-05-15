@@ -59,7 +59,7 @@ const SaleType = ({ }: Props) => {
             <Button
               onClick={handleAuction}
               // onClick={() => setCurrentStep("personal-detail-auction")}
-              className="bg-white w-full text-black"
+              className="bg-white w-full text-black hover:bg-[#415A77]"
             >
               Select
             </Button>
@@ -77,7 +77,7 @@ const SaleType = ({ }: Props) => {
             <Button
               // onClick={() => setCurrentStep("personal-detail-fixed")}
               onClick={handleFixedPrice}
-              className="bg-white w-full text-black"
+              className="bg-white w-full text-black "
             >
               Select
             </Button>
