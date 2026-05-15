@@ -63,9 +63,7 @@ const { data: user, isLoading } = useMe();
                 className="h-12 w-auto"
               />
               <p className="text-base leading-relaxed text-white/80 max-w-xs">
-                Condimentum dolor ac tincidunt fermentum massa hac. Quis
-                vehicula nec odio amet vel. Lacinia in nec at nisi ut tortor
-                dui sed.
+               Bid The Bezel is a modern luxury watch marketplace built for collectors, enthusiasts, buyers, and sellers who value trust, privacy, and transparency.
               </p>
             </div>
 

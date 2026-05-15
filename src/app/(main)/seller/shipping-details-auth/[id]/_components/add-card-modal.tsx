@@ -45,21 +45,40 @@ const AddOtherCard = ({
     const [name, setName] = useState("");
     const [zipCode, setZipCode] = useState("");
     const [loading, setLoading] = useState(false);
+    const [cardError, setCardError] = useState("");
+    const [expiryError, setExpiryError] = useState("");
+    const [cvcError, setCvcError] = useState("");
 
     const handleSave = async () => {
         if (!stripe || !elements) return;
 
         if (!name.trim()) {
-            return showError("Name required");
+            return showError("Cardholder name is required");
+        }
+
+        if (name.trim().length < 3) {
+            return showError("Cardholder name must be at least 3 characters");
         }
 
         if (!zipCode.trim()) {
-            return showError("Zip code required");
+            return showError("Zip code is required");
         }
+
+        if (zipCode.trim().length < 5 || zipCode.trim().length > 10) {
+            return showError("Zip code must be between 5 and 10 digits");
+        }
+
+        if (cardError || expiryError || cvcError) {
+            return showError("Please fix card details errors");
+        }
+
         setLoading(true)
 
         const cardElement = elements.getElement(CardNumberElement);
-        if (!cardElement) return;
+        if (!cardElement) {
+            setLoading(false);
+            return;
+        }
 
         const res = await stripe.createPaymentMethod({
             type: "card",
@@ -71,13 +90,13 @@ const AddOtherCard = ({
         });
 
         if (res.error) {
-            console.log(res.error.message);
+            showError(res.error.message || "Card validation failed");
+            setLoading(false);
             return;
         }
 
         addCard({ paymentMethodId: res.paymentMethod.id }, {
             onSuccess: () => {
-                // queryClient.invalidateQueries({ queryKey: ["get-cards"] })
                 setOpen(false)
             },
             onSettled: () => {
@@ -110,6 +129,7 @@ const AddOtherCard = ({
                                     <input
                                         placeholder="Cardholder Name"
                                         value={name}
+                                        maxLength={100}
                                         onChange={(e) => setName(e.target.value)}
                                         className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
                                     />
@@ -117,28 +137,53 @@ const AddOtherCard = ({
 
                                 <div className="px-4 py-4 border-b flex items-center justify-between">
                                     <div className="flex-1">
-                                        <CardNumberElement options={ELEMENT_OPTIONS} />
+                                        <CardNumberElement 
+                                            options={ELEMENT_OPTIONS}
+                                            onChange={(e) => setCardError(e.error?.message || "")}
+                                        />
                                     </div>
                                     <div className="ml-3 text-sm text-muted-foreground">
                                         <Lock />
                                     </div>
                                 </div>
+                                {cardError && (
+                                    <div className="px-4 py-2 text-xs text-red-500">
+                                        {cardError}
+                                    </div>
+                                )}
 
                                 <div className="grid grid-cols-3 border-b">
                                     <div className="col-span-2 px-4 py-3 border-r">
-                                        <CardExpiryElement options={ELEMENT_OPTIONS} />
+                                        <CardExpiryElement 
+                                            options={ELEMENT_OPTIONS}
+                                            onChange={(e) => setExpiryError(e.error?.message || "")}
+                                        />
                                     </div>
                                     <div className="px-4 py-3">
-                                        <CardCvcElement options={ELEMENT_OPTIONS} />
+                                        <CardCvcElement 
+                                            options={ELEMENT_OPTIONS}
+                                            onChange={(e) => setCvcError(e.error?.message || "")}
+                                        />
                                     </div>
                                 </div>
+                                {(expiryError || cvcError) && (
+                                    <div className="px-4 py-2 text-xs text-red-500">
+                                        {expiryError || cvcError}
+                                    </div>
+                                )}
 
                                 <div className="px-4 py-3">
                                     <input
                                         placeholder="Zip Code"
                                         value={zipCode}
                                         maxLength={10}
-                                        onChange={(e) => setZipCode(e.target.value)}
+                                        type="number"
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (value.length <= 10) {
+                                                setZipCode(value);
+                                            }
+                                        }}
                                         className="w-full bg-transparent outline-none text-sm placeholder:text-muted-foreground"
                                     />
                                 </div>
@@ -147,9 +192,9 @@ const AddOtherCard = ({
                             <div className="mt-6">
                                 <Button
                                     onClick={handleSave}
-                                    disabled={!stripe || loading}
+                                    disabled={!stripe || loading || !!cardError || !!expiryError || !!cvcError || !name.trim() || !zipCode.trim()}
                                     size={"lg"}
-                                    className="w-full h-12 flex items-center justify-center gap-2"
+                                    className="w-full h-12 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
                                 </Button>

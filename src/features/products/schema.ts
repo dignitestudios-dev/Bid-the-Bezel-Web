@@ -30,7 +30,7 @@ export const watchDetailSchema = z.object({
 
     contents: z
         .string()
-        .min(2, "Contents is required")
+        .min(10, "Contents is required")
         .max(1000, "Contents must be at most 1000 characters"),
     photos: z
     .array(

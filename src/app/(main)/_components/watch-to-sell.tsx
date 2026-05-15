@@ -13,26 +13,29 @@ const WatchTosell = (props: Props) => {
     <div className="max-w-screen-2xl mx-auto p-12">
       {!adsLoading &&
         (adsData?.data && adsData?.data?.advertisements?.length > 0 ? (
-          <div className="flex md:flex-row flex-col items-center justify-between bg-radial from-[#172f49] to-[#0D1B2A] rounded-xl">
-            <div className=" md:w-[50%] p-6 md:p-12 space-y-8">
-              <h1 className="text-3xl md:text-7xl uppercase text-[#778DA9] font-semibold">
-               {adsData?.data?.advertisements[0].title}
-              </h1>
-              <p className="text-white/90 ">
-                 {adsData?.data?.advertisements[0].content}
-              </p>
-              
-            </div>
-            <div className="">
-              <Image
-                src={adsData?.data?.advertisements[0].image.location}
-                alt="watch"
-                width={700}
-                height={700}
-                className="object-contain"
-              />
-            </div>
-          </div>
+        <div className="flex md:flex-row flex-col items-stretch justify-between bg-radial from-[#172f49] to-[#0D1B2A] rounded-xl overflow-hidden min-h-[520px]">
+  
+  {/* Content */}
+  <div className="md:w-1/2 p-6 md:p-12 flex flex-col justify-center space-y-8">
+    <h1 className="text-3xl md:text-7xl uppercase text-[#778DA9] font-semibold break-words">
+      {adsData?.data?.advertisements[0].title}
+    </h1>
+
+    <p className="text-white/90 text-sm md:text-base leading-relaxed">
+      {adsData?.data?.advertisements[0].content}
+    </p>
+  </div>
+
+  {/* Image */}
+  <div className="md:w-1/2 relative min-h-[300px] md:min-h-[420px] overflow-hidden">
+    <Image
+      src={adsData?.data?.advertisements[0].image.location}
+      alt="watch"
+      fill
+      className="object-cover"
+    />
+  </div>
+</div>
         ) : (
           <div className="flex md:flex-row flex-col items-center justify-between bg-radial from-[#172f49] to-[#0D1B2A] rounded-xl">
             <div className=" md:w-[50%] p-6 md:p-12 space-y-8">
