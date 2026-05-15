@@ -32,7 +32,7 @@ const HeroCard = ({
 
         <div className="pt-4">
           <h1 className="flex items-center gap-2">
-            <span className="font-semibold text-lg">{title}</span>
+            <span className="font-semibold text-lg truncate">{title}</span>
 
             {badgeTitle === "Authenticated" && (
               <Badge
