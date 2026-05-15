@@ -50,11 +50,11 @@ const SaleType = ({ }: Props) => {
 
 
               <h1 className="text-lg font-semibold">Auction</h1>
-              <p className="">
+              {/* <p className="">
                 Fermentum consequat vitae a tellus blandit donec orci nunc. Amet
                 velit sagittis ornare volutpat proin morbi dui. Eget nisl
                 lobortis at.
-              </p>
+              </p> */}
             </div>
             <Button
               onClick={handleAuction}
@@ -68,11 +68,11 @@ const SaleType = ({ }: Props) => {
             <div className="flex flex-col items-center gap-4 text-white text-center">
               <Banknote fill="white" stroke="#415A77" size={50} />
               <h1 className="text-lg font-semibold">Marketplace</h1>
-              <p className="">
+              {/* <p className="">
                 Fermentum consequat vitae a tellus blandit donec orci nunc. Amet
                 velit sagittis ornare volutpat proin morbi dui. Eget nisl
                 lobortis at.
-              </p>
+              </p> */}
             </div>
             <Button
               // onClick={() => setCurrentStep("personal-detail-fixed")}
