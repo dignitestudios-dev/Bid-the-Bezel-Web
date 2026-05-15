@@ -17,10 +17,11 @@ interface Props {
 
 const OrderStatusTrackingDialog: React.FC<Props> = ({ open, onOpenChange, item }) => {
   const { mutate: markAsReceived, isPending } = useMarkAsReceived(item?.orderItem?._id)
-console.log(item)
+
   return (
     <Dialog open={open} onOpenChange={(v) => onOpenChange(v)}>
-      <DialogContent className="w-[700px] max-w-fit p-5">
+      <DialogContent 
+        className="w-[700px] max-w-fit p-5 [&>button]:hidden">
         <DialogHeader>
           <DialogTitle>Order Status</DialogTitle>
         </DialogHeader>
@@ -63,23 +64,23 @@ console.log(item)
                   {i?.status?.replace("_", " ")}
                 </h4>
 
-             <p className="text-sm text-muted-foreground">
-  {i?.status === "order_booked" ? (
-    <span className="inline">
-      Order tracking link:{" "}
-      <a
-        href={i?.trackingLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline cursor-pointer truncate inline-block max-w-[250px] align-middle"
-      >
-        {i?.trackingLink} 
-      </a>
-    </span>
-  ) : i?.status === "authentication"
-    ? "Your Watch will be authenticated by us"
-    : "After authentication your watch will be delivered to you."}
-</p>
+                <p className="text-sm text-muted-foreground">
+                  {i?.status === "order_booked" ? (
+                    <span className="inline">
+                      Order tracking link:{" "}
+                      <a
+                        href={i?.trackingLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline cursor-pointer truncate inline-block max-w-[250px] align-middle"
+                      >
+                        {i?.trackingLink}
+                      </a>
+                    </span>
+                  ) : i?.status === "authentication"
+                    ? "Your Watch will be authenticated by us"
+                    : "After authentication your watch will be delivered to you."}
+                </p>
               </div>
             ))}
           </div>

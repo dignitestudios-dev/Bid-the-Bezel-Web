@@ -28,7 +28,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 //protected steps which require user to complete the previous steps before closing the sidebar
-const PROTECTED_STEPS: AuthStep[] = ["otp-register", "username", "purchase-plan", "subscription-confirmation"];
+const PROTECTED_STEPS: AuthStep[] = ["username", "purchase-plan", "subscription-confirmation"];
 const AuthSidebar = ({
   hideTrigger,
   loader,
