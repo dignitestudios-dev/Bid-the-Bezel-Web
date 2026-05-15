@@ -76,6 +76,12 @@ const MessageNotificationMenu = () => {
     }
   };
 
+  useEffect(() => {
+    if (menuOpen && activeTab === "notifications" && unreadCount > 0) {
+      markAllRead();
+    }
+  }, [menuOpen, activeTab, unreadCount]);
+
   const handleGoToChats = () => {
     router.push("/chats");
   };
@@ -111,9 +117,7 @@ const MessageNotificationMenu = () => {
           <Button className="border-none ring-0 bg-[#F7F7F7] hover:bg-[#ededed] rounded-full h-14 w-14 relative">
             <MessageNotification />
             {unreadCount > 0 && (
-              <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-red-500 rounded-full flex items-center justify-center text-white text-[10px] font-semibold px-1">
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </span>
+              <span className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full" />
             )}
           </Button>
         </DropdownMenuTrigger>

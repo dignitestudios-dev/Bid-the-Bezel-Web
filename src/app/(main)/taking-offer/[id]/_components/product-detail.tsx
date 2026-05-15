@@ -76,7 +76,7 @@ const ProductDetail = ({ product }: Props) => {
     <div className="lg:w-[60%] space-y-8">
       <div>
         <div className="flex justify-between">
-          <h1 className="flex gap-2 items-start wrap-break-word text-xl md:text-3xl font-semibold">
+          <h1 className="flex gap-2 items-start break-all text-xl md:text-3xl font-semibold">
             {product?.brandName} {product?.model}
             {isAuthenticated && (
               <Badge
@@ -86,7 +86,7 @@ const ProductDetail = ({ product }: Props) => {
             )}
           </h1>
 
-          <button
+        {!product.isMyProduct &&  <button
             disabled={isPending}
             onClick={handleAddToFavorite}
             className="cursor-pointer"
@@ -95,7 +95,7 @@ const ProductDetail = ({ product }: Props) => {
               {/* ✅ FIXED HERE */}
               <FavBtn isFav={isFav} />
             </div>
-          </button>
+          </button>}
         </div>
 
         <div className="flex items-center justify-between gap-4">
