@@ -9,11 +9,12 @@ type Props = {};
 
 const WatchTosell = (props: Props) => {
   const { data: adsData, isLoading: adsLoading } = useGetAdvertisements();
+  console.log(adsData)
   return (
     <div className="max-w-screen-2xl mx-auto p-12">
       {!adsLoading &&
         (adsData?.data && adsData?.data?.advertisements?.length > 0 ? (
-        <div className="flex md:flex-row flex-col items-stretch justify-between bg-radial from-[#172f49] to-[#0D1B2A] rounded-xl overflow-hidden min-h-[520px]">
+        <Link target="_blank" href={`${adsData?.data?.advertisements[0].metadata.link}`} className="flex md:flex-row flex-col items-stretch justify-between bg-radial from-[#172f49] to-[#0D1B2A] rounded-xl overflow-hidden min-h-[520px]">
   
   {/* Content */}
   <div className="md:w-1/2 p-6 md:p-12 flex flex-col justify-center space-y-8">
@@ -35,7 +36,7 @@ const WatchTosell = (props: Props) => {
       className="object-cover"
     />
   </div>
-</div>
+</Link>
         ) : (
           <div className="flex md:flex-row flex-col items-center justify-between bg-radial from-[#172f49] to-[#0D1B2A] rounded-xl">
             <div className=" md:w-[50%] p-6 md:p-12 space-y-8">
