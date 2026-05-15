@@ -112,16 +112,23 @@ const CurrentBid = ({ product, bidsData }: Props) => {
   const [successPopup, setSuccessPopup] = React.useState(false);
 
   /* ---------------- +200 BUTTON (FIXED) ---------------- */
-  const handleIncrease = () => {
-    const current = Number(watchedAmount);
+ const handleIncrease = () => {
+  const base =
+    product.effectivePrice > 0
+      ? Number(product.effectivePrice)
+      : Number(product.price);
 
-    const base = product.effectivePrice>0 ? product.effectivePrice : product.price;
+  const current = Number(watchedAmount) || 0;
 
-    setValue("amount", base + 100, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  };
+  // first click starts from base + 100
+  // next clicks keep adding 100
+  const nextAmount = current > 0 ? current + 100 : base + 100;
+
+  setValue("amount", nextAmount, {
+    shouldValidate: true,
+    shouldDirty: true,
+  });
+};
 
   const onSubmit = (data: BidForm) => {
     if (!user?.data.isBuyerPlanPurchased) {

@@ -98,7 +98,7 @@ const BuyNow =  ({ id }: { id: string }): JSX.Element | null => {
                 className="rounded-lg object-cover"
               />
             </div>
-            <p className="flex-1 font-medium truncate text-lg">
+            <p className="flex-1 font-medium wrap-break-word text-lg">
               {productData?.data?.brandName} {productData?.data?.model}
             </p>
             <div className=" font-medium">${basePrice}</div>

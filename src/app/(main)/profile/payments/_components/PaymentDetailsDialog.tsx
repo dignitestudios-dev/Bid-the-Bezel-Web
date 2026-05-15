@@ -22,12 +22,13 @@ const PaymentDetailsDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={(v) => onClose(v)}>
-      <DialogContent className="w-[700px] max-w-full p-10">
+      <DialogContent  className="w-[700px] [&>button]:hidden max-w-full p-10">
         <DialogHeader>
           <DialogTitle>Payment Details</DialogTitle>
         </DialogHeader>
 
         <div>
+          {transaction.product && 
           <div className="rounded-md border p-4 flex items-center gap-4 mb-6">
             <img
               src="/images/fav.jpg"
@@ -42,7 +43,7 @@ const PaymentDetailsDialog = ({
             </div>
             <div className="font-semibold text-lg">${transaction.type === 'credit' ? transaction.netAmount?.toFixed(2) : transaction.amount?.toFixed(2)}</div>
           </div>
-
+}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className=" text-[#0D0D0D]">Payment Amount</div>
             <div className=" font-medium text-right">${transaction.amount?.toFixed(2)}</div>
@@ -67,7 +68,7 @@ const PaymentDetailsDialog = ({
             <div className=" font-medium text-right">{new Date(transaction.createdAt).toLocaleString()}</div>
 
             <div className=" text-[#0D0D0D]">Status</div>
-            <div className="text-right">
+            <div className="text-right capitalize">
               <Badge color={transaction.status === "initiated" ? "bg-yellow-100 text-yellow-800" : "bg-emerald-100 text-emerald-800"}>
                 {transaction.status}
               </Badge>

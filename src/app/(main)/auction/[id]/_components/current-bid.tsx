@@ -36,24 +36,23 @@ type Props = {
 };
 
 const bidSchema = (currentBid: number) =>
-  z.object({
-    amount: z
-      .number({ message: "Enter valid amount" })
-      .positive("Must be greater than 0")
-      .multipleOf(0.01, {
-        message: "Max 2 decimal places allowed",
-      })
-      .refine(
-        (val) => {
-          const digits = val.toString().replace(".", "");
-          return digits.length <= 7;
-        },
-        {
-          message: "Bid amount is too high",
-        },
-      ),
-  });
-
+z.object({
+  amount: z
+    .number({ message: "Enter valid amount" })
+    .min(1, "Minimum bid is $1")
+    .multipleOf(0.01, {
+      message: "Max 2 decimal places allowed",
+    })
+    .refine(
+      (val) => {
+        const digits = val.toString().replace(".", "");
+        return digits.length <= 7;
+      },
+      {
+        message: "Bid amount is too high",
+      },
+    ),
+});
 type BidForm = {
   amount: number;
 };

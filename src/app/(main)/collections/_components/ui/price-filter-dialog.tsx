@@ -10,7 +10,8 @@ type Props = {
 };
 
 const PriceFilterDialog = ({ onApply, type }: Props) => {
-  const MIN = 5000;
+  const isAuction = type === "auction";
+  const MIN = isAuction ? 5000 : 0;
   const MAX = 100000;
 
   const [open, setOpen] = useState(false);
@@ -42,8 +43,7 @@ const PriceFilterDialog = ({ onApply, type }: Props) => {
       setMin(v);
       return;
     }
-    const val = Math.min(Math.max(MIN, v), max);
-    setMin(val);
+    setMin(v);
   };
 
   const onMaxChange = (v: number) => {
@@ -62,8 +62,7 @@ const PriceFilterDialog = ({ onApply, type }: Props) => {
       setMax(v);
       return;
     }
-    const val = Math.max(Math.min(MAX, v), min);
-    setMax(val);
+    setMax(v);
   };
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
@@ -177,7 +176,8 @@ const PriceFilterDialog = ({ onApply, type }: Props) => {
                     const val = e.target.value === "" ? 0 : Number(e.target.value);
                     onMinChange(val);
                   }}
-                  className="w-full bg-transparent text-lg font-semibold outline-none ml-1"
+                  disabled={isAuction}
+                  className="w-full bg-transparent text-lg font-semibold outline-none ml-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>

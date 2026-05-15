@@ -211,7 +211,7 @@ const Payments = () => {
                                   <td className="py-3">{transaction.product?.brandName} {transaction.product?.model}</td>
                                   <td className="py-3 capitalize">{transaction.purpose?.replace(/_/g, ' ')}</td>
                                   <td className="py-3">${transaction.netAmount?.toFixed(2)}</td>
-                                  <td className="py-3">
+                                  <td className="py-3 capitalize">
                                     <Badge color={transaction.status === "initiated" ? "bg-yellow-100 text-yellow-800" : "bg-emerald-100 text-emerald-800"}>
                                       {transaction.status}
                                     </Badge>
@@ -283,7 +283,7 @@ const Payments = () => {
                                   <td className="py-3">{transaction.product?.brandName} {transaction.product?.model}</td>
                                   <td className="py-3 capitalize">{transaction.purpose?.replace(/_/g, ' ')}</td>
                                   <td className="py-3">${transaction.amount?.toFixed(2)}</td>
-                                  <td className="py-3">
+                                  <td className="py-3 capitalize">
                                     <Badge color={transaction.status === "initiated" ? "bg-yellow-100 text-yellow-800" : "bg-emerald-100 text-emerald-800"}>
                                       {transaction.status}
                                     </Badge>
