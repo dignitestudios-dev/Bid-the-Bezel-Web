@@ -33,7 +33,7 @@ const MyActiveListing = ({
   setIsFulfilled: (value: boolean) => void;
   selectedTab: string;
 }) => {
-  
+
   const [status, setStatus] = useState<"active" | "sold" | "unfulfilled">("active")
   const { data, isLoading } = useGetMyListing(status);
   useEffect(() => {
@@ -89,7 +89,7 @@ const MyActiveListing = ({
             image={product?.images[0]?.location}
             title={product?.brandName}
             brandName={product?.brandName}
-            price={String(product?.price)}
+            price={String(product?.soldPrice || product?.price)}
             type={product?.type}
             model={product?.model}
             description={product?.description}

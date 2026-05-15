@@ -109,7 +109,7 @@ const Chats = () => {
 
   const { data: allChatRooms, isLoading: roomsLoading } = useGetChatRooms()
   const { data: chatRoomMessages, isLoading: messagesLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetChatMessages(selectedChat?._id)
-  
+
   const allMessages = chatRoomMessages?.pages?.slice().reverse().flatMap(page => page?.data) || [];
   const [messages, setMessages] = useState<any[]>(allMessages)
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
@@ -181,7 +181,7 @@ const Chats = () => {
     if (!selectedChat) return;
 
     const handleNewMessage = (incomingMsg: any) => {
-      
+
       queryClient.invalidateQueries({
         queryKey: ["get-chat-rooms"],
       });
@@ -326,20 +326,20 @@ const Chats = () => {
     const previousLastMessageId = messages[messages.length - 1]?._id;
     const isNewMessage = lastMessageId && lastMessageId !== previousLastMessageId && previousMessageCountRef.current > 0;
     const isPagination = allMsgs.length > previousMessageCountRef.current && previousMessageCountRef.current > 0 && !isNewMessage;
-    
+
     if (isPagination && messagesEndRef.current) {
       previousScrollHeightRef.current = messagesEndRef.current.scrollHeight;
     }
-    
+
     setMessages(allMsgs);
-    
+
     if (isInitialLoadRef.current && allMsgs.length > 0) {
       setShouldScrollToBottom(true);
       isInitialLoadRef.current = false;
     } else if (isNewMessage) {
       setShouldScrollToBottom(true);
     }
-    
+
     previousMessageCountRef.current = allMsgs.length;
   }, [chatRoomMessages]);
 
@@ -421,84 +421,85 @@ const Chats = () => {
                     chatRooms?.map((c: any) => {
                       const otherParticipants = c?.participants?.filter((item: any) => item?.user?._id !== userId);
                       const isGroupChat = otherParticipants?.length > 1;
-                      
+
                       return (
-                      <div
-                        key={c._id}
-                        onClick={() => {
-                          setSelectedChat(c);
-                        }}
-                        className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer overflow-hidden transition-all ${selectedChat?._id === c._id
-                          ? "bg-[#0E2430] text-white"
-                          : "hover:bg-gray-50"
-                          }`}
-                      >
-                        {isGroupChat ? (
-                          <div className="flex -space-x-2 flex-shrink-0">
-                            {otherParticipants?.slice(0, 2).map((item: any, idx: number) => (
+                        <div
+                          key={c._id}
+                          onClick={() => {
+                            setSelectedChat(c);
+                          }}
+                          className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer overflow-hidden transition-all ${selectedChat?._id === c._id
+                            ? "bg-[#0E2430] text-white"
+                            : "hover:bg-gray-50"
+                            }`}
+                        >
+                          {isGroupChat ? (
+                            <div className="flex -space-x-2 flex-shrink-0">
+                              {otherParticipants?.slice(0, 2).map((item: any, idx: number) => (
+                                <React.Fragment key={item?._id}>
+                                  {item?.user?.profilePicture?.location ? (
+                                    <img
+                                      src={item?.user?.profilePicture?.location}
+                                      className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold border-2 border-white">
+                                      AD
+                                    </div>
+                                  )}
+                                </React.Fragment>
+                              ))}
+                            </div>
+                          ) : (
+                            otherParticipants?.map((item: any) => (
                               <React.Fragment key={item?._id}>
                                 {item?.user?.profilePicture?.location ? (
                                   <img
                                     src={item?.user?.profilePicture?.location}
-                                    className="w-10 h-10 rounded-full object-cover border-2 border-white"
+                                    className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                                   />
                                 ) : (
-                                  <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold border-2 border-white">
+                                  <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
                                     AD
                                   </div>
                                 )}
                               </React.Fragment>
-                            ))}
-                          </div>
-                        ) : (
-                          otherParticipants?.map((item: any) => (
-                            <React.Fragment key={item?._id}>
-                              {item?.user?.profilePicture?.location ? (
-                                <img
-                                  src={item?.user?.profilePicture?.location}
-                                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                                />
-                              ) : (
-                                <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
-                                  AD
-                                </div>
-                              )}
-                            </React.Fragment>
-                          ))
-                        )}
+                            ))
+                          )}
 
-                        <div className="flex-1 min-w-0">
-                          <div
-                            className={`font-medium truncate ${selectedChat?._id === c._id
-                              ? "text-white"
-                              : "text-gray-900"
-                              }`}
-                          >
-                            {isGroupChat 
-                              ? otherParticipants.map((p: any) => p?.user?.userName || "Admin").join(", ")
-                              : otherParticipants?.[0]?.user?.userName || "Admin"}
+                          <div className="flex-1 min-w-0">
+                            <div
+                              className={`font-medium truncate ${selectedChat?._id === c._id
+                                ? "text-white"
+                                : "text-gray-900"
+                                }`}
+                            >
+                              {isGroupChat
+                                ? otherParticipants.map((p: any) => p?.user?.userName || "Admin").join(", ")
+                                : otherParticipants?.[0]?.user?.userName || "Admin"}
+                            </div>
+
+                            <div
+                              className={`text-xs mt-1 line-clamp-1 break-words ${selectedChat?._id === c._id
+                                ? "text-gray-200"
+                                : "text-gray-500"
+                                }`}
+                            >
+                              {c.lastMessage?.text || "No messages yet"}
+                            </div>
                           </div>
 
                           <div
-                            className={`text-xs mt-1 line-clamp-1 break-words ${selectedChat?._id === c._id
+                            className={`text-xs whitespace-nowrap flex-shrink-0 ${selectedChat?._id === c._id
                               ? "text-gray-200"
                               : "text-gray-500"
                               }`}
                           >
-                            {c.lastMessage?.text || "No messages yet"}
+                            {formatTime(c.lastMessage?.sentAt)}
                           </div>
                         </div>
-
-                        <div
-                          className={`text-xs whitespace-nowrap flex-shrink-0 ${selectedChat?._id === c._id
-                            ? "text-gray-200"
-                            : "text-gray-500"
-                            }`}
-                        >
-                          {formatTime(c.lastMessage?.sentAt)}
-                        </div>
-                      </div>
-                    )})
+                      )
+                    })
                   )}
                 </div>
               </div>
@@ -588,213 +589,213 @@ const Chats = () => {
                 className="flex-1 p-2 overflow-y-auto min-h-[400px] max-h-[500px]">
 
                 <div className="min-h-full flex flex-col justify-end">
-                {isFetchingNextPage && (
-                  <div className="text-center py-2">
-                    <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
-                  </div>
-                )}
+                  {isFetchingNextPage && (
+                    <div className="text-center py-2">
+                      <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+                    </div>
+                  )}
 
-                {messagesLoading ? (
-                  <div className="space-y-3">
-                    {[...Array(6)].map((_, i) => (
-                      <div
-                        key={i}
-                        className={`flex items-end gap-3 ${i % 2 === 0 ? "justify-end" : ""
-                          }`}
-                      >
-                        {i % 2 !== 0 && (
-                          <Skeleton className="w-8 h-8 rounded-full" />
-                        )}
-
-                        <Skeleton
-                          className={`h-14 rounded-2xl ${i % 2 === 0 ? "w-52" : "w-64"
+                  {messagesLoading ? (
+                    <div className="space-y-3">
+                      {[...Array(6)].map((_, i) => (
+                        <div
+                          key={i}
+                          className={`flex items-end gap-3 ${i % 2 === 0 ? "justify-end" : ""
                             }`}
-                        />
+                        >
+                          {i % 2 !== 0 && (
+                            <Skeleton className="w-8 h-8 rounded-full" />
+                          )}
 
-                        {i % 2 === 0 && (
-                          <Skeleton className="w-8 h-8 rounded-full" />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div>
-                    {messages?.map((item: any) => {
+                          <Skeleton
+                            className={`h-14 rounded-2xl ${i % 2 === 0 ? "w-52" : "w-64"
+                              }`}
+                          />
 
-                      const isMine = item?.sender?._id === userId;
-                      const media = item.attachments || item.files || [];
-
-                      return (
-                        <div key={item._id} className="mb-4">
-                          {isMine ? (
-                            <div className="flex items-end justify-end gap-3">
-                              <div className="bg-[#3A556B] text-white px-5 py-3 rounded-xl rounded-br-none max-w-md break-all">
-                                <p>{item.text}</p>
-                                {media?.length > 0 && (
-                                  <div className="mt-2 space-y-2">
-                                    {media.map((file: any, index: number) => {
-
-                                      const url = file.url || file.location;
-
-                                      const mime =
-                                        file.mimeType ||
-                                        file.type ||
-                                        "";
-
-                                      const isImage = mime.startsWith("image/");
-                                      const isVideo = mime.startsWith("video/");
-                                      const isAudio = mime.startsWith("audio/");
-                                      const isDoc = !isImage && !isVideo && !isAudio;
-
-                                      return (
-                                        <div key={index}>
-
-                                          {isImage && (
-                                            <img
-                                              src={url}
-                                              alt="media"
-                                              onClick={() => handleImageClick(url)}
-                                              className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
-                                            />
-                                          )}
-
-                                          {isVideo && (
-                                            <video
-                                              src={url}
-                                              controls
-                                              className="max-w-[220px] rounded-lg border"
-                                            />
-                                          )}
-
-                                          {isDoc && (
-                                            <a
-                                              href={url}
-                                              target="_blank"
-                                              className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
-                                            >
-                                              <FileText className="w-5 h-5 text-red-500" />
-                                              <span className="text-sm  text-black font-medium">
-                                                {file.name || "PDF File"}
-                                              </span>
-                                            </a>
-                                          )}
-
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                                <span className="text-[10px] text-gray-300 block mt-1 text-right flex items-center justify-end gap-1">
-                                  {item.status === "sending" && (
-                                    <>
-                                      <Clock className="w-3 h-3 animate-pulse" />
-                                      <span>Sending...</span>
-                                    </>
-                                  )}
-                                  {item.status === "failed" && (
-                                    <>
-                                      <X className="w-3 h-3 text-red-400" />
-                                      <span className="text-red-400">Failed</span>
-                                    </>
-                                  )}
-
-                                  {(!item.status || item.status === "sent") && (
-                                    formatTime(item.createdAt)
-                                  )}
-                                </span>
-                              </div>
-                              {item?.sender?.profilePicture?.location ? (
-                                <img
-                                  src={item?.sender?.profilePicture?.location}
-                                  className="w-8 h-8 rounded-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
-                                  AD
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="flex items-end gap-3">
-                              {item?.sender?.profilePicture?.location ? (
-                                <img
-                                  src={item?.sender?.profilePicture?.location}
-                                  className="w-8 h-8 rounded-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
-                                  AD
-                                </div>
-                              )}
-                              <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md break-all">
-                                <p>{item?.text}</p>
-                                {media?.length > 0 && (
-                                  <div className="mt-2 space-y-2">
-                                    {media.map((file: any, index: number) => {
-
-                                      const url = file.url || file.location;
-
-                                      const mime =
-                                        file.mimeType ||
-                                        file.type ||
-                                        "";
-
-                                      const isImage = mime.startsWith("image/");
-                                      const isVideo = mime.startsWith("video/");
-                                      const isAudio = mime.startsWith("audio/");
-                                      const isDoc = !isImage && !isVideo && !isAudio;
-
-                                      return (
-                                        <div key={index}>
-
-
-                                          {isImage && (
-                                            <img
-                                              src={url}
-                                              alt="media"
-                                              onClick={() => handleImageClick(url)}
-                                              className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
-                                            />
-                                          )}
-
-
-                                          {isVideo && (
-                                            <video
-                                              src={url}
-                                              controls
-                                              className="max-w-[220px] rounded-lg border"
-                                            />
-                                          )}
-
-                                          {isDoc && (
-                                            <a
-                                              href={url}
-                                              target="_blank"
-                                              className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
-                                            >
-                                              <FileText className="w-5 h-5 text-red-500" />
-                                              <span className="text-sm  text-black font-medium">
-                                                {file.name || "PDF File"}
-                                              </span>
-                                            </a>
-                                          )}
-
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                                <span className="text-[10px] text-gray-500 block mt-1">
-                                  {formatTime(item.createdAt)}
-                                </span>
-                              </div>
-                            </div>
+                          {i % 2 === 0 && (
+                            <Skeleton className="w-8 h-8 rounded-full" />
                           )}
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      {messages?.map((item: any) => {
+
+                        const isMine = item?.sender?._id === userId;
+                        const media = item.attachments || item.files || [];
+
+                        return (
+                          <div key={item._id} className="mb-4">
+                            {isMine ? (
+                              <div className="flex items-end justify-end gap-3">
+                                <div className="bg-[#3A556B] text-white px-5 py-3 rounded-xl rounded-br-none max-w-md break-all">
+                                  <p>{item.text}</p>
+                                  {media?.length > 0 && (
+                                    <div className="mt-2 space-y-2">
+                                      {media.map((file: any, index: number) => {
+
+                                        const url = file.url || file.location;
+
+                                        const mime =
+                                          file.mimeType ||
+                                          file.type ||
+                                          "";
+
+                                        const isImage = mime.startsWith("image/");
+                                        const isVideo = mime.startsWith("video/");
+                                        const isAudio = mime.startsWith("audio/");
+                                        const isDoc = !isImage && !isVideo && !isAudio;
+
+                                        return (
+                                          <div key={index}>
+
+                                            {isImage && (
+                                              <img
+                                                src={url}
+                                                alt="media"
+                                                onClick={() => handleImageClick(url)}
+                                                className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
+                                              />
+                                            )}
+
+                                            {isVideo && (
+                                              <video
+                                                src={url}
+                                                controls
+                                                className="max-w-[220px] rounded-lg border"
+                                              />
+                                            )}
+
+                                            {isDoc && (
+                                              <a
+                                                href={url}
+                                                target="_blank"
+                                                className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
+                                              >
+                                                <FileText className="w-5 h-5 text-red-500" />
+                                                <span className="text-sm  text-black font-medium">
+                                                  {file.name || "PDF File"}
+                                                </span>
+                                              </a>
+                                            )}
+
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                  <span className="text-[10px] text-gray-300 block mt-1 text-right flex items-center justify-end gap-1">
+                                    {item.status === "sending" && (
+                                      <>
+                                        <Clock className="w-3 h-3 animate-pulse" />
+                                        <span>Sending...</span>
+                                      </>
+                                    )}
+                                    {item.status === "failed" && (
+                                      <>
+                                        <X className="w-3 h-3 text-red-400" />
+                                        <span className="text-red-400">Failed</span>
+                                      </>
+                                    )}
+
+                                    {(!item.status || item.status === "sent") && (
+                                      formatTime(item.createdAt)
+                                    )}
+                                  </span>
+                                </div>
+                                {item?.sender?.profilePicture?.location ? (
+                                  <img
+                                    src={item?.sender?.profilePicture?.location}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                                    AD
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex items-end gap-3">
+                                {item?.sender?.profilePicture?.location ? (
+                                  <img
+                                    src={item?.sender?.profilePicture?.location}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                                    AD
+                                  </div>
+                                )}
+                                <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-xl rounded-bl-none max-w-md break-all">
+                                  <p>{item?.text}</p>
+                                  {media?.length > 0 && (
+                                    <div className="mt-2 space-y-2">
+                                      {media.map((file: any, index: number) => {
+
+                                        const url = file.url || file.location;
+
+                                        const mime =
+                                          file.mimeType ||
+                                          file.type ||
+                                          "";
+
+                                        const isImage = mime.startsWith("image/");
+                                        const isVideo = mime.startsWith("video/");
+                                        const isAudio = mime.startsWith("audio/");
+                                        const isDoc = !isImage && !isVideo && !isAudio;
+
+                                        return (
+                                          <div key={index}>
+
+
+                                            {isImage && (
+                                              <img
+                                                src={url}
+                                                alt="media"
+                                                onClick={() => handleImageClick(url)}
+                                                className="max-w-[220px] rounded-lg border cursor-pointer hover:opacity-90 transition-opacity"
+                                              />
+                                            )}
+
+
+                                            {isVideo && (
+                                              <video
+                                                src={url}
+                                                controls
+                                                className="max-w-[220px] rounded-lg border"
+                                              />
+                                            )}
+
+                                            {isDoc && (
+                                              <a
+                                                href={url}
+                                                target="_blank"
+                                                className="flex items-center gap-2 p-3 bg-white border rounded-lg shadow-sm hover:bg-gray-50"
+                                              >
+                                                <FileText className="w-5 h-5 text-red-500" />
+                                                <span className="text-sm  text-black font-medium">
+                                                  {file.name || "PDF File"}
+                                                </span>
+                                              </a>
+                                            )}
+
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                  <span className="text-[10px] text-gray-500 block mt-1">
+                                    {formatTime(item.createdAt)}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="pt-4">
@@ -865,66 +866,70 @@ const Chats = () => {
                   </div>
                 )}
                 {/* {true ? ( */}
-                <div className="flex items-center p-3 border border-gray-200 rounded-xl">
-                  <input
-                    type="file"
-                    id="attach-file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    multiple
-                    accept="*/*"
-                  />
-                  <label htmlFor="attach-file" className="cursor-pointer">
-                    <File />
-                  </label>
+                {chatRooms?.length === 0 ? (
 
-                  <input
-                    placeholder="Send a message"
-                    value={message}
-                    onChange={(e) => {
-                      setMessage(e.target.value);
+                  <div className="flex items-center p-3 border border-gray-200 rounded-xl">
+                    <input
+                      type="file"
+                      id="attach-file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                      multiple
+                      accept="*/*"
+                    />
+                    <label htmlFor="attach-file" className="cursor-pointer">
+                      <File />
+                    </label>
+
+                    <input
+                      placeholder="Send a message"
+                      value={message}
+                      onChange={(e) => {
+                        setMessage(e.target.value);
 
 
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && message.trim()) {
-                        handleSend();
-                      }
-                    }}
-                    className="flex-1 px-4 py-3 rounded-md text-sm placeholder-gray-500 outline-none"
-                  />
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && message.trim()) {
+                          handleSend();
+                        }
+                      }}
+                      className="flex-1 px-4 py-3 rounded-md text-sm placeholder-gray-500 outline-none"
+                    />
 
-                  <button
-                    onClick={handleSend}
-                    disabled={!message.trim() && files.length === 0}
-                    className={`ml-3 w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 transition-all
+                    <button
+                      onClick={handleSend}
+                      disabled={!message.trim() && files.length === 0}
+                      className={`ml-3 w-10 h-10 rounded-md flex items-center justify-center flex-shrink-0 transition-all
   ${message.trim() || files.length > 0
 
-                        ? "bg-[#0E2430] text-white hover:opacity-90"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      }`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
+                          ? "bg-[#0E2430] text-white hover:opacity-90"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
                     >
-                      <path
-                        d="M22 2L11 13"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M22 2L15 22l-4-9-9-4 19-7z"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <path
+                          d="M22 2L11 13"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M22 2L15 22l-4-9-9-4 19-7z"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ) : ""}
+
                 {/* ) : ( */}
                 {/* <div className="text-center text-gray-500 py-8">
                       You can no longer chat with this user
@@ -964,8 +969,11 @@ const Chats = () => {
                 <img
                   src={zoomedImage}
                   alt="Zoomed"
-                  style={{ transform: `scale(${zoomLevel})` }}
-                  className="transition-transform duration-200 max-w-none"
+                  className="max-w-full max-h-[80vh] w-auto h-auto object-contain transition-transform duration-200"
+                  style={{
+                    transform: `scale(${zoomLevel})`,
+                    transformOrigin: "center center",
+                  }}
                 />
               )}
             </div>

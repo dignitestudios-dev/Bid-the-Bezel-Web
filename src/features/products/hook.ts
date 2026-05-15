@@ -33,8 +33,8 @@ export const useAddProduct = () =>
 
 
             },
-            onError: (err) => {
-                showError(err?.message)
+         onError: (err: any) => {
+                showError(err?.response?.data?.message || err?.message || "An error occurred")
             }
         },
     });
@@ -85,7 +85,9 @@ export const useRelistAuction = () =>
             "shipping-result",
             "get-my-listing",
             "get-listing-detail",
-            "get-notifications"
+            "get-notifications",
+            "product-bids",
+           
         ],
         mutationOptions: {
             onError: (err) => {

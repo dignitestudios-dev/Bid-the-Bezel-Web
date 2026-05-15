@@ -1,4 +1,7 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from "axios";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { getToken, removeToken } from "./cookies";
 
@@ -8,7 +11,7 @@ export const setQueryClient = (client: any) => {
   queryClient = client;
 };
 
-// Create instance
+// Create axios instance
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   paramsSerializer: {
@@ -24,20 +27,25 @@ const getFingerprint = async () => {
       .then((fp) => fp.get())
       .then((result) => result.visitorId);
   }
+
   return fpPromise;
 };
 
-
+/* ---------------- REQUEST INTERCEPTOR ---------------- */
 
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     if (typeof window !== "undefined") {
-     const token = getToken();
+      const token = getToken();
 
+      // attach auth token
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+
+      // attach device info
       const deviceId = await getFingerprint();
+
       config.headers["deviceuniqueid"] = deviceId;
       config.headers["devicemodel"] = navigator.userAgent;
     }
@@ -47,27 +55,54 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ⚠️ Handle global errors
+/* ---------------- RESPONSE INTERCEPTOR ---------------- */
+
 apiClient.interceptors.response.use(
   (response) => response,
+
   (error: AxiosError<any>) => {
     const status = error.response?.status;
 
-    if (status === 401) {
+    // current request url
+    const requestUrl = error.config?.url || "";
+
+    // endpoints that should NOT trigger logout on 401
+    const ignored401Endpoints = [
+      "/update-fcm",
+      "/fcm",
+      "/register",
+      "/login",
+    ];
+
+    const shouldIgnore401 = ignored401Endpoints.some((endpoint) =>
+      requestUrl.includes(endpoint)
+    );
+
+    if (status === 401 && !shouldIgnore401) {
       console.error("Unauthorized - redirect to login");
 
       if (typeof window !== "undefined") {
+        // remove token
         removeToken();
+
+        // clear cached profile
         if (queryClient) {
-          queryClient.invalidateQueries({ queryKey: ["get-profile"] });
+          queryClient.invalidateQueries({
+            queryKey: ["get-profile"],
+          });
         }
-        window.location.href = "/?authStep=login";
+
+        // redirect login
+        window.location.href = "/?authstep=login";
       }
     }
 
     if (status === 500) {
       console.error("Server error");
     }
+
     return Promise.reject(error);
   }
 );
+
+export default apiClient;

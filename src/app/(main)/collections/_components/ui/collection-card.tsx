@@ -101,7 +101,7 @@ const CollectionCard = (props: Props) => {
                   <h2 className="text-sm">Current Bid</h2>
 
                   <h1 className="font-semibold text-lg">
-                    {formatPrice( watch?.auction.currentBidAmount )|| "0"}
+                     {watch?.effectivePrice == watch?.price ? "no bit yet" : formatPrice( watch?.effectivePrice)}
                   </h1>
                 </div>
               </>
@@ -113,7 +113,7 @@ const CollectionCard = (props: Props) => {
                   <h2 className="text-sm">Current Offer</h2>
 
                   <h1 className="font-semibold text-lg">
-                    {formatPrice( watch?.auction.currentBidAmount )|| "0"}
+                    {watch?.effectivePrice == watch?.price ? "no bit yet" : formatPrice( watch?.effectivePrice)}
                   </h1>
                 </div>
               </>

@@ -103,6 +103,7 @@ const OtpRegister = ({
       },
       onError: (err: any) => {
         console.error(err);
+        setOtp(["", "", "", "", ""]);
         showError(err);
       },
     });

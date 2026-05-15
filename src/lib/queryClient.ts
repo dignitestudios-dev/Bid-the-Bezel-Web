@@ -5,7 +5,7 @@ import { setQueryClient } from "./apiClient";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60_000,    
+      staleTime: 60_000,
       gcTime: 5 * 60_000,
       retry: 2,
       refetchOnWindowFocus: false,

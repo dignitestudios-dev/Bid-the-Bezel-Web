@@ -36,24 +36,41 @@ export const auctionWatchSchema = z.object({
         .min(2, "Contents is required")
         .min(10 , "Content must be atleast 10 characters")
         .max(1000, "Contents must be at most 1000 characters"),
-    photos: z
-        .array(
-            z.object({
-                file: z.any().optional(),
-                name: z.string(),
-                url: z.string(),
-            })
-        )
-        .min(1, "At least 1 photo is required")
-        .max(10, "Maximum 10 photos allowed")
-        .refine(
-            (photos) =>
-                photos.every((p) => {
-                    if (!p.file) return true;
-                    return p.file.size <= 5 * 1024 * 1024; // 5MB
-                }),
-            "Each image must be 5MB or less"
-        ),
+    photos:z
+    .array(
+        z.object({
+            file: z.any().optional(),
+            name: z.string(),
+            url: z.string(),
+        })
+    )
+    .min(1, "At least 1 photo is required")
+    .max(10, "Maximum 10 photos allowed")
+    .refine(
+        (photos) =>
+            photos.every((p) => {
+                if (!p.file) return true;
+
+                const allowedTypes = [
+                    "image/jpeg",
+                    "image/jpg",
+                    "image/png",
+                    "image/webp",
+                ];
+
+                return allowedTypes.includes(p.file.type);
+            }),
+        "Only JPG, JPEG, PNG, and WEBP images are supported"
+    )
+    .refine(
+        (photos) =>
+            photos.every((p) => {
+                if (!p.file) return true;
+
+                return p.file.size <= 5 * 1024 * 1024;
+            }),
+        "Each image must be 5MB or less"
+    ),
     isReserved: z.boolean().default(false),
   reservePrice: z.coerce
   .number()

@@ -75,7 +75,7 @@ const Questions = ({ id, productQAndA, page, setPage, pagination }: Props) => {
                 disabled={createQuestionLoading}
                 type="submit"
                 size={"icon"}
-                className="bg-black mt-2 absolute bottom-1 right-1 h-8 p-1 rounded-sm text-white ">
+                className="bg-black mt-2 absolute bottom-5 right-1 h-8 p-1 rounded-sm text-white ">
                 {createQuestionLoading ? <Loader2 className="animate-spin" size={50} /> : <SendHorizontal size={50} />}
               </Button>
             </form>

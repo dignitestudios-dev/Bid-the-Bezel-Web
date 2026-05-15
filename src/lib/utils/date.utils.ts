@@ -10,7 +10,7 @@ export const formatTimeLeft = (endDate: string) => {
   return `${d}D ${h}H ${m}M`;
 };
 export const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString("en-GB", {
+  return new Date(dateString).toLocaleString("en-US", {
     day: "2-digit",
     month: "short",
     year: "numeric",

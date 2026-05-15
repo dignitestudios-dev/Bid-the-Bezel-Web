@@ -62,9 +62,9 @@ export function SubscriptionCancelledModal({
                     </h2>
 
                     <p className="text-gray-500 max-w-[450px] leading-relaxed mb-10 font-medium">
-                        Lorem Et Ultricies Tincidunt Lacinia Maecenas Erat. Non Lacus At Eget
-                        Auctor Ultrices Volutpat Vitae Vestibulum. Ut Elit Scelerisque Vivamus
-                        In Mauris Viverra Et Eros.
+                        Your subscription has been successfully cancelled.
+                        You will continue to have access to your current plan benefits until the end of your billing cycle.
+                        If you change your mind, you can reactivate your subscription anytime from your account settings.
                     </p>
 
                     <button

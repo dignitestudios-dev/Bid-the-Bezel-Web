@@ -3,42 +3,59 @@ import { ArrowRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import HeroCard from "./ui/hero-card";
 import Link from "next/link";
+import { useGetAllListing } from "@/features/listing/hook";
 
 const Hero = () => {
   const [index, setIndex] = useState(0);
 
-  const cards = [
-    {
-      imageSrc: "/images/hero-card.png",
-      title: "2021 Rolex Datejust 41",
-      badgeTitle: "Authenticated",
-      startingPrice: "$8700",
-      currentBid: "$14200",
-      endsIn: "2D 5H 42M",
-    },
-    {
-      imageSrc: "/images/hero-card-2.png",
-      title: "2019 Patek Philippe Nautilus",
-      badgeTitle: "Authenticated",
-      startingPrice: "$12000",
-      currentBid: "$18200",
-      endsIn: "1D 3H 10M",
-    },
-    {
-      imageSrc: "/images/hero-card-3.png",
-      title: "2020 Audemars Piguet Royal Oak",
-      badgeTitle: "Authenticated",
-      startingPrice: "$15000",
-      currentBid: "$21000",
-      endsIn: "3D 2H 5M",
-    },
-  ];
+  // const cards = [
+  //   {
+  //     imageSrc: "/images/hero-card.png",
+  //     title: "2021 Rolex Datejust 41",
+  //     badgeTitle: "Authenticated",
+  //     startingPrice: "$8700",
+  //     currentBid: "$14200",
+  //     endsIn: "2D 5H 42M",
+  //   },
+  //   {
+  //     imageSrc: "/images/hero-card-2.png",
+  //     title: "2019 Patek Philippe Nautilus",
+  //     badgeTitle: "Authenticated",
+  //     startingPrice: "$12000",
+  //     currentBid: "$18200",
+  //     endsIn: "1D 3H 10M",
+  //   },
+  //   {
+  //     imageSrc: "/images/hero-card-3.png",
+  //     title: "2020 Audemars Piguet Royal Oak",
+  //     badgeTitle: "Authenticated",
+  //     startingPrice: "$15000",
+  //     currentBid: "$21000",
+  //     endsIn: "3D 2H 5M",
+  //   },
+  // ];
 
+
+  const { data, isLoading } = useGetAllListing()
+  const auctionWatches = data?.data?.auction || []
   useEffect(() => {
-    const t = setInterval(() => setIndex((i) => (i + 1) % cards.length), 2000);
-    return () => clearInterval(t);
-  }, []);
+    if (!auctionWatches.length) return;
 
+    const t = setInterval(() => {
+      setIndex((i) => (i + 1) % auctionWatches.length);
+    }, 2000);
+
+    return () => clearInterval(t);
+  }, [auctionWatches.length]);
+
+  const cards = auctionWatches.map((item: any) => ({
+    imageSrc: item.images?.[0]?.location,
+    title: `${item.brandName} ${item.model}`,
+    badgeTitle: item?.authentication?.status === "approved" ? "Authenticated" : "",
+    startingPrice: `$${item.price}`,
+    currentBid: `$${item.auction?.currentBidAmount || 0}`,
+    endsIn: item.auction?.endsAt,
+  }));
   return (
     <div className="p-4 md:p-8 max-w-screen-2xl mx-auto">
       <div className="bg-[url('/images/banner2.jpg')] bg-cover relative bg-center w-full rounded-4xl">
@@ -46,7 +63,7 @@ const Hero = () => {
         <div className="flex flex-wrap justify-between items-center text-white h-full md:px-14 px-4 min-h-[750px]">
           <div className="md:w-[42%] relative z-50 w-full space-y-4">
             <h1 className="text-3xl md:text-6xl text-white font-semibold">
-             Discover Luxury Timepieces
+              Discover Luxury Timepieces
             </h1>
             <p className="text-white/90 ">
               Explore our curated collection of watches available for immediate
@@ -76,14 +93,14 @@ const Hero = () => {
                 return order.map((card, i) => (
                   <div
                     key={i}
-                    className="absolute transition-all duration-300"
+                    className="absolute transition-all w-[380px] duration-300"
                     style={{
                       zIndex: 30 - i,
                       transform: transforms[i],
                       left: `0px`,
                     }}
                   >
-                    <div className="w-full max-w-[380px]">
+                    <div className="w-full w-[380px]">
                       <HeroCard {...card} />
                     </div>
                   </div>

@@ -1,5 +1,6 @@
 import Badge from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { formatTimeLeft } from "@/lib/utils/date.utils";
 import Image from "next/image";
 import React from "react";
 
@@ -33,12 +34,14 @@ const HeroCard = ({
           <h1 className="flex items-center gap-2">
             <span className="font-semibold text-lg">{title}</span>
 
-            <Badge
-              className={cn(
-                "bg-linear-to-r from-[#0D1B2A] text-white py-1 px-4 text-sm to-[#415A77]"
-              )}
-              title={badgeTitle}
-            />
+            {badgeTitle === "Authenticated" && (
+              <Badge
+                className={cn(
+                  "bg-linear-to-r from-[#0D1B2A] text-white py-1 px-4 text-sm to-[#415A77]"
+                )}
+                title={badgeTitle}
+              />
+            )}
           </h1>
 
           <div className="flex text-center items-center justify-between py-4">
@@ -58,7 +61,7 @@ const HeroCard = ({
 
             <div className="w-1/3">
               <h2 className="font-thin">Ends In</h2>
-              <h1 className="font-semibold">{endsIn}</h1>
+              <h1 className="font-semibold">{formatTimeLeft(endsIn as any)}</h1>
             </div>
           </div>
         </div>

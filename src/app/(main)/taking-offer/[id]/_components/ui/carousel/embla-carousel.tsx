@@ -47,7 +47,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
           {slides.map((s,index) => (
             <div className="embla__slide" key={index}>
               {/* <div className="embla__slide__number">{index + 1}</div> */}
-              <div className="relative w-full h-[500px]">
+              <div className="relative w-full h-[500px] bg-gray-100 rounded-2xl">
                 {" "}
                 {/* Adjust height as needed */}
                 <Image

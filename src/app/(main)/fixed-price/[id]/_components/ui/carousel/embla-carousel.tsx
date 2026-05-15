@@ -57,7 +57,7 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
         <div className="embla__container flex">
           {slides?.map((item, index) => (
             <div className="embla__slide flex-[0_0_100%]" key={index}>
-              <div className="relative w-full h-[500px]">
+              <div className="relative w-full h-[500px] bg-gray-100 rounded-2xl">
                 <Image
                   src={item?.location}
                   alt="slide"
