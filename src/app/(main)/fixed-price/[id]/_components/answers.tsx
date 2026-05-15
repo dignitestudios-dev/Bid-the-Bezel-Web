@@ -55,7 +55,7 @@ const Answers = ({ productQAndA, page, setPage, pagination }: Props) => {
         <div className="rounded-xl border border-[#E3E3E3]">
             <div className="bg-[#F7F7F7] rounded-t-xl font-semibold text-xl flex gap-2 items-center px-6 py-4 border-b">
                 <CircleQuestionMark />
-                 <h1>Questions about the product</h1>
+                <h1>Questions about the product</h1>
             </div>
             <div className="p-4 ">
                 {!isLoggedIn &&
@@ -177,9 +177,9 @@ const Answers = ({ productQAndA, page, setPage, pagination }: Props) => {
                                             disabled={createAnswerLoading}
                                             className="bg-black text-white cursor-pointer p-2 rounded-md disabled:opacity-50"
                                         >
-                                            {createAnswerLoading ? <Loader2 className="animate-spin" /> : <SendHorizontal size={50} />}
+                                            {createAnswerLoading ? <Loader2 className="animate-spin" /> : <SendHorizontal size={18} />}
                                         </button>
-                                    </div> 
+                                    </div>
                                 </form>
                             )}
                         </div>
