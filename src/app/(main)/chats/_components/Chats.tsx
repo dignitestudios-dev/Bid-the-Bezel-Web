@@ -867,6 +867,10 @@ const Chats = () => {
                 )}
                 {/* {true ? ( */}
                 {chatRooms?.length === 0 ? (
+                  <div className="text-center text-gray-500 py-8">
+                    No active chats
+                  </div>
+                ) : (
 
                   <div className="flex items-center p-3 border border-gray-200 rounded-xl">
                     <input
@@ -928,13 +932,7 @@ const Chats = () => {
                       </svg>
                     </button>
                   </div>
-                ) : ""}
-
-                {/* ) : ( */}
-                {/* <div className="text-center text-gray-500 py-8">
-                      You can no longer chat with this user
-                    </div> */}
-                {/* )} */}
+                )}
               </div>
             </div>
           </div>
