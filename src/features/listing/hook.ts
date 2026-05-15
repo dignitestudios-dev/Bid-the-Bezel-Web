@@ -55,9 +55,10 @@ export const useGetListing = (
     priceStartAt?: number,
     priceEndAt?: number,
     page?: number,
-    brands?: string[]) => {
+    brands?: string[],
+    sort?: string) => {
     return useQuery({
-        queryKey: ["get-listing", type, authentication, priceStartAt, priceEndAt, page, brands],
+        queryKey: ["get-listing", type, authentication, priceStartAt, priceEndAt, page, brands, sort],
 
 
         queryFn: async () => {
@@ -72,6 +73,7 @@ export const useGetListing = (
             if (brands && brands.length > 0) {
                 params.brand = brands;
             }
+            if (sort) params.sort = sort;
             params.limit = 8
 
 

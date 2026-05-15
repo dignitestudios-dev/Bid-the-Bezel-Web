@@ -35,8 +35,8 @@ const priceOptions = [
   { label: "Above $5000", value: "5000+" },
 ];
 const trendOptions = [
-  { label: "Top Trend", value: "top-trend" },
-  { label: "Most Popular", value: "most-popular" },
+  { label: "All", value: "all" },
+  { label: "Trending", value: "trending" },
 ];
 
 const Collections = (props: Props) => {
@@ -67,7 +67,12 @@ const Collections = (props: Props) => {
   const [selectedTrend, setSelectedTrend] = useState<{
     label: string;
     value: string | number;
-  }>();
+  } | null>(null);
+
+  const handleTrendSelect = (option: { label: string; value: string | number }) => {
+    setSelectedTrend(option);
+    setPage(1);
+  };
 
   const hasActiveFilters = selectedBrands.length > 0 || authFilter || priceRange.min !== undefined || priceRange.max !== undefined;
 
@@ -75,6 +80,7 @@ const Collections = (props: Props) => {
     setSelectedBrands([]);
     setAuthFilter(undefined);
     setPriceRange({});
+    setSelectedTrend(null);
     setPage(1);
   };
 
@@ -118,7 +124,9 @@ const Collections = (props: Props) => {
     priceRange.min,
     priceRange.max,
     page,
-    selectedBrands)
+    selectedBrands,
+    selectedTrend?.value === "trending" ? "trending" : undefined
+  )
   const pagination = ProductData?.pagination
 
   return (
@@ -153,8 +161,8 @@ const Collections = (props: Props) => {
           </div>
           <Dropdown
             selected={selectedTrend}
-            onSelect={setSelectedTrend}
-            placeholder="Trending"
+            onSelect={handleTrendSelect}
+            placeholder="Sort"
             options={trendOptions}
           />
         </div>

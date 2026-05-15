@@ -42,7 +42,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       {/* Dropdown button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border text-sm border-gray-300 rounded-xl shadow-sm px-4 py-2 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold flex gap-2 sm:gap-4 justify-between items-center"
+        className="min-w-[120px] bg-white border text-sm border-gray-300 rounded-xl shadow-sm px-4 py-2 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold flex gap-2 sm:gap-4 justify-between items-center"
       >
         <span>{selected ? selected.label : placeholder}</span>
         <svg
@@ -64,7 +64,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
       {/* Dropdown menu */}
       {isOpen && (
-        <ul className="absolute mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+        <ul className="absolute mt-1 min-w-[120px] bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
           {options.map((option) => (
             <li
               key={option.value}

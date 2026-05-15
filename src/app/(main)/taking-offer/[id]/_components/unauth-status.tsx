@@ -12,7 +12,7 @@ const UnAuthStatus = (props: Props) => {
         <Shield size={18} /> Authentication status
       </h1>
       <div className="flex flex-col items-center gap-2 p-4">
-        <UnAuthShield />
+        {/* <UnAuthShield /> */}
         <h1 className=" font-semibold text-xl">Not Authenticated</h1>
         <p className="text-sm">This watch has not been authenticated by us</p>
       </div>

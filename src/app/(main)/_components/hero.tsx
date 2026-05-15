@@ -93,14 +93,14 @@ const Hero = () => {
                 return order.map((card, i) => (
                   <div
                     key={i}
-                    className="absolute transition-all duration-300"
+                    className="absolute transition-all w-[380px] duration-300"
                     style={{
                       zIndex: 30 - i,
                       transform: transforms[i],
                       left: `0px`,
                     }}
                   >
-                    <div className="w-full max-w-[380px]">
+                    <div className="w-full w-[380px]">
                       <HeroCard {...card} />
                     </div>
                   </div>
