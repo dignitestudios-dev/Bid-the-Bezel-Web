@@ -26,7 +26,7 @@ const HeroCard = ({
       <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-200/30 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10">
         <div className="relative">
           <div className="relative w-full h-64 rounded-lg overflow-hidden">
-            <Image src={imageSrc} alt="card" fill className="object-cover" />
+            <Image src={imageSrc} alt="card" fill className="object-cover" unoptimized  priority />
           </div>
         </div>
 
@@ -60,7 +60,7 @@ const HeroCard = ({
             <div className="h-10 w-px bg-white/50" />
 
             <div className="w-1/3">
-              <h2 className="font-thin">{endsIn === "Ended" ? "Status" : "Ends In"}</h2>
+              <h2 className="font-thin">{formatTimeLeft(endsIn) === "Ended" ? "Status" : "Ends In"}</h2>
               <h1 className="font-semibold">{formatTimeLeft(endsIn as any)}</h1>
             </div>
           </div>
