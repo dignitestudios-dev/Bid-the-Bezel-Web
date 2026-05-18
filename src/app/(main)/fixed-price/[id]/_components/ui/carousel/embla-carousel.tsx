@@ -91,25 +91,18 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
       </div>
 
       {/* THUMBS */}
-      <div className="embla-thumbs mt-4">
-        <div
-          className="embla-thumbs__viewport overflow-hidden"
-          ref={emblaThumbsRef}
-        >
-          <div className="embla-thumbs__container flex ml-[-8px]">
-            {slides.map((item, index) => (
-              <div
+    
+      <div className="embla-thumbs mt-2">
+        <div className="embla-thumbs__viewport" ref={emblaThumbsRef}>
+          <div className="embla-thumbs__container">
+            {slides.map((s, index) => (
+              <Thumb
                 key={index}
-                className={`flex-[0_0_auto] w-fit  ${index === selectedIndex ? "opacity-100" : "opacity-50"
-                  }`}
-              >
-                <Thumb
-                  index={index}
-                  selected={index === selectedIndex}
-                  src={item?.location}
-                  onClick={() => scrollTo(index)}
-                />
-              </div>
+                onClick={() => onThumbClick(index)}
+                selected={index === selectedIndex}
+                index={index}
+                slide={s}
+              />
             ))}
           </div>
         </div>

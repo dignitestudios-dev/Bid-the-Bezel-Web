@@ -82,7 +82,7 @@ const Hero = () => {
           </div>
           <div className="md:w-[30%] w-full relative h-[420px]">
             {/* show all three tilted/stacked and rotate order over time */}
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div className="relative w-full h-full flex ml-8 md:ml-0 items-center justify-center">
               {(() => {
                 const order = [...cards.slice(index), ...cards.slice(0, index)];
                 const transforms = [
@@ -93,14 +93,14 @@ const Hero = () => {
                 return order.map((card, i) => (
                   <div
                     key={i}
-                    className="absolute transition-all w-[380px] duration-300"
+                    className="absolute transition-all w-[320px] md:w-[380px] duration-300"
                     style={{
                       zIndex: 30 - i,
                       transform: transforms[i],
                       left: `0px`,
                     }}
                   >
-                    <div className="w-full w-[380px]">
+                    <div className="w-[320px] md:w-[380px]">
                       <HeroCard {...card} />
                     </div>
                   </div>

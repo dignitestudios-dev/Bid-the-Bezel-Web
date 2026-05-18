@@ -50,8 +50,8 @@ const ProfileLayout = ({
         </Breadcrumb>
       </div>
       <h1 className="text-2xl font-medium mb-8">My Account</h1>
-      <div className="flex items-start gap-5">
-        <div className="w-60 max-w-full">
+      <div className="flex flex-col lg:flex-row items-start gap-5">
+        <div className="w-full lg:w-60 max-w-full">
           <p className="font-medium mb-6 truncate">{user?.email}</p>
           <ul className="mr-2 profile-setting-menu space-y-4">
             <li className={isActive("/profile") ? "bg-[#F7F7F7]" : ""}>
@@ -70,7 +70,7 @@ const ProfileLayout = ({
             </li>
           </ul>
         </div>
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 w-full">{children}</div>
       </div>
     </div>
   );

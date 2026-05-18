@@ -16,7 +16,7 @@ const BrowseByCategories = (props: Props) => {
     <div className="max-w-screen-2xl mx-auto p-12">
       <div className="space-y-6">
         <h2 className="font-semibold">Featured Brands</h2>
-        <div className="flex justify-between gap-5 items-center py-4 flex-wrap">
+        <div className="flex justify-center gap-8 items-center py-4 flex-wrap">
         {img.map((i, idx) => (
           <Image
             src={`/images/cat/${i}`}

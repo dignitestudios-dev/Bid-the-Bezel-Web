@@ -186,10 +186,10 @@ export const ProductDetailSkeleton = () => {
             {/* Breadcrumb Skeleton */}
             <div className="h-5 w-40 bg-gray-200 rounded mb-6"></div>
 
-            <div className="flex gap-6">
+            <div className="flex lg:flex-row flex-col gap-6">
 
                 {/* Left: Image Skeleton */}
-                <div className="w-1/2 space-y-4">
+                <div className="lg:w-1/2 space-y-4">
                     <div className="h-[400px] bg-gray-200 rounded-xl"></div>
                     <div className="flex gap-2">
                         <div className="h-20 w-20 bg-gray-200 rounded"></div>
@@ -199,7 +199,7 @@ export const ProductDetailSkeleton = () => {
                 </div>
 
                 {/* Right: Details Skeleton */}
-                <div className="w-1/2 space-y-4">
+                <div className="lg:w-1/2 space-y-4">
                     <div className="h-6 w-3/4 bg-gray-200 rounded"></div>
                     <div className="h-6 w-1/2 bg-gray-200 rounded"></div>
                     <div className="h-10 w-1/3 bg-gray-200 rounded"></div>

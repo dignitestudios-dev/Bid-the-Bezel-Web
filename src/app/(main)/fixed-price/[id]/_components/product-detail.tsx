@@ -21,7 +21,7 @@ const ProductDetail = ({ productData }: Props) => {
 
 
   return (
-    <div className='w-[60%] space-y-8'>
+    <div className='w-full lg:w-[60%] space-y-8'>
 
 
       <div className='my-4'>
