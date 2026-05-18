@@ -119,15 +119,13 @@ const FAQSection = () => {
                       {faq.question}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${
-                        openIndex === index ? "rotate-180" : ""
-                      }`}
+                      className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      openIndex === index ? "max-h-96" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${openIndex === index ? "max-h-96" : "max-h-0"
+                      }`}
                   >
                     <div className="px-6 pb-5 text-gray-600 leading-relaxed">
                       {faq.answer}
@@ -155,15 +153,13 @@ const FAQSection = () => {
                       {faq.question}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${
-                        openIndex === index ? "rotate-180" : ""
-                      }`}
+                      className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${openIndex === index ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      openIndex === index ? "max-h-96" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${openIndex === index ? "max-h-96" : "max-h-0"
+                      }`}
                   >
                     <div className="px-6 pb-5 text-gray-600 leading-relaxed">
                       {faq.answer}
@@ -189,6 +185,22 @@ const FAQSection = () => {
           >
             Contact Support
           </a>
+        </div>
+      </div>
+
+      <div className="mt-10 border-t border-gray-200 pt-6">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
+
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+              <span className="font-semibold text-[#0D1B2A]">
+                Disclaimer:
+              </span>{" "}
+              Bid the Bezel is not liable for any inaccuracies or
+              failures resulting from use.
+            </p>
+
+          </div>
         </div>
       </div>
     </section>
