@@ -60,7 +60,7 @@ const ProductPricing = ({ price, watch }: Props) => {
   };
 
   return (
-    <div className="w-[40%] space-y-7">
+    <div className="w-full lg:w-[40%] space-y-7">
       {(watch.status === "pending" || watch.status === "rejected") &&
         (watch?.authentication?.status === "pending" ||
           watch?.authentication?.status === "rejected") && (

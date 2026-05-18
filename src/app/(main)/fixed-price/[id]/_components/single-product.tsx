@@ -51,7 +51,7 @@ const SingleProduct = ({ id, productData }: Props) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex justify-between gap-4">
+      <div className="flex flex-col lg:flex-row justify-between gap-4 ">
         <ProductDetail productData={productData} />
         <ProductPricing price={productData?.price} watch={productData} />
       </div>

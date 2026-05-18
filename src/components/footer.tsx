@@ -11,7 +11,7 @@ const Footer = () => {
 const { data: user, isLoading } = useMe();
   return (
     <footer className="bg-(--primary) text-white">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 lg:p-14">
+      <div className="max-w-screen-2xl mx-auto p-4 sm:px-8 lg:p-14">
         <div className="text-lg">
           
           {/* CTA SECTION */}
@@ -21,7 +21,7 @@ const { data: user, isLoading } = useMe();
               alt="cta-watch"
               width={380}
               height={380}
-              className="absolute bottom-0 right-0 sm:right-5 z-20 w-[220px] sm:w-[300px] lg:w-[380px]"
+              className="absolute bottom-0 right-0 sm:right-5 z-20 w-[150px] sm:w-[300px] lg:w-[380px]"
             />
             <Image
               src={"/images/footer/cta-bg.png"}
@@ -106,33 +106,7 @@ const { data: user, isLoading } = useMe();
                 </ul>
               </div>
 
-              <div className="flex gap-32">
-                {/* <div>
-                  <h3 className="font-semibold mb-4">Navigation</h3>
-                  <ul className="space-y-3 text-base text-white/80">
-                    <ul className="space-y-3 text-base text-white/80">
-                      <li>
-                        <Link href="/" className="hover:text-white">Home</Link>
-                      </li>
-                      <li>
-                        <Link href="/collections?category=auction" className="hover:text-white">
-                          Auction Watches
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/collections?category=fixed" className="hover:text-white">
-                        Marketplace
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/collections?category=all" className="hover:text-white">
-                          Categories
-                        </Link>
-                      </li>
-                    </ul>
-                  </ul>
-                </div> */}
-
+              <div className="flex flex-col sm:flex-row gap-10 lg:gap-32">
                 <div>
                   <h3 className="font-semibold mb-4">Company</h3>
                   <ul className="space-y-3 text-base text-white/80">
@@ -187,25 +161,6 @@ const { data: user, isLoading } = useMe();
                   </ul>
                 </div>
               </div>
-
-              {/* CONTACT */}
-              {/* <div>
-                <h3 className="font-semibold mb-4">Contacts us</h3>
-                <ul className="space-y-3 text-base text-white/80">
-                  <li className="flex items-center gap-2">
-                    <Mail />
-                    support@Bidthebezel.com
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Phone />
-                    +1 (310) 925-3575
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <MapPin />
-                    Los Angeles
-                  </li>
-                </ul>
-              </div> */}
             </div>
           </div>
 
