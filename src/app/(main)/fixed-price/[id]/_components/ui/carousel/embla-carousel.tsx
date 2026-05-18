@@ -25,6 +25,17 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
     dragFree: true,
   });
 
+
+  
+  const onThumbClick = useCallback(
+    (index: number) => {
+      if (!emblaMainApi || !emblaThumbsApi) return;
+      emblaMainApi.scrollTo(index);
+    },
+    [emblaMainApi, emblaThumbsApi]
+  );
+
+
   const onSelect = useCallback(() => {
     if (!emblaMainApi || !emblaThumbsApi) return;
 
