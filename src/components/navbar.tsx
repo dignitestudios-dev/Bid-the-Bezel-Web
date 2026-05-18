@@ -78,12 +78,7 @@ const Navbar = () => {
           <AuthSidebar hideTrigger={!!user || isLoading} loader={isLoading} />
         </div>
       </div>
-      <div className="bg-(--primary) text-white text-center py-3">
-        <div className="max-w-screen-2xl mx-auto">
-          <b>Disclaimer:</b> Bid the Bezel is not liable for any inaccuracies or
-          failures resulting from use.
-        </div>
-      </div>
+   
       <PlanSuccessDialog open={showSuccessDialog} onOpenChange={handleClose} />
     </div>
   );

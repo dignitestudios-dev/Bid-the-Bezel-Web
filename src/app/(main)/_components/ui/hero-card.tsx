@@ -60,7 +60,7 @@ const HeroCard = ({
             <div className="h-10 w-px bg-white/50" />
 
             <div className="w-1/3">
-              <h2 className="font-thin">Ends In</h2>
+              <h2 className="font-thin">{endsIn === "Ended" ? "Status" : "Ends In"}</h2>
               <h1 className="font-semibold">{formatTimeLeft(endsIn as any)}</h1>
             </div>
           </div>

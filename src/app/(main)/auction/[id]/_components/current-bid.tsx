@@ -36,23 +36,23 @@ type Props = {
 };
 
 const bidSchema = (currentBid: number) =>
-z.object({
-  amount: z
-    .number({ message: "Enter valid amount" })
-    .min(1, "Minimum bid is $1")
-    .multipleOf(0.01, {
-      message: "Max 2 decimal places allowed",
-    })
-    .refine(
-      (val) => {
-        const digits = val.toString().replace(".", "");
-        return digits.length <= 7;
-      },
-      {
-        message: "Bid amount is too high",
-      },
-    ),
-});
+  z.object({
+    amount: z
+      .number({ message: "Enter valid amount" })
+      .min(1, "Minimum bid is $1")
+      .multipleOf(0.01, {
+        message: "Max 2 decimal places allowed",
+      })
+      .refine(
+        (val) => {
+          const digits = val.toString().replace(".", "");
+          return digits.length <= 7;
+        },
+        {
+          message: "Bid amount is too high",
+        },
+      ),
+  });
 type BidForm = {
   amount: number;
 };
@@ -153,7 +153,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       <div className="p-6 border-[#E3E3E3]">
         {currentBidder && (
           <div className="flex justify-between mb-4 items-center">
-            <h3 className="font-semibold">Highest Bid</h3>
+            <h3 className="font-semibold">Total Price after Bidding</h3>
             <h1 className="text-2xl font-semibold">
               {bidsData?.data?.bids?.[0]?.product?.effectivePrice > 0
                 ? `${formatPrice(bidsData?.data?.bids?.[0]?.product?.effectivePrice)}`
@@ -187,8 +187,8 @@ const CurrentBid = ({ product, bidsData }: Props) => {
           </div>
         )}
       </div>
-{currentBidder && product.shouldAdminIntervene && 
-     <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
+      {currentBidder && product.shouldAdminIntervene &&
+        <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
           <div className="flex items-center gap-2 text-amber-500">
             <Clock3 size={20} color="#F59E0B" />
             <h4 className="font-semibold text-base">Decision Pending</h4>
@@ -198,7 +198,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
             check back shortly.
           </p>
         </div>
-}
+      }
       {isPending ? (
         <div className="flex flex-col items-center gap-2 py-6 px-5 border-t">
           <div className="flex items-center gap-2 text-amber-500">
@@ -214,7 +214,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
         isEnded ? (
           <div
             className={cn(
-              (currentBidder  && !product.shouldAdminIntervene) ? "px-6 py-6 border-t text-center" : "",
+              (currentBidder && !product.shouldAdminIntervene) ? "px-6 py-6 border-t text-center" : "",
             )}
           >
             {isWinner && currentBidder && !product.shouldAdminIntervene ? (
@@ -240,7 +240,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
                 </div>
               </>
             ) : (
-              currentBidder &&  !product.shouldAdminIntervene && (
+              currentBidder && !product.shouldAdminIntervene && (
                 <>
                   <div className="bg-gray-100 gap-2 p-2 w-[30%] mx-auto flex items-center justify-center rounded-lg">
                     <Image
@@ -438,7 +438,7 @@ const CurrentBid = ({ product, bidsData }: Props) => {
       <SubscribeSuccessfully
         successPopup={successPopup}
         setSuccessPopup={setSuccessPopup}
-        onClose={() => {}}
+        onClose={() => { }}
       />
     </div>
   );
