@@ -30,6 +30,8 @@ export const Thumb: React.FC<PropType> = (props) => {
           fill
           style={{ objectFit: 'cover' }}
           className="transform scale-105 transition-transform duration-200"
+          unoptimized
+          priority
         />
       </button>
     </div>

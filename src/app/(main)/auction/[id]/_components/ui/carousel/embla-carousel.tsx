@@ -55,6 +55,8 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                   alt="watch"
                   fill
                   style={{ objectFit: "contain" }}
+                  unoptimized
+                  priority
                   className="rounded-lg" // optional, if you want rounded corners
                 />
               </div>
