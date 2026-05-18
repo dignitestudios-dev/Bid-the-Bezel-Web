@@ -76,6 +76,7 @@ const EmblaCarousel: React.FC<PropType> = ({ slides = [], options }) => {
                   className="object-contain rounded-lg"
                   sizes="100vw"
                   unoptimized
+                   priority
                 />
               </div>
             </div>
