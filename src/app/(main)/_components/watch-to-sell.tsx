@@ -34,6 +34,8 @@ const WatchTosell = (props: Props) => {
       alt="watch"
       fill
       className="object-cover"
+      unoptimized
+      priority
     />
   </div>
 </Link>

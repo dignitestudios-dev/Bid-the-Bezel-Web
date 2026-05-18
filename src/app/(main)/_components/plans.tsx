@@ -132,7 +132,7 @@ const Plans = (props: Props) => {
                     (item: any, i: number) => (
                       <div
                         key={i}
-                        className="flex flex-col gap-3 mt-2"
+                        className="flex flex-col gap-1 mt-[-6px]"
                       >
                         <span className="flex items-center gap-3">
                           <svg
