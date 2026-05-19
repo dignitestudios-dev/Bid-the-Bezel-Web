@@ -68,7 +68,7 @@ const Navbar = () => {
                 onClick={() => router.push("/seller/plans")}
                 className="flex bg-[#415A77] rounded-full gap-2 items-center w-[154px] h-[45px] max-w-full"
               >
-                <span>Start Selling</span> <ArrowRight size={15} />
+                <span>Start Listing</span> <ArrowRight size={15} />
               </Button>
             </>
           )}
