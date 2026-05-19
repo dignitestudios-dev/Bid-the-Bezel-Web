@@ -27,7 +27,7 @@ const Success = ({
           onClick={() => setCurrentStep("sale-type")}
           className="w-full  bg-[#0f1b23] text-white "
         >
-          Start Selling
+          Start Listing
         </Button>
       </div>
     </div>

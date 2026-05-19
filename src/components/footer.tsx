@@ -38,7 +38,7 @@ const { data: user, isLoading } = useMe();
        <Link href={user ? "/seller/plans" : "?authstep=login"} className="cursor-pointer! relative z-50">
               <button className="flex items-center gap-2 bg-[#0D1B2A0D] border border-gray-300 rounded-full px-1 pl-2 py-1 hover:shadow-md transition">
                 <span className="text-gray-700 font-medium">
-                  Start Selling
+                  Start Listing
                 </span>
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-linear-to-r from-gray-100 to-gray-400">
                   <ArrowRight size={10} color="black" />

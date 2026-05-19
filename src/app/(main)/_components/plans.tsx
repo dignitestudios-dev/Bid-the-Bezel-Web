@@ -124,7 +124,7 @@ const Plans = (props: Props) => {
                       href={"?authstep=login"}
                       className="w-full text-center cursor-pointer rounded-full py-5 bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-colors"
                     >
-                      Start Selling
+                      Start Listing
                     </Link>
                   )}
 

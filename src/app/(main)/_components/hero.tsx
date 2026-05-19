@@ -76,7 +76,7 @@ const Hero = () => {
               href={"/seller/plans"}
               className="flex items-center w-fit gap-2 bg-[#415A77]  rounded-full pr-2 pl-3 py-2 hover:shadow-md transition"
             >
-              <span className="text-white font-medium">Start Selling</span>
+              <span className="text-white font-medium">Start Listing</span>
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-linear-to-r from-[#415A77] to-gray-400">
                 <ArrowRight size={14} color="white" />
               </span>
