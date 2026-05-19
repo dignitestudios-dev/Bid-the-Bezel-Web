@@ -80,7 +80,7 @@ const FAQSection = () => {
     },
     {
       question: "What If I only have one watch to sell?",
-      answer: "By stating that chose the basic package and after it sells you can cancel the subscription with no penalty."
+      answer: "Choose the basic package and after it sells you can cancel the subscription with no penalty."
     }
   ];
 
