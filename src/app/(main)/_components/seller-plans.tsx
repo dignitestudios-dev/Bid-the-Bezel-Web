@@ -97,7 +97,7 @@ const SellerPlans = (props: Props) => {
                       </button>
 
                       {subs?.description?.map((item: any, i: number) => (
-                        <div key={i} className="flex flex-col gap-3 mt-2">
+                        <div key={i} className="flex flex-col gap-3 mt-[-6px]">
                           <span className="flex items-center gap-3">
                             <svg
                               width="20"

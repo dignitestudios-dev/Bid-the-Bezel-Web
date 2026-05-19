@@ -55,6 +55,8 @@ const Hero = () => {
     startingPrice: `$${item.price}`,
     currentBid: `$${item.auction?.currentBidAmount || 0}`,
     endsIn: item.auction?.endsAt,
+    product: item
+
   }));
   return (
     <div className="p-4 md:p-8 max-w-screen-2xl mx-auto">
