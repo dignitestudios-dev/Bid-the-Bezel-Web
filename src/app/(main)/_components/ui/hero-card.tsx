@@ -2,6 +2,7 @@ import Badge from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatTimeLeft } from "@/lib/utils/date.utils";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
   startingPrice?: string | number;
   currentBid?: string | number;
   endsIn?: string;
+  product: any;
 };
 
 const HeroCard = ({
@@ -20,13 +22,14 @@ const HeroCard = ({
   startingPrice = "$8700",
   currentBid = "$14200",
   endsIn = "2D 5H 42M",
+  product,
 }: Props) => {
   return (
-    <div>
+    <Link href={`/auction/${product?._id}`}>
       <div className=" text-xs md:text-base p-4 rounded-xl bg-gray-200/30 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10">
         <div className="relative">
           <div className="relative w-full h-64 rounded-lg overflow-hidden">
-            <Image src={imageSrc} alt="card" fill className="object-cover" unoptimized  priority />
+            <Image src={imageSrc} alt="card" fill className="object-cover" unoptimized priority />
           </div>
         </div>
 
@@ -66,7 +69,7 @@ const HeroCard = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

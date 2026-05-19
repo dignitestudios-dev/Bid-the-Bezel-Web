@@ -8,7 +8,7 @@ interface HomepageProductsResponse {
   };
 }
 
- interface TakingOfferProduct {
+interface TakingOfferProduct {
   _id: string;
   brandName: string;
   model: string;
@@ -92,7 +92,7 @@ interface AuctionProduct {
   soldPrice: number;
   description: string | null;
   referenceId: string;
-reservePrice:number;
+  reservePrice: number;
   type: "auction";
   status: "active" | "inactive" | "sold" | "deleted"; // adjust if more statuses exist
   currentHolder: "seller" | "buyer";
@@ -115,8 +115,8 @@ reservePrice:number;
   isFavorite: boolean;
   isMyProduct: boolean;
   isDraftPageShown: boolean;
-isReserved:boolean;
-shouldAdminIntervene:boolean;
+  isReserved: boolean;
+  shouldAdminIntervene: boolean;
   createdAt: string;
   updatedAt: string;
 }
