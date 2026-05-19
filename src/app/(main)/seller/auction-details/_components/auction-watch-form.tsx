@@ -128,7 +128,7 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
                     </p>
 
                     <div className="flex gap-3">
-                        {[2,3, 5, 7].map((day) => (
+                        {[3, 5, 7].map((day) => (
                             <button
                                 key={day}
                                 type="button"
