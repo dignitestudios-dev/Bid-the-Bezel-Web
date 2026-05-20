@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Link from "next/link";
 
 
 type Props = {
@@ -46,7 +47,7 @@ const PersonalDetailAuction = ({ setCurrentStep }: Props) => {
           </BreadcrumbItem>
 
           <BreadcrumbItem>
-            <BreadcrumbLink>Home</BreadcrumbLink>
+            <BreadcrumbLink>   <Link href="/" >Home</Link></BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbSeparator />
