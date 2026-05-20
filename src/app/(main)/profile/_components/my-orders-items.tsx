@@ -77,6 +77,7 @@ const MyOrdersItems = () => {
                 </div>
               </div>
 
+
               <div className="p-3 flex justify-end gap-3 min-h-[60px]">
                 {item?.status === "delivered" &&
                   !item?.isReviewSubmitted && (
@@ -91,34 +92,38 @@ const MyOrdersItems = () => {
 
                 {(item?.status === "shipped" ||
                   item?.status === "pending") && (
-                  <Button
-                    className="w-[200px]"
-                    onClick={() =>
-                      openDialog({
-                        orderItem: item,
-                        trackingHistory: item?.trackingHistory,
-                      })
-                    }
-                  >
-                    Track
-                  </Button>
-                )}
+                    <Button
+                      className="w-[200px]"
+                      onClick={() =>
+                        openDialog({
+                          orderItem: item,
+                          trackingHistory: item?.trackingHistory,
+                        })
+                      }
+                    >
+                      Track
+                    </Button>
+                  )}
               </div>
 
               <div
-                className={`mt-auto p-3 text-white font-medium text-center ${
-                  item?.product?.type === "auction"
-                    ? "bg-[#415A77]"
-                    : item?.product?.type === "fixed_price"
+                className={`mt-auto p-3 text-white font-medium text-center ${item?.product?.type === "auction"
+                  ? "bg-[#415A77]"
+                  : item?.product?.type === "fixed_price"
                     ? "bg-[#778DA9]"
                     : "bg-[#D9B918]"
-                }`}
+                  }`}
               >
+                {item?.product?.type === "auction" && (
+                  <div className="mx-3 mb-3 rounded-md border border-yellow-400 bg-yellow-50 px-3 py-2 text-xs text-yellow-900">
+                    <span className="font-semibold">Disclaimer:</span> You need to mark either received or not within 24-48 hours after purchasing.
+                  </div>
+                )}
                 {item?.product?.type === "auction"
                   ? "Auction"
                   : item?.product?.type === "fixed_price"
-                  ? "Marketplace"
-                  : "Taking Offers"}
+                    ? "Marketplace"
+                    : "Taking Offers"}
               </div>
             </div>
           ))
