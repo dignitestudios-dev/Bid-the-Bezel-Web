@@ -19,6 +19,7 @@ import AuctionWatchDetailForm from "./auction-watch-form";
 import BankDetailForm from "./bank-form";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import Link from "next/link";
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
 if (!stripeKey) {
@@ -99,7 +100,7 @@ const PersonalDetailAuction = ({ }: Props) => {
           </BreadcrumbItem>
 
           <BreadcrumbItem>
-            <BreadcrumbLink>Home</BreadcrumbLink>
+            <BreadcrumbLink>   <Link href="/" >Home</Link></BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbSeparator />
