@@ -2,40 +2,43 @@ import { useApiMutation } from "@/hooks/api/use-api-mutation";
 import { AuctionWatchPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
 
-
 export const useAddAuctionProduct = () =>
-    useApiMutation<any, AuctionWatchPayload>({
-        endpoint: "/products",
-        method: "POST",
-        isMultiPart: true,
-        toBody: (data) => {
-            const formData = new FormData();
-            formData.append("auctionDays", String(data.auctionDays));
-            formData.append("brandName", data.watchBrand);
-            formData.append("model", data.modelReference);
-            formData.append("price","5000");
-            formData.append("description", data.contents);
-            formData.append("referenceId", String(data.referenceId));
-            formData.append("type", 'auction');
-            formData.append("status", 'draft');
-            formData.append("isReserved", String(data.isReserved));
-        if(data.isReserved)   formData.append("reservePrice", String(data.reservePrice));
-          
+  useApiMutation<any, AuctionWatchPayload>({
+    endpoint: "/products",
+    method: "POST",
+    isMultiPart: true,
+    toBody: (data) => {
+      const formData = new FormData();
+      formData.append("auctionDays", String(data.auctionDays));
+      formData.append("brandName", data.watchBrand);
+      formData.append("model", data.modelReference);
+      formData.append("price", "5000");
+      formData.append("description", data.contents);
+      formData.append("referenceId", String(data.referenceId));
+      formData.append("type", "auction");
+      formData.append("status", "draft");
+      formData.append("isReserved", String(data.isReserved));
+      formData.append("purchaseYear", data.purchaseYear);
+      formData.append("watchCondition", String(data.watchCondition));
+      if (data.isReserved)
+        formData.append("reservePrice", String(data.reservePrice));
 
-            data.photos?.forEach((photo) => {
-                if (photo.file) {
-                    formData.append("images", photo.file);
-                }
-            });
-            return formData;
-        },
-        invalidateKeys: ["get-profile", "get-my-listing"],
-        mutationOptions: {
-            onSuccess: (data) => {
-                showSuccess(data?.message)
-            },
-            onError: (err: any) => {
-                showError(err?.response?.data?.message || err?.message || "An error occurred")
-            }
-        },
-    });
+      data.photos?.forEach((photo) => {
+        if (photo.file) {
+          formData.append("images", photo.file);
+        }
+      });
+      return formData;
+    },
+    invalidateKeys: ["get-profile", "get-my-listing"],
+    mutationOptions: {
+      onSuccess: (data) => {
+        showSuccess(data?.message);
+      },
+      onError: (err: any) => {
+        showError(
+          err?.response?.data?.message || err?.message || "An error occurred",
+        );
+      },
+    },
+  });

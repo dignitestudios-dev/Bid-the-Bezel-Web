@@ -3,172 +3,182 @@ import { WatchDetailPayload } from "./schema";
 import { showError, showSuccess } from "@/lib/toast";
 import { AuthenticatePayload } from "@/app/(main)/seller/shipping-details-auth/[id]/_components/shipping-form";
 
-
 export const useAddProduct = () =>
-    useApiMutation<any, WatchDetailPayload>({
-        endpoint: "/products",
-        method: "POST",
-        isMultiPart: true,
-        toBody: (data) => {
-            const formData = new FormData();
-            formData.append("brandName", data.watchBrand);
-            formData.append("model", data.modelReference);
-            formData.append("price", String(data.price));
-            formData.append("description", data.contents);
-            formData.append("referenceId", String(data.referenceId));
-            formData.append("type", 'fixed_price');
-            formData.append("status", 'draft');
-
-            data.photos?.forEach((photo) => {
-                if (photo.file) {
-                    formData.append("images", photo.file);
-                }
-            });
-            return formData;
-        },
-        invalidateKeys: ["get-profile", "get-my-listing", "get-notifications"],
-        mutationOptions: {
-            onSuccess: (data) => {
-                showSuccess(data?.message)
-
-
-            },
-         onError: (err: any) => {
-                showError(err?.response?.data?.message || err?.message || "An error occurred")
-            }
-        },
-    });
+  useApiMutation<any, WatchDetailPayload>({
+    endpoint: "/products",
+    method: "POST",
+    isMultiPart: true,
+    toBody: (data) => {
+      const formData = new FormData();
+      formData.append("brandName", data.watchBrand);
+      formData.append("model", data.modelReference);
+      formData.append("price", String(data.price));
+      formData.append("description", data.contents);
+      formData.append("referenceId", String(data.referenceId));
+      formData.append("type", "fixed_price");
+      formData.append("status", "draft");
+      formData.append("purchaseYear", data.purchaseYear);
+      formData.append("watchCondition", String(data.watchCondition));
+      data.photos?.forEach((photo) => {
+        if (photo.file) {
+          formData.append("images", photo.file);
+        }
+      });
+      return formData;
+    },
+    invalidateKeys: ["get-profile", "get-my-listing", "get-notifications"],
+    mutationOptions: {
+      onSuccess: (data) => {
+        showSuccess(data?.message);
+      },
+      onError: (err: any) => {
+        showError(
+          err?.response?.data?.message || err?.message || "An error occurred",
+        );
+      },
+    },
+  });
 
 export const useUnAuthenticate = () =>
-    useApiMutation<any, { id: string }>({
-        endpoint: ({ id }) => `/products/${id}/unauthenticate/seller`,
-        method: "POST",
-        invalidateKeys: ["get-profile", "get-cards", "shipping-result", "get-my-listing", "get-notifications"],
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `/products/${id}/unauthenticate/seller`,
+    method: "POST",
+    invalidateKeys: [
+      "get-profile",
+      "get-cards",
+      "shipping-result",
+      "get-my-listing",
+      "get-notifications",
+    ],
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 
 export const useMoveToTakingOffers = () =>
-    useApiMutation<any, { id: string }>({
-        endpoint: ({ id }) => `/products/${id}/taking-offers`,
-        method: "PUT",
-        invalidateKeys: [
-            "get-profile",
-            "shipping-result",
-            "get-my-listing",
-            "get-listing-detail",
-            "get-notifications"
-        ],
+  useApiMutation<any, { id: string }>({
+    endpoint: ({ id }) => `/products/${id}/taking-offers`,
+    method: "PUT",
+    invalidateKeys: [
+      "get-profile",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+      "get-notifications",
+    ],
 
-        mutationOptions: {
-            onSuccess: (data) => {
-                showSuccess(data?.message);
-            },
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+    mutationOptions: {
+      onSuccess: (data) => {
+        showSuccess(data?.message);
+      },
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 
 export const useRelistAuction = () =>
-    useApiMutation<any, { id: string; days: number }>({
-        endpoint: ({ id }) => `/products/${id}/relist-auction`,
-        method: "POST",
-        toBody: ({ days }) => ({
-            auctionDays: days,
-        }),
-        invalidateKeys: [
-            "get-profile",
-            "shipping-result",
-            "get-my-listing",
-            "get-listing-detail",
-            "get-notifications",
-            "product-bids",
-           
-        ],
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+  useApiMutation<any, { id: string; days: number }>({
+    endpoint: ({ id }) => `/products/${id}/relist-auction`,
+    method: "POST",
+    toBody: ({ days }) => ({
+      auctionDays: days,
+    }),
+    invalidateKeys: [
+      "get-profile",
+      "shipping-result",
+      "get-my-listing",
+      "get-listing-detail",
+      "get-notifications",
+      "product-bids",
+    ],
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 export const useUpdateProduct = () =>
-    useApiMutation<any, { id: string; brandName: string; description: string; model: string }>({
-        endpoint: ({ id }) => `/products/${id}`,
-        method: "PATCH",
-        isMultiPart: false, // no files → use JSON
-        toBody: (data) => ({
-            brandName: data.brandName,
-            description: data.description,
-            model: data.model,
-
-        }),
-        invalidateKeys: ["get-profile", "get-my-listing"],
-        mutationOptions: {
-            onSuccess: (data) => {
-                showSuccess(data?.message);
-            },
-            onError: (err) => {
-                showError(err?.message);
-            },
-        },
-    });
-
+  useApiMutation<
+    any,
+    { id: string; brandName: string; description: string; model: string }
+  >({
+    endpoint: ({ id }) => `/products/${id}`,
+    method: "PATCH",
+    isMultiPart: false, // no files → use JSON
+    toBody: (data) => ({
+      brandName: data.brandName,
+      description: data.description,
+      model: data.model,
+    }),
+    invalidateKeys: ["get-profile", "get-my-listing"],
+    mutationOptions: {
+      onSuccess: (data) => {
+        showSuccess(data?.message);
+      },
+      onError: (err) => {
+        showError(err?.message);
+      },
+    },
+  });
 
 export const deleteProduct = () =>
-    useApiMutation<{ message: string, success: boolean }, { id: string }>({
-        endpoint: ({ id }) => `/products/${id}`,
-        method: "DELETE",
-        invalidateKeys: ["get-cards", "get-my-listing", "get-my-active-listing", "get-my-deleted-listing", "get-listing-detail"],
-        mutationOptions: {
-            onSuccess: (data) => {
-                showSuccess(data?.message);
-            },
-            onError: (err) => {
-                showError(err?.message);
-            },
-        },
-    });
-
-
+  useApiMutation<{ message: string; success: boolean }, { id: string }>({
+    endpoint: ({ id }) => `/products/${id}`,
+    method: "DELETE",
+    invalidateKeys: [
+      "get-cards",
+      "get-my-listing",
+      "get-my-active-listing",
+      "get-my-deleted-listing",
+      "get-listing-detail",
+    ],
+    mutationOptions: {
+      onSuccess: (data) => {
+        showSuccess(data?.message);
+      },
+      onError: (err) => {
+        showError(err?.message);
+      },
+    },
+  });
 
 export const useAuthenticate = () =>
-    useApiMutation<any, AuthenticatePayload>({
-        endpoint: ({ id }) => `/products/${id}/authenticate/seller`,
-        method: "POST",
-        isMultiPart: true,
-        invalidateKeys: ["get-profile", "get-cards", "get-notifications"],
-        toBody: (variables) => {
-            const formData = new FormData();
-            formData.append("courier", variables.courier);
-            formData.append("trackingNumber", variables.trackingNumber);
-            formData.append("trackingLink", variables.trackingLink);
-            formData.append("isDraft", String(Boolean(variables.isDraft)));
-            const filesArray = Array.from(variables.images || []);
-            filesArray.forEach((file: any) => {
-                formData.append("images", file);
-            });
+  useApiMutation<any, AuthenticatePayload>({
+    endpoint: ({ id }) => `/products/${id}/authenticate/seller`,
+    method: "POST",
+    isMultiPart: true,
+    invalidateKeys: ["get-profile", "get-cards", "get-notifications"],
+    toBody: (variables) => {
+      const formData = new FormData();
+      formData.append("courier", variables.courier);
+      formData.append("trackingNumber", variables.trackingNumber);
+      formData.append("trackingLink", variables.trackingLink);
+      formData.append("isDraft", String(Boolean(variables.isDraft)));
+      const filesArray = Array.from(variables.images || []);
+      filesArray.forEach((file: any) => {
+        formData.append("images", file);
+      });
 
-            return formData;
-        },
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+      return formData;
+    },
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
 
 export const useAuthenticatePayment = () =>
-    useApiMutation<any, any>({
-        endpoint: ({ id }) => `/products/${id}/authenticate/seller/payment`,
-        method: "POST",
-        invalidateKeys: ["get-profile", "get-cards", "get-notifications"],
-        mutationOptions: {
-            onError: (err) => {
-                showError(err);
-            },
-        },
-    });
+  useApiMutation<any, any>({
+    endpoint: ({ id }) => `/products/${id}/authenticate/seller/payment`,
+    method: "POST",
+    invalidateKeys: ["get-profile", "get-cards", "get-notifications"],
+    mutationOptions: {
+      onError: (err) => {
+        showError(err);
+      },
+    },
+  });
