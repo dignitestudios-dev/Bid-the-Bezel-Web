@@ -16,7 +16,7 @@ const Plans = (props: Props) => {
   const { data, isLoading } = useSubscription();
   const { mutate: buySubscription } = useBuySubscription();
   const { refetch, data: userData } = useMe();
-console.log(data)
+// console.log(data)
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
   const handleBuy = (planId: string) => {
