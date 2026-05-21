@@ -30,7 +30,7 @@ const WatchTosell = (props: Props) => {
   {/* Image */}
   <div className="md:w-1/2 relative min-h-[300px] md:min-h-[420px] overflow-hidden">
     <Image
-      src={adsData?.data?.advertisements[0].image.location}
+      src={adsData?.data?.advertisements[0]?.image?.location}
       alt="watch"
       fill
       className="object-cover"

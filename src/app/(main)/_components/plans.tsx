@@ -16,7 +16,7 @@ const Plans = (props: Props) => {
   const { data, isLoading } = useSubscription();
   const { mutate: buySubscription } = useBuySubscription();
   const { refetch, data: userData } = useMe();
-
+// console.log(data)
   const [loadingPriceId, setLoadingPriceId] = useState<string | null>(null);
 
   const handleBuy = (planId: string) => {
@@ -55,7 +55,7 @@ const Plans = (props: Props) => {
               <PlanSkeleton key={i} />
             ))
           ) : (
-            data?.data?.map((subs: any, index: number) => {
+           data?.data && data?.data?.map((subs: any, index: number) => {
               const isExecutive =
                 subs?.name?.toLowerCase() === "executive";
 
@@ -95,8 +95,8 @@ const Plans = (props: Props) => {
                     </h1>
 
                     <span className="text-sm mb-1 text-gray-500 capitalize">
-                      {subs?.metadata?.watches} watch / per{" "}
-                      {subs?.metadata?.interval}
+                      {subs?.metadata?.watches} { subs?.name === "basic" && "watch / per" } {isExecutive && "watches / per"} {subs?.name === "gold" && "watches / per"}   {" "}
+                      {subs?.name !== "buyer" && subs?.metadata?.interval}
                     </span>
                   </div>
 
