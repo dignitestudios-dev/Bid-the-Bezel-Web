@@ -119,6 +119,8 @@ interface AuctionProduct {
   shouldAdminIntervene: boolean;
   createdAt: string;
   updatedAt: string;
+  purchaseYear: string;
+  watchCondition:string
 }
 
 interface Seller {
