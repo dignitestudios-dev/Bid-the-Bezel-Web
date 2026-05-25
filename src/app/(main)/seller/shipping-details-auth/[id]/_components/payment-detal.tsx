@@ -142,29 +142,45 @@ const PaymentDetail = () => {
                   <div>No Card Added</div>
                 ) : (
                   <div className="border h-[200px] overflow-y-auto rounded-lg ">
-                    {data?.data?.cards?.map((card: any, index: number) => (
-                      <button
-                        onClick={() => {setDefaultCard({ cardId: card._id })}}
-                        key={index}
-                        className={cn("border-b block w-full text-left" , isSettingDefaultPending && "pointer-events-none opacity-50" , data.data.cards.length - 1 === index && "border-b-0")}
-                      >
-                        <label className="flex items-center justify-between p-3  cursor-pointer">
-                          <div className="flex-1">
-                            <div className="font-medium">{card?.brand}</div>
-                            <div className="text-sm text-gray-500">
-                              •••• •••• •••• {card?.last4}
+                    {data?.data?.cards?.map((card: any, index: number) => {
+                      const isSingleCard = data.data.cards.length === 1;
+
+                      return (
+                        <button
+                          key={index}
+                          disabled={isSingleCard}
+                          onClick={() => {
+                            if (!isSingleCard) {
+                              setDefaultCard({ cardId: card._id });
+                            }
+                          }}
+                          className={cn(
+                            "border-b block w-full text-left",
+                            (isSettingDefaultPending || isSingleCard) &&
+                              "pointer-events-none opacity-50",
+                            data.data.cards.length - 1 === index &&
+                              "border-b-0",
+                          )}
+                        >
+                          <label className="flex items-center justify-between p-3 cursor-pointer">
+                            <div className="flex-1">
+                              <div className="font-medium">{card?.brand}</div>
+                              <div className="text-sm text-gray-500">
+                                •••• •••• •••• {card?.last4}
+                              </div>
                             </div>
-                          </div>
-                          <input
-                            type="radio"
-                            name="payment"
-                            value="visa"
-                            checked={card?.default}
-                            className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
-                          />
-                        </label>
-                      </button>
-                    ))}
+
+                            <input
+                              type="radio"
+                              name="payment"
+                              checked={card?.default}
+                              className="w-5 h-5 checked:bg-white appearance-none border-gray-300 rounded-full border-4 checked:border-emerald-500"
+                              readOnly
+                            />
+                          </label>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
                 <button
@@ -315,7 +331,13 @@ const PaymentDetail = () => {
                       />
                       <div className="mb-6 flex gap-2">
                         <div className="flex items-center px-3 border rounded-md text-sm bg-gray-50">
-                          <Image src="/images/usFlag.png" alt="flag" width={20} height={20} /> +1
+                          <Image
+                            src="/images/usFlag.png"
+                            alt="flag"
+                            width={20}
+                            height={20}
+                          />{" "}
+                          +1
                         </div>
 
                         <div className="w-full">

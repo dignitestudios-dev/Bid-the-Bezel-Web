@@ -86,7 +86,7 @@ const ListingCard = ({
             Delete Product
           </Button>
           <Button
-            className="w-[60%]"
+            className="md:w-[60%]"
             onClick={() => router.push(`/seller/shipping-details-auth/${id}`)}
           >
             Fill Shipping Details

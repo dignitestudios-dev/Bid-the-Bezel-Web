@@ -170,7 +170,7 @@ const Login = ({
             type="password"
             {...loginForm.register("password")}
             error={loginForm.formState.errors.password?.message}
-            maxLength={256}
+            maxLength={12}
           />
           <div className="w-full flex justify-between">
             <button type="button" onClick={() => setLocalStep("email")} className="text-sm font-medium cursor-pointer text-gray-500">
@@ -199,7 +199,7 @@ const Login = ({
             type="password"
             {...registerForm.register("password")}
             error={registerForm.formState.errors.password?.message}
-            maxLength={256}
+            maxLength={12}
           />
           <FloatingInput
             id="confirmPassword"
@@ -207,7 +207,7 @@ const Login = ({
             type="password"
             {...registerForm.register("confirmPassword")}
             error={registerForm.formState.errors.confirmPassword?.message}
-            maxLength={256}
+            maxLength={12}
           />
           <button type="button" onClick={() => setLocalStep("email")} className="text-sm font-medium cursor-pointer text-gray-500">
             ← Change email

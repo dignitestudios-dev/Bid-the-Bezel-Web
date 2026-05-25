@@ -417,7 +417,11 @@ const AuctionWatchDetailForm = ({ onNext, setWatchId }: Props) => {
           )}
         </div>
         <div className="mb-6">
-          <label className="text-sm mb-1 block">Photos</label>
+          <label className="text-sm mb-1 block">
+            Photos {watch("photos")?.length > 0 && (
+              <span className="text-gray-500">({watch("photos").length}/10)</span>
+            )}
+          </label>
 
           <input
             type="file"

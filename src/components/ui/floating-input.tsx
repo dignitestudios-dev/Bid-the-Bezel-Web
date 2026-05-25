@@ -10,11 +10,20 @@ interface FloatingInputProps
 }
 
 export const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ label, id, type = "text", className, error, disabled, ...props }, ref) => {
+  ({ label, id, type = "text", className, error, disabled, maxLength, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const isPassword = type === "password";
     const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+
+    const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
+      if (type === "number" && maxLength) {
+        const value = e.currentTarget.value;
+        if (value.length > maxLength) {
+          e.currentTarget.value = value.slice(0, maxLength);
+        }
+      }
+    };
 
     return (
       <div className="relative w-full">
@@ -24,12 +33,14 @@ export const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputPro
           placeholder=" "
           disabled={disabled}
           ref={ref}
+          onInput={handleInput}
           className={`peer w-full rounded-xl border-2 bg-white px-4 pt-6 pb-2 text-[15px] text-black focus:outline-none transition-all ${disabled ? "bg-gray-100 cursor-not-allowed opacity-70" : ""
             } ${error
               ? "border-red-500"
               : "border-gray-200 focus:border-gray-700"
             } ${isPassword ? "pr-12" : ""} ${className}`}
           {...props}
+          maxLength={type === "number" ? undefined : maxLength}
         />
 
         <label

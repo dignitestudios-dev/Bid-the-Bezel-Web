@@ -160,7 +160,7 @@ const ReviewSummary = ({ sellerId }: { sellerId: string }) => {
       <div className="flex items-center gap-2 mb-4">
         <h2 className="text-4xl font-bold">{summary?.rating}</h2>
         <span className="text-yellow-400 text-lg">★</span>
-        <span className="text-sm text-gray-500">{summary?.reviewsReceived} Reviews</span>
+        <span className="text-sm text-gray-500">{summary?.reviewsReceived} {summary?.reviewsReceived === 1 ? "Review" : "Reviews"}</span>
       </div>
       <div className="space-y-2">
         {Object.entries(summary?.distribution || {}).map(([star, count]) => (

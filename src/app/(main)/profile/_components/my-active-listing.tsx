@@ -75,7 +75,7 @@ const MyActiveListing = ({
           Sold
         </Button>
       </div>
-      <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
+      <div className="grid md:grid-cols-2 gap-5 max-h-[600px] overflow-y-auto mt-5">
         {isLoading && <Skeleton className="w-full h-24" />}
         {data?.data && data?.data?.length === 0 ? (
           <div className="col-span-2 flex items-center justify-center text-center">

@@ -68,6 +68,7 @@ const PersonalInfo = ({ onNext, userData, personalEditMode, setPersonalEditMode,
                         <FloatingInput
                             id="firstName"
                             label="First Name"
+                            maxLength={50}
                             {...register("firstName")}
                             disabled={!personalEditMode}
                             error={errors.firstName?.message}
@@ -79,6 +80,7 @@ const PersonalInfo = ({ onNext, userData, personalEditMode, setPersonalEditMode,
                         <FloatingInput
                             id="LastName"
                             label="Last Name"
+                                  maxLength={50}
                             {...register("lastName")}
                             disabled={!personalEditMode}
                             error={errors.lastName?.message}
@@ -122,9 +124,12 @@ const PersonalInfo = ({ onNext, userData, personalEditMode, setPersonalEditMode,
                         <FloatingInput
                             id="phoneNumber"
                             label="Phone Number"
+                            maxLength={10}
+                            max={10}
+                            type="number"
+                            
                             {...register("phone")}
                             disabled={!personalEditMode}
-                            maxLength={10}
                             error={errors.phone?.message}
                         />
                     </div>

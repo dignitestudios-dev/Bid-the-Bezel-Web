@@ -19,6 +19,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useMe } from "@/features/auth/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import {toast } from "sonner"
 type ChatItem = {
   id: number;
   name: string;
@@ -130,8 +131,18 @@ const Chats = () => {
 
     console.log("selectedFiles", selectedFiles);
 
-    if (selectedFiles.length > 0) {
-      setFiles((prev) => [...prev, ...selectedFiles]);
+    const MAX_IMAGE_SIZE = 20 * 1024 * 1024;
+
+    const validFiles = selectedFiles.filter((file) => {
+      if (file.type.startsWith("image/") && file.size > MAX_IMAGE_SIZE) {
+        toast(`${file.name} exceeds 20MB limit`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length > 0) {
+      setFiles((prev) => [...prev, ...validFiles]);
     }
 
     // reset input
