@@ -136,7 +136,8 @@ const TermsAndConditions = () => {
             <p className="mb-4">Don't hesitate to contact us if you have any questions.</p>
             <ul className="space-y-2">
               <li><strong>Via Email:</strong> zack@bidthebezel.com</li>
-              <li><strong>Via Phone number:</strong> 438-238-1122</li>
+              <li><strong>Via Phone number:</strong> 448-238-1122
+ </li>
               <li><strong>Via this Address:</strong> Inlet Beach, Florida</li>
             </ul>
           </section>
