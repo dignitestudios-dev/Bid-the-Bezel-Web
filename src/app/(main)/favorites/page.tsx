@@ -118,7 +118,7 @@ const Favorites = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-lg font-semibold truncate">{it?.title} {it?.model}</h3>
+                  <h3 className="text-lg font-semibold truncate wrap-break-word">{it?.title} {it?.model}</h3>
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full overflow-hidden bg-[#2881E8] text-white text-xs flex items-center justify-center">
                       <Image

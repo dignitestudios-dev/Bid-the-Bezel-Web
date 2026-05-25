@@ -159,9 +159,9 @@ const ShippingDetail = ({ setCurrentStep }: Props) => {
                   <p className="text-xs text-gray-500">
                     Only Jpg, Png files upto 5mb
                   </p>
-                  <p className="text-xs text-gray-400 absolute top-3 right-3">
+                  {/* <p className="text-xs text-gray-400 absolute top-3 right-3">
                     1/20
-                  </p>
+                  </p> */}
                 </div>
 
                 {uploadedFile && (

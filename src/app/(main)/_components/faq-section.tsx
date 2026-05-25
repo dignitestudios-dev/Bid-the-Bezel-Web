@@ -80,7 +80,7 @@ const FAQSection = () => {
     },
     {
       question: "What If I only have one watch to sell?",
-      answer: "Choose the basic package and after it sells you can cancel the subscription with no penalty."
+      answer: "If you only have one watch to sell, you may opt for the Basic Package. Once your watch has been sold, you can cancel the subscription at any time without incurring any penalty."
     }
   ];
 

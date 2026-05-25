@@ -76,7 +76,8 @@ const PurchasePlan = ({
                 <h3 className="text-2xl font-bold capitalize">{subs?.name}</h3>
                 <div className="flex items-center gap-3 mt-4">
                   <p className="text-3xl font-bold">${subs?.metadata?.amount}</p>
-                  <p className="text-sm text-gray-600 capitalize">  {subs?.metadata?.watches || subs?.metadata?.bids} watch / per {subs?.metadata?.interval}</p>
+                  <p className="text-sm text-gray-600 capitalize">     {subs?.metadata?.watches} { subs?.name === "basic" && "watch / per" } {isExecutive && "watches / per"} {subs?.name === "gold" && "watches / per"}   {" "}
+                      {subs?.name !== "buyer" && subs?.metadata?.interval}</p>
                 </div>
                 <Button
                   disabled={loadingPriceId === subs?._id}

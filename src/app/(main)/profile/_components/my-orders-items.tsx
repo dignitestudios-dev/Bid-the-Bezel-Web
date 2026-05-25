@@ -40,14 +40,14 @@ const MyOrdersItems = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-5 max-h-[600px] overflow-y-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-h-[600px] overflow-y-auto">
         {!isLoading && orders?.data?.length === 0 ? (
           <div className="col-span-2 text-center">No Orders Yet</div>
         ) : (
           orders?.data?.map((item: Order, index: number) => (
             <div
               key={`${item._id}-${index}`}
-              className="card p-0 relative overflow-hidden flex flex-col min-h-[240px]"
+              className="card p-0 relative overflow-hidden flex flex-col min-h-[160px]"
             >
               {/* {item?.isReceived && (
                 <div className="absolute top-5 -left-[52px] -rotate-45 w-[180px] text-center py-1 bg-[#14A752] border-b-2 font-medium text-white border-[#E3E3E3]">
@@ -55,56 +55,59 @@ const MyOrdersItems = () => {
                 </div>
               )} */}
 
-              <div className="p-3 w-full flex items-start gap-3">
-                <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
-                  <Image
-                    src={item?.product?.images?.[0]?.location}
-                    alt={item?.product?.brandName}
-                    width={96}
-                    height={96}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
+             <div className="p-3 w-full flex items-start gap-3">
+  <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-50 shrink-0">
+    <Image
+      src={item?.product?.images?.[0]?.location}
+      alt={item?.product?.brandName}
+      width={96}
+      height={96}
+      className="object-cover w-full h-full"
+    />
+  </div>
 
-                <div className="flex-1">
-                  <p className="text-lg font-semibold text-end">
-                    {formatPrice(item?.product?.soldPrice)}
-                  </p>
+  <div className="flex-1 min-w-0">
+    {/* Price */}
+    <div className="flex justify-between items-start gap-2 flex-wrap">
+      <p className="text-base sm:text-lg font-semibold whitespace-nowrap text-[#181818]">
+        {formatPrice(item?.product?.soldPrice)}
+      </p>
+    </div>
 
-                  <p className="text-lg font-medium truncate">
-                    {item.product.brandName} {item?.product?.model}
-                  </p>
-                </div>
-              </div>
+    {/* Product Name */}
+    <p className="mt-2 text-sm sm:text-lg font-medium break-words line-clamp-2">
+      {item.product.brandName} {item?.product?.model}
+    </p>
+  </div>
+</div>
 
+<div className="p-3 flex flex-col sm:flex-row justify-end gap-3 min-h-[60px]">
+  {item?.status === "delivered" &&
+    !item?.isReviewSubmitted && (
+      <Button
+        className="w-full sm:w-[200px]"
+        variant={"secondary"}
+        onClick={() => openReviewDialog(item)}
+      >
+        Leave A Review
+      </Button>
+    )}
 
-              <div className="p-3 flex justify-end gap-3 min-h-[60px]">
-                {item?.status === "delivered" &&
-                  !item?.isReviewSubmitted && (
-                    <Button
-                      className="w-[200px]"
-                      variant={"secondary"}
-                      onClick={() => openReviewDialog(item)}
-                    >
-                      Leave A Review
-                    </Button>
-                  )}
-
-                {(item?.status === "shipped" ||
-                  item?.status === "pending") && (
-                    <Button
-                      className="w-[200px]"
-                      onClick={() =>
-                        openDialog({
-                          orderItem: item,
-                          trackingHistory: item?.trackingHistory,
-                        })
-                      }
-                    >
-                      Track
-                    </Button>
-                  )}
-              </div>
+  {(item?.status === "shipped" ||
+    item?.status === "pending") && (
+      <Button
+        className="w-full sm:w-[200px]"
+        onClick={() =>
+          openDialog({
+            orderItem: item,
+            trackingHistory: item?.trackingHistory,
+          })
+        }
+      >
+        Track
+      </Button>
+    )}
+</div>
 
               <div
                 className={`mt-auto p-3 text-white font-medium text-center ${item?.product?.type === "auction"
@@ -114,7 +117,8 @@ const MyOrdersItems = () => {
                     : "bg-[#D9B918]"
                   }`}
               >
-                {item?.product?.type === "auction" && (
+                {item?.product?.type === "auction" && (item?.status === "shipped" ||
+    item?.status === "pending") && (
                   <div className="mx-3 mb-3 rounded-md border border-yellow-400 bg-yellow-50 px-3 py-2 text-xs text-yellow-900">
                     <span className="font-semibold">Disclaimer:</span> You need to mark either received or not within 24-48 hours after purchasing.
                   </div>
