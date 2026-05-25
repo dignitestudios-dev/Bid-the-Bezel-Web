@@ -28,23 +28,20 @@ const ProductDetail = ({ product }: Props) => {
   const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(
     product?._id,
     1,
-    10
+    10,
   );
 
-  const isAuthenticated =
-    product?.authentication?.status === "authenticated";
+  const isAuthenticated = product?.authentication?.status === "authenticated";
 
   const [page, setPage] = useState(1);
-  const { data: productQAndA, isLoading } = useGetQuestions(
-    product?._id,
-    page
-  );
+  const { data: productQAndA, isLoading } = useGetQuestions(product?._id, page);
 
   // ✅ ONLY FAVORITE STATE CHANGE
   const [isFav, setIsFav] = useState(product?.isFavorite);
 
-  const { mutate: addProductToFavorite, isPending } =
-    useAddProductToFavorite(product?._id || "");
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(
+    product?._id || "",
+  );
 
   const handleAddToFavorite = () => {
     if (!userData?.data)
@@ -60,14 +57,14 @@ const ProductDetail = ({ product }: Props) => {
         showSuccess(
           previous
             ? "Product removed from favorites"
-            : "Product added to favorites"
+            : "Product added to favorites",
         );
       },
       onError: () => {
         // rollback if API fails
         setIsFav(previous);
         showError("Something went wrong");
-      }
+      },
     });
   };
 
@@ -79,7 +76,6 @@ const ProductDetail = ({ product }: Props) => {
         <div className="flex justify-between">
           <h1 className="flex gap-2 items-start break-all text-xl md:text-3xl font-semibold">
             {product?.brandName} {product?.model}
-
             {isAuthenticated && (
               <Badge
                 title="Authenticated"
@@ -89,15 +85,17 @@ const ProductDetail = ({ product }: Props) => {
           </h1>
 
           {/* ✅ ONLY CHANGE HERE */}
-       { !product.isMyProduct &&  <button
-            disabled={isPending}
-            onClick={handleAddToFavorite}
-            className="cursor-pointer"
-          >
-            <div className="pointer-events-none">
-              <FavBtn isFav={isFav} />
-            </div>
-          </button>}
+          {!product.isMyProduct && (
+            <button
+              disabled={isPending}
+              onClick={handleAddToFavorite}
+              className="cursor-pointer"
+            >
+              <div className="pointer-events-none">
+                <FavBtn isFav={isFav} />
+              </div>
+            </button>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -105,13 +103,12 @@ const ProductDetail = ({ product }: Props) => {
             {formatPrice(product?.price)}{" "}
             <span className="text-base">Starting Price</span>
           </h1>
-          {product.isReserved && product.isMyProduct &&(
+          {product.isReserved && product.isMyProduct && (
             <h1 className="text-xl md:text-3xl">
-            {formatPrice(product?.reservePrice)}{" "}
-            <span className="text-base">Reserved Price</span>
-          </h1>
-          ) }
-          
+              {formatPrice(product?.reservePrice)}{" "}
+              <span className="text-base">Reserved Price</span>
+            </h1>
+          )}
         </div>
 
         <p className="text-sm text-gray-500 mt-1">
@@ -123,10 +120,36 @@ const ProductDetail = ({ product }: Props) => {
         <EmblaCarousel slides={product?.images ?? []} options={OPTIONS} />
       </div>
 
+      {/* Description */}
       <div>
         <h1 className="font-semibold">Description</h1>
         <p className="wrap-break-word">{product?.description}</p>
       </div>
+
+      {/* NEW FIELDS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Purchase Year */}
+        <div className="border rounded-xl p-4 bg-gray-50">
+          <h2 className="text-sm text-gray-500 mb-1">
+            Purchase year of the Watch
+          </h2>
+
+          <p className="font-semibold text-base">
+            {product?.purchaseYear
+              ? new Date(product.purchaseYear).getFullYear()
+              : "N/A"}
+          </p>
+        </div>
+
+        {/* Watch Condition */}
+        <div className="border rounded-xl p-4 bg-gray-50">
+          <h2 className="text-sm text-gray-500 mb-1">Condition of the Watch</h2>
+
+          <p className="font-semibold text-base">
+            {product?.watchCondition || "N/A"}
+          </p>
+        </div>
+      </div>  
 
       {isLoading ? (
         <QASkeleton />

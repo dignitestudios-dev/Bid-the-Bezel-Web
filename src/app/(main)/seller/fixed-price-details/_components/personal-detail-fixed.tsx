@@ -21,6 +21,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useAppSelector } from "@/lib/hooks";
 import WatchDetailForm from "./watch-detail-form";
+import Link from "next/link";
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
 if (!stripeKey) {
@@ -96,7 +97,7 @@ const PersonalDetailFixed = ({ }: Props) => {
           </BreadcrumbItem>
 
           <BreadcrumbItem>
-            <BreadcrumbLink>Home</BreadcrumbLink>
+            <BreadcrumbLink>   <Link href="/" >Home</Link></BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbSeparator />

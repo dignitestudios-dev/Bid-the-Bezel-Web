@@ -77,6 +77,10 @@ const FAQSection = () => {
     {
       question: "Can I favorite auction listings?",
       answer: "Yes. Users can favorite auction watches and receive reminders and notifications before auctions end."
+    },
+    {
+      question: "What If I only have one watch to sell?",
+      answer: "Choose the basic package and after it sells you can cancel the subscription with no penalty."
     }
   ];
 

@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 type Props = {
@@ -22,6 +24,7 @@ type Props = {
 
 const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
   const [steps, setSteps] = useState(1);
+
 
   return (
     <div className="py-12 ">
@@ -44,8 +47,10 @@ const PersonalDetailFixed = ({ setCurrentStep }: Props) => {
             </BreadcrumbLink>
           </BreadcrumbItem>
 
-          <BreadcrumbItem>
-            <BreadcrumbLink>Home</BreadcrumbLink>
+          <BreadcrumbItem className="cursor-pointer">
+            <BreadcrumbLink asChild>
+              <Link href="/" >Home</Link>
+            </BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbSeparator />

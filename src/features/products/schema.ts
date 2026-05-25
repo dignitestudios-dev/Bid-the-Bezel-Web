@@ -1,86 +1,88 @@
 import { z } from "zod";
 
 export const watchDetailSchema = z.object({
-    watchBrand: z
-        .string()
-        .min(2, "Watch brand is required")
-        .max(50, "Watch brand must be at most 50 characters"),
+  watchBrand: z
+    .string()
+    .min(2, "Watch brand is required")
+    .max(50, "Watch brand must be at most 50 characters"),
 
-    modelReference: z
-       .string()
-  .min(2, "Model reference is required")
-  .max(50, "Model reference must be at most 50 characters")
-  .regex(
-    /^[a-zA-Z0-9\s-]+$/,
-    "Model reference must not contain special characters"
-  ),
+  modelReference: z
+    .string()
+    .min(2, "Model reference is required")
+    .max(50, "Model reference must be at most 50 characters")
+    .regex(
+      /^[a-zA-Z0-9\s-]+$/,
+      "Model reference must not contain special characters",
+    ),
 
-    referenceId: z
-        .string()
-        .max(30, "Reference ID must be at most 30 characters")
-        .optional(),
+  referenceId: z
+    .string()
+    .max(30, "Reference ID must be at most 30 characters")
+    .optional(),
 
-    price: z
-       .coerce.number()
-        .min(1, "Price is required")
-        .max(1000000, "Price must be at most 1,000,000")
-          .multipleOf(0.01, {
-        message: "Max 2 decimal places allowed",
-      }),
+  price: z.coerce
+    .number()
+    .min(1, "Price is required")
+    .max(1000000, "Price must be at most 1,000,000")
+    .multipleOf(0.01, {
+      message: "Max 2 decimal places allowed",
+    }),
 
-    contents: z
-        .string()
-        .min(10, "Contents is required")
-        .max(1000, "Contents must be at most 1000 characters"),
-    photos: z
+  contents: z
+    .string()
+    .min(10, "Contents is required")
+    .max(1000, "Contents must be at most 1000 characters"),
+  photos: z
     .array(
-        z.object({
-            file: z.any().optional(),
-            name: z.string(),
-            url: z.string(),
-        })
+      z.object({
+        file: z.any().optional(),
+        name: z.string(),
+        url: z.string(),
+      }),
     )
     .min(1, "At least 1 photo is required")
     .max(10, "Maximum 10 photos allowed")
     .refine(
-        (photos) =>
-            photos.every((p) => {
-                if (!p.file) return true;
+      (photos) =>
+        photos.every((p) => {
+          if (!p.file) return true;
 
-                const allowedTypes = [
-                    "image/jpeg",
-                    "image/jpg",
-                    "image/png",
-                    "image/webp",
-                ];
+          const allowedTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+          ];
 
-                return allowedTypes.includes(p.file.type);
-            }),
-        "Only JPG, JPEG, PNG, and WEBP images are supported"
+          return allowedTypes.includes(p.file.type);
+        }),
+      "Only JPG, JPEG, PNG, and WEBP images are supported",
     )
     .refine(
-        (photos) =>
-            photos.every((p) => {
-                if (!p.file) return true;
+      (photos) =>
+        photos.every((p) => {
+          if (!p.file) return true;
 
-                return p.file.size <= 5 * 1024 * 1024;
-            }),
-        "Each image must be 5MB or less"
-    )
+          return p.file.size <= 5 * 1024 * 1024;
+        }),
+      "Each image must be 5MB or less",
+    ),
+
+  purchaseYear: z.string().min(1, "Purchase year is required"),
+
+  watchCondition: z.string().min(1, "Condition is required"),
 });
 
 export type WatchDetailPayload = z.infer<typeof watchDetailSchema>;
 
-
-
 export const shippingSchema = z.object({
-    courier: z.string().min(1, "Courier is required"),
-    trackingNumber: z.string().min(1, "Reference ID is required"),
-    trackingLink: z
-        .string()
-        .url("Enter a valid URL")
-        .refine((val) => val.trim() !== "", "Tracking link is required"),
-    images: z.any().optional(),
+  courier: z.string().min(1, "Courier is required"),
+  trackingNumber: z.string().min(1, "Reference ID is required"),
+  trackingLink: z
+    .string()
+    .url("Enter a valid URL")
+    .refine((val) => val.trim() !== "", "Tracking link is required"),
+  images: z.any().optional(),
 });
 
 export type ShippingPayload = z.infer<typeof shippingSchema>;

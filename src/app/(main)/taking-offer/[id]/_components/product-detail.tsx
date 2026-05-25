@@ -27,23 +27,20 @@ const ProductDetail = ({ product }: Props) => {
   const { data: bidsData, isLoading: bidsLoading } = useGetProductBids(
     product?._id,
     1,
-    10
+    10,
   );
 
-  const isAuthenticated =
-    product?.authentication?.status === "authenticated";
+  const isAuthenticated = product?.authentication?.status === "authenticated";
 
   const [page, setPage] = useState(1);
-  const { data: productQAndA, isLoading } = useGetQuestions(
-    product?._id,
-    page
-  );
+  const { data: productQAndA, isLoading } = useGetQuestions(product?._id, page);
 
   // ✅ ONLY FAVORITE STATE FIX
   const [isFav, setIsFav] = useState(product?.isFavorite);
 
-  const { mutate: addProductToFavorite, isPending } =
-    useAddProductToFavorite(product?._id || "");
+  const { mutate: addProductToFavorite, isPending } = useAddProductToFavorite(
+    product?._id || "",
+  );
 
   const handleAddToFavorite = () => {
     if (!userData?.data)
@@ -59,14 +56,14 @@ const ProductDetail = ({ product }: Props) => {
         showSuccess(
           prev
             ? "Product removed from favorites"
-            : "Product added to favorites"
+            : "Product added to favorites",
         );
       },
       onError: () => {
         // rollback
         setIsFav(prev);
         showError("Something went wrong");
-      }
+      },
     });
   };
 
@@ -86,16 +83,18 @@ const ProductDetail = ({ product }: Props) => {
             )}
           </h1>
 
-        {!product.isMyProduct &&  <button
-            disabled={isPending}
-            onClick={handleAddToFavorite}
-            className="cursor-pointer"
-          >
-            <div className="pointer-events-none">
-              {/* ✅ FIXED HERE */}
-              <FavBtn isFav={isFav} />
-            </div>
-          </button>}
+          {!product.isMyProduct && (
+            <button
+              disabled={isPending}
+              onClick={handleAddToFavorite}
+              className="cursor-pointer"
+            >
+              <div className="pointer-events-none">
+                {/* ✅ FIXED HERE */}
+                <FavBtn isFav={isFav} />
+              </div>
+            </button>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -117,6 +116,17 @@ const ProductDetail = ({ product }: Props) => {
       <div>
         <h1 className="font-semibold">Description</h1>
         <p className="wrap-break-word">{product?.description}</p>
+      </div>
+      <div className="border rounded-xl p-4 bg-gray-50">
+        <h2 className="text-sm text-gray-500 mb-1">
+          Purchase year of the Watch
+        </h2>
+
+        <p className="font-semibold text-base">
+          {product?.purchaseYear
+            ? new Date(product.purchaseYear).getFullYear()
+            : "N/A"}
+        </p>
       </div>
 
       {isLoading ? (
