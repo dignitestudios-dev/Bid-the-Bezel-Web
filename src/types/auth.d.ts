@@ -14,7 +14,7 @@ type AuthStep =
 interface LoginPayload {
   email: string;
   password: string;
-  method: string
+  method: string;
 }
 
 interface RegisterPayload {
@@ -111,6 +111,5 @@ interface ProfileData {
     isProfileCompleted?: boolean;
     isEmailVerified?: boolean;
     isSubscribed?: boolean;
-
   };
 }

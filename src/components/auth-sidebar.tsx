@@ -28,7 +28,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 //protected steps which require user to complete the previous steps before closing the sidebar
-const PROTECTED_STEPS: AuthStep[] = ["username", "purchase-plan", "subscription-confirmation"];
+const PROTECTED_STEPS: AuthStep[] = [
+  "username",
+  "purchase-plan",
+  "subscription-confirmation",
+];
 const AuthSidebar = ({
   hideTrigger,
   loader,
@@ -44,7 +48,8 @@ const AuthSidebar = ({
   const currentStep = searchParams.get("authstep") as AuthStep | null;
   const open = !!currentStep;
 
-  const isProtectedStep = !!currentStep && PROTECTED_STEPS.includes(currentStep);
+  const isProtectedStep =
+    !!currentStep && PROTECTED_STEPS.includes(currentStep);
 
   const setStep = (step: AuthStep) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -73,20 +78,10 @@ const AuthSidebar = ({
   const renderStep = () => {
     switch (currentStep) {
       case "login":
-        return (
-          <Login
-            setStep={setStep}
-            onSuccess={handleClose}
-          />
-        );
+        return <Login setStep={setStep} onSuccess={handleClose} />;
 
       case "register":
-        return (
-          <Register
-            setStep={setStep}
-            onSuccess={handleClose}
-          />
-        );
+        return <Register setStep={setStep} onSuccess={handleClose} />;
 
       case "otp-register":
         return <OtpRegister setStep={setStep} />;
@@ -95,12 +90,7 @@ const AuthSidebar = ({
         return <Username setStep={setStep} />;
 
       case "purchase-plan":
-        return (
-          <PurchasePlan
-            setStep={setStep}
-            onSkip={handleSkipAndLogin}
-          />
-        );
+        return <PurchasePlan setStep={setStep} onSkip={handleSkipAndLogin} />;
 
       case "plan-selected":
         return <PlanSelected setStep={setStep} />;
@@ -126,7 +116,7 @@ const AuthSidebar = ({
         return <PasswordChanged setStep={setStep} />;
 
       default:
-        return null
+        return null;
     }
   };
 
@@ -160,23 +150,26 @@ const AuthSidebar = ({
     <Sheet open={open} onOpenChange={handleOpenChange}>
       {!hideTrigger && (
         <SheetTrigger disabled={loader} asChild>
-          <Button onClick={() => router.push("?authstep=login")} className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full">
+          <Button
+            onClick={() => router.push("?authstep=login")}
+            className="rounded-full flex gap-2 items-center w-[105px] h-[45px] max-w-full"
+          >
             <span>Login</span> <ArrowRight size={15} />
           </Button>
         </SheetTrigger>
       )}
 
       <SheetContent
-        onInteractOutside={(e) => { if (isProtectedStep) e.preventDefault(); }}
-        className={`${currentStep === "plan-selected"
-          ? "bg-gray-100"
-          : "bg-white"
-          } w-[700px]! max-w-[90%] overflow-y-auto`}
+        showCloseButton={currentStep !== "username"}
+        onInteractOutside={(e) => {
+          if (isProtectedStep) e.preventDefault();
+        }}
+        className={`${
+          currentStep === "plan-selected" ? "bg-gray-100" : "bg-white"
+        } w-[700px]! max-w-[90%] overflow-y-auto`}
       >
         <SheetHeader>
-          <SheetTitle className="text-center text-lg">
-            {getTitle()}
-          </SheetTitle>
+          <SheetTitle className="text-center text-lg">{getTitle()}</SheetTitle>
         </SheetHeader>
 
         <div className="flex justify-center mt-8 h-full w-full">
