@@ -20,12 +20,12 @@ import { getToken } from "@/lib/cookies";
 
 const Navbar = () => {
   const { data: user, isLoading, refetch } = useMe();
-  const token = getToken()
+  const token = getToken();
   const searchParams = useSearchParams();
   const router = useRouter();
   const isPlanParam = searchParams.get("plan") === "success";
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  
+
   useEffect(() => {
     if (isPlanParam && !isLoading) {
       refetch().then((result) => {
@@ -39,7 +39,7 @@ const Navbar = () => {
       });
     }
   }, [isPlanParam, isLoading]);
-  
+
   const handleClose = () => {
     setShowSuccessDialog(false);
     const url = new URL(window.location.href);
@@ -68,7 +68,12 @@ const Navbar = () => {
                 onClick={() => router.push("/seller/plans")}
                 className="flex bg-[#415A77] rounded-full gap-2 items-center w-[154px] h-[45px] max-w-full"
               >
-                <span>Start Listing</span> <ArrowRight size={15} />
+                <span>
+                  {user?.data?.type?.includes("buyer")
+                    ? "Start Bidding"
+                    : "Start Listing"}
+                </span>{" "}
+                <ArrowRight size={15} />
               </Button>
             </>
           )}
@@ -78,7 +83,7 @@ const Navbar = () => {
           <AuthSidebar hideTrigger={!!user || isLoading} loader={isLoading} />
         </div>
       </div>
-   
+
       <PlanSuccessDialog open={showSuccessDialog} onOpenChange={handleClose} />
     </div>
   );
