@@ -63,7 +63,7 @@ const PurchasePlan = ({
       </div>
 
       <div className="space-y-4 px-8 pb-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid  sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {data?.data?.map((subs: any, index: number) => {
             const isExecutive = subs?.name?.toLowerCase() === "executive";
             return (
