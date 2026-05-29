@@ -48,6 +48,14 @@ const Navbar = () => {
   };
   useRequireProfileCompletion(user, isLoading);
   useFcmNotification();
+  const activeSubscription = user?.data?.subscriptions?.find(
+    (sub) => sub.status === "active",
+  );
+
+  const buttonText =
+    activeSubscription?.planType === "buyer"
+      ? "Start Bidding"
+      : "Start Listing";
   return (
     <div>
       <div className="flex justify-between w-[90%] py-4 max-w-screen-2xl mx-auto">
@@ -68,12 +76,7 @@ const Navbar = () => {
                 onClick={() => router.push("/seller/plans")}
                 className="flex bg-[#415A77] rounded-full gap-2 items-center w-[154px] h-[45px] max-w-full"
               >
-                <span>
-                  {user?.data?.type?.includes("buyer")
-                    ? "Start Bidding"
-                    : "Start Listing"}
-                </span>{" "}
-                <ArrowRight size={15} />
+                <span>{buttonText}</span> <ArrowRight size={15} />
               </Button>
             </>
           )}

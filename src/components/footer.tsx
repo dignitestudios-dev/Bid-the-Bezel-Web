@@ -1,10 +1,17 @@
 "use client";
 import { useMe } from "@/features/auth/hooks";
-import { ArrowRight, Facebook, Instagram, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import {
+  ArrowRight,
+  Facebook,
+  Instagram,
+  Mail,
+  MapPin,
+  Phone,
+  Youtube,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -14,7 +21,6 @@ const Footer = () => {
     <footer className="bg-(--primary) text-white">
       <div className="max-w-screen-2xl mx-auto p-4 sm:px-8 lg:p-14">
         <div className="text-lg">
-
           {/* CTA SECTION */}
           <div className="bg-white flex flex-col text-sm gap-6 sm:gap-8 items-center z-50 rounded-3xl relative p-6 sm:p-10 lg:p-20 overflow-hidden">
             <Image
@@ -35,8 +41,10 @@ const Footer = () => {
               Ready to Sell <br /> your watch?
             </h1>
             {!isLoading && (
-
-              <Link href={user ? "/seller/plans" : "?authstep=login"} className="cursor-pointer! relative z-50">
+              <Link
+                href={user ? "/seller/plans" : "?authstep=login"}
+                className="cursor-pointer! relative z-50"
+              >
                 <button className="flex items-center gap-2 bg-[#0D1B2A0D] border border-gray-300 rounded-full px-1 pl-2 py-1 hover:shadow-md transition">
                   <span className="text-gray-700 font-medium">
                     Start Listing
@@ -47,12 +55,10 @@ const Footer = () => {
                 </button>
               </Link>
             )}
-
           </div>
 
           {/* MAIN FOOTER CONTENT */}
           <div className="flex flex-col lg:flex-row justify-between gap-10 lg:gap-0 py-10 lg:py-20">
-
             {/* LEFT */}
             <div className="space-y-4">
               <Image
@@ -64,13 +70,14 @@ const Footer = () => {
                 className="h-12 w-auto"
               />
               <p className="text-base leading-relaxed text-white/80 max-w-xs">
-                Bid The Bezel is a modern luxury watch marketplace built for collectors, enthusiasts, buyers, and sellers who value trust, privacy, and transparency.
+                Bid The Bezel is a modern luxury watch marketplace built for
+                collectors, enthusiasts, buyers, and sellers who value trust,
+                privacy, and transparency.
               </p>
             </div>
 
             {/* RIGHT */}
             <div className="flex flex-col sm:flex-row flex-wrap gap-10 lg:gap-32">
-
               {/* NAVIGATION */}
               <div>
                 <h3 className="font-semibold mb-4">Navigation</h3>
@@ -122,7 +129,10 @@ const Footer = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link href="/terms-and-conditions" className="hover:text-white">
+                      <Link
+                        href="/terms-and-conditions"
+                        className="hover:text-white"
+                      >
                         Terms of Use
                       </Link>
                     </li>
@@ -141,7 +151,10 @@ const Footer = () => {
                       <span>
                         <Mail />
                       </span>
-                      <a href="mailto:zack@bidthebezel.com" className="hover:text-white">
+                      <a
+                        href="mailto:zack@bidthebezel.com"
+                        className="hover:text-white"
+                      >
                         zack@bidthebezel.com
                       </a>
                     </li>
@@ -151,7 +164,6 @@ const Footer = () => {
                       </span>
                       <a href="tel:+14382381122" className="hover:text-white">
                         448-238-1122
- 
                       </a>
                     </li>
                     <li className="flex items-center gap-2">
@@ -171,7 +183,6 @@ const Footer = () => {
             <p className="text-xs text-white/80">{copyright}</p>
 
             <div className="flex items-center justify-center md:justify-end gap-5 md:gap-6 text-gray-400 flex-wrap">
-
               {/* Facebook */}
               <Link
                 href="https://www.facebook.com/share/1B9B3FdxeE/?mibextid=wwXIfr"
@@ -205,12 +216,8 @@ const Footer = () => {
                   <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.68h-3.2v12.85a2.89 2.89 0 1 1-2.89-2.89c.226 0 .446.024.659.069V8.78a6.09 6.09 0 0 0-.659-.035A6.09 6.09 0 1 0 15.82 14.84V8.27a8.003 8.003 0 0 0 4.769 1.579V6.686z" />
                 </svg>
               </Link>
-
-
-
             </div>
           </div>
-
         </div>
       </div>
     </footer>
