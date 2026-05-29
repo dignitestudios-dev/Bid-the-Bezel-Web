@@ -57,7 +57,6 @@ const Profile = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [timer, setTimer] = useState(120);
 
-
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (timer > 0) {
@@ -74,10 +73,10 @@ const Profile = () => {
     setValue,
     watch,
     reset,
-    formState: { errors , isValid, isDirty },
+    formState: { errors, isValid, isDirty },
   } = useForm<UpdateProfilePayload>({
     resolver: zodResolver(updateProfileSchema),
-      mode: "onChange",
+    mode: "onChange",
     defaultValues: {
       userName: "",
       profilePicture: null,
@@ -112,22 +111,25 @@ const Profile = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!validTypes.includes(file.type)) {
-        showError('Please upload a valid image file (JPEG, PNG, GIF, or WebP)');
-        e.target.value = '';
+        showError("Please upload a valid image file (JPEG, PNG, GIF, or WebP)");
+        e.target.value = "";
         return;
       }
 
       if (file.size > maxSize) {
-        showError('File size must be less than 5MB');
-        e.target.value = '';
+        showError("File size must be less than 5MB");
+        e.target.value = "";
         return;
       }
 
-      setValue("profilePicture", file, { shouldValidate: true, shouldDirty: true });
+      setValue("profilePicture", file, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
@@ -171,27 +173,10 @@ const Profile = () => {
   }, [otp, setOtpValue]);
 
   const handleDeleteAccount = (body: DeleteAccountOtpPayload) => {
-    deleteAccount(body,
-      {
-        onSuccess: () => {
-          showSuccess("Account deleted successfully!");
-          router.push("/");
-        },
-        onError: (err: any) => {
-          showError(err);
-        },
-      }
-    );
-  };
-
-
-  const handleOpenDeleteDialog = () => {
-    if (!userData?.data?.email) return;
-
-    resendOtp({ email: userData?.data?.email }, {
+    deleteAccount(body, {
       onSuccess: () => {
-        showSuccess("OTP sent successfully!");
-        setIsDialogOpen(true);
+        showSuccess("Account deleted successfully!");
+        router.push("/");
       },
       onError: (err: any) => {
         showError(err);
@@ -199,6 +184,22 @@ const Profile = () => {
     });
   };
 
+  const handleOpenDeleteDialog = () => {
+    if (!userData?.data?.email) return;
+
+    resendOtp(
+      { email: userData?.data?.email },
+      {
+        onSuccess: () => {
+          showSuccess("OTP sent successfully!");
+          setIsDialogOpen(true);
+        },
+        onError: (err: any) => {
+          showError(err);
+        },
+      },
+    );
+  };
 
   const handleOtpChange = (index: number, value: string) => {
     const numericValue = value.replace(/[^0-9]/g, "");
@@ -216,7 +217,7 @@ const Profile = () => {
 
   const handleKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace") {
       if (otp[index] === "" && index > 0) {
@@ -229,7 +230,6 @@ const Profile = () => {
     }
   };
 
-
   const handleResend = () => {
     if (userData?.data?.email && timer === 0) {
       resendOtp(
@@ -241,8 +241,8 @@ const Profile = () => {
           },
           onError: (err: any) => {
             showError(err);
-          }
-        }
+          },
+        },
       );
     }
   };
@@ -317,7 +317,8 @@ const Profile = () => {
                   error={errors.userName?.message}
                 />
 
-                {userName && isValid &&
+                {userName &&
+                  isValid &&
                   userName.length >= 3 &&
                   userName !== userData?.data?.userName && (
                     <div className="pt-1">
@@ -345,7 +346,11 @@ const Profile = () => {
                   )}
               </div>
               <div className="col-span-full flex justify-end">
-                <Button size={"lg"} type="submit" disabled={isUpdating || !isDirty}>
+                <Button
+                  size={"lg"}
+                  type="submit"
+                  disabled={isUpdating || !isDirty}
+                >
                   {isUpdating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -366,29 +371,28 @@ const Profile = () => {
 
         <div className="space-y-2">
           {userData?.data?.subscriptions?.map((item: any, index: number) => (
-            <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-              <span className="font-bold text-xl capitalize">
-                {item?.plan?.name}
-              </span>
+           <div
+  key={index}
+  className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2"
+>
+  <span className="font-bold text-xl capitalize">
+    {item?.plan?.name}
+  </span>
 
-              <span className="font-light text-muted-foreground">
-                (3 days of trial left |{" "}
-                {item?.planType === "buyer"
-                  ? "Unlimited Purchases"
-                  : item?.isUnlimitedQuota
-                    ? "Unlimited Watches"
-                    : `${item?.sellQuota} Watches Left`}
-                )
-              </span>
-            </div>
+  <span className="font-light text-muted-foreground">
+    {item?.planType === "buyer"
+      ? "Unlimited Purchases"
+      : item?.isUnlimitedQuota
+        ? "Unlimited Watches"
+        : `${item?.sellQuota} Watches Left`}
+  </span>
+</div>
           ))}
         </div>
 
         <hr className="my-6 border-border" />
 
-
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-
           <Button
             className="bg-red-700 hover:bg-red-800"
             onClick={handleOpenDeleteDialog}
@@ -412,13 +416,16 @@ const Profile = () => {
                   We’re sorry to see you go.
                 </p>
                 <p className="text-base">
-                  Your account and all associated data will be permanently deleted. If you have an active subscription, it will also be cancelled upon account deletion. This action cannot be undone.
+                  Your account and all associated data will be permanently
+                  deleted. If you have an active subscription, it will also be
+                  cancelled upon account deletion. This action cannot be undone.
                 </p>
               </DialogDescription>
             </DialogHeader>
             <div className="">
               <p className="text-sm text-center text-gray-600 mt-3">
-                A 5 digit code has been sent to your email <span className="font-semibold">{userData?.data?.email}</span>
+                A 5 digit code has been sent to your email{" "}
+                <span className="font-semibold">{userData?.data?.email}</span>
               </p>
               <div className="w-full text-center px-2 sm:px-4">
                 <div className="flex justify-center gap-2 sm:gap-3 mt-6">
@@ -433,12 +440,19 @@ const Profile = () => {
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(index, e)}
-                      className={`w-14 h-14 rounded-xl text-center text-xl font-bold border-2 focus:outline-none transition-all ${errorsOtp.otp ? "border-red-500" : "border-gray-200 focus:border-gray-700"
-                        }`}
+                      className={`w-14 h-14 rounded-xl text-center text-xl font-bold border-2 focus:outline-none transition-all ${
+                        errorsOtp.otp
+                          ? "border-red-500"
+                          : "border-gray-200 focus:border-gray-700"
+                      }`}
                     />
                   ))}
                 </div>
-                {errorsOtp.otp && <p className="text-red-500 text-xs mt-2">{errorsOtp.otp.message}</p>}
+                {errorsOtp.otp && (
+                  <p className="text-red-500 text-xs mt-2">
+                    {errorsOtp.otp.message}
+                  </p>
+                )}
 
                 <p className="mt-4 text-sm text-gray-600">
                   Didn&apos;t get code?{" "}
@@ -447,9 +461,12 @@ const Profile = () => {
                     disabled={isResendOtp || timer > 0}
                     className="font-semibold text-black cursor-pointer hover:underline disabled:opacity-30 disabled:cursor-not-allowed"
                   >
-                    {isResendOtp ? "Resending..." : timer > 0 ? `Resend in ${formatTime(timer)}` : "Resend"}
+                    {isResendOtp
+                      ? "Resending..."
+                      : timer > 0
+                        ? `Resend in ${formatTime(timer)}`
+                        : "Resend"}
                   </button>
-
                 </p>
               </div>
             </div>
