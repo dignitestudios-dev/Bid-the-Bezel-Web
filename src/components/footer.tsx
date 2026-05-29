@@ -28,7 +28,8 @@ const Footer = () => {
               alt="cta-watch"
               width={380}
               height={380}
-              className="absolute bottom-0 right-0 sm:right-5 z-20 w-[150px] sm:w-[300px] lg:w-[380px]"
+              unoptimized
+              className="absolute bottom-0 top-4 -right-20  z-20 w-[150px] sm:w-[300px] lg:w-[600px] "
             />
             <Image
               src={"/images/footer/cta-bg.png"}
